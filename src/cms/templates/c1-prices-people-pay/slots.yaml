@@ -1,0 +1,491 @@
+# C1 citizen template bindings. Portrait Editor. No observation numerals.
+# CMS Engineer: bind each slot with prism.schema.SlotSelector against vintage
+# dv-20260916-234e263c8588. Fail the render if a required observation slot
+# would show a number without producer, series, date, geography vintage, and caveat.
+# Missing observation → unknown / not published. Never paste a remembered figure.
+
+template_id: c1-prices-people-pay
+charter: C1
+bound_vintage_id: dv-20260916-234e263c8588
+geography_vintage: "2024"
+code_system: producer-specific
+state_ut_axis_order: alphabetical_official_english_name
+display_timezone: Asia/Kolkata
+
+# Period roles for this vintage. Copy uses {{period.*}}; CMS resolves labels.
+# Producer P/F is the observation_id suffix (not ObservationStatus).
+# ObservationStatus here is value | unknown (blank inflation is unknown, not 0).
+period_roles:
+  latest_provisional:
+    reference_period: "2026-08"
+    producer_status: P
+    label: August 2026 (Provisional)
+    series_with_status: [cpi-general-base-2024, cpi-cfpi-base-2024, cpi-division-group-base-2024]
+  latest_final:
+    reference_period: "2026-07"
+    producer_status: F
+    label: July 2026 (Final)
+    series_with_status: [cpi-general-base-2024, cpi-cfpi-base-2024, cpi-division-group-base-2024]
+  compiled_break:
+    reference_period: "2025-01"
+    note: Independently compiled Base 2024=100 General starts. Not a SlotSelector month in this vintage.
+  compiled_missing_in_this_vintage:
+    from: "2025-01"
+    to: "2026-06"
+    note: Cards 1–3 in this vintage have no rows in this span. Encode as not in vintage, not as zero.
+  linked_range:
+    from: "2013-01"
+    to: "2024-12"
+    series_id: cpi-back-series-linked-base-2024
+    producer_status: none
+  linked_inflation_unpublished:
+    from: "2013-01"
+    to: "2013-12"
+    unit: inflation (%)
+    status: unknown
+  linked_inflation_filled_from: "2014-01"
+
+frames:
+  c1-frame-a:
+    series: [cpi-general-base-2024, cpi-cfpi-base-2024, cpi-division-group-base-2024]
+    units_included_note: 00 All India plus 36 States/UTs
+    units_missing:
+      - districts and below (parked)
+      - city / centre geographies (charter-out)
+      - Chandigarh Rural is withheld on included unit 04 (no row), not a dropped UT
+  c1-frame-b:
+    series: [cpi-back-series-linked-base-2024]
+    units_included: ["00"]
+    units_missing:
+      - all 36 States and Union Territories on Frame A
+      - districts and below (parked)
+
+# Documented State/UT axis order: alphabetical by official English name as published.
+# Never sort this axis by inflation or index. All India (00) is not on the state axis.
+state_ut_order:
+  - {code: "35", name_en: Andaman And Nicobar Islands}
+  - {code: "28", name_en: Andhra Pradesh}
+  - {code: "12", name_en: Arunachal Pradesh}
+  - {code: "18", name_en: Assam}
+  - {code: "10", name_en: Bihar}
+  - {code: "04", name_en: Chandigarh}
+  - {code: "22", name_en: Chhattisgarh}
+  - {code: "30", name_en: Goa}
+  - {code: "24", name_en: Gujarat}
+  - {code: "06", name_en: Haryana}
+  - {code: "02", name_en: Himachal Pradesh}
+  - {code: "01", name_en: Jammu And Kashmir}
+  - {code: "20", name_en: Jharkhand}
+  - {code: "29", name_en: Karnataka}
+  - {code: "32", name_en: Kerala}
+  - {code: "37", name_en: Ladakh}
+  - {code: "31", name_en: Lakshadweep}
+  - {code: "23", name_en: Madhya Pradesh}
+  - {code: "27", name_en: Maharashtra}
+  - {code: "14", name_en: Manipur}
+  - {code: "17", name_en: Meghalaya}
+  - {code: "15", name_en: Mizoram}
+  - {code: "07", name_en: NCT of Delhi}
+  - {code: "13", name_en: Nagaland}
+  - {code: "21", name_en: Odisha}
+  - {code: "34", name_en: Puducherry}
+  - {code: "03", name_en: Punjab}
+  - {code: "08", name_en: Rajasthan}
+  - {code: "11", name_en: Sikkim}
+  - {code: "33", name_en: Tamil Nadu}
+  - {code: "36", name_en: Telangana}
+  - {code: "25", name_en: The Dadra And Nagar Haveli And Daman And Diu}
+  - {code: "16", name_en: Tripura}
+  - {code: "09", name_en: Uttar Pradesh}
+  - {code: "05", name_en: Uttarakhand}
+  - {code: "19", name_en: West Bengal}
+
+sector_order: [Rural, Urban, Combined]
+
+division_order:
+  - {code: "01", name: "Food and beverages"}
+  - {code: "02", name: "Paan, tobacco and intoxicants"}
+  - {code: "03", name: "Clothing and footwear"}
+  - {code: "04", name: "Housing, water, electricity, gas and other fuels"}
+  - {code: "05", name: "Furnishings, household equipment and routine household maintenance"}
+  - {code: "06", name: "Health"}
+  - {code: "07", name: "Transport"}
+  - {code: "08", name: "Information and communication"}
+  - {code: "09", name: "Recreation, sport and culture"}
+  - {code: "10", name: "Education services"}
+  - {code: "11", name: "Restaurants and accommodation services"}
+  - {code: "13", name: "Personal care, social protection and miscellaneous goods and services"}
+
+serve:
+  observation: prism.schema.ServedObservation
+  join_geography_name_en: from series geography.json units_included
+  producer_status: parse last token of observation_id when P or F; else none
+  never_serve_bare_float: true
+
+charts:
+  all-india-sectors-inflation-latest: ./charts/all-india-sectors-inflation-latest.vl.json
+  cfpi-beside-division-01: ./charts/cfpi-beside-division-01.vl.json
+  state-ut-combined-inflation-latest: ./charts/state-ut-combined-inflation-latest.vl.json
+  all-india-linked-index-break: ./charts/all-india-linked-index-break.vl.json
+  all-india-linked-inflation-holes: ./charts/all-india-linked-inflation-holes.vl.json
+  all-india-division-inflation-latest: ./charts/all-india-division-inflation-latest.vl.json
+
+slots:
+
+  # --- First screen: All India General inflation, latest Provisional ---
+  - slot_id: all-india-combined-general-inflation-latest-p
+    kind: observation
+    required: true
+    citation_id: cite-c1-cpi-general-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-general-base-2024
+    selector:
+      series_id: cpi-general-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Combined
+      reference_period: "2026-08"
+      unit: inflation (%)
+      status: value
+
+  - slot_id: all-india-rural-general-inflation-latest-p
+    kind: observation
+    required: true
+    citation_id: cite-c1-cpi-general-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-general-base-2024
+    selector:
+      series_id: cpi-general-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Rural
+      reference_period: "2026-08"
+      unit: inflation (%)
+      status: value
+
+  - slot_id: all-india-urban-general-inflation-latest-p
+    kind: observation
+    required: true
+    citation_id: cite-c1-cpi-general-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-general-base-2024
+    selector:
+      series_id: cpi-general-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Urban
+      reference_period: "2026-08"
+      unit: inflation (%)
+      status: value
+
+  - slot_id: all-india-combined-general-index-latest-p
+    kind: observation
+    required: true
+    citation_id: cite-c1-cpi-general-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-general-base-2024
+    selector:
+      series_id: cpi-general-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Combined
+      reference_period: "2026-08"
+      unit: index (Base 2024=100)
+      status: value
+
+  # --- Food CFPI, latest Provisional ---
+  - slot_id: all-india-combined-cfpi-inflation-latest-p
+    kind: observation
+    required: true
+    citation_id: cite-c1-cpi-cfpi-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-cfpi-base-2024
+    selector:
+      series_id: cpi-cfpi-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Combined
+      reference_period: "2026-08"
+      unit: inflation (%)
+      status: value
+
+  - slot_id: all-india-rural-cfpi-inflation-latest-p
+    kind: observation
+    required: true
+    citation_id: cite-c1-cpi-cfpi-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-cfpi-base-2024
+    selector:
+      series_id: cpi-cfpi-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Rural
+      reference_period: "2026-08"
+      unit: inflation (%)
+      status: value
+
+  - slot_id: all-india-urban-cfpi-inflation-latest-p
+    kind: observation
+    required: true
+    citation_id: cite-c1-cpi-cfpi-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-cfpi-base-2024
+    selector:
+      series_id: cpi-cfpi-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Urban
+      reference_period: "2026-08"
+      unit: inflation (%)
+      status: value
+
+  # Division 01 is not food. Bind beside CFPI, do not relabel.
+  - slot_id: all-india-combined-div01-inflation-latest-p
+    kind: observation
+    required: true
+    citation_id: cite-c1-cpi-division-group-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-division-group-base-2024
+    selector:
+      series_id: cpi-division-group-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Combined
+      reference_period: "2026-08"
+      unit: inflation (%); Division code 01
+      status: value
+
+  # --- Same book, Final (do not blend with Provisional) ---
+  - slot_id: all-india-combined-general-inflation-latest-f
+    kind: observation
+    required: true
+    citation_id: cite-c1-cpi-general-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-general-base-2024
+    selector:
+      series_id: cpi-general-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Combined
+      reference_period: "2026-07"
+      unit: inflation (%)
+      status: value
+
+  - slot_id: all-india-combined-cfpi-inflation-latest-f
+    kind: observation
+    required: true
+    citation_id: cite-c1-cpi-cfpi-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-cfpi-base-2024
+    selector:
+      series_id: cpi-cfpi-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Combined
+      reference_period: "2026-07"
+      unit: inflation (%)
+      status: value
+
+  # No row in this vintage. Render as not published. Do not chart as zero.
+  - slot_id: chandigarh-rural-general-inflation-latest-p
+    kind: observation
+    required: false
+    on_miss: not_published
+    miss_copy: not published (no rural market in Chandigarh)
+    citation_id: cite-c1-cpi-general-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-general-base-2024
+    selector:
+      series_id: cpi-general-base-2024
+      geography_code: "04"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Rural
+      reference_period: "2026-08"
+      unit: inflation (%)
+      status: value
+
+  # --- Chart collections ---
+  - slot_id: chart-all-india-sectors-inflation-latest-p
+    kind: collection
+    chart: all-india-sectors-inflation-latest
+    citation_id: cite-c1-cpi-general-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-general-base-2024
+    selector:
+      series_id: cpi-general-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: [Rural, Urban, Combined]
+      reference_period: "2026-08"
+      unit: inflation (%)
+      status: value
+    sort:
+      field: sector
+      order: [Rural, Urban, Combined]
+      never: measure
+
+  - slot_id: chart-cfpi-beside-division-01
+    kind: collection
+    chart: cfpi-beside-division-01
+    members:
+      - slot_id: all-india-combined-cfpi-inflation-latest-p
+        label: CFPI / Group 01.1 Food
+      - slot_id: all-india-combined-div01-inflation-latest-p
+        label: Division 01 Food and beverages
+    sort:
+      field: label
+      order: [CFPI / Group 01.1 Food, Division 01 Food and beverages]
+      never: measure
+
+  - slot_id: chart-state-ut-combined-inflation-latest-p
+    kind: collection
+    chart: state-ut-combined-inflation-latest
+    citation_id: cite-c1-cpi-general-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-general-base-2024
+    selector:
+      series_id: cpi-general-base-2024
+      geography_codes: state_ut_order
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Combined
+      reference_period: "2026-08"
+      unit: inflation (%)
+      status: [value, unknown]
+    exclude_geography_codes: ["00"]
+    on_unknown: hole_not_zero
+    sort:
+      field: geography_name_en
+      order: ascending
+      never: measure
+    join:
+      geography_name_en: official English State Name as published
+
+  - slot_id: chart-linked-index-all-india
+    kind: collection
+    chart: all-india-linked-index-break
+    layer: linked_back_series
+    citation_id: cite-c1-cpi-back-series-linked-base-2024
+    caveat_id: caveat-c1-cpi-back-series-linked-base-2024
+    selector:
+      series_id: cpi-back-series-linked-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Combined
+      reference_period:
+        from: "2013-01"
+        to: "2024-12"
+      unit: index (Base 2024=100)
+      status: value
+    do_not:
+      - join Frame A State/UT rows
+      - connect this layer to chart-compiled-index-all-india
+
+  - slot_id: chart-compiled-index-all-india
+    kind: collection
+    chart: all-india-linked-index-break
+    layer: independently_compiled
+    citation_id: cite-c1-cpi-general-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-general-base-2024
+    selector:
+      series_id: cpi-general-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Combined
+      reference_period: ["2026-07", "2026-08"]
+      unit: index (Base 2024=100)
+      status: value
+    mark: point
+    do_not:
+      - draw a line from 2024-12 to 2026-07
+      - treat these points as linked back-cast
+
+  - slot_id: chart-linked-inflation-all-india
+    kind: collection
+    chart: all-india-linked-inflation-holes
+    citation_id: cite-c1-cpi-back-series-linked-base-2024
+    caveat_id: caveat-c1-cpi-back-series-linked-base-2024
+    selector:
+      series_id: cpi-back-series-linked-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Combined
+      reference_period:
+        from: "2013-01"
+        to: "2024-12"
+      unit: inflation (%)
+      status: [value, unknown]
+    plot:
+      value: only when status is value
+      unknown: gap / not published, never y=0
+    do_not:
+      - attach Card 1 2026 inflation to this line
+      - chart 2013 unknown as zero
+
+  - slot_id: chart-division-inflation-latest-p
+    kind: collection
+    chart: all-india-division-inflation-latest
+    citation_id: cite-c1-cpi-division-group-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-division-group-base-2024
+    selector:
+      series_id: cpi-division-group-base-2024
+      geography_code: "00"
+      geography_vintage: "2024"
+      code_system: producer-specific
+      sector: Combined
+      reference_period: "2026-08"
+      unit_prefix: "inflation (%); Division code "
+      units:
+        - inflation (%); Division code 01
+        - inflation (%); Division code 02
+        - inflation (%); Division code 03
+        - inflation (%); Division code 04
+        - inflation (%); Division code 05
+        - inflation (%); Division code 06
+        - inflation (%); Division code 07
+        - inflation (%); Division code 08
+        - inflation (%); Division code 09
+        - inflation (%); Division code 10
+        - inflation (%); Division code 11
+        - inflation (%); Division code 13
+      status: [value, unknown]
+    labels: division_order
+    join:
+      division_name: map unit suffix after 'Division code ' to division_order.name
+    sort:
+      field: division_code
+      order: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "13"]
+      never: measure
+    do_not:
+      - label Division 01 as food
+      - invent Division code 12
+      - include Group rows on this chart (food is CFPI / 01.1, shown separately)
+
+  # Caveat fields — copy, not observation numerals.
+  - slot_id: caveat-general-population
+    kind: caveat_field
+    caveat_id: caveat-c1-cpi-general-base-2024
+    field: population
+
+  - slot_id: caveat-general-do-not
+    kind: caveat_field
+    caveat_id: caveat-c1-cpi-general-base-2024
+    field: do_not
+
+do_not:
+  - type an observation numeral into template.md or a Vega-Lite values[] of CPI
+  - average Rural and Urban
+  - present All India as the whole country
+  - sort State/UT axis by inflation or index
+  - use red–green diverging colour as good/bad
+  - rank states, cities, or items
+  - overlay petrol / diesel / LPG pump prices
+  - chart blank inflation as zero
+  - stitch linked back series to compiled General as one line
+  - join Card 4 to Frame A State/UT rows
+  - label Division 01 as food
+  - blend Provisional and Final
+  - borrow 14 September 2026 as Card 4 release date
+  - forecast, cheap/expensive, city rankings, districts

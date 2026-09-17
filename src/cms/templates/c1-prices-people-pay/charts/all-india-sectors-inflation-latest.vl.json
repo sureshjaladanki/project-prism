@@ -1,0 +1,58 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "All India CPI General year-on-year inflation (%), Rural / Urban / Combined, latest Provisional. Combined is published, not a merge. Sector order is documented, not sorted by the measure.",
+  "title": {
+    "text": "All India CPI (General) year-on-year inflation (%)",
+    "subtitle": "Rural, Urban and Combined as published. Combined is not a merge of Rural and Urban. Colour is categorical, not good/bad."
+  },
+  "usermeta": {
+    "slot_id": "chart-all-india-sectors-inflation-latest-p",
+    "cite_in_same_view": true,
+    "forbidden": ["sort_by_measure", "red_green_diverging", "homemade_combined"]
+  },
+  "width": 640,
+  "height": 280,
+  "data": { "name": "slot:chart-all-india-sectors-inflation-latest-p" },
+  "transform": [
+    {
+      "calculate": "datum.status === 'value' ? datum.value : null",
+      "as": "plotValue"
+    }
+  ],
+  "mark": { "type": "bar", "invalid": "break-paths" },
+  "encoding": {
+    "x": {
+      "field": "sector",
+      "type": "nominal",
+      "title": "Sector (published)",
+      "sort": ["Rural", "Urban", "Combined"],
+      "axis": { "labelAngle": 0 }
+    },
+    "y": {
+      "field": "plotValue",
+      "type": "quantitative",
+      "title": "Year-on-year inflation (%)",
+      "scale": { "zero": true }
+    },
+    "color": {
+      "field": "sector",
+      "type": "nominal",
+      "scale": {
+        "domain": ["Rural", "Urban", "Combined"],
+        "range": ["#1f4e79", "#7a542e", "#5c5c5c"]
+      },
+      "legend": { "title": "Sector" }
+    },
+    "tooltip": [
+      { "field": "sector", "type": "nominal" },
+      { "field": "plotValue", "type": "quantitative", "title": "inflation (%)" },
+      { "field": "reference_period", "type": "nominal" },
+      { "field": "status", "type": "nominal" },
+      { "field": "series_id", "type": "nominal" }
+    ]
+  },
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
+}

@@ -1,0 +1,64 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "All India Combined linked CPI General year-on-year inflation (%). Status unknown (2013, and any blank cell) is a hole — not zero. Do not attach compiled 2026 inflation to this line.",
+  "title": {
+    "text": "All India Combined linked CPI (General) year-on-year inflation (%)",
+    "subtitle": "Linked back series only, Combined, through December 2024. 2013 inflation is not published on this file (hole, not zero). First filled months begin January 2014. Independently compiled inflation is on the first screen, not joined here. Dashed rule: compiled series starts January 2025. Release date is not printed on this file."
+  },
+  "usermeta": {
+    "slot_id": "chart-linked-inflation-all-india",
+    "cite_in_same_view": true,
+    "sector": "Combined",
+    "forbidden": ["blank_as_zero", "stitch_to_card_1", "red_green_diverging", "borrow_press_date"]
+  },
+  "width": 560,
+  "height": 240,
+  "layer": [
+    {
+      "data": { "values": [{ "at": "2025-01" }] },
+      "mark": { "type": "rule", "strokeDash": [4, 4], "color": "#333333", "strokeWidth": 1.5 },
+      "encoding": {
+        "x": { "field": "at", "type": "temporal", "timeUnit": "yearmonth" }
+      }
+    },
+    {
+      "data": { "name": "slot:chart-linked-inflation-all-india" },
+      "transform": [
+        {
+          "calculate": "datum.status === 'value' ? datum.value : null",
+          "as": "plotValue"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "color": "#1f4e79",
+        "point": true,
+        "invalid": "break-paths"
+      },
+      "encoding": {
+        "x": {
+          "field": "reference_period",
+          "type": "temporal",
+          "timeUnit": "yearmonth",
+          "title": "Reference month"
+        },
+        "y": {
+          "field": "plotValue",
+          "type": "quantitative",
+          "title": "Year-on-year inflation (%)",
+          "scale": { "zero": true }
+        },
+        "tooltip": [
+          { "field": "reference_period", "type": "nominal" },
+          { "field": "plotValue", "type": "quantitative", "title": "inflation (%)" },
+          { "field": "status", "type": "nominal" },
+          { "field": "sector", "type": "nominal" }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
+}

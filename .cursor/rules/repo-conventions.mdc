@@ -1,0 +1,24 @@
+---
+description: Repository layout — where code, tests, docs, data, and logs belong
+alwaysApply: true
+---
+
+# Repo conventions
+
+Follow `docs/repo-conventions.md`. Code style is `docs/coding-conventions.md`.
+
+## Layout
+
+- `src/prism/` — Python (schema, ingest, pipeline, pointers, publish)
+- `src/cms/` — Astro citizen site (`package.json` lives here)
+- `tests/` — tests
+- `docs/` — verdicts, charters, conventions; kebab-case filenames
+- `docs/personas/` — agent personas (see `docs/team.md`)
+- `data/` — downloaded / generated data (gitignored except `.gitkeep`)
+- `logs/` — experiment output (gitignored except `.gitkeep`)
+
+New docs go under `docs/` with kebab-case names. STOP memos and closed-programme summaries belong in `docs/archive/`; active next work in `docs/next/`.
+
+Do not invent extra top-level folders (`apps/`, `packages/`, `web/`). Citizen pages are generated from templates plus a data vintage — not a source of truth in a new top-level folder.
+
+Tooling is locked in `docs/repo-conventions.md`: one repo; Python under `src/prism/`; Astro SSG under `src/cms/`; `pyproject.toml` at root. Do not add Next.js, ISR, or a request-time producer fetch.

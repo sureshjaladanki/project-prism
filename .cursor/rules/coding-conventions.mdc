@@ -1,0 +1,24 @@
+---
+description: Code style — functional workflows, typed contracts, language naming
+alwaysApply: true
+---
+
+# Coding conventions
+
+Follow `docs/coding-conventions.md`. Layout, languages, and tooling stay in `docs/repo-conventions.md`.
+
+One repo: Python `src/prism/`, TypeScript `src/cms/`, tests `tests/`. DuckDB SQL at render, reading one vintage.
+
+## Style
+
+- Immutable workflows (ingest, vintage, render, publish) prefer functional style: inputs in, new artifacts out. Do not mutate a caller’s object, a written vintage, or a live citizen path.
+- Contracts and instances (Pydantic models, generated TypeScript types) prefer objects, not loose dicts.
+- Fail fast at typed boundaries. Do not add speculative null / `None` / `undefined` checks. Do not over-engineer.
+
+## Names
+
+Follow the language of the file. Use the blueprint’s vocabulary (observation, citation, caveat, series, vintage, geography, template, render, publish, pointer) — not leftover trading terms.
+
+- Python: `snake_case` modules, functions, variables; `PascalCase` classes; `SCREAMING_SNAKE_CASE` constants.
+- TypeScript: `camelCase` functions and variables; `PascalCase` components and types; kebab-case other modules. Keep generated schema field names (`series_id`, not camelCased by hand).
+- SQL: identifiers match the vintage schema. Query exactly one `vintage_id`.

@@ -1,0 +1,520 @@
+"""Nine blueprint tests. 4–8 need a real Astro render of C1."""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import re
+from datetime import UTC, date, datetime
+from pathlib import Path
+
+import pytest
+from pydantic import ValidationError
+
+from prism.paths import (
+    cas_path,
+    citizen_pointer_path,
+    preview_pointer_path,
+    render_complete_path,
+    render_dir,
+    series_dir,
+)
+from prism.pointer_store import (
+    PublishError,
+    publish_citizen,
+    read_citizen_pointer,
+    read_preview_pointer,
+)
+from prism.refresh import (
+    C1_SERIES_IDS,
+    CARDS_1_3_NEXT_RELEASE,
+    SERIES_CPI_BACK_SERIES_LINKED_BASE_2024,
+    SERIES_CPI_CFPI_BASE_2024,
+    SERIES_CPI_DIVISION_GROUP_BASE_2024,
+    SERIES_CPI_GENERAL_BASE_2024,
+    scheduled_series_on,
+)
+from prism.render import RenderIncompleteError, _mark_complete
+from prism.schema import (
+    Completeness,
+    GeographyRef,
+    Observation,
+    ObservationStatus,
+    RefreshTrigger,
+    ServedObservation,
+)
+from prism.serving import (
+    ServeError,
+    bind_observation,
+    chart_payload,
+    citizen_may_read,
+    preview_response_headers,
+    resolve_citizen_render,
+    resolve_preview_render,
+)
+from prism.template_bind import (
+    RenderError,
+    assert_cite_views_complete,
+    bind_c1_page,
+    wrap_cite_views,
+)
+from prism.vega_lite_gates import (
+    ChartSpecError,
+    assert_chart_rows_cited,
+    assert_generated_spec,
+)
+from prism.vintage_store import write_vintage
+from tests.factories import (
+    CREATED_AT,
+    make_caveat,
+    make_citation,
+    make_geography_ref,
+    make_observation,
+    make_selector,
+    make_series_write,
+)
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DATA_ROOT = REPO_ROOT / "data"
+CMS_ROOT = REPO_ROOT / "src" / "cms"
+C1_VINTAGE_ID = "dv-20260916-234e263c8588"
+
+
+def _c1_render_dir() -> Path:
+    dest = render_dir(DATA_ROOT, C1_VINTAGE_ID)
+    if not render_complete_path(DATA_ROOT, C1_VINTAGE_ID).exists() or not (dest / "index.html").exists():
+        pytest.fail("C1 Astro render is not complete")
+    return dest
+
+
+def test_01_observation_without_citation_id_cannot_be_written() -> None:
+    payload = make_observation().model_dump()
+    del payload["citation_id"]
+    with pytest.raises(ValidationError):
+        Observation.model_validate(payload)
+    with pytest.raises(ValidationError):
+        make_observation(citation_id="")
+
+
+def test_02_observation_without_caveat_id_cannot_be_written() -> None:
+    payload = make_observation().model_dump()
+    del payload["caveat_id"]
+    with pytest.raises(ValidationError):
+        Observation.model_validate(payload)
+    with pytest.raises(ValidationError):
+        make_observation(caveat_id="")
+
+
+def test_03_geography_without_vintage_cannot_be_written() -> None:
+    payload = make_geography_ref().model_dump()
+    del payload["geography_vintage"]
+    with pytest.raises(ValidationError):
+        GeographyRef.model_validate(payload)
+    with pytest.raises(ValidationError):
+        make_geography_ref(geography_vintage="")
+
+
+@pytest.mark.cms_render
+def test_04_publish_does_not_move_citizen_pointer_if_required_template_failed(
+    tmp_path: Path,
+) -> None:
+    series = make_series_write(SERIES_CPI_GENERAL_BASE_2024, b"PARQUET-A")
+    first = write_vintage(
+        tmp_path,
+        created_at=CREATED_AT,
+        trigger=RefreshTrigger.on_demand,
+        series=(series,),
+        completeness=Completeness.complete,
+        previous=None,
+        required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
+    )
+    render_dir(tmp_path, first.vintage_id).mkdir(parents=True)
+    render_complete_path(tmp_path, first.vintage_id).write_text("ok\n", encoding="utf-8")
+    publish_citizen(
+        tmp_path,
+        first.vintage_id,
+        render_complete=True,
+        contract_tests_passed=True,
+    )
+    later = datetime(2026, 9, 16, 10, 0, tzinfo=UTC)
+    second = write_vintage(
+        tmp_path,
+        created_at=later,
+        trigger=RefreshTrigger.source_change,
+        series=(make_series_write(SERIES_CPI_GENERAL_BASE_2024, b"PARQUET-B"),),
+        completeness=Completeness.complete,
+        previous=first,
+        required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
+    )
+    dest = render_dir(tmp_path, second.vintage_id)
+    dest.mkdir(parents=True)
+    with pytest.raises(RenderIncompleteError, match="required template failed"):
+        _mark_complete(dest)
+    assert not render_complete_path(tmp_path, second.vintage_id).exists()
+    with pytest.raises(PublishError, match="render is not complete"):
+        publish_citizen(
+            tmp_path,
+            second.vintage_id,
+            render_complete=True,
+            contract_tests_passed=True,
+        )
+    assert read_citizen_pointer(tmp_path) == first.vintage_id
+    c1 = _c1_render_dir()
+    assert (c1 / "index.html").exists()
+    assert render_complete_path(DATA_ROOT, C1_VINTAGE_ID).exists()
+
+
+@pytest.mark.cms_render
+def test_05_citizen_route_cannot_read_non_published_vintage() -> None:
+    assert read_citizen_pointer(DATA_ROOT) is None
+    assert not citizen_pointer_path(DATA_ROOT).exists()
+    assert citizen_may_read(DATA_ROOT, C1_VINTAGE_ID) is False
+    with pytest.raises(ServeError, match="non-published vintage"):
+        resolve_citizen_render(DATA_ROOT)
+    headers = preview_response_headers()
+    assert "noindex" in headers["X-Robots-Tag"]
+    assert "private" in headers["Cache-Control"]
+    preview = read_preview_pointer(DATA_ROOT)
+    if preview is None:
+        with pytest.raises(ServeError, match="no preview pointer"):
+            resolve_preview_render(DATA_ROOT)
+    else:
+        preview_root = resolve_preview_render(DATA_ROOT)
+        assert preview_root == render_dir(DATA_ROOT, preview)
+        assert not citizen_pointer_path(DATA_ROOT).exists() or not citizen_pointer_path(
+            DATA_ROOT
+        ).samefile(preview_pointer_path(DATA_ROOT))
+
+
+@pytest.mark.cms_render
+def test_06_one_citizen_page_cannot_bind_slots_from_two_vintages() -> None:
+    page = bind_c1_page(DATA_ROOT, C1_VINTAGE_ID, CMS_ROOT)
+    assert page.vintage_id == C1_VINTAGE_ID
+    html = (_c1_render_dir() / "index.html").read_text(encoding="utf-8")
+    ids = set(re.findall(r'data-vintage-id="([^"]+)"', html))
+    assert ids == {C1_VINTAGE_ID}
+    with pytest.raises(RenderError, match="refusing to mix vintage"):
+        bind_c1_page(DATA_ROOT, "dv-19990101-aaaaaaaaaaaa", CMS_ROOT)
+
+
+@pytest.mark.cms_render
+def test_07_chart_payload_cannot_include_number_without_citation_card() -> None:
+    with pytest.raises(ValidationError):
+        ServedObservation(
+            observation=make_observation(),
+            citation=make_citation(citation_id="cite-other"),
+            caveat=make_caveat(),
+        )
+    with pytest.raises(ChartSpecError, match="citation"):
+        assert_chart_rows_cited([{"value": 1.2, "observation_id": "obs-x"}])
+    charts_dir = _c1_render_dir() / "charts"
+    specs = list(charts_dir.glob("*.vl.json"))
+    assert specs, "generated Vega-Lite JSON missing from the C1 render tree"
+    for path in specs:
+        spec = json.loads(path.read_text(encoding="utf-8"))
+        assert_generated_spec(spec)
+
+
+@pytest.mark.cms_render
+def test_08_default_state_order_is_not_rank_or_red_green() -> None:
+    charts_dir = _c1_render_dir() / "charts"
+    state_spec = json.loads(
+        (charts_dir / "state-ut-combined-inflation-latest.vl.json").read_text(encoding="utf-8")
+    )
+    encoding = state_spec["encoding"]
+    sort = encoding["y"]["sort"]
+    assert encoding["y"]["field"] == "geography_name_en"
+    assert sort["field"] == "geography_name_en"
+    assert sort["order"] == "ascending"
+    assert sort["field"] not in {"plotValue", "value"}
+    values = state_spec["data"]["values"]
+    names = [row["geography_name_en"] for row in values]
+    assert names == sorted(names)
+    assert "All India" not in names
+    for path in charts_dir.glob("*.vl.json"):
+        assert_generated_spec(json.loads(path.read_text(encoding="utf-8")))
+
+
+@pytest.mark.cms_render
+def test_chart_svg_title_does_not_crush_the_plot() -> None:
+    html = (_c1_render_dir() / "index.html").read_text(encoding="utf-8")
+    svgs = re.findall(r"<figure class=\"chart\"[^>]*>\s*<svg([^>]+)>", html)
+    assert len(svgs) >= 6
+    for attrs in svgs:
+        width = float(re.search(r'\bwidth="([0-9.]+)"', attrs).group(1))
+        height = float(re.search(r'\bheight="([0-9.]+)"', attrs).group(1))
+        assert width <= 960, attrs
+        assert height >= 220, attrs
+        assert width / height < 4, attrs
+
+
+def _bound_observation_html(slot_id: str, value: str) -> str:
+    return (
+        f'<span class="observation" data-slot-id="{slot_id}" '
+        'data-observation-id="obs-x" data-vintage-id="dv-test">'
+        f'<span class="observation-value">{value}</span></span>'
+    )
+
+
+def test_named_cite_view_omitting_cards_fails_closed() -> None:
+    wrapped = wrap_cite_views(
+        "<h2>Provisional and Final</h2>"
+        "<!-- cite-view: provisional-and-final. Fail the render if any required card is missing. -->"
+        + _bound_observation_html("all-india-combined-general-inflation-latest-f", "4.45")
+    )
+    with pytest.raises(RenderError, match="provisional-and-final"):
+        assert_cite_views_complete(wrapped)
+
+
+def test_any_cite_view_omitting_cards_fails_closed() -> None:
+    named = wrap_cite_views(
+        "<h2>How this is measured</h2>"
+        "<!-- cite-view: how-this-is-measured. Fail the render if any required card is missing. -->"
+        + _bound_observation_html("all-india-combined-general-index-latest-p", "108.74")
+    )
+    with pytest.raises(RenderError, match="how-this-is-measured"):
+        assert_cite_views_complete(named)
+
+    unnamed = wrap_cite_views(
+        "<h2>How this is measured</h2>"
+        + _bound_observation_html("all-india-combined-general-index-latest-p", "108.74")
+    )
+    assert "data-cite-view=" not in unnamed
+    with pytest.raises(RenderError, match="unnamed"):
+        assert_cite_views_complete(unnamed)
+
+    zero_cards = (
+        '<section class="cite-view">'
+        + _bound_observation_html("all-india-combined-general-index-latest-p", "108.74")
+        + "</section>"
+    )
+    with pytest.raises(RenderError, match="unnamed"):
+        assert_cite_views_complete(zero_cards)
+
+
+@pytest.mark.cms_render
+def test_cite_in_same_view_as_the_number() -> None:
+    html = (_c1_render_dir() / "index.html").read_text(encoding="utf-8")
+    assert_cite_views_complete(html)
+    first = _named_cite_view(html, "first-screen")
+    assert re.search(r'class="observation-value">[^<]+<', first)
+    assert "National Statistics Office" in first
+    assert "Consumer Price Index (CPI) General" in first
+    assert "2026-08" in first or "August 2026" in first
+    assert "14 September 2026" in first
+    assert "Geography vintage" in first
+    assert "2024" in first
+    assert "Data vintage" in first
+    assert C1_VINTAGE_ID in first
+    assert "Caveat" in first
+    assert "tooltip" not in first.lower() or "National Statistics Office" in first
+    final_view = _named_cite_view(html, "provisional-and-final")
+    assert 'data-slot-id="all-india-combined-general-inflation-latest-f"' in final_view
+    assert 'data-slot-id="all-india-combined-cfpi-inflation-latest-f"' in final_view
+    assert re.search(r'class="observation-value">4\.45<', final_view)
+    assert re.search(r'class="observation-value">5\.52<', final_view)
+    assert "National Statistics Office" in final_view
+    assert "Consumer Price Index (CPI) General" in final_view
+    assert "Consumer Food Price Index (CFPI)" in final_view
+    assert "14 September 2026" in final_view
+    assert "Geography vintage" in final_view
+    assert "2024" in final_view
+    assert C1_VINTAGE_ID in final_view
+    assert 'class="citation-card' in final_view
+    assert 'class="caveat-note' in final_view
+    assert "tooltip" not in final_view.lower() or "National Statistics Office" in final_view
+    cards = re.findall(
+        r'<details class="citation-card[^"]*">(.*?)</details>', final_view, flags=re.DOTALL
+    )
+    assert cards
+    for card in cards:
+        assert "<dt>Reference period</dt><dd>2026-07</dd>" in card
+        assert "Latest month is Provisional" not in card
+    measured = _named_cite_view(html, "how-this-is-measured")
+    assert 'data-slot-id="all-india-combined-general-index-latest-p"' in measured
+    assert re.search(r'class="observation-value">108\.74<', measured)
+    assert "National Statistics Office" in measured
+    assert "Consumer Price Index (CPI) General" in measured
+    assert "14 September 2026" in measured
+    assert "Geography vintage" in measured
+    assert C1_VINTAGE_ID in measured
+    assert 'class="citation-card' in measured
+    assert 'class="caveat-note' in measured
+    assert "tooltip" not in measured.lower() or "National Statistics Office" in measured
+
+
+def test_july_final_cite_binds_observation_month() -> None:
+    page = bind_c1_page(DATA_ROOT, C1_VINTAGE_ID, CMS_ROOT)
+    final_view = _named_cite_view(page.body_html, "provisional-and-final")
+    assert 'data-slot-id="all-india-combined-general-inflation-latest-f"' in final_view
+    assert 'data-slot-id="all-india-combined-cfpi-inflation-latest-f"' in final_view
+    cards = re.findall(
+        r'<details class="citation-card[^"]*">(.*?)</details>', final_view, flags=re.DOTALL
+    )
+    assert len(cards) >= 2
+    for card in cards:
+        assert "<dt>Reference period</dt><dd>2026-07</dd>" in card
+        assert "<dt>Reference period</dt><dd>2026-08</dd>" not in card
+        assert "Latest month is Provisional" not in card
+    assert "class=\"stat-row\"" in page.body_html
+    assert "class=\"hero\"" in page.body_html
+
+
+def test_wrap_cite_views_covers_preamble_numbers() -> None:
+    wrapped = wrap_cite_views(
+        "<!-- cite-view: first-screen -->"
+        + _bound_observation_html("all-india-combined-general-inflation-latest-p", "4.82")
+        + "<h2>Food, same month</h2><p>No number here.</p>"
+    )
+    first = _named_cite_view(wrapped, "first-screen")
+    assert 'data-slot-id="all-india-combined-general-inflation-latest-p"' in first
+    with pytest.raises(RenderError, match="first-screen"):
+        assert_cite_views_complete(wrapped)
+
+
+def test_division_axis_uses_full_annex_names() -> None:
+    page = bind_c1_page(DATA_ROOT, C1_VINTAGE_ID, CMS_ROOT)
+    spec = page.charts["all-india-division-inflation-latest"]
+    names = [row["division_name"] for row in spec["data"]["values"]]
+    sort_order = spec["encoding"]["y"]["sort"]
+    assert names == sort_order
+    assert "Paan, tobacco and intoxicants" in names
+    assert "Paan" not in names
+
+
+def _named_cite_view(html: str, name: str) -> str:
+    match = re.search(
+        rf'<section class="cite-view(?:\s[^"]*)?" data-cite-view="{re.escape(name)}">',
+        html,
+    )
+    assert match is not None, f"missing cite-view {name}"
+    rest = html[match.end() :]
+    next_view = rest.find('<section class="cite-view"')
+    if next_view == -1:
+        return rest
+    return rest[:next_view]
+
+
+def test_09_unchanged_series_are_not_byte_copied(tmp_path: Path) -> None:
+    first = make_series_write(SERIES_CPI_GENERAL_BASE_2024, b"PARQUET-V1")
+    manifest_a = write_vintage(
+        tmp_path,
+        created_at=CREATED_AT,
+        trigger=RefreshTrigger.on_demand,
+        series=(first,),
+        completeness=Completeness.complete,
+        previous=None,
+        required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
+    )
+    later = datetime(2026, 9, 16, 9, 0, tzinfo=UTC)
+    second = make_series_write(SERIES_CPI_GENERAL_BASE_2024, b"PARQUET-V1")
+    manifest_b = write_vintage(
+        tmp_path,
+        created_at=later,
+        trigger=RefreshTrigger.on_demand,
+        series=(second,),
+        completeness=Completeness.complete,
+        previous=manifest_a,
+        required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
+    )
+    assert manifest_b.series[0].reused.value == "yes"
+    assert manifest_a.vintage_id != manifest_b.vintage_id
+    path_a = series_dir(tmp_path, manifest_a.vintage_id, SERIES_CPI_GENERAL_BASE_2024) / "observations.parquet"
+    path_b = series_dir(tmp_path, manifest_b.vintage_id, SERIES_CPI_GENERAL_BASE_2024) / "observations.parquet"
+    digest = hashlib.sha256(b"PARQUET-V1").hexdigest()
+    cas = cas_path(tmp_path, digest)
+    assert path_a.exists()
+    assert os.path.samefile(path_a, cas)
+    assert os.path.samefile(path_b, cas)
+    assert os.stat(cas).st_nlink >= 3
+
+
+@pytest.mark.cms_render
+@pytest.mark.skip(reason="Unchanged pages need a real C1 render tree (CMS Engineer)")
+def test_09b_unchanged_pages_are_not_byte_copied() -> None:
+    raise NotImplementedError
+
+
+def test_served_observation_always_carries_citation() -> None:
+    observation = make_observation()
+    citation = make_citation()
+    caveat = make_caveat()
+    served = bind_observation(observation, citation, caveat, make_selector())
+    payload = chart_payload(served)
+    assert "citation" in payload
+    assert payload["citation"]["citation_id"] == citation.citation_id
+    assert payload["value"] == observation.value
+    with pytest.raises(ValidationError):
+        ServedObservation(observation=observation, citation=make_citation(citation_id="cite-other"), caveat=caveat)
+
+
+def test_c1_series_ids_map_to_four_cards() -> None:
+    assert C1_SERIES_IDS == (
+        SERIES_CPI_GENERAL_BASE_2024,
+        SERIES_CPI_CFPI_BASE_2024,
+        SERIES_CPI_DIVISION_GROUP_BASE_2024,
+        SERIES_CPI_BACK_SERIES_LINKED_BASE_2024,
+    )
+    scheduled = scheduled_series_on(CARDS_1_3_NEXT_RELEASE)
+    assert [binding.card for binding in scheduled] == [1, 2, 3]
+    assert scheduled_series_on(date(2026, 10, 13)) == ()
+
+
+def test_publish_keeps_previous_citizen_when_render_incomplete(tmp_path: Path) -> None:
+    series = make_series_write(SERIES_CPI_GENERAL_BASE_2024, b"PARQUET-A")
+    first = write_vintage(
+        tmp_path,
+        created_at=CREATED_AT,
+        trigger=RefreshTrigger.on_demand,
+        series=(series,),
+        completeness=Completeness.complete,
+        previous=None,
+        required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
+    )
+    render_dir(tmp_path, first.vintage_id).mkdir(parents=True)
+    render_complete_path(tmp_path, first.vintage_id).write_text("ok\n", encoding="utf-8")
+    publish_citizen(
+        tmp_path,
+        first.vintage_id,
+        render_complete=True,
+        contract_tests_passed=True,
+    )
+    later = datetime(2026, 9, 16, 10, 0, tzinfo=UTC)
+    second = write_vintage(
+        tmp_path,
+        created_at=later,
+        trigger=RefreshTrigger.source_change,
+        series=(make_series_write(SERIES_CPI_GENERAL_BASE_2024, b"PARQUET-B"),),
+        completeness=Completeness.complete,
+        previous=first,
+        required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
+    )
+    with pytest.raises(PublishError, match="render is not complete"):
+        publish_citizen(
+            tmp_path,
+            second.vintage_id,
+            render_complete=False,
+            contract_tests_passed=True,
+        )
+    assert read_citizen_pointer(tmp_path) == first.vintage_id
+
+
+def test_status_value_cannot_treat_blank_as_zero() -> None:
+    with pytest.raises(ValidationError):
+        make_observation(value=None, status=ObservationStatus.value)
+    hole = make_observation(value=None, status=ObservationStatus.unknown, unit="inflation (%)")
+    assert hole.value is None
+
+
+def test_observation_rejects_invented_fields() -> None:
+    payload = make_observation().model_dump()
+    payload["nickname"] = "cpi"
+    with pytest.raises(ValidationError):
+        Observation.model_validate(payload)
+
+
+def test_default_state_order_is_alphabetical_not_rank() -> None:
+    from prism.serving import DEFAULT_STATE_ORDER
+
+    assert DEFAULT_STATE_ORDER == "alphabetical_official_english_name"

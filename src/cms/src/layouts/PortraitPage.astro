@@ -1,0 +1,181 @@
+---
+interface Props {
+  templateId: string;
+  vintageId: string;
+}
+
+const { templateId, vintageId } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-template-id={templateId} data-vintage-id={vintageId}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How fast are retail prices rising in India, including food?</title>
+    <style is:global>
+      :root {
+        --ink: #1a1a1a;
+        --muted: #4a4a4a;
+        --paper: #f7f5f0;
+        --card: #fff;
+        --rule: #d4d0c8;
+        --edge: #8b1e4a;
+        color: var(--ink);
+        background: var(--paper);
+        font-family: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+        line-height: 1.5;
+      }
+      body {
+        margin: 0;
+        padding: 1.5rem 1.25rem 3rem;
+      }
+      article.portrait {
+        max-width: 46rem;
+        margin: 0 auto;
+      }
+      h1,
+      h2,
+      h3,
+      .sleeve,
+      .stat-label,
+      .byline,
+      summary {
+        font-family: "Source Sans 3", "Segoe UI", sans-serif;
+      }
+      h1,
+      h2,
+      h3 {
+        font-weight: 650;
+        line-height: 1.25;
+      }
+      h1 {
+        font-size: 2rem;
+        margin: 0.35rem 0 0.75rem;
+      }
+      h2 {
+        font-size: 1.25rem;
+        margin-top: 0;
+      }
+      .sleeve {
+        margin: 0;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .byline {
+        margin: 0 0 1rem;
+        font-size: 0.95rem;
+        color: var(--muted);
+      }
+      .hero {
+        border-left: 3px solid var(--edge);
+        padding-left: 1.1rem;
+        margin: 0 0 2rem;
+      }
+      .cite-view {
+        margin: 0 0 2.25rem;
+      }
+      .cite-view[data-cite-view="how-this-is-measured"],
+      .how-measured {
+        border-top: 1px solid var(--rule);
+        padding-top: 1.5rem;
+        color: var(--ink);
+      }
+      .portrait-section {
+        margin: 0 0 2.25rem;
+      }
+      .stat-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+        gap: 1rem;
+        margin: 1.25rem 0 1rem;
+      }
+      .stat {
+        background: var(--card);
+        border: 1px solid var(--rule);
+        padding: 0.85rem 1rem 1rem;
+      }
+      .stat-label {
+        margin: 0 0 0.35rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .stat-figure {
+        margin: 0;
+        font-size: 2.1rem;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        font-weight: 650;
+        font-variant-numeric: tabular-nums;
+      }
+      .stat-figure .observation-value {
+        font-weight: 650;
+      }
+      .observation-value {
+        font-variant-numeric: tabular-nums;
+        font-weight: 650;
+      }
+      .observation-missing {
+        font-style: italic;
+      }
+      .citation-card,
+      .caveat-note {
+        background: var(--card);
+        border: 1px solid var(--rule);
+        padding: 0.65rem 0.9rem;
+        margin: 0.85rem 0;
+      }
+      .source-byline summary,
+      .caveat-note summary {
+        cursor: pointer;
+        font-size: 0.9rem;
+        color: var(--muted);
+        list-style: none;
+      }
+      .source-byline summary::-webkit-details-marker,
+      .caveat-note summary::-webkit-details-marker {
+        display: none;
+      }
+      .citation-card h3,
+      .caveat-note h3 {
+        margin: 0 0 0.5rem;
+        font-size: 1rem;
+      }
+      dl {
+        margin: 0.65rem 0 0;
+      }
+      dt {
+        font-family: "Source Sans 3", "Segoe UI", sans-serif;
+        font-size: 0.8rem;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-top: 0.55rem;
+      }
+      dd {
+        margin: 0.15rem 0 0;
+      }
+      figure.chart {
+        margin: 1.25rem 0;
+        overflow-x: auto;
+        background: var(--card);
+        border: 1px solid var(--rule);
+        border-left: 3px solid var(--edge);
+        padding: 0.65rem;
+      }
+      figure.chart svg {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

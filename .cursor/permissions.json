@@ -1,0 +1,20 @@
+{
+  // Repo-level agent permissions. Concatenated with ~/.cursor/permissions.json if that file exists.
+  // A non-empty terminalAllowlist or mcpAllowlist in this file can force Allowlist run mode
+  // (Auto-review unavailable). Keep only autoRun if you want classifier steering.
+  "autoRun": {
+    "allow_instructions": [
+      "Viewing files and listing folders within this repo is fine.",
+      "Read-only git inspections (status, diff, log, show) in this repo are fine.",
+      "uv run pytest, uv run ruff, uv run mypy, uv run python, and uv run prism are fine.",
+      "Web search for public documentation and current facts is fine.",
+      "Web fetch of public documentation, official Indian government sites (*.gov.in), and other public HTTP URLs is fine."
+    ],
+    "block_instructions": [
+      "Ask before git push, git reset --hard, git rebase, or anything that changes remotes.",
+      "Ask before pip install or creating a second venv; this repo is uv-managed.",
+      "Ask before uv add, uv lock, uv sync, or other dependency changes unless the user requested them.",
+      "Ask before deleting files or writing outside the workspace."
+    ]
+  }
+}

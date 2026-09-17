@@ -1,0 +1,95 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "All India Combined CPI General index with a visible break at January 2025. Linked back series (2013-01 to 2024-12) is a line. Independently compiled months in this vintage (2026-07, 2026-08) are points, not joined to the linked line. Grey band is compiled months this vintage does not carry. Do not stitch 2012=100. Rural and Urban exist as published sectors on the first screen; this chart is Combined only so the compilation break is not hidden in a merge of lines.",
+  "title": {
+    "text": "All India Combined CPI (General) index, Base 2024=100 — break at January 2025",
+    "subtitle": "Navy line: producer-linked back series (not independently compiled 2024-basket). Brown points: compiled months in this vintage. Grey band: January 2025–June 2026 not in this vintage. Dashed rule: compiled series starts. Not one continuous line. Linked file is All India only; States/UTs and districts are missing there."
+  },
+  "usermeta": {
+    "slot_ids": ["chart-linked-index-all-india", "chart-compiled-index-all-india"],
+    "cite_in_same_view": true,
+    "break_at": "2025-01",
+    "sector": "Combined",
+    "forbidden": ["stitch_linked_to_compiled", "stitch_2012", "blank_as_zero", "red_green_diverging", "state_rows_from_card_4"]
+  },
+  "width": 560,
+  "height": 240,
+  "layer": [
+    {
+      "data": { "values": [{ "start": "2025-01", "end": "2026-07" }] },
+      "mark": { "type": "rect", "color": "#d9d9d9", "opacity": 0.55 },
+      "encoding": {
+        "x": { "field": "start", "type": "temporal", "timeUnit": "yearmonth" },
+        "x2": { "field": "end" }
+      }
+    },
+    {
+      "data": { "values": [{ "at": "2025-01" }] },
+      "mark": { "type": "rule", "strokeDash": [4, 4], "color": "#333333", "strokeWidth": 1.5 },
+      "encoding": {
+        "x": { "field": "at", "type": "temporal", "timeUnit": "yearmonth" }
+      }
+    },
+    {
+      "data": { "name": "slot:chart-linked-index-all-india" },
+      "transform": [
+        {
+          "calculate": "datum.status === 'value' ? datum.value : null",
+          "as": "plotValue"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "color": "#1f4e79",
+        "point": true,
+        "invalid": "break-paths"
+      },
+      "encoding": {
+        "x": {
+          "field": "reference_period",
+          "type": "temporal",
+          "timeUnit": "yearmonth",
+          "title": "Reference month"
+        },
+        "y": {
+          "field": "plotValue",
+          "type": "quantitative",
+          "title": "Index (Base 2024=100)",
+          "scale": { "zero": false }
+        }
+      }
+    },
+    {
+      "data": { "name": "slot:chart-compiled-index-all-india" },
+      "transform": [
+        {
+          "calculate": "datum.status === 'value' ? datum.value : null",
+          "as": "plotValue"
+        }
+      ],
+      "mark": {
+        "type": "point",
+        "color": "#7a542e",
+        "filled": true,
+        "size": 80,
+        "invalid": "break-paths"
+      },
+      "encoding": {
+        "x": {
+          "field": "reference_period",
+          "type": "temporal",
+          "timeUnit": "yearmonth"
+        },
+        "y": {
+          "field": "plotValue",
+          "type": "quantitative",
+          "scale": { "zero": false }
+        }
+      }
+    }
+  ],
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
+}

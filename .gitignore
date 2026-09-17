@@ -1,0 +1,33 @@
+# Downloaded / generated data (keep the directory)
+data/*
+!data/.gitkeep
+
+# Experiment output (keep the directory)
+logs/*
+!logs/.gitkeep
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / Astro (src/cms)
+node_modules/
+src/cms/dist/
+src/cms/.astro/
+src/cms/.bound/
+src/cms/generated/
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

@@ -1,0 +1,51 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "State/UT Combined CPI General year-on-year inflation (%). Axis order is alphabetical by official English name. Never sort by the inflation measure. Single fill — not red–green. All India is not on this axis. Unknown is a hole, not zero.",
+  "title": {
+    "text": "CPI (General) Combined year-on-year inflation (%), States and Union Territories",
+    "subtitle": "Alphabetical by official English name as published. Not a ranking. All India is the national unit on the page, not a bar here. Chandigarh Rural is not published; Chandigarh Combined is included."
+  },
+  "usermeta": {
+    "slot_id": "chart-state-ut-combined-inflation-latest-p",
+    "cite_in_same_view": true,
+    "axis_order": "alphabetical_official_english_name",
+    "forbidden": ["sort_by_measure", "red_green_diverging", "rank", "all_india_on_this_axis", "blank_as_zero"]
+  },
+  "height": { "step": 18 },
+  "width": 420,
+  "data": { "name": "slot:chart-state-ut-combined-inflation-latest-p" },
+  "transform": [
+    {
+      "calculate": "datum.status === 'value' ? datum.value : null",
+      "as": "plotValue"
+    }
+  ],
+  "mark": { "type": "bar", "color": "#1f4e79", "invalid": "break-paths" },
+  "encoding": {
+    "y": {
+      "field": "geography_name_en",
+      "type": "nominal",
+      "title": "State / Union Territory",
+      "sort": { "field": "geography_name_en", "order": "ascending" },
+      "axis": { "labelLimit": 280 }
+    },
+    "x": {
+      "field": "plotValue",
+      "type": "quantitative",
+      "title": "Year-on-year inflation (%)",
+      "scale": { "zero": true }
+    },
+    "tooltip": [
+      { "field": "geography_name_en", "type": "nominal" },
+      { "field": "geography_code", "type": "nominal" },
+      { "field": "plotValue", "type": "quantitative", "title": "inflation (%)" },
+      { "field": "sector", "type": "nominal" },
+      { "field": "reference_period", "type": "nominal" },
+      { "field": "status", "type": "nominal" }
+    ]
+  },
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
+}

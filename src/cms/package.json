@@ -1,0 +1,19 @@
+{
+  "name": "prism-cms",
+  "private": true,
+  "description": "Citizen site root. Portrait Editor owns templates/ (copy, YAML slots, Vega-Lite specs). CMS Engineer owns Astro render, preview, and publish.",
+  "type": "module",
+  "scripts": {
+    "build": "astro build",
+    "check": "biome check src astro.config.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.13.2",
+    "vega": "^5.33.0",
+    "vega-lite": "^5.23.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "typescript": "^5.9.2"
+  }
+}

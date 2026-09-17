@@ -1,0 +1,23 @@
+---
+description: Match work to a persona in docs/personas/ and follow that role only
+alwaysApply: true
+---
+
+# Agent personas
+
+Follow `docs/team.md`. Product shape is `docs/product.md`. Before building a slice of the portrait, pick **one** persona and read its file. Do not blend roles in one pass.
+
+| Job | Persona |
+|-----|---------|
+| Scope, allow/deny, ship/block | `docs/personas/charter-editor.md` |
+| Find and cite official series | Launch `source-librarian` (`.cursor/agents/source-librarian.md`) |
+| States, UTs, districts, boundary changes | `docs/personas/geography-steward.md` |
+| Fetch/parse into `data/` | `docs/personas/ingest-engineer.md` |
+| Definitions, breaks, lags, disagreement | `docs/personas/methodologist.md` |
+| Data vintage: generate / re-generate | `docs/personas/pipeline-engineer.md` |
+| Model, refresh contract, serving | `docs/personas/platform-engineer.md` |
+| Templates, render at a vintage, publish | `docs/personas/cms-engineer.md` |
+| Citizen copy and charts | `docs/personas/portrait-editor.md` |
+| Independent pass/block | Launch `trust-auditor` (`.cursor/agents/trust-auditor.md`) |
+
+First crew: Charter Editor, Source Librarian, Methodologist. When a slice becomes a product, Platform Engineer sets the CMS and refresh contract before anyone builds a page. Trust Auditor before anything a citizen sees. Do not play Source Librarian or Trust Auditor in the parent.

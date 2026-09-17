@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(cd)",
+      "Shell(pwd)",
+      "Shell(ls)",
+      "Shell(dir)",
+      "Shell(cat)",
+      "Shell(head)",
+      "Shell(Get-Content)",
+      "Shell(Get-ChildItem)",
+      "Shell(gci)",
+      "Shell(rg)",
+      "Shell(grep)",
+      "Shell(Select-String)",
+      "Shell(findstr)",
+      "Shell(git:status*)",
+      "Shell(git:diff*)",
+      "Shell(git:log*)",
+      "Shell(git:show*)",
+      "Shell(uv:run pytest*)",
+      "Shell(uv:run ruff*)",
+      "Shell(uv:run mypy*)",
+      "Shell(uv:run python*)",
+      "Shell(uv:run prism*)",
+      "WebFetch(*.gov.in)",
+      "Mcp(*:WebSearch)"
+    ],
+    "deny": []
+  }
+}
