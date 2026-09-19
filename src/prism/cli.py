@@ -10,7 +10,12 @@ import typer
 from prism.citizen_server import serve_citizen
 from prism.ingest import ingest as run_ingest
 from prism.ingest.retrieve import IngestError
-from prism.pipeline import PipelineError, materialise_c1_vintage, materialise_c3_vintage
+from prism.pipeline import (
+    PipelineError,
+    materialise_c1_vintage,
+    materialise_c2_vintage,
+    materialise_c3_vintage,
+)
 from prism.pointer_store import PublishError, publish_preview, read_preview_pointer
 from prism.preview_server import serve_preview
 from prism.refresh import lineage_record_blocks_completeness
@@ -66,6 +71,7 @@ def ingest_cmd(
 
 _VINTAGE_RUNNERS = {
     "c1": materialise_c1_vintage,
+    "c2": materialise_c2_vintage,
     "c3": materialise_c3_vintage,
 }
 
@@ -80,7 +86,7 @@ def vintage(
 
     runner = _VINTAGE_RUNNERS.get(slice_id)
     if runner is None:
-        typer.echo(f"unknown slice-id {slice_id!r}; expected c1 or c3", err=True)
+        typer.echo(f"unknown slice-id {slice_id!r}; expected c1, c2, or c3", err=True)
         raise typer.Exit(code=1)
     try:
         manifest, report = runner(data_root, logs_root)

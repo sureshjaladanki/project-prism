@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import ssl
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -52,11 +53,35 @@ def filename_from_url(url: str) -> str:
     return name
 
 
+def _system_ca_pem() -> str | None:
+    enum_certificates = getattr(ssl, "enum_certificates", None)
+    if enum_certificates is None:
+        return None
+    parts = [
+        ssl.DER_cert_to_PEM_cert(der)
+        for store in ("CA", "ROOT")
+        for der, encoding, _trust in enum_certificates(store)
+        if encoding == "x509_asn"
+    ]
+    if not parts:
+        return None
+    return "".join(parts)
+
+
+def _ssl_context() -> ssl.SSLContext:
+    context = ssl.create_default_context()
+    pem = _system_ca_pem()
+    if pem is not None:
+        context.load_verify_locations(cadata=pem)
+    return context
+
+
 def new_client() -> httpx.Client:
     return httpx.Client(
         follow_redirects=True,
         timeout=DEFAULT_TIMEOUT,
         headers={"User-Agent": USER_AGENT},
+        verify=_ssl_context(),
     )
 
 

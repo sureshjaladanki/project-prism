@@ -239,7 +239,7 @@ function addBarValueLabels(spec: Json): void {
       text: {
         field,
         type: "quantitative",
-        format: ".2f",
+        format: ".2~f",
       },
     },
   };

@@ -1,0 +1,380 @@
+# C2 citizen template bindings. Content Editor. No observation numerals.
+# UI/UX Developer: bind each slot with prism.schema.SlotSelector against vintage
+# dv-20260919-87b702f1fd66. Fail the render if a required observation slot
+# would show a number without producer, series, date, geography vintage, and caveat.
+# Missing observation → unknown / not published. Never paste a remembered figure.
+# Do not move citizen_pointer.
+
+template_id: c2-people-of-india
+charter: C2
+bound_vintage_id: dv-20260919-87b702f1fd66
+display_timezone: Asia/Kolkata
+state_ut_axis_order: alphabetical_official_english_name
+citizen_pointer: untouched
+
+period_roles:
+  census_2011:
+    label: 1 March 2011
+  srs_2024:
+    label: calendar year 2024
+  projection_2011:
+    label: 1 March 2011 (projected)
+  projection_2026:
+    label: 1 March 2026 (projected)
+
+frames:
+  c2-frame-a:
+    series: [census-2011-pca-sd]
+    units_included_note: 00 India plus 35 STATE/UT labels on the 2011 map
+    units_missing:
+      - Telangana as a STATE row
+      - Ladakh as a UT row
+      - districts and below (parked)
+      - merged Dadra and Nagar Haveli and Daman and Diu as one row
+  c2-frame-b:
+    series: [census-2011-a02-decadal]
+    units_included: ["00"]
+    units_missing:
+      - same 2011 map holes as Frame A
+  c2-frame-c:
+    series: [srs-bulletin-2024]
+    units_included: [india]
+    units_missing:
+      - districts and below (parked)
+  c2-frame-d:
+    series: [srs-statistical-report-2024]
+    units_included: [india]
+    units_missing:
+      - smaller States and Union Territories not on Table 3
+      - districts; NSS Natural Division rows (parked)
+  c2-frame-e:
+    series: [ncp-projections-2011-2036-table8]
+    units_included: [india]
+    units_missing:
+      - districts (not in Table 8)
+
+sector_order: [Rural, Urban, Total]
+
+state_ut_order:
+  - {code: "35", name_en: ANDAMAN & NICOBAR ISLANDS}
+  - {code: "28", name_en: ANDHRA PRADESH}
+  - {code: "12", name_en: ARUNACHAL PRADESH}
+  - {code: "18", name_en: ASSAM}
+  - {code: "10", name_en: BIHAR}
+  - {code: "04", name_en: CHANDIGARH}
+  - {code: "22", name_en: CHHATTISGARH}
+  - {code: "26", name_en: DADRA & NAGAR HAVELI}
+  - {code: "25", name_en: DAMAN & DIU}
+  - {code: "30", name_en: GOA}
+  - {code: "24", name_en: GUJARAT}
+  - {code: "06", name_en: HARYANA}
+  - {code: "02", name_en: HIMACHAL PRADESH}
+  - {code: "01", name_en: JAMMU & KASHMIR}
+  - {code: "20", name_en: JHARKHAND}
+  - {code: "29", name_en: KARNATAKA}
+  - {code: "32", name_en: KERALA}
+  - {code: "31", name_en: LAKSHADWEEP}
+  - {code: "23", name_en: MADHYA PRADESH}
+  - {code: "27", name_en: MAHARASHTRA}
+  - {code: "14", name_en: MANIPUR}
+  - {code: "17", name_en: MEGHALAYA}
+  - {code: "15", name_en: MIZORAM}
+  - {code: "13", name_en: NAGALAND}
+  - {code: "07", name_en: NCT OF DELHI}
+  - {code: "21", name_en: ODISHA}
+  - {code: "34", name_en: PUDUCHERRY}
+  - {code: "03", name_en: PUNJAB}
+  - {code: "08", name_en: RAJASTHAN}
+  - {code: "11", name_en: SIKKIM}
+  - {code: "33", name_en: TAMIL NADU}
+  - {code: "16", name_en: TRIPURA}
+  - {code: "09", name_en: UTTAR PRADESH}
+  - {code: "05", name_en: UTTARAKHAND}
+  - {code: "19", name_en: WEST BENGAL}
+
+a02_india_years:
+  - "1901 $"
+  - "1911"
+  - "1921"
+  - "1931 $"
+  - "1941 $"
+  - "1951 @"
+  - "1961 @"
+  - "1971"
+  - "1981 #"
+  - "1991 +"
+  - "2001 ++"
+  - "2011"
+
+serve:
+  observation: prism.schema.ServedObservation
+  never_serve_bare_float: true
+
+charts:
+  india-residence-2011: ./charts/india-residence-2011.vl.json
+  state-ut-total-2011: ./charts/state-ut-total-2011.vl.json
+  india-census-years-1901-2011: ./charts/india-census-years-1901-2011.vl.json
+  india-srs-rates-2024: ./charts/india-srs-rates-2024.vl.json
+  india-projected-2011-2036: ./charts/india-projected-2011-2036.vl.json
+
+slots:
+
+  - slot_id: india-total-persons-2011
+    kind: observation
+    required: true
+    citation_id: cite-c2-census-2011-pca-sd
+    caveat_id: caveat-c2-census-2011-pca-sd
+    selector:
+      series_id: census-2011-pca-sd
+      geography_code: "00"
+      geography_vintage: "2011"
+      code_system: census
+      sector: Total
+      reference_period: "2011-03-01"
+      unit: persons
+      status: value
+
+  - slot_id: india-rural-persons-2011
+    kind: observation
+    required: true
+    citation_id: cite-c2-census-2011-pca-sd
+    caveat_id: caveat-c2-census-2011-pca-sd
+    selector:
+      series_id: census-2011-pca-sd
+      geography_code: "00"
+      geography_vintage: "2011"
+      code_system: census
+      sector: Rural
+      reference_period: "2011-03-01"
+      unit: persons
+      status: value
+
+  - slot_id: india-urban-persons-2011
+    kind: observation
+    required: true
+    citation_id: cite-c2-census-2011-pca-sd
+    caveat_id: caveat-c2-census-2011-pca-sd
+    selector:
+      series_id: census-2011-pca-sd
+      geography_code: "00"
+      geography_vintage: "2011"
+      code_system: census
+      sector: Urban
+      reference_period: "2011-03-01"
+      unit: persons
+      status: value
+
+  - slot_id: india-birth-rate-2024
+    kind: observation
+    required: true
+    citation_id: cite-c2-srs-bulletin-2024
+    caveat_id: caveat-c2-srs-bulletin-2024
+    selector:
+      series_id: srs-bulletin-2024
+      geography_code: india
+      geography_vintage: "2024"
+      code_system: none
+      sector: Total
+      reference_period: "2024"
+      unit: "SRS rate as published; birth rate"
+      status: value
+
+  - slot_id: india-death-rate-2024
+    kind: observation
+    required: true
+    citation_id: cite-c2-srs-bulletin-2024
+    caveat_id: caveat-c2-srs-bulletin-2024
+    selector:
+      series_id: srs-bulletin-2024
+      geography_code: india
+      geography_vintage: "2024"
+      code_system: none
+      sector: Total
+      reference_period: "2024"
+      unit: "SRS rate as published; death rate"
+      status: value
+
+  - slot_id: india-imr-2024
+    kind: observation
+    required: true
+    citation_id: cite-c2-srs-bulletin-2024
+    caveat_id: caveat-c2-srs-bulletin-2024
+    selector:
+      series_id: srs-bulletin-2024
+      geography_code: india
+      geography_vintage: "2024"
+      code_system: none
+      sector: Total
+      reference_period: "2024"
+      unit: "SRS rate as published; infant mortality rate"
+      status: value
+
+  - slot_id: india-tfr-2024
+    kind: observation
+    required: true
+    citation_id: cite-c2-srs-statistical-report-2024
+    caveat_id: caveat-c2-srs-statistical-report-2024
+    selector:
+      series_id: srs-statistical-report-2024
+      geography_code: india
+      geography_vintage: "2024"
+      code_system: none
+      sector: Total
+      reference_period: "2024"
+      unit: "SRS indicator as published; Total Fertility Rate"
+      status: value
+
+  - slot_id: india-tfr-rural-2024
+    kind: observation
+    required: true
+    citation_id: cite-c2-srs-statistical-report-2024
+    caveat_id: caveat-c2-srs-statistical-report-2024
+    selector:
+      series_id: srs-statistical-report-2024
+      geography_code: india
+      geography_vintage: "2024"
+      code_system: none
+      sector: Rural
+      reference_period: "2024"
+      unit: "SRS indicator as published; Total Fertility Rate"
+      status: value
+
+  - slot_id: india-tfr-urban-2024
+    kind: observation
+    required: true
+    citation_id: cite-c2-srs-statistical-report-2024
+    caveat_id: caveat-c2-srs-statistical-report-2024
+    selector:
+      series_id: srs-statistical-report-2024
+      geography_code: india
+      geography_vintage: "2024"
+      code_system: none
+      sector: Urban
+      reference_period: "2024"
+      unit: "SRS indicator as published; Total Fertility Rate"
+      status: value
+
+  - slot_id: india-projected-persons-2026
+    kind: observation
+    required: true
+    citation_id: cite-c2-ncp-projections-2011-2036-table8
+    caveat_id: caveat-c2-ncp-projections-2011-2036-table8
+    selector:
+      series_id: ncp-projections-2011-2036-table8
+      geography_code: india
+      geography_vintage: "2019"
+      code_system: none
+      sector: Persons
+      reference_period: "2026"
+      unit: "thousands ('000); projected; 1st March"
+      status: value
+
+  - slot_id: caveat-pca-lags
+    kind: caveat_field
+    caveat_id: caveat-c2-census-2011-pca-sd
+    field: lags
+
+  - slot_id: caveat-pca-population
+    kind: caveat_field
+    caveat_id: caveat-c2-census-2011-pca-sd
+    field: population
+
+  - slot_id: chart-india-residence-2011
+    kind: collection
+    chart: india-residence-2011
+    members:
+      - slot_id: india-rural-persons-2011
+        label: Rural
+      - slot_id: india-urban-persons-2011
+        label: Urban
+      - slot_id: india-total-persons-2011
+        label: Total
+    sort:
+      field: label
+      order: [Rural, Urban, Total]
+      never: measure
+
+  - slot_id: chart-state-ut-total-2011
+    kind: collection
+    chart: state-ut-total-2011
+    citation_id: cite-c2-census-2011-pca-sd
+    caveat_id: caveat-c2-census-2011-pca-sd
+    selector:
+      series_id: census-2011-pca-sd
+      geography_codes: state_ut_order
+      geography_vintage: "2011"
+      code_system: census
+      sector: Total
+      reference_period: "2011-03-01"
+      unit: persons
+      status: value
+    exclude_geography_codes: ["00"]
+    sort:
+      field: geography_name_en
+      order: ascending
+      never: measure
+
+  - slot_id: chart-india-census-years-1901-2011
+    kind: collection
+    chart: india-census-years-1901-2011
+    citation_id: cite-c2-census-2011-a02-decadal
+    caveat_id: caveat-c2-census-2011-a02-decadal
+    selector:
+      series_id: census-2011-a02-decadal
+      geography_code: "00"
+      geography_vintage: "2011"
+      code_system: census
+      sector: Total
+      reference_period:
+        - "1901 $"
+        - "1911"
+        - "1921"
+        - "1931 $"
+        - "1941 $"
+        - "1951 @"
+        - "1961 @"
+        - "1971"
+        - "1981 #"
+        - "1991 +"
+        - "2001 ++"
+        - "2011"
+      unit: persons
+      status: [value, unknown]
+    sort:
+      field: reference_period
+      never: measure
+
+  - slot_id: chart-india-srs-rates-2024
+    kind: collection
+    chart: india-srs-rates-2024
+    members:
+      - slot_id: india-birth-rate-2024
+        label: Birth rate
+      - slot_id: india-death-rate-2024
+        label: Death rate
+      - slot_id: india-imr-2024
+        label: Infant mortality rate
+    sort:
+      field: label
+      order: [Birth rate, Death rate, Infant mortality rate]
+      never: measure
+
+  - slot_id: chart-india-projected-2011-2036
+    kind: collection
+    chart: india-projected-2011-2036
+    citation_id: cite-c2-ncp-projections-2011-2036-table8
+    caveat_id: caveat-c2-ncp-projections-2011-2036-table8
+    selector:
+      series_id: ncp-projections-2011-2036-table8
+      geography_code: india
+      geography_vintage: "2019"
+      code_system: none
+      sector: Persons
+      reference_period:
+        from: "2011"
+        to: "2036"
+      unit: "thousands ('000); projected; 1st March"
+      status: value
+    sort:
+      field: reference_period
+      never: measure

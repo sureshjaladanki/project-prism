@@ -50,7 +50,7 @@ export const chart = {
   barPaddingInner: 0.3,
   labelSize: 12,
   lineStrokeWidth: 2,
-  valueLabelPad: 56,
+  valueLabelPad: 96,
   fitWidth: 1056,
   series: [color.mark, color.mark2, color.mark3, color.mark4] as const,
   gridOpacity: 0.5,

@@ -43,6 +43,8 @@ from prism.vintage_store import load_manifest
 
 C1_TEMPLATE_ID = "c1-prices-people-pay"
 C1_TEMPLATE_DIRNAME = "c1-prices-people-pay"
+C2_TEMPLATE_ID = "c2-people-of-india"
+C2_TEMPLATE_DIRNAME = "c2-people-of-india"
 C3_TEMPLATE_ID = "c3-union-money"
 C3_TEMPLATE_DIRNAME = "c3-union-money"
 
@@ -85,6 +87,11 @@ CITE_BLOCKS: dict[str, CiteBlock] = {
     "finance-accounts": CiteBlock(
         ("cite-c3-cga-finance-accounts-2024-25-stat1",)
     ),
+    "census-pca": CiteBlock(("cite-c2-census-2011-pca-sd",)),
+    "census-a02": CiteBlock(("cite-c2-census-2011-a02-decadal",)),
+    "srs-bulletin": CiteBlock(("cite-c2-srs-bulletin-2024",)),
+    "srs-stat": CiteBlock(("cite-c2-srs-statistical-report-2024",)),
+    "ncp-table8": CiteBlock(("cite-c2-ncp-projections-2011-2036-table8",)),
 }
 
 LAYOUT_BLOCKS: dict[str, tuple[str, str]] = {
@@ -154,12 +161,20 @@ def c1_template_dir(cms_root: Path) -> Path:
     return templates_dir(cms_root) / C1_TEMPLATE_DIRNAME
 
 
+def c2_template_dir(cms_root: Path) -> Path:
+    return templates_dir(cms_root) / C2_TEMPLATE_DIRNAME
+
+
 def c3_template_dir(cms_root: Path) -> Path:
     return templates_dir(cms_root) / C3_TEMPLATE_DIRNAME
 
 
 def bind_c1_page(data_root: Path, vintage_id: str, cms_root: Path) -> BoundPage:
     return bind_page(data_root, vintage_id, c1_template_dir(cms_root))
+
+
+def bind_c2_page(data_root: Path, vintage_id: str, cms_root: Path) -> BoundPage:
+    return bind_page(data_root, vintage_id, c2_template_dir(cms_root))
 
 
 def bind_c3_page(data_root: Path, vintage_id: str, cms_root: Path) -> BoundPage:
@@ -1073,16 +1088,19 @@ def assert_single_vintage(page: BoundPage, vintage_id: str) -> None:
 
 __all__ = [
     "C1_TEMPLATE_ID",
+    "C2_TEMPLATE_ID",
     "C3_TEMPLATE_ID",
     "BoundPage",
     "RenderError",
     "assert_cite_views_complete",
     "assert_single_vintage",
     "bind_c1_page",
+    "bind_c2_page",
     "bind_c3_page",
     "bind_page",
     "bind_pages_for_vintage",
     "c1_template_dir",
+    "c2_template_dir",
     "c3_template_dir",
     "iter_cite_views",
     "wrap_cite_views",

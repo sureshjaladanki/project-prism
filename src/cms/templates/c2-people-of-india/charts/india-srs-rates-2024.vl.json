@@ -1,0 +1,47 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "SRS Bulletin 2024 India Total birth, death, and infant mortality rates. Not a headcount. Same colour. Do not sort by the rate.",
+  "title": {
+    "text": "India Total rates, 2024",
+    "subtitle": "Sample Registration System. Rates, not a census count."
+  },
+  "usermeta": {
+    "slot_id": "chart-india-srs-rates-2024",
+    "cite_in_same_view": true,
+    "forbidden": ["sort_by_measure", "red_green_diverging", "multiply_by_census", "present_as_headcount"]
+  },
+  "height": { "step": 22 },
+  "data": { "name": "slot:chart-india-srs-rates-2024" },
+  "transform": [
+    {
+      "calculate": "datum.status === 'value' ? datum.value : null",
+      "as": "plotValue"
+    }
+  ],
+  "mark": { "type": "bar", "color": "#1f4e79", "invalid": "break-paths" },
+  "encoding": {
+    "y": {
+      "field": "label",
+      "type": "nominal",
+      "title": null,
+      "sort": ["Birth rate", "Death rate", "Infant mortality rate"],
+      "axis": { "labelLimit": 400 }
+    },
+    "x": {
+      "field": "plotValue",
+      "type": "quantitative",
+      "title": "Rate as published",
+      "scale": { "zero": true }
+    },
+    "tooltip": [
+      { "field": "label", "type": "nominal" },
+      { "field": "plotValue", "type": "quantitative", "title": "rate" },
+      { "field": "unit", "type": "nominal" },
+      { "field": "reference_period", "type": "nominal" },
+      { "field": "status", "type": "nominal" }
+    ]
+  },
+  "config": {
+    "view": { "stroke": null }
+  }
+}

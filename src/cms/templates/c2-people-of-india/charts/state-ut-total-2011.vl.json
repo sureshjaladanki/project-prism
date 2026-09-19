@@ -1,0 +1,48 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Census 2011 State/UT Total persons. Alphabetical by printed English name. Never sort by the count. India is not on this axis. Districts parked.",
+  "title": {
+    "text": "Census 2011 Total persons, States and Union Territories",
+    "subtitle": "Alphabetical. 2011 map — no Telangana or Ladakh rows."
+  },
+  "usermeta": {
+    "slot_id": "chart-state-ut-total-2011",
+    "cite_in_same_view": true,
+    "axis_order": "alphabetical_official_english_name",
+    "forbidden": ["sort_by_measure", "red_green_diverging", "rank", "all_india_on_this_axis", "district_dots"]
+  },
+  "height": { "step": 22 },
+  "data": { "name": "slot:chart-state-ut-total-2011" },
+  "transform": [
+    {
+      "calculate": "datum.status === 'value' ? datum.value : null",
+      "as": "plotValue"
+    }
+  ],
+  "mark": { "type": "bar", "color": "#1f4e79", "invalid": "break-paths" },
+  "encoding": {
+    "y": {
+      "field": "geography_name_en",
+      "type": "nominal",
+      "title": "State / Union Territory",
+      "sort": { "field": "geography_name_en", "order": "ascending" },
+      "axis": { "labelLimit": 280 }
+    },
+    "x": {
+      "field": "plotValue",
+      "type": "quantitative",
+      "title": "Persons",
+      "scale": { "zero": true }
+    },
+    "tooltip": [
+      { "field": "geography_name_en", "type": "nominal" },
+      { "field": "plotValue", "type": "quantitative", "title": "persons" },
+      { "field": "reference_period", "type": "nominal" },
+      { "field": "status", "type": "nominal" }
+    ]
+  },
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
+}

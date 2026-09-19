@@ -1,0 +1,51 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "India Total census persons, Table A-02, 1901–2011. Stops at 2011. Do not stitch to Table 8. Unknown is a hole, not zero.",
+  "title": {
+    "text": "India Total, census years 1901 to 2011",
+    "subtitle": "Census counts as printed. The line stops at 2011."
+  },
+  "usermeta": {
+    "slot_id": "chart-india-census-years-1901-2011",
+    "cite_in_same_view": true,
+    "forbidden": ["stitch_to_table8", "blank_as_zero", "treat_as_current", "red_green_diverging"]
+  },
+  "width": 720,
+  "height": 280,
+  "data": { "name": "slot:chart-india-census-years-1901-2011" },
+  "transform": [
+    {
+      "calculate": "datum.status === 'value' ? datum.value : null",
+      "as": "plotValue"
+    }
+  ],
+  "mark": {
+    "type": "line",
+    "color": "#1f4e79",
+    "strokeWidth": 2,
+    "invalid": "break-paths"
+  },
+  "encoding": {
+    "x": {
+      "field": "reference_period",
+      "type": "ordinal",
+      "title": "Census year",
+      "sort": ["1901 $", "1911", "1921", "1931 $", "1941 $", "1951 @", "1961 @", "1971", "1981 #", "1991 +", "2001 ++", "2011"]
+    },
+    "y": {
+      "field": "plotValue",
+      "type": "quantitative",
+      "title": "Persons",
+      "scale": { "zero": true }
+    },
+    "tooltip": [
+      { "field": "reference_period", "type": "nominal" },
+      { "field": "plotValue", "type": "quantitative", "title": "persons" },
+      { "field": "status", "type": "nominal" }
+    ]
+  },
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
+}

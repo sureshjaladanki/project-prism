@@ -1,0 +1,52 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Table 8 projected India Persons, thousands, 1 March 2011–2036. A projection, not a census. Do not stitch to A-02.",
+  "title": {
+    "text": "Projected India population, 1 March, thousands",
+    "subtitle": "Table 8, 2011 to 2036. Not a census count."
+  },
+  "usermeta": {
+    "slot_id": "chart-india-projected-2011-2036",
+    "cite_in_same_view": true,
+    "forbidden": ["stitch_to_a02", "present_as_census", "blend_with_srs", "red_green_diverging"]
+  },
+  "width": 720,
+  "height": 280,
+  "data": { "name": "slot:chart-india-projected-2011-2036" },
+  "transform": [
+    {
+      "calculate": "datum.status === 'value' ? datum.value : null",
+      "as": "plotValue"
+    }
+  ],
+  "mark": {
+    "type": "line",
+    "color": "#1f4e79",
+    "strokeWidth": 2,
+    "invalid": "break-paths"
+  },
+  "encoding": {
+    "x": {
+      "field": "reference_period",
+      "type": "temporal",
+      "timeUnit": "year",
+      "title": "Projected year (1 March)"
+    },
+    "y": {
+      "field": "plotValue",
+      "type": "quantitative",
+      "title": "Thousands",
+      "scale": { "zero": true }
+    },
+    "tooltip": [
+      { "field": "reference_period", "type": "nominal" },
+      { "field": "plotValue", "type": "quantitative", "title": "thousands" },
+      { "field": "unit", "type": "nominal" },
+      { "field": "status", "type": "nominal" }
+    ]
+  },
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
+}
