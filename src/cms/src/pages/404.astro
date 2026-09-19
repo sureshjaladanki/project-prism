@@ -1,0 +1,11 @@
+---
+import SiteShell from "../layouts/SiteShell.astro";
+import { loadSite } from "../lib/site";
+
+const site = loadSite();
+---
+
+<SiteShell page="notfound" title="Page not found · Prism" vintageId={site.vintage_id}>
+  <h1>Page not found</h1>
+  <p><a href="/">Prism</a></p>
+</SiteShell>

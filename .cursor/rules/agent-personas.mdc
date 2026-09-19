@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Agent personas
 
-Follow `docs/team.md`. Product shape is `docs/product.md`. Before building a slice of the portrait, pick **one** persona and read its file. Do not blend roles in one pass.
+Follow `docs/team.md`. Product shape is `docs/architectural-blueprint.md`. Before building a slice of the portrait, pick **one** persona and read its file. Do not blend roles in one pass.
 
 | Job | Persona |
 |-----|---------|
@@ -15,9 +15,18 @@ Follow `docs/team.md`. Product shape is `docs/product.md`. Before building a sli
 | Fetch/parse into `data/` | `docs/personas/ingest-engineer.md` |
 | Definitions, breaks, lags, disagreement | `docs/personas/methodologist.md` |
 | Data vintage: generate / re-generate | `docs/personas/pipeline-engineer.md` |
-| Model, refresh contract, serving | `docs/personas/platform-engineer.md` |
-| Templates, render at a vintage, publish | `docs/personas/cms-engineer.md` |
-| Citizen copy and charts | `docs/personas/portrait-editor.md` |
+| Model, refresh contract, serving | `docs/personas/platform-architect.md` |
+| Site IA, URLs, SEO, nav, preview vs published HTTP | `docs/personas/front-end-architect.md` + `docs/web-design.md` |
+| Visual contract, templates, render, presentation pass | `docs/personas/ui-ux-developer.md` + `docs/design-system.md` |
+| Citizen copy and charts | `docs/personas/content-editor.md` + `docs/editorial-guidelines.md` (rule: `content-editor-editorial`) |
 | Independent pass/block | Launch `trust-auditor` (`.cursor/agents/trust-auditor.md`) |
 
-First crew: Charter Editor, Source Librarian, Methodologist. When a slice becomes a product, Platform Engineer sets the CMS and refresh contract before anyone builds a page. Trust Auditor before anything a citizen sees. Do not play Source Librarian or Trust Auditor in the parent.
+The visual contract and civic CMS are UI/UX Developer (`docs/design-system.md`) — not Content Editor restyling, not Front-end Architect inventing chrome. The presentation pass is UI/UX Developer against that file — not Front-end Architect, not Trust, not a fifth Content Editor writing pass. Site IA is Front-end Architect (`docs/web-design.md`) — not UI/UX inventing a slug.
+
+When Content Editor is the active persona, also follow `.cursor/rules/content-editor-editorial.mdc` and read `docs/editorial-guidelines.md`. Do not apply that editorial rule under any other persona.
+
+When Front-end Architect is the active persona, also read `docs/web-design.md`. Do not treat that file as the presentation pass.
+
+When UI/UX Developer is the active persona, also read `docs/design-system.md`. Do not treat that file as site IA or as citizen copy.
+
+First crew: Charter Editor, Source Librarian, Methodologist. When a slice becomes a product, Platform Architect sets the CMS and refresh contract before anyone builds a page. Front-end Architect holds `docs/web-design.md` before UI/UX invents a route. UI/UX Developer holds `docs/design-system.md` before inventing chrome. Trust Auditor before anything a citizen sees. Do not play Source Librarian or Trust Auditor in the parent.

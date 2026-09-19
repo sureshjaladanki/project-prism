@@ -9,12 +9,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from prism.observation_parquet import observations_from_parquet, observations_to_parquet
-from prism.paths import (
-    PRODUCER_SLUG_MOSPI,
-    ingest_lineage_path,
-    ingest_table_path,
-    run_report_path,
-)
+from prism.paths import ingest_lineage_path, ingest_table_path, run_report_path
 from prism.pipeline.c1_cards import (
     C1_CAVEATS,
     C1_CITATIONS,
@@ -24,12 +19,12 @@ from prism.pipeline.c1_cards import (
 )
 from prism.refresh import (
     C1_SERIES,
-    MOSPI_NSO_PSD,
+    C1_SERIES_IDS,
     SERIES_CPI_BACK_SERIES_LINKED_BASE_2024,
     SERIES_CPI_CFPI_BASE_2024,
     SERIES_CPI_DIVISION_GROUP_BASE_2024,
     SERIES_CPI_GENERAL_BASE_2024,
-    C1SeriesBinding,
+    SeriesBinding,
     ensure_utc,
     trigger_from_lineage,
 )
@@ -45,7 +40,7 @@ from prism.schema import (
     VintageManifest,
     YesNo,
 )
-from prism.vintage_store import SeriesWrite, latest_manifest, write_vintage
+from prism.vintage_store import SeriesWrite, latest_manifest_with_series, write_vintage
 
 MAPPER_VERSION = "c1-observations-1.0.0"
 UNIT_INDEX = "index (Base 2024=100)"
@@ -225,7 +220,9 @@ def _classifier_for_row(series_id: str, row: dict[str, str]) -> Classifier:
             raise PipelineError("row has both Division and Group codes; not stitching")
         if div_code:
             if div_code == "12":
-                raise PipelineError("Division 12 is not a published series on this slice")
+                raise PipelineError(
+                    "Division 12 is not a published series on this slice"
+                )
             return Classifier("division", div_code)
         if grp_code:
             return Classifier("group", grp_code)
@@ -267,7 +264,9 @@ def map_derived_table(
         if code == "" or name == "":
             raise PipelineError(f"row missing producer geography for {series_id}")
         if sector not in PUBLISHED_SECTORS:
-            raise PipelineError(f"unpublished sector {sector!r}; not inventing Combined")
+            raise PipelineError(
+                f"unpublished sector {sector!r}; not inventing Combined"
+            )
         geo = _geography_ref(code, name, geography, names)
         period = _reference_period(
             _cell(row, "year", "Year"),
@@ -276,11 +275,17 @@ def map_derived_table(
         producer_status = _producer_status(_cell(row, "status"))
         classifier = _classifier_for_row(series_id, row)
         measures = (
-            (MEASURE_INDEX, UNIT_INDEX, _number(_cell(row, "index", "Index"), label="index")),
+            (
+                MEASURE_INDEX,
+                UNIT_INDEX,
+                _number(_cell(row, "index", "Index"), label="index"),
+            ),
             (
                 MEASURE_INFLATION,
                 UNIT_INFLATION,
-                _number(_cell(row, "inflation (%)", "Inflation (%)"), label="inflation"),
+                _number(
+                    _cell(row, "inflation (%)", "Inflation (%)"), label="inflation"
+                ),
             ),
         )
         for measure, measure_unit, value in measures:
@@ -312,16 +317,18 @@ def map_derived_table(
     return tuple(observations)
 
 
-def load_c1_lineage(data_root: Path, binding: C1SeriesBinding) -> LineageRecord:
+def load_c1_lineage(data_root: Path, binding: SeriesBinding) -> LineageRecord:
     path = ingest_lineage_path(
-        data_root, PRODUCER_SLUG_MOSPI, binding.series_id, binding.source_vintage
+        data_root, binding.producer_slug, binding.series_id, binding.source_vintage
     )
     if not path.exists():
         raise PipelineError(f"missing lineage for {binding.series_id}")
     return LineageRecord.model_validate_json(path.read_bytes())
 
 
-def map_c1_series(data_root: Path, binding: C1SeriesBinding, lineage: LineageRecord) -> SeriesWrite:
+def map_c1_series(
+    data_root: Path, binding: SeriesBinding, lineage: LineageRecord
+) -> SeriesWrite:
     if lineage.lineage_ok is not YesNo.yes:
         raise PipelineError(
             f"{binding.series_id} lineage_ok={lineage.lineage_ok.value}; not building a vintage"
@@ -344,7 +351,7 @@ def map_c1_series(data_root: Path, binding: C1SeriesBinding, lineage: LineageRec
         else FRAME_A_NAME_BY_CODE
     )
     table_path = ingest_table_path(
-        data_root, PRODUCER_SLUG_MOSPI, binding.series_id, binding.source_vintage
+        data_root, binding.producer_slug, binding.series_id, binding.source_vintage
     )
     if not table_path.exists():
         raise PipelineError(f"missing derived table for {binding.series_id}")
@@ -362,7 +369,7 @@ def map_c1_series(data_root: Path, binding: C1SeriesBinding, lineage: LineageRec
         ),
     )
     return SeriesWrite(
-        producer=MOSPI_NSO_PSD,
+        producer=binding.producer,
         series_id=binding.series_id,
         source_vintage=binding.source_vintage,
         raw_checksum=lineage.checksum,
@@ -380,7 +387,10 @@ def map_c1_series(data_root: Path, binding: C1SeriesBinding, lineage: LineageRec
 
 
 def trigger_for_records(records: tuple[LineageRecord, ...]) -> RefreshTrigger:
-    if any(trigger_from_lineage(record) is RefreshTrigger.source_change for record in records):
+    if any(
+        trigger_from_lineage(record) is RefreshTrigger.source_change
+        for record in records
+    ):
         return RefreshTrigger.source_change
     return RefreshTrigger.on_demand
 
@@ -388,7 +398,9 @@ def trigger_for_records(records: tuple[LineageRecord, ...]) -> RefreshTrigger:
 def _write_report(logs_root: Path, run_id: str, payload: dict[str, object]) -> Path:
     path = run_report_path(logs_root, run_id)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     return path
 
 
@@ -436,7 +448,7 @@ def materialise_c1_vintage(
             )
         trigger = trigger_for_records(tuple(records))
         report["trigger"] = trigger.value
-        previous = latest_manifest(data_root)
+        previous = latest_manifest_with_series(data_root, C1_SERIES_IDS)
         manifest = write_vintage(
             data_root,
             created_at=moment,
@@ -449,7 +461,9 @@ def materialise_c1_vintage(
         for row in series_rows:
             reused = reused_by_id[str(row["series_id"])]
             row["reused"] = reused.value
-            row["rewritten"] = YesNo.no.value if reused is YesNo.yes else YesNo.yes.value
+            row["rewritten"] = (
+                YesNo.no.value if reused is YesNo.yes else YesNo.yes.value
+            )
         report["vintage_id"] = manifest.vintage_id
         report["completeness"] = manifest.completeness.value
         _write_report(logs_root, run_id, report)

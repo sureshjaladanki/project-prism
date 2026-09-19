@@ -1,0 +1,47 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "CPI (General) Combined beside food (Consumer Food Price Index), All India, latest Provisional. Two official numbers. Same colour for both bars. Do not sort by the measure.",
+  "title": {
+    "text": "CPI (General) and food, All India Combined",
+    "subtitle": "Same month. Two official numbers."
+  },
+  "usermeta": {
+    "slot_id": "chart-general-beside-food",
+    "cite_in_same_view": true,
+    "forbidden": ["sort_by_measure", "red_green_diverging", "pick_winner", "label_div01_as_food"]
+  },
+  "height": { "step": 22 },
+  "data": { "name": "slot:chart-general-beside-food" },
+  "transform": [
+    {
+      "calculate": "datum.status === 'value' ? datum.value : null",
+      "as": "plotValue"
+    }
+  ],
+  "mark": { "type": "bar", "color": "#1f4e79", "invalid": "break-paths" },
+  "encoding": {
+    "y": {
+      "field": "label",
+      "type": "nominal",
+      "title": null,
+      "sort": ["CPI (General)", "Food"],
+      "axis": { "labelLimit": 400 }
+    },
+    "x": {
+      "field": "plotValue",
+      "type": "quantitative",
+      "title": "Year-on-year inflation (%)",
+      "scale": { "zero": true }
+    },
+    "tooltip": [
+      { "field": "label", "type": "nominal" },
+      { "field": "plotValue", "type": "quantitative", "title": "inflation (%)" },
+      { "field": "unit", "type": "nominal" },
+      { "field": "reference_period", "type": "nominal" },
+      { "field": "status", "type": "nominal" }
+    ]
+  },
+  "config": {
+    "view": { "stroke": null }
+  }
+}

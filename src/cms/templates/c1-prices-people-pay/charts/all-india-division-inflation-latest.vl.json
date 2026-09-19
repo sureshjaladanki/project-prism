@@ -1,9 +1,9 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "All India Combined CPI Division year-on-year inflation (%), latest Provisional. Producer annex order (codes 01–11, then 13). Not ranked. Division 01 is Food and beverages, not food. Single fill. No Division 12. Unknown is a hole, not zero.",
+  "description": "All India Combined CPI year-on-year inflation (%) by published group of the basket, latest Provisional. Producer annex order (codes 01–11, then 13). Not ranked. Food and beverages is not the Consumer Food Price Index. Single fill. No Division 12. Unknown is a hole, not zero.",
   "title": {
-    "text": "CPI Division year-on-year inflation (%), All India Combined",
-    "subtitle": "COICOP 2018 divisions as printed. Order is producer annex order, not by the inflation measure. Division 01 is Food and beverages. Food-only is CFPI / Group 01.1, on a separate chart. No Division 12 on this slice."
+    "text": "Retail basket groups, All India Combined",
+    "subtitle": "Same month. Order as printed."
   },
   "usermeta": {
     "slot_id": "chart-division-inflation-latest-p",
@@ -12,7 +12,6 @@
     "forbidden": ["label_div01_as_food", "sort_by_measure", "red_green_diverging", "invent_div12", "rank"]
   },
   "height": { "step": 22 },
-  "width": 420,
   "data": { "name": "slot:chart-division-inflation-latest-p" },
   "transform": [
     {
@@ -25,7 +24,7 @@
     "y": {
       "field": "division_name",
       "type": "nominal",
-      "title": "Division",
+      "title": null,
       "sort": [
         "Food and beverages",
         "Paan, tobacco and intoxicants",
@@ -50,7 +49,6 @@
     },
     "tooltip": [
       { "field": "division_name", "type": "nominal" },
-      { "field": "unit", "type": "nominal" },
       { "field": "plotValue", "type": "quantitative", "title": "inflation (%)" },
       { "field": "status", "type": "nominal" },
       { "field": "reference_period", "type": "nominal" }

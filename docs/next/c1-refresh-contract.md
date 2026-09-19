@@ -1,10 +1,10 @@
 # C1 refresh and serving contract
 
-Persona: Platform Engineer. Slice: **C1**. Locked inputs: [`c1-citation-cards.md`](c1-citation-cards.md), [`c1-geography-frame.md`](c1-geography-frame.md), [`c1-method-notes.md`](c1-method-notes.md).
+Persona: Platform Architect. Slice: **C1**. Locked inputs: [`c1-citation-cards.md`](c1-citation-cards.md), [`c1-geography-frame.md`](c1-geography-frame.md), [`c1-method-notes.md`](c1-method-notes.md).
 
 Schema, pointers, and stores live in `src/prism/`. This note is the human contract. Pipeline, Ingest, and CMS must not invent fields around it.
 
-Citizen pages, MoSPI fetches, and Portrait copy wait until this contract is in git-shaped code.
+Citizen pages, MoSPI fetches, and Content Editor copy wait until this contract is in git-shaped code.
 
 ---
 
@@ -76,7 +76,7 @@ data/renders/{vintage_id}/                 CMS write; not citizen-view until the
 data/renders/{vintage_id}/COMPLETE         render-complete marker Platform publish requires
 data/pointers/citizen                      vintage_id; atomic temp+rename
 data/pointers/preview                      vintage_id; never an alias of citizen
-data/raw|derived|lineage/                  ingest (see ingestion blueprint)
+data/raw|derived|lineage/                  ingest (see data pipeline)
 logs/{run_id}/report.json                  pipeline report; not lineage.json
 ```
 
@@ -99,10 +99,10 @@ UTC in stores. Display release dates in `Asia/Kolkata` (`prism.refresh.STORE_TIM
 - DuckDB at render reads **exactly one** `vintage_id`. Do not join two vintages onto one page.
 - Templates bind `SlotSelector` (series + geography pair + sector + reference period + unit + status) to a `ServedObservation` (observation + citation card + caveat). If nothing matches: unknown / not published — not a remembered figure.
 - Charts and any observation API take `ServedObservation`. Nothing serves a bare float.
-- Default State/UT order: alphabetical by official English `State Name` as published. No rank sort. No red–green diverging default (CMS Engineer gates Vega-Lite).
-- Definition, unit, geography vintage, and data vintage belong in the same view as the number (CMS / Portrait). Platform only forbids serving a number without its cards.
+- Default State/UT order: alphabetical by official English `State Name` as published. No rank sort. No red–green diverging default (UI/UX Developer gates Vega-Lite).
+- Definition, unit, geography vintage, and data vintage belong in the same view as the number (UI/UX / Content Editor). Platform only forbids serving a number without its cards.
 
-Tests 4–8 in the architectural blueprint need a real Astro render of C1. They are skipped until CMS Engineer renders. Tests 1–3 (write) and test 9 (series cas / hard-link) are encoded now.
+Tests 4–8 in the architectural blueprint need a real Astro render of C1. They are skipped until UI/UX Developer renders. Tests 1–3 (write) and test 9 (series cas / hard-link) are encoded now.
 
 ---
 
@@ -128,6 +128,6 @@ Licence: GSDD 2026 Category A + MoSPI copyright (attribution; not CC-BY). Terms 
 
 ## Wait
 
-**Ingest** may fetch after this contract is in git. **Pipeline** writes vintages with these types and must not invent fields. **Portrait** and **CMS Engineer** wait for a vintage and this serving contract; do not scaffold Astro or write citizen copy in this pass. **Trust Auditor** waits until a citizen can see a page.
+**Ingest** may fetch after this contract is in git. **Pipeline** writes vintages with these types and must not invent fields. **Content Editor** and **UI/UX Developer** wait for a vintage and this serving contract; do not scaffold Astro or write citizen copy in this pass. **Trust Auditor** waits until a citizen can see a page.
 
 Do not start C2–C20.

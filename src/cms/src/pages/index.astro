@@ -1,34 +1,46 @@
 ---
-import { readFileSync } from "node:fs";
-import path from "node:path";
-import PortraitPage from "../layouts/PortraitPage.astro";
-import { specToSvg } from "../lib/render-chart";
+import SiteShell from "../layouts/SiteShell.astro";
+import { HOME_DESCRIPTION, HOME_H1, HOME_TITLE, loadSite } from "../lib/site";
 
-const boundDir = process.env.PRISM_BOUND_DIR;
-if (!boundDir) {
-  throw new Error("PRISM_BOUND_DIR is required");
-}
-
-type BoundFile = {
-  template_id: string;
-  vintage_id: string;
-  charts: Record<string, unknown>;
+const site = loadSite();
+const facts = site.slices.slice(0, 4);
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Prism",
 };
-
-const bound = JSON.parse(
-  readFileSync(path.join(boundDir, "bound.json"), "utf8"),
-) as BoundFile;
-let body = readFileSync(path.join(boundDir, "body.html"), "utf8");
-for (const [chartId, spec] of Object.entries(bound.charts)) {
-  const svg = await specToSvg(spec);
-  const figure = `<figure class="chart" id="chart-${chartId}">${svg}</figure>`;
-  body = body.replaceAll(`<!--chart:${chartId}-->`, figure);
-}
-if (body.includes("<!--chart:")) {
-  throw new Error("unbound chart placeholder remained after render");
-}
 ---
 
-<PortraitPage templateId={bound.template_id} vintageId={bound.vintage_id}>
-  <article class="portrait" set:html={body} />
-</PortraitPage>
+<SiteShell
+  page="home"
+  path="/"
+  title={HOME_TITLE}
+  description={HOME_DESCRIPTION}
+  vintageId={site.vintage_id}
+  jsonLd={jsonLd}
+>
+  <h1>{HOME_H1}</h1>
+  {facts.length > 0 && (
+    <ul class="fast-facts">
+      {facts.map((slice) => (
+        <li>
+          <a href={slice.path}>{slice.fact_lede}</a>
+        </li>
+      ))}
+    </ul>
+  )}
+  {site.slices.length > 0 && (
+    <nav class="hottest-rail" aria-label="Featured questions">
+      {site.slices.map((slice) => (
+        <a href={slice.path}>{slice.citizen_question}</a>
+      ))}
+    </nav>
+  )}
+  <ul class="sleeve-index">
+    {site.sleeves.map((sleeve) => (
+      <li>
+        <a href={sleeve.path}>{sleeve.hub_label}</a>
+      </li>
+    ))}
+  </ul>
+</SiteShell>

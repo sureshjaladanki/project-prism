@@ -48,7 +48,9 @@ def observations_to_parquet(observations: tuple[Observation, ...]) -> bytes:
     ids = [item.observation_id for item in ordered]
     if len(set(ids)) != len(ids):
         raise ObservationParquetError("observation_id must be unique within a series")
-    columns: dict[str, list[object]] = {name: [] for name in OBSERVATION_PARQUET_COLUMNS}
+    columns: dict[str, list[object]] = {
+        name: [] for name in OBSERVATION_PARQUET_COLUMNS
+    }
     for item in ordered:
         if not item.citation_id or not item.caveat_id:
             raise ObservationParquetError("citation_id and caveat_id are required")
@@ -86,9 +88,7 @@ def observations_from_parquet(payload: bytes) -> tuple[Observation, ...]:
     table = pq.read_table(io.BytesIO(payload), schema=_PARQUET_SCHEMA)
     names = tuple(table.column_names)
     if names != OBSERVATION_PARQUET_COLUMNS:
-        raise ObservationParquetError(
-            "unexpected parquet columns: " + ", ".join(names)
-        )
+        raise ObservationParquetError("unexpected parquet columns: " + ", ".join(names))
     observations: list[Observation] = []
     for row in table.to_pylist():
         observations.append(

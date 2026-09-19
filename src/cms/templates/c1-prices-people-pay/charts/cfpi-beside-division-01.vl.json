@@ -1,17 +1,16 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "CFPI / Group 01.1 Food beside Division 01 Food and beverages. Two official numbers. Do not label Division 01 as food. Same colour for both bars.",
+  "description": "Consumer Food Price Index beside Food and beverages. Two official numbers. Do not label Food and beverages as food. Same colour for both bars.",
   "title": {
-    "text": "Food index beside Food and beverages, All India Combined",
-    "subtitle": "CFPI is Group 01.1 Food. Division 01 is Food and beverages — a wider basket. Two official numbers, shown as published."
+    "text": "Food beside Food and beverages, All India Combined",
+    "subtitle": "Same month. Two official numbers."
   },
   "usermeta": {
     "slot_id": "chart-cfpi-beside-division-01",
     "cite_in_same_view": true,
     "forbidden": ["label_div01_as_food", "sort_by_measure", "red_green_diverging", "pick_winner"]
   },
-  "width": 640,
-  "height": 280,
+  "height": { "step": 22 },
   "data": { "name": "slot:chart-cfpi-beside-division-01" },
   "transform": [
     {
@@ -21,14 +20,14 @@
   ],
   "mark": { "type": "bar", "color": "#1f4e79", "invalid": "break-paths" },
   "encoding": {
-    "x": {
+    "y": {
       "field": "label",
       "type": "nominal",
       "title": null,
-      "sort": ["CFPI / Group 01.1 Food", "Division 01 Food and beverages"],
-  "axis": { "labelAngle": 0, "labelLimit": 400 }
+      "sort": ["Consumer Food Price Index", "Food and beverages"],
+      "axis": { "labelLimit": 400 }
     },
-    "y": {
+    "x": {
       "field": "plotValue",
       "type": "quantitative",
       "title": "Year-on-year inflation (%)",
@@ -37,7 +36,6 @@
     "tooltip": [
       { "field": "label", "type": "nominal" },
       { "field": "plotValue", "type": "quantitative", "title": "inflation (%)" },
-      { "field": "series_id", "type": "nominal" },
       { "field": "unit", "type": "nominal" },
       { "field": "reference_period", "type": "nominal" },
       { "field": "status", "type": "nominal" }

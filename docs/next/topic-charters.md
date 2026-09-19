@@ -1,6 +1,6 @@
 # Topic charters
 
-Charter Editor catalogue of slices the portrait should run. It is a menu and a run order, not a ranking of states or governments.
+Charter Editor catalogue of slices the portrait should run. It is a menu and a run order, not a partisan report card.
 
 Product: [vision.md](../vision.md). Sleeves: [team.md](../team.md). First crew on each slice: Charter Editor → Source Librarian → Methodologist. Geography Steward as soon as a number is not national.
 
@@ -24,9 +24,22 @@ A charter is in only if it passes all three:
 
 If it fails (1) but is required by (3), it still runs — with a note that it is a spine, not a search spike. If it passes (1) but has no official series, it does not run.
 
+## How a number gets on a page view
+
+Charter Editor source class ([charter-editor.md](../personas/charter-editor.md)). Every figure on a citizen page follows this, in order:
+
+1. **Identify the data requirement** — the citizen question, geography bar, and years the slice must answer.
+2. **Identify the producing office** — who published that series. Name it even when the file is fetched elsewhere.
+3. **Fetch** from official government agencies that can source that dependency. Producing office first preference; any other government office (`*.gov.in`, `data.gov.in`, line ministries, NITI as a host of that table) is in if it supplies the same dependency. Not locked to the producer’s website.
+4. **Quote** producer, series, date, and fetch source in the sources of that page view.
+
+A NITI scorecard, news write-up, or international secondary database is not a government source of the dependency. When two official series both answer the requirement, the page shows both and cites both. If no official government source can supply the dependency, the page shows the hole.
+
+If a named card cannot be extracted as spreadsheet cells and cannot be reconstructed from PDF or HTML without guessing, it does **not** block the story-shaped explainer when the remaining lineage-ok cards still answer the citizen question. Keep the card on the catalogue. Show the hole. Do not skip a card that *can* be reconstructed. Do not invent a table.
+
 ## What we take from USAFacts (role, not topics)
 
-[USAFacts](https://usafacts.org/) is the *role* in the vision: make official data usable; do not tell people what to think. Useful habits: citizen questions, government money next to how people live, and a public note when a series is late.
+[USAFacts](https://usafacts.org/) is the *role* in the vision: make official data usable; do not tell people what to think. Useful habits: citizen questions, government money next to how people live, and a public note when a series is late. Live portrait of that site (not a Prism contract): [usafacts-profile.md](../usafacts-profile.md).
 
 We do **not** copy its American chapters (immigration enforcement, Medicare/Social Security, firearms, homeland security, foreign aid, a Constitution-preamble “four missions”, a government **10-K form**). Do not substitute **SEBI LODR** as the Indian equivalent: LODR is listing disclosure for companies, not a civic filing. India’s frame is how India is governed. Union and state **accounts** (receipts, expenditure, deficit, debt as published) are C3 and C5 — Finance Accounts / CGA / CAG / FRBM, not a US form and not a stock-exchange code.
 
@@ -50,7 +63,7 @@ These families sit on the five sleeves. Each family is many slices, not one page
 
 ## Out (do not charter)
 
-- Rankings, NITI / SDG league tables, “best state”, report cards
+- NITI / SDG league tables as the source of record, “best state” verdicts, partisan report cards
 - News, legislation explainers, elections, party scorecards
 - Forecasts, “will inflation fall”, private polls
 - World Bank, IMF, UNDP, CMIE, ASER, or news tables as the source of record
@@ -85,7 +98,7 @@ Why: highest kitchen-table search that official statistics can answer; journalis
 slice:          How many people live in India, where, and how is that changing?
 in:             Census population at national and state/UT; Sample Registration System births, deaths, infant mortality, fertility; any official projection the librarian confirms — each shown as itself
 out:            treating 2011 as current without saying so; a single “India has X people” that hides the lag; NPR / citizenship registers; caste politics; district tables (parked even if Census publishes them)
-source_class:   allow (Census / ORGI, SRS) — librarian names vintages
+source_class:   allow — requirement → producing office → official government fetch (producer first, any government office that can source the dependency) → cite on the page ([c2-charter.md](c2-charter.md); [charter-editor.md](../personas/charter-editor.md))
 next_persona:   source-librarian
 ```
 
@@ -99,13 +112,13 @@ Geography Steward joins this slice for states/UTs. A national total that does no
 slice:          What does the Union collect, and what does it spend it on?
 in:             Union receipts (tax, non-tax, borrowings as published); expenditure by the budget’s own heads; deficit and debt as the producer defines them; a run of years
 out:            state finances (that is C5); scheme report cards; “waste / welfare” verdicts; Economic Survey prose; per-person rankings; districts
-source_class:   allow (Union Budget / Controller of Accounts / RBI as librarian cites)
+source_class:   allow — requirement → producing office → official government fetch (producer first, any government office that can source the dependency) → cite on the page
 next_persona:   source-librarian
 ```
 
 Why: vision “collects and spends”; journalists and public life expect it; this is the USAFacts *role* analogue, not a copy of US missions.
 
-This slice is Union-only until C5. The page must say states, UTs, and districts are missing (districts stay missing for this iteration).
+This slice is Union-only until C5. The page must say states, UTs, and districts are missing (districts stay missing for this iteration). Card 8 (FRBM statutory packet) is a named hole, not a block of the collect/spend explainer ([c3-charter.md](c3-charter.md)).
 
 ---
 
@@ -216,4 +229,8 @@ Do not start these until Wave 1–2 are shipping:
 
 ## Next
 
-Source Librarian on **C1** (exact CPI series, national and state/UT geography, licence, next release). Do not pull district files. Do not start C2–C20 in parallel until C1 has cards. After C1 cards, C2 and C3 may run as separate librarian jobs.
+C1 has cards ([c1-citation-cards.md](c1-citation-cards.md)). C1 Trust passed; Charter ships the preview vintage — see [c1-charter-verdict.md](c1-charter-verdict.md).
+
+C2 cards exist ([c2-citation-cards.md](c2-citation-cards.md)); C2 product stop is ingest (see [c2-refresh-contract.md](c2-refresh-contract.md)). Do not unblock C2 from this file.
+
+C3 cards exist ([c3-citation-cards.md](c3-citation-cards.md)). Charter: proceed with reconstructable cards; Card 8 stays a named hole ([c3-charter.md](c3-charter.md)). Product stop is Platform completeness + ingest of those tables — not “wait for FRBM as a grid.” Do not unblock C3 citizen-view from this file. Do not start C4–C20 until Wave 1 has cards.

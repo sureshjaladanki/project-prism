@@ -1,6 +1,6 @@
 # Repo conventions
 
-Layout, languages, and tooling. The contract they must obey is [architectural-blueprint.md](architectural-blueprint.md). Official files: [ingestion-blueprint.md](ingestion-blueprint.md). Product: [product.md](product.md).
+Layout, languages, and tooling. Product and serving: [architectural-blueprint.md](architectural-blueprint.md). Schema: [data-contracts.md](data-contracts.md). Ingest and vintage writes: [data-pipeline.md](data-pipeline.md).
 
 One git repository. Do not split ingest, pipeline, CMS, or serving into separate repos — the schema and the nine contract tests would version-skew.
 
@@ -13,7 +13,7 @@ One git repository. Do not split ingest, pipeline, CMS, or serving into separate
 | `tests/` | pytest (contract) and Playwright (citizen page). Python tests may live here even when they drive `src/cms/` |
 | `docs/` | Verdicts, charters, conventions (kebab-case filenames) |
 | `docs/personas/` | Agent personas for the team in [team.md](team.md) |
-| `data/` | Artifacts, vintages, renders, pointers (gitignored except `.gitkeep`). Ingest layout in [ingestion-blueprint.md](ingestion-blueprint.md) |
+| `data/` | Artifacts, vintages, renders, pointers (gitignored except `.gitkeep`). Ingest layout in [data-pipeline.md](data-pipeline.md) |
 | `logs/` | Run output (gitignored except `.gitkeep`), including `logs/{run_id}/report.json` |
 | `pyproject.toml` | Python project at repo root (`uv`) |
 
@@ -29,7 +29,7 @@ data/renders/{vintage_id}/          complete Astro tree; unchanged pages hard-li
                                     into cas; not citizen-view until the pointer flips
 data/pointers/citizen               vintage_id of the last complete published vintage
 data/pointers/preview               vintage_id for unpublished preview (never an alias of citizen)
-data/raw|derived|lineage/           ingest (see ingestion blueprint)
+data/raw|derived|lineage/           ingest (see data pipeline)
 logs/{run_id}/report.json           what ran, changed, failed — not lineage.json
 ```
 
@@ -54,11 +54,11 @@ Types for the page layer are generated from Pydantic (`model_json_schema()` → 
 
 ## Ingest
 
-`uv`, **httpx**, **pandas** + **openpyxl**, **pdfplumber** (stop if scanned or ambiguous; do not guess), **sdmx1** when a producer publishes SDMX. Keep raw bytes. Derived table stays tidy producer CSV under `data/derived/`.
+`uv`, **httpx**, **pandas** + **openpyxl** + **xlrd** (OLE `.xls`; stop if the workbook cannot be read as cells), **pdfplumber** (stop if scanned or ambiguous; do not guess), **sdmx1** when a producer publishes SDMX. Keep raw bytes. Derived table stays tidy producer CSV under `data/derived/`.
 
 ## Pipeline and refresh
 
-**Typer** CLI: ingest → vintage → render → publish. Refresh triggers are only `schedule` | `source_change` | `on_demand` ([architectural-blueprint.md](architectural-blueprint.md)).
+**Typer** CLI: ingest → vintage → render → publish. Refresh triggers are only `schedule` | `source_change` | `on_demand` ([architectural-blueprint.md](architectural-blueprint.md)). Batch stages: [data-pipeline.md](data-pipeline.md).
 
 - **schedule** — GitHub Actions cron, following each series’ `next_release`, not a hidden global clock.
 - **source_change** — ingest checksum compare. No extra bus.
@@ -68,13 +68,13 @@ Types for the page layer are generated from Pydantic (`model_json_schema()` → 
 
 ## CMS and serving
 
-Templates in git under `src/cms/`: Markdown copy + YAML slots (selector → series / geography / period). Portrait Editor never types a numeral into the page.
+Templates in git under `src/cms/`: Markdown copy + YAML slots (selector → series / geography / period). Content Editor never types a numeral into the page.
 
-**Astro SSG:** `template + one vintage → static HTML`. Same inputs, same page. Publish points the citizen prefix at a finished `data/renders/{vintage_id}/`. Preview is a **different, non-public** prefix: private bucket (or equivalent), `noindex`, signed URL. A second public URL is not isolation.
+**Astro SSG:** `template + one vintage → static HTML`. Same inputs, same page. Publish points the citizen prefix at a finished `data/renders/{vintage_id}/`. Preview is a **different, non-public** prefix: private bucket (or equivalent), `noindex`, signed URL. A second public URL is not isolation. Routes, titles, SEO, preview headers: [web-design.md](web-design.md) (Front-end Architect owns the contract; UI/UX Developer implements).
 
 Unchanged pages (every bound slot’s series payload checksum unchanged) are hard-linked from cas / the prior render. Re-render only templates whose inputs changed. Do not rebuild and recopy the whole tree because one series moved.
 
-**Vega-Lite** for charts. Breaks, unknown, and not-comparable stay encodings. Default state/UT order is alphabetical by official English name, or a documented geographic order.
+**Vega-Lite** for charts. Breaks, unknown, and not-comparable stay encodings. Default state/UT order is alphabetical by official English name, or a documented geographic order. Colour, type, and chart chrome: [design-system.md](design-system.md) (UI/UX Developer) — USAFacts is a reading reference, not a look to copy.
 
 **Forbidden as publish or refresh:** incremental regeneration of live citizen routes (Next.js ISR, `revalidate`, `revalidatePath`, stale-while-revalidate of production). Mutating live paths in place is not publish. Do not add Next.js, SSR, or request-time `fetch` of a producer site. Do not recopy unchanged series or pages.
 

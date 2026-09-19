@@ -1,0 +1,88 @@
+---
+import SiteShell from "../../../layouts/SiteShell.astro";
+import { specToFigure } from "../../../lib/render-chart";
+import { loadSite, loadSliceBound, sleeveByPath } from "../../../lib/site";
+
+export function getStaticPaths() {
+  const site = loadSite();
+  return site.slices.map((slice) => {
+    const parts = slice.path.split("/").filter(Boolean);
+    return {
+      params: { sleeve: parts[0], slice: parts[1] },
+      props: { templateId: slice.template_id },
+    };
+  });
+}
+
+interface Props {
+  templateId: string;
+}
+
+const { templateId } = Astro.props;
+const site = loadSite();
+const bound = loadSliceBound(templateId);
+const slice = site.slices.find((item) => item.template_id === templateId);
+if (!slice) {
+  throw new Error(`slice missing from catalog: ${templateId}`);
+}
+const sleeve = sleeveByPath(site, `/${Astro.params.sleeve}`);
+if (!sleeve) {
+  throw new Error(`unknown sleeve: ${Astro.params.sleeve}`);
+}
+
+let body = bound.body;
+for (const [chartId, spec] of Object.entries(bound.charts)) {
+  const figure = await specToFigure(chartId, spec);
+  body = body.replaceAll(`<!--chart:${chartId}-->`, figure);
+}
+if (body.includes("<!--chart:")) {
+  throw new Error("unbound chart placeholder remained after render");
+}
+
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Prism", item: "/" },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: sleeve.hub_label,
+        item: sleeve.path,
+      },
+      { "@type": "ListItem", position: 3, name: slice.citizen_question },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "QAPage",
+    mainEntity: {
+      "@type": "Question",
+      name: slice.citizen_question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: slice.fact_lede,
+      },
+    },
+  },
+];
+---
+
+<SiteShell
+  page="slice"
+  path={slice.path}
+  title={slice.citizen_question}
+  description={slice.fact_lede}
+  vintageId={bound.vintage_id}
+  templateId={bound.template_id}
+  currentSleevePath={sleeve.path}
+  breadcrumb={[
+    { href: "/", label: "Prism" },
+    { href: sleeve.path, label: sleeve.hub_label },
+    { label: slice.citizen_question },
+  ]}
+  jsonLd={jsonLd}
+>
+  <article class="portrait" set:html={body} />
+</SiteShell>

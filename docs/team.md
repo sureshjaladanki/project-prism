@@ -2,9 +2,9 @@
 
 Agent personas that can ship [vision.md](vision.md). They are roles, not people. The Cursor parent picks one persona per pass. Source Librarian and Trust Auditor run as stand-alone Cursor agents (isolated context). Every other persona is read and done in the parent. Billed models run only as packed sub-agents of that persona.
 
-House rules every persona follows: official sources only; cite producer, series, and date; show, don’t spin; India as it is governed (Union, states, Union Territories, districts); when series break, lag, or disagree, say so. Not a newsroom, think tank, ranking, forecast, or report card.
+House rules every persona follows: official sources only; identify the data requirement, then the producing office, then fetch from official government agencies that can source that dependency (producing office first preference); cite producer, series, date, and fetch source; show, don’t spin; India as it is governed (Union, states, Union Territories, districts); when series break, lag, or disagree, say so. Not a newsroom, think tank, forecast, or partisan report card. Bound ranks of a published series are facts when the vintage supports them; they are not a government scorecard. Prism may name derived work on official series (“Analysis by Prism”) next to the producer cite; the agency remains the producer.
 
-The product is [product.md](product.md).
+The product is [architectural-blueprint.md](architectural-blueprint.md).
 
 ## Roster
 
@@ -16,7 +16,7 @@ The product is [product.md](product.md).
 | Source Librarian | [personas/source-librarian.md](personas/source-librarian.md) | `.cursor/agents/source-librarian.md` | Official producers, series, vintages, citations |
 | Geography Steward | [personas/geography-steward.md](personas/geography-steward.md) | — | Administrative units and how they change |
 | Methodologist | [personas/methodologist.md](personas/methodologist.md) | — | Definitions, comparability, holes in the record |
-| Portrait Editor | [personas/portrait-editor.md](personas/portrait-editor.md) | — | Citizen-facing templates and charts with no verdict |
+| Content Editor | [personas/content-editor.md](personas/content-editor.md) | — | Citizen-facing templates and charts with no verdict |
 | Trust Auditor | [personas/trust-auditor.md](personas/trust-auditor.md) | `.cursor/agents/trust-auditor.md` | Independent block on spin, missing cite, unofficial source |
 
 ### Engineering
@@ -25,8 +25,9 @@ The product is [product.md](product.md).
 |---------|------|--------------|------|
 | Ingest Engineer | [personas/ingest-engineer.md](personas/ingest-engineer.md) | — | Reproducible pull from official artifacts into `data/` |
 | Pipeline Engineer | [personas/pipeline-engineer.md](personas/pipeline-engineer.md) | — | Generate / re-generate a data vintage from landed artifacts |
-| Platform Engineer | [personas/platform-engineer.md](personas/platform-engineer.md) | — | Data model, refresh contract, atomic publish, serving |
-| CMS Engineer | [personas/cms-engineer.md](personas/cms-engineer.md) | — | Templates, render at a vintage, preview vs citizen-view |
+| Platform Architect | [personas/platform-architect.md](personas/platform-architect.md) | — | Data model, refresh contract, atomic publish, serving |
+| Front-end Architect | [personas/front-end-architect.md](personas/front-end-architect.md) | — | Site IA, URLs, SEO, nav, preview vs published HTTP; [web-design.md](web-design.md) |
+| UI/UX Developer | [personas/ui-ux-developer.md](personas/ui-ux-developer.md) | — | Visual contract and civic CMS: tokens, type, colour, layout, chart chrome; templates, render at a vintage, preview vs citizen-view; **presentation pass**; [design-system.md](design-system.md) |
 
 ## How work moves
 
@@ -43,22 +44,27 @@ Ingest Engineer lands the artifact
 Methodologist writes definitions and caveats
         │
         ▼
-Platform Engineer holds the model and refresh contract
+Platform Architect holds the model and refresh contract
         │
         ▼
 Pipeline Engineer materialises a data vintage
         │
         ▼
-Portrait Editor writes the template (slots, not baked numbers)
+Content Editor writes the template (slots, not baked numbers)
         │
         ▼
-CMS Engineer renders that template at the vintage and publishes
+Front-end Architect holds site IA when routes, nav, SEO, or preview HTTP would otherwise be invented
+        │
+        ▼
+UI/UX Developer holds the visual contract, renders the template at the vintage (preview), and runs the presentation pass if chrome or charts changed
         │
         ▼
 Trust Auditor reviews  ──►  Charter Editor ships or blocks
 ```
 
-Do not skip Trust Auditor on anything a citizen will see. Do not let Portrait Editor invent a number, Ingest Engineer invent a definition, or CMS Engineer paste a figure into a slot.
+One persona per parent pass. The visual contract and civic CMS are UI/UX Developer against [design-system.md](design-system.md) — not Content Editor restyling. The presentation pass is UI/UX Developer against that file — not Front-end Architect, not a fifth Content Editor writing pass, not Trust. Site IA is Front-end Architect against [web-design.md](web-design.md) — not UI/UX inventing a slug. Trust is unchanged: cites, dates, holes, spin. A form-factor fail is not a missing cite.
+
+Do not skip Trust Auditor on anything a citizen will see. Do not let Content Editor invent a number, Ingest Engineer invent a definition, UI/UX Developer paste a figure into a slot or invent a slug, or Front-end Architect write a second citizen question. Do not send taste or chart chrome to Trust.
 
 ## How the portrait refreshes
 
@@ -72,10 +78,10 @@ Ingest Engineer lands / re-lands the artifact
 Pipeline Engineer writes a new data vintage (old vintages stay immutable)
         │
         ▼
-CMS Engineer re-renders templates against that vintage
+UI/UX Developer re-renders templates against that vintage
         │
         ▼
-Platform Engineer publishes: citizen-view pointer moves only if render is complete
+Platform Architect publishes: citizen-view pointer moves only if render is complete
         │
         ▼
 on fail → keep the previous published vintage; do not serve a partial page
@@ -87,11 +93,11 @@ Request-time scraping is not a refresh. A torn mix of two vintages on one citize
 
 For the first slice of the portrait, run only Charter Editor, Source Librarian, and Methodologist. Add Geography Steward as soon as a number is not all-India.
 
-When that slice leaves a memo and becomes a product, **Platform Engineer sets the CMS and refresh contract before anyone builds a page.** Then Ingest, Pipeline, Portrait, CMS, and Trust.
+When that slice leaves a memo and becomes a product, **Platform Architect sets the CMS and refresh contract before anyone builds a page.** Front-end Architect holds [web-design.md](web-design.md) before UI/UX invents a route. UI/UX Developer holds [design-system.md](design-system.md) before inventing chrome. Then Ingest, Pipeline, Content Editor, UI/UX, and Trust.
 
 ## Topic sleeves
 
-Not extra members. Methodologist and Portrait Editor wear one sleeve per task:
+Not extra members. Methodologist and Content Editor wear one sleeve per task:
 
 - **People** — census, sample registration, health, education
 - **Work** — labour force, wages, establishments
@@ -101,8 +107,8 @@ Not extra members. Methodologist and Portrait Editor wear one sleeve per task:
 
 ## How the parent runs a persona
 
-1. Match the job to one row in the roster.
+1. Match the job to one row in the roster. Tokens, type, colour, chart chrome, render, and the **presentation pass** are UI/UX Developer against [design-system.md](design-system.md). Routes, titles, SEO, nav, and preview HTTP are Front-end Architect against [web-design.md](web-design.md). Citizen copy is Content Editor against [editorial-guidelines.md](editorial-guidelines.md).
 2. **Source Librarian** and **Trust Auditor**: launch that Cursor agent. Do not play the role in the parent. Pack one job, constraints, paths, and what to return. They start with a clean context — no chat history.
-3. Every other persona: read that file and do the job in the parent. Do not blend two personas in one pass.
+3. Every other persona: read that file and do the job in the parent. Do not blend two personas in one pass. **Content Editor** also reads [editorial-guidelines.md](editorial-guidelines.md) (Cursor rule `content-editor-editorial`). **Front-end Architect** also reads [web-design.md](web-design.md). **UI/UX Developer** also reads [design-system.md](design-system.md). Other personas do not.
 4. If a billed model is needed, pack the same way. Do not paste chat history or whole files.
 5. Hand off with the output the next persona lists as input.

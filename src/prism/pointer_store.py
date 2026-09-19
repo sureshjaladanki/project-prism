@@ -38,7 +38,9 @@ def _acquire_publish_lock(data_root: Path) -> Path:
 
 def _write_pointer_atomic(path: Path, vintage_id: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    fd, tmp_name = tempfile.mkstemp(prefix=f".{path.name}.", suffix=".tmp", dir=path.parent)
+    fd, tmp_name = tempfile.mkstemp(
+        prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
+    )
     try:
         with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
             handle.write(vintage_id + "\n")
@@ -75,7 +77,9 @@ def _assert_distinct_pointer_files(data_root: Path) -> None:
         raise PublishError("preview must not be an alias of citizen")
 
 
-def _require_publishable(data_root: Path, vintage_id: str, *, render_complete: bool) -> VintageManifest:
+def _require_publishable(
+    data_root: Path, vintage_id: str, *, render_complete: bool
+) -> VintageManifest:
     if VINTAGE_ID_PATTERN.fullmatch(vintage_id) is None:
         raise PublishError(f"invalid vintage_id: {vintage_id}")
     if not vintage_dir(data_root, vintage_id).exists():
@@ -109,7 +113,9 @@ def publish_citizen(
     lock = _acquire_publish_lock(data_root)
     try:
         if not contract_tests_passed:
-            raise PublishError("contract tests have not passed; citizen pointer will not move")
+            raise PublishError(
+                "contract tests have not passed; citizen pointer will not move"
+            )
         _require_publishable(data_root, vintage_id, render_complete=render_complete)
         _write_pointer_atomic(citizen_pointer_path(data_root), vintage_id)
         _assert_distinct_pointer_files(data_root)

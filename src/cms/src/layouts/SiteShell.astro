@@ -1,0 +1,119 @@
+---
+import "../styles/desk.css";
+import { type PrismPage, type SiteSleeve, loadSite } from "../lib/site";
+import { rootStyle } from "../lib/theme";
+
+interface Crumb {
+  href?: string;
+  label: string;
+}
+
+interface Props {
+  page: PrismPage;
+  path?: string;
+  title: string;
+  description?: string;
+  vintageId: string;
+  templateId?: string;
+  currentSleevePath?: string;
+  breadcrumb?: Crumb[];
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  page,
+  path,
+  title,
+  description,
+  vintageId,
+  templateId,
+  currentSleevePath,
+  breadcrumb,
+  jsonLd,
+} = Astro.props;
+
+const site = loadSite();
+
+function sleeveCurrent(sleeve: SiteSleeve): "page" | "true" | undefined {
+  if (page === "sleeve" && path === sleeve.path) {
+    return "page";
+  }
+  if (page === "slice" && currentSleevePath === sleeve.path) {
+    return "true";
+  }
+  return undefined;
+}
+---
+
+<!doctype html>
+<html
+  lang="en"
+  data-prism-page={page}
+  data-prism-path={path}
+  data-template-id={templateId}
+  data-vintage-id={vintageId}
+  style={rootStyle}
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Prism" />
+    <meta name="twitter:card" content="summary" />
+    {page === "notfound" && <meta name="robots" content="noindex" />}
+    {jsonLd && (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+    )}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="site-frame">
+      <header class="site-header">
+        <a class="site-lockup" href="/">Prism</a>
+        <nav class="sleeve-nav" aria-label="Sleeves">
+          <ul>
+            {site.sleeves.map((sleeve) => (
+              <li>
+                <a href={sleeve.path} aria-current={sleeveCurrent(sleeve)}>
+                  {sleeve.header_label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </header>
+      {breadcrumb && breadcrumb.length > 0 && (
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            {breadcrumb.map((crumb) => (
+              <li>
+                {crumb.href ? (
+                  <a href={crumb.href}>{crumb.label}</a>
+                ) : (
+                  <span aria-current="page">{crumb.label}</span>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      <main id="main">
+        <slot />
+      </main>
+      <footer class="site-footer">
+        <nav aria-label="Footer">
+          {site.sleeves.map((sleeve) => (
+            <a href={sleeve.path}>{sleeve.header_label}</a>
+          ))}
+          {site.house.map((house) => (
+            <a href={house.path}>{house.h1}</a>
+          ))}
+        </nav>
+      </footer>
+    </div>
+  </body>
+</html>

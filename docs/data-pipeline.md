@@ -1,10 +1,32 @@
-# Ingestion blueprint
+# Data pipeline
 
-How an official artifact becomes files another agent can replay. The pull is scripted, the raw bytes are kept, the lineage is written down. Mapping those tables into a data vintage is Pipeline Engineer, specified in [architectural-blueprint.md](architectural-blueprint.md).
+How official bytes become an immutable **data vintage**. Two stages, one batch machine, two owners.
 
-This is not how citizen pages are written. Templates and copy are not ingested from ministry sites. This is not a live scrape at request time.
+Ingest Engineer lands the producer’s table. Pipeline Engineer maps that table into the portrait schema. They must not be collapsed into one job: ingest does not write observations; pipeline does not fetch.
 
-## What ingest is for
+This is not citizen serving ([architectural-blueprint.md](architectural-blueprint.md)). Field lists: [data-contracts.md](data-contracts.md). Paths and tools: [repo-conventions.md](repo-conventions.md).
+
+## Why two stages, one document
+
+Ingest talks to producer websites and parsers. Vintage mapping talks to the schema, caveats, and geography frame. Different failure modes, different “must not” lists. One document so the handoff is visible; two personas so neither job absorbs the other.
+
+```text
+citation card + geography frame
+        │
+        ▼
+Stage 1  Ingest     raw artifact → derived table → lineage + source_changed
+        │           stop at the producer’s table
+        ▼
+        Methodologist caveat note (not a pipeline step; a required input)
+        │
+        ▼
+Stage 2  Vintage    derived + lineage + caveat + geography → new data vintage
+        │
+        ▼
+        CMS render + Platform publish   (architecture, not this file)
+```
+
+## Stage 1 — Ingest
 
 Turn a **citation card** into:
 
@@ -13,9 +35,9 @@ Turn a **citation card** into:
 3. a lineage record another run can check
 4. a `source_changed` signal the refresh contract can use
 
-Stop at the producer’s table.
+Stop at the producer’s table. Templates and copy are not ingested from ministry sites. This is not a live scrape at request time.
 
-## Preconditions
+### Preconditions
 
 Do not fetch until all of these exist:
 
@@ -27,19 +49,19 @@ geography_frame:    Geography Steward, if the artifact is not all-India
                     with no sub-national rows
 ```
 
-No citation card → no retrieve. A news write-up, portal republish, NITI scorecard, private poll, or international secondary database is not a card Ingest may honour even if it quotes government figures.
+No citation card → no retrieve. A news write-up, NITI scorecard, private poll, or international secondary database is not a card Ingest may honour even if it quotes government figures. An official government host of the named dependency (`data.gov.in`, a line ministry, NITI as a host of that table) is in when the citation card names the producing office; producing office first preference.
 
 If the URL requires a login wall, stop. If the producer’s terms forbid the pull, stop.
 
-## What may be retrieved
+### What may be retrieved
 
-The producing office’s own release: PDF, spreadsheet, CSV, SDMX, or an official bulk/export the office publishes.
+The named data dependency, from official government agencies that can source it: PDF, spreadsheet, CSV, SDMX, or an official bulk/export. Prefer the producing office’s own release. Another government office is allowed when it supplies that dependency.
 
 Dashboards are allowed only as a **scripted retrieve of a durable official export**, with the same lineage as a file. They are not a way to fill a chart when a citizen opens a page.
 
 Economic Survey narrative, press releases, and ministry “achievements” pages are not artifacts. If they reprint a table, the librarian must cite the producing series; Ingest fetches that series.
 
-## Layout under `data/`
+### Layout under `data/`
 
 Names include producer, series id, and the producer’s vintage (the reference period / release the librarian named). Paths use `/`. `data/` is gitignored except `.gitkeep`.
 
@@ -61,7 +83,7 @@ data/
 
 `{retrieved_at}` is UTC, `YYYYMMDDThhmmssZ`. `{source_vintage}` is the librarian’s reference period, then release date if needed to disambiguate — not the retrieve clock.
 
-## Retrieve
+### Retrieve
 
 Same script every time. New retrieve date. No hand downloads as the source of record.
 
@@ -76,7 +98,7 @@ Same script every time. New retrieve date. No hand downloads as the source of re
 
 Delayed stays delayed. Withdrawn stays withdrawn. Do not substitute last year’s file to keep the job green.
 
-## Derived table
+### Derived table
 
 Tidy, still the producer’s definitions. No new concept, unit, or total that is not in the artifact.
 
@@ -87,9 +109,9 @@ Tidy, still the producer’s definitions. No new concept, unit, or total that is
 
 Budget estimates, revised estimates, and actuals stay distinct columns or rows — never collapsed. Survey vs census vs administrative stay distinct.
 
-## Lineage record
+### Lineage record
 
-Written to `lineage.json`. This is the ingest output the next persona consumes.
+Written to `lineage.json`. This is the ingest output Stage 2 consumes.
 
 ```text
 raw_path:
@@ -106,11 +128,11 @@ flags:              (pagination errors, scanned pages, mismatched totals,
                      terms/login stop, ambiguous unit)
 ```
 
-`lineage_ok: no` means Pipeline must not build a vintage from this retrieve. Keep the previous good derived table in place. Do not “fix up” a changed file so the old parse still matches.
+`lineage_ok: no` means Pipeline must not map that retrieve into value observations. Keep the previous good derived table in place. Do not “fix up” a changed file so the old parse still matches. A **named hole** on the slice refresh contract is the exception for vintage completeness: the series stays listed as unknown / not a table (`lineage_ok: no`); it does not fail the vintage. Any other `lineage_ok: no` fails that series and completeness.
 
 A pipeline run report (what ran, changed, failed) is not this file. That belongs at `logs/{run_id}/report.json`.
 
-## `source_changed`
+### `source_changed`
 
 Refresh trigger consumed by Platform’s contract.
 
@@ -124,15 +146,13 @@ A later retrieve of the same URL that returns different bytes is a change, even 
 
 Checksum of the raw artifact is the signal. Derived-table diffs are diagnostics, not the trigger.
 
-## Parser version
+### Parser version
 
 The parser is part of lineage. Changing how a table is read is a new `parser` version. Re-run retrieve or re-parse from **kept raw**; do not edit derived cells by hand.
 
 If a parser change would alter numbers without a source change, Pipeline still writes a **new data vintage**. Ingest reports the new parser on the lineage record.
 
-## Explicit non-goals
-
-Ingest does not:
+### Ingest must not
 
 - choose which series is better
 - fill holes or last-year stand-ins
@@ -143,16 +163,48 @@ Ingest does not:
 - serve a citizen page from `data/`
 - scrape at request time for a chart
 
+## Stage 2 — Data vintage
+
+Map landed tables into a new **data vintage**: observations, citations, geography, and caveats as of one run. Schema: [data-contracts.md](data-contracts.md).
+
+Pipeline reads derived tables and lineage. It does not fetch PDFs, edit an old vintage, or publish.
+
+```text
+1. Read derived_path + checksum + lineage_ok for each series in the run.
+2. If lineage_ok is no: do not write value observations. A named hole still
+   lists the series (unknown / not a table) and does not fail completeness.
+   Any other lineage_ok: no fails that series and vintage completeness.
+3. Bind citation, caveat note, and geography vintage (code + geography_vintage).
+4. Write observations. Fail the series (and the vintage completeness) if
+   citation_id, caveat_id, or geography.geography_vintage is missing.
+5. Payload-checksum each series. If it matches the previous vintage, hard-link
+   (or reuse the CAS key). Do not copy bytes.
+6. Always write a new manifest.json. Assign vintage_id. Never overwrite
+   an existing vintage directory.
+7. Write logs/{run_id}/report.json: what ran, changed, failed, reused.
+```
+
+- A vintage is immutable once written. Refresh means a **new** id.
+- Unchanged series are not recopied. Record `reused: yes | no` per series in `manifest.json` and in the run report.
+- Two official series that disagree stay two observations. Do not pick a winner.
+- Delayed or withdrawn stays delayed or withdrawn. Do not backfill from last year.
+- Idempotent replay: same inputs, same vintage payload.
+- A failed vintage is retained for diagnosis. It is never the citizen pointer.
+
+`vintage_id` rule, triggers, and when the citizen pointer may move: [architectural-blueprint.md](architectural-blueprint.md).
+
 ## Handoff
 
 ```text
 Methodologist     opens derived_path; trusts it is the producer’s table
 Pipeline          reads derived_path + checksum; sees source_changed
 Platform          uses source_changed as a refresh trigger
+CMS               reads exactly one complete vintage_id; never this pipeline’s
+                  derived CSV
 ```
 
 If `flags` include ambiguity, Methodologist goes next — not Pipeline guessing a unit.
 
 ## Done when
 
-A second retrieve of the same card is the same script, a new `{retrieved_at}`, a comparable checksum, and a lineage record Pipeline can trust without opening the PDF to see what happened.
+A second retrieve of the same card is the same script, a new `{retrieved_at}`, a comparable checksum, and a lineage record Pipeline can trust without opening the PDF. A later vintage run can rebuild from `data/` without guessing, and CMS can render against that vintage.

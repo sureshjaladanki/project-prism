@@ -23,7 +23,7 @@ Ingest, vintage, render, and publish are transforms: inputs in, new artifacts ou
 
 ## Contracts and instances — prefer objects
 
-Schema, observations, citations, caveats, geography pair, and vintage payload are types with invariants, not loose dicts.
+Schema, observations, citations, caveats, geography pair, and vintage payload are types with invariants, not loose dicts. Fields: [data-contracts.md](data-contracts.md).
 
 - Python: Pydantic models. Construction fails if `citation_id`, `caveat_id`, or `geography.geography_vintage` is missing.
 - TypeScript: types generated from those models (`model_json_schema()`). Do not hand-maintain a parallel schema.
@@ -45,6 +45,14 @@ Split by responsibility so modules stay small and composable.
 - Public APIs accept and return the contract types above; keep helpers private in the language’s usual way (Python `_helper`, TypeScript unexported).
 - Share utilities instead of copy-pasting near-identical logic.
 
+## DRY — don’t repeat yourself
+
+Identical types and logic have one home. Copying a dataclass, helper, or constant for a new slice is a miss.
+
+- After a second concrete use, extract the shared type or function. One `SeriesBinding` for C1 / C2 / C3, not three lookalikes.
+- Prefer one type over a class hierarchy when the shapes match. Inheritance is for genuine *is-a* behaviour, not for reusing fields.
+- DRY does not override [Do not over-engineer](#do-not-over-engineer): do not invent a base class, generic, or helper for a single use.
+
 ## Do not over-engineer
 
 Solve the problem in front of you.
@@ -55,7 +63,7 @@ Solve the problem in front of you.
 
 ## Clear nomenclature
 
-Names encode role and meaning. Use the blueprint’s vocabulary (observation, citation, caveat, series, vintage, geography, template, render, publish, pointer) — not parallel synonyms.
+Names encode role and meaning. Use the vocabulary in [architectural-blueprint.md](architectural-blueprint.md) and [data-contracts.md](data-contracts.md) (observation, citation, caveat, series, vintage, geography, template, render, publish, pointer) — not parallel synonyms.
 
 Follow the language of the file. Do not force Python names into TypeScript or the reverse.
 

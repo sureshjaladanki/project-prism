@@ -1,0 +1,47 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Union expenditure summary, Budget Estimates 2026-27 Total: Central expenditure beside Transfers. Two printed blocks. Same colour. Do not sort by the measure. Transfers are Union outgo, not C5. Do not put the two printed grand totals on this chart.",
+  "title": {
+    "text": "Where the Budget sends money, Budget Estimates 2026-27",
+    "subtitle": "Union budget heads. Transfers here are Union outgo, not state accounts."
+  },
+  "usermeta": {
+    "slot_id": "chart-spend-blocks-be",
+    "cite_in_same_view": true,
+    "forbidden": ["sort_by_measure", "red_green_diverging", "transfers_as_c5", "swap_printed_totals", "pick_winner"]
+  },
+  "height": { "step": 22 },
+  "data": { "name": "slot:chart-spend-blocks-be" },
+  "transform": [
+    {
+      "calculate": "datum.status === 'value' ? datum.value : null",
+      "as": "plotValue"
+    }
+  ],
+  "mark": { "type": "bar", "color": "#1f4e79", "invalid": "break-paths" },
+  "encoding": {
+    "y": {
+      "field": "label",
+      "type": "nominal",
+      "title": null,
+      "sort": ["Central expenditure", "Transfers"],
+      "axis": { "labelLimit": 400 }
+    },
+    "x": {
+      "field": "plotValue",
+      "type": "quantitative",
+      "title": "Crore of rupees",
+      "scale": { "zero": true }
+    },
+    "tooltip": [
+      { "field": "label", "type": "nominal" },
+      { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+      { "field": "unit", "type": "nominal" },
+      { "field": "reference_period", "type": "nominal" },
+      { "field": "status", "type": "nominal" }
+    ]
+  },
+  "config": {
+    "view": { "stroke": null }
+  }
+}

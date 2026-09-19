@@ -1,10 +1,10 @@
 # Prism
 
-A civic CMS that turns official Indian statistics into a checkable portrait of the country. It is not a newsroom, a ranking of states, or a live scrape of ministry sites.
+A civic CMS that turns official Indian statistics into a checkable portrait of the country. It is not a newsroom, a partisan report card, or a live scrape of ministry sites.
 
 Templates hold copy and charts. A **data vintage** is an immutable snapshot of observations, citations, geography, and caveats after one pipeline run. Render is `template + vintage → page`. When a source updates, ingest lands the new file, the pipeline writes a **new** vintage, the CMS re-renders, then a pointer flip publishes. Citizen view moves only to a complete published vintage.
 
-Inspired by the *role* of [USAFacts](https://usafacts.org/): make government data usable, do not tell people what to think. Vision is in [`docs/vision.md`](docs/vision.md). Product shape is in [`docs/product.md`](docs/product.md).
+Inspired by the *role* of [USAFacts](https://usafacts.org/): make government data usable, do not tell people what to think. Vision is in [`docs/vision.md`](docs/vision.md). Product and machine are in [`docs/architectural-blueprint.md`](docs/architectural-blueprint.md).
 
 ## Layout
 
@@ -39,7 +39,10 @@ uv run pytest tests
 
 ## Docs
 
-- [`docs/architectural-blueprint.md`](docs/architectural-blueprint.md) — the machine
-- [`docs/ingestion-blueprint.md`](docs/ingestion-blueprint.md) — landing official files
+- [`docs/architectural-blueprint.md`](docs/architectural-blueprint.md) — product and system
+- [`docs/design-system.md`](docs/design-system.md) — citizen visual contract (not a USAFacts clone)
+- [`docs/editorial-guidelines.md`](docs/editorial-guidelines.md) — how citizen pages read
+- [`docs/data-contracts.md`](docs/data-contracts.md) — schema
+- [`docs/data-pipeline.md`](docs/data-pipeline.md) — ingest and vintage writes
 - [`docs/repo-conventions.md`](docs/repo-conventions.md) — layout and tooling
 - [`docs/team.md`](docs/team.md) — who does the work

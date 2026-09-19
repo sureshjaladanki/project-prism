@@ -1,0 +1,75 @@
+---
+import SiteShell from "../layouts/SiteShell.astro";
+import { loadSite } from "../lib/site";
+
+const site = loadSite();
+const house = site.house.find((item) => item.path === "/how-this-works");
+if (!house) {
+  throw new Error("house page missing from catalog");
+}
+---
+
+<SiteShell
+  page="house"
+  path={house.path}
+  title={house.title}
+  description={house.description}
+  vintageId={site.vintage_id}
+>
+  <h1>{house.h1}</h1>
+  <p>
+    Prism gathers official government statistics into one portrait of India: what
+    the state collects, spends, and delivers, and how people live. High or low,
+    good or bad — the reader decides.
+  </p>
+
+  <h2>What you are reading</h2>
+  <p>
+    Each topic page starts with a citizen question. It answers with the published
+    fact, then the evidence, then how that fact was measured. The wording is
+    written once. The numbers are filled from a snapshot of official
+    observations, citations, and caveats. Opening the page does not fetch a
+    ministry website.
+  </p>
+
+  <h2>How a number gets here</h2>
+  <p>For every figure on a page:</p>
+  <ul>
+    <li>The page names the question it is answering.</li>
+    <li>It names the producing office.</li>
+    <li>
+      It uses a file from an official government agency that can source that
+      table — the producing office first, another government host if that is
+      where the file lives.
+    </li>
+    <li>Producer, series, date, and fetch source sit with the number.</li>
+  </ul>
+  <p>
+    News write-ups, private polls, and international secondary databases are not
+    the source of record.
+  </p>
+
+  <h2>What this is not</h2>
+  <p>
+    Prism is not a newsroom, a think tank, or an advocacy shop. It does not
+    forecast. It does not score ministries or parties. It does not replace the
+    agencies that collect the data.
+  </p>
+  <p>
+    Where a page ranks units, it is ranking a published measure this snapshot can
+    bind — not a government scorecard. Named analysis of official series may
+    appear as "Analysis by Prism" beside the producer cite. The agency remains
+    the producer.
+  </p>
+
+  <h2>When the record is incomplete</h2>
+  <p>
+    If a series breaks, lags, or two official numbers disagree, the page says so
+    in the same view as the number. Missing places are named. A hole is not
+    filled with a remembered figure.
+  </p>
+  <p>
+    <a href="/sources">Sources</a> points to the pages in this snapshot, where
+    each number names its producing office.
+  </p>
+</SiteShell>

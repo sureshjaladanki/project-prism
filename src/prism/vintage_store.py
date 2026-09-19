@@ -20,7 +20,13 @@ from prism.paths import (
     vintage_dir,
     vintages_dir,
 )
-from prism.refresh import C1_SERIES_IDS, VINTAGE_ID_PATTERN, ensure_utc, vintage_id_for
+from prism.refresh import (
+    C1_SERIES_IDS,
+    VINTAGE_ID_PATTERN,
+    ensure_utc,
+    lineage_blocks_completeness,
+    vintage_id_for,
+)
 from prism.schema import (
     CaveatNote,
     Citation,
@@ -81,7 +87,9 @@ def cas_put(data_root: Path, payload: bytes) -> str:
     cas_dir(data_root).mkdir(parents=True, exist_ok=True)
     if dest.exists():
         return digest
-    fd, tmp_name = tempfile.mkstemp(prefix=f".{digest}.", suffix=".tmp", dir=cas_dir(data_root))
+    fd, tmp_name = tempfile.mkstemp(
+        prefix=f".{digest}.", suffix=".tmp", dir=cas_dir(data_root)
+    )
     try:
         with os.fdopen(fd, "wb") as handle:
             handle.write(payload)
@@ -121,11 +129,22 @@ def write_vintage(
     if not series:
         raise VintageStoreError("a vintage must list at least one series")
     if completeness is Completeness.complete:
-        present = {item.series_id for item in series}
-        missing = [series_id for series_id in required_series_ids if series_id not in present]
+        present = {item.series_id: item for item in series}
+        missing = [
+            series_id for series_id in required_series_ids if series_id not in present
+        ]
         if missing:
             raise VintageStoreError(
                 "complete vintage missing required series: " + ", ".join(missing)
+            )
+        blocked = [
+            series_id
+            for series_id in required_series_ids
+            if lineage_blocks_completeness(series_id, present[series_id].lineage_ok)
+        ]
+        if blocked:
+            raise VintageStoreError(
+                "complete vintage requires lineage_ok for: " + ", ".join(blocked)
             )
 
     previous_checksums = _previous_checksums(previous)
@@ -178,15 +197,23 @@ def write_vintage(
     try:
         for item in series:
             series_tmp = tmp / "series" / item.series_id
-            _install_from_cas(data_root, item.observations_parquet, series_tmp / OBSERVATIONS_FILENAME)
             _install_from_cas(
-                data_root, canonical_json_bytes(item.citation), series_tmp / CITATION_FILENAME
+                data_root, item.observations_parquet, series_tmp / OBSERVATIONS_FILENAME
             )
             _install_from_cas(
-                data_root, canonical_json_bytes(item.caveat), series_tmp / CAVEAT_FILENAME
+                data_root,
+                canonical_json_bytes(item.citation),
+                series_tmp / CITATION_FILENAME,
             )
             _install_from_cas(
-                data_root, canonical_json_bytes(item.geography), series_tmp / GEOGRAPHY_FILENAME
+                data_root,
+                canonical_json_bytes(item.caveat),
+                series_tmp / CAVEAT_FILENAME,
+            )
+            _install_from_cas(
+                data_root,
+                canonical_json_bytes(item.geography),
+                series_tmp / GEOGRAPHY_FILENAME,
             )
         manifest = VintageManifest(
             vintage_id=vintage_id,
@@ -225,6 +252,19 @@ def latest_manifest(data_root: Path) -> VintageManifest | None:
     if not manifests:
         return None
     return max(manifests, key=lambda item: item.created_at)
+
+
+def latest_manifest_with_series(
+    data_root: Path, series_ids: tuple[str, ...]
+) -> VintageManifest | None:
+    matches = [
+        item
+        for item in list_manifests(data_root)
+        if tuple(entry.series_id for entry in item.series) == series_ids
+    ]
+    if not matches:
+        return None
+    return max(matches, key=lambda item: item.created_at)
 
 
 def _remove_tree(path: Path) -> None:

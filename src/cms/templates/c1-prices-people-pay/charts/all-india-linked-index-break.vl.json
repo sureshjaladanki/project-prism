@@ -2,8 +2,8 @@
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
   "description": "All India Combined CPI General index with a visible break at January 2025. Linked back series (2013-01 to 2024-12) is a line. Independently compiled months in this vintage (2026-07, 2026-08) are points, not joined to the linked line. Grey band is compiled months this vintage does not carry. Do not stitch 2012=100. Rural and Urban exist as published sectors on the first screen; this chart is Combined only so the compilation break is not hidden in a merge of lines.",
   "title": {
-    "text": "All India Combined CPI (General) index, Base 2024=100 — break at January 2025",
-    "subtitle": "Navy line: producer-linked back series (not independently compiled 2024-basket). Brown points: compiled months in this vintage. Grey band: January 2025–June 2026 not in this vintage. Dashed rule: compiled series starts. Not one continuous line. Linked file is All India only; States/UTs and districts are missing there."
+    "text": "All India Combined CPI (General) index — break at January 2025",
+    "subtitle": "Navy: linked series through 2024. Brown: compiled months on this page. Grey: months not carried here."
   },
   "usermeta": {
     "slot_ids": ["chart-linked-index-all-india", "chart-compiled-index-all-india"],
@@ -12,8 +12,8 @@
     "sector": "Combined",
     "forbidden": ["stitch_linked_to_compiled", "stitch_2012", "blank_as_zero", "red_green_diverging", "state_rows_from_card_4"]
   },
-  "width": 560,
-  "height": 240,
+  "width": 720,
+  "height": 280,
   "layer": [
     {
       "data": { "values": [{ "start": "2025-01", "end": "2026-07" }] },
@@ -41,7 +41,7 @@
       "mark": {
         "type": "line",
         "color": "#1f4e79",
-        "point": true,
+        "strokeWidth": 2,
         "invalid": "break-paths"
       },
       "encoding": {
@@ -54,7 +54,7 @@
         "y": {
           "field": "plotValue",
           "type": "quantitative",
-          "title": "Index (Base 2024=100)",
+          "title": "Index",
           "scale": { "zero": false }
         }
       }

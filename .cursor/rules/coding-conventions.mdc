@@ -14,10 +14,11 @@ One repo: Python `src/prism/`, TypeScript `src/cms/`, tests `tests/`. DuckDB SQL
 - Immutable workflows (ingest, vintage, render, publish) prefer functional style: inputs in, new artifacts out. Do not mutate a caller’s object, a written vintage, or a live citizen path.
 - Contracts and instances (Pydantic models, generated TypeScript types) prefer objects, not loose dicts.
 - Fail fast at typed boundaries. Do not add speculative null / `None` / `undefined` checks. Do not over-engineer.
+- DRY: after a second concrete use, share the type or helper. One type when shapes match; do not invent inheritance for field reuse.
 
 ## Names
 
-Follow the language of the file. Use the blueprint’s vocabulary (observation, citation, caveat, series, vintage, geography, template, render, publish, pointer) — not leftover trading terms.
+Follow the language of the file. Use the vocabulary in `docs/architectural-blueprint.md` and `docs/data-contracts.md` (observation, citation, caveat, series, vintage, geography, template, render, publish, pointer) — not leftover trading terms.
 
 - Python: `snake_case` modules, functions, variables; `PascalCase` classes; `SCREAMING_SNAKE_CASE` constants.
 - TypeScript: `camelCase` functions and variables; `PascalCase` components and types; kebab-case other modules. Keep generated schema field names (`series_id`, not camelCased by hand).

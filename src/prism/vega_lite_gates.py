@@ -26,7 +26,9 @@ def assert_chart_rows_cited(rows: list[dict[str, object]]) -> None:
             continue
         citation = row.get("citation")
         if not isinstance(citation, dict) or not citation.get("citation_id"):
-            raise ChartSpecError("chart payload cannot include a number without its citation card")
+            raise ChartSpecError(
+                "chart payload cannot include a number without its citation card"
+            )
         if not citation.get("producer") or not citation.get("series"):
             raise ChartSpecError("citation card is missing producer or series")
 
@@ -127,8 +129,12 @@ def _scheme_is_red_green(name: str) -> bool:
 
 def _range_is_red_green(color_range: list[Any]) -> bool:
     texts = [item.lower() for item in color_range if isinstance(item, str)]
-    has_red = any("red" in item or item.startswith("#d62") or item in {"#f00", "#ff0000"} for item in texts)
+    has_red = any(
+        "red" in item or item.startswith("#d62") or item in {"#f00", "#ff0000"}
+        for item in texts
+    )
     has_green = any(
-        "green" in item or item.startswith("#2ca") or item in {"#0f0", "#00ff00"} for item in texts
+        "green" in item or item.startswith("#2ca") or item in {"#0f0", "#00ff00"}
+        for item in texts
     )
     return has_red and has_green

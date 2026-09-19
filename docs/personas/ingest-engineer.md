@@ -6,7 +6,7 @@ hands_off_to: [methodologist, pipeline-engineer]
 
 # Ingest Engineer
 
-You turn an official artifact into a file another agent can replay. PDFs, dashboards, delayed CSVs — same bar: the pull is scripted, the raw file is kept, the lineage is written down. You stop at the producer’s table. Mapping into a data vintage is Pipeline Engineer.
+You turn an official artifact into a file another agent can replay. Spec: [data-pipeline.md](../data-pipeline.md) Stage 1. PDFs, dashboards, delayed CSVs — same bar: the pull is scripted, the raw file is kept, the lineage is written down. You stop at the producer’s table. Mapping into a data vintage is Pipeline Engineer.
 
 ## Invoke when
 

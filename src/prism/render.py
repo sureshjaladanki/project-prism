@@ -6,8 +6,15 @@ import json
 import os
 import shutil
 import subprocess
+from dataclasses import replace
 from pathlib import Path
 
+from prism.cms_site import (
+    allowed_hrefs,
+    build_site_catalog,
+    dump_site_catalog,
+    filter_hottest_rail,
+)
 from prism.paths import (
     RENDER_COMPLETE_MARKER,
     render_complete_path,
@@ -19,11 +26,22 @@ from prism.template_bind import (
     BoundPage,
     RenderError,
     assert_single_vintage,
-    bind_c1_page,
+    bind_pages_for_vintage,
     write_contract_schema,
 )
 
-REQUIRED_PAGES = ("index.html",)
+SHELL_PAGES = (
+    "index.html",
+    "404.html",
+    "how-this-works/index.html",
+    "sources/index.html",
+    "people/index.html",
+    "work/index.html",
+    "money/index.html",
+    "prices/index.html",
+    "delivery/index.html",
+)
+REQUIRED_PAGES = SHELL_PAGES + ("prices/retail-prices/index.html",)
 BOUND_DIRNAME = ".bound"
 
 
@@ -38,17 +56,32 @@ def render_c1(
     *,
     set_preview: bool = False,
 ) -> Path:
-    page = bind_c1_page(data_root, vintage_id, cms_root)
-    assert_single_vintage(page, vintage_id)
-    dest = _write_render_tree(data_root, vintage_id, cms_root, page)
+    return render(data_root, vintage_id, cms_root, set_preview=set_preview)
+
+
+def render(
+    data_root: Path,
+    vintage_id: str,
+    cms_root: Path,
+    *,
+    set_preview: bool = False,
+) -> Path:
+    pages = bind_pages_for_vintage(data_root, vintage_id, cms_root)
+    for page in pages:
+        assert_single_vintage(page, vintage_id)
+    dest = _write_render_tree(data_root, vintage_id, cms_root, pages)
     if set_preview:
         if read_citizen_pointer(data_root) == vintage_id:
-            raise RenderError("refusing to set preview as an alias of citizen in this pass")
+            raise RenderError(
+                "refusing to set preview as an alias of citizen in this pass"
+            )
         publish_preview(data_root, vintage_id, render_complete=True)
     return dest
 
 
-def _write_render_tree(data_root: Path, vintage_id: str, cms_root: Path, page: BoundPage) -> Path:
+def _write_render_tree(
+    data_root: Path, vintage_id: str, cms_root: Path, pages: tuple[BoundPage, ...]
+) -> Path:
     dest = render_dir(data_root, vintage_id)
     parent = renders_dir(data_root)
     parent.mkdir(parents=True, exist_ok=True)
@@ -62,13 +95,23 @@ def _write_render_tree(data_root: Path, vintage_id: str, cms_root: Path, page: B
     if bound_dir.exists():
         shutil.rmtree(bound_dir)
     bound_dir.mkdir()
-    _write_bound_inputs(bound_dir, page)
+    catalog = build_site_catalog(vintage_id, pages)
+    allowed = allowed_hrefs(catalog)
+    pages = tuple(
+        replace(page, body_html=filter_hottest_rail(page.body_html, allowed))
+        for page in pages
+    )
+    _write_bound_inputs(bound_dir, catalog, pages)
     write_contract_schema(cms_root / "generated" / "contract-schema.json")
+    required = SHELL_PAGES + tuple(
+        f"{page.path.strip('/')}/index.html" for page in pages
+    )
     try:
         _run_astro_build(cms_root, tmp, bound_dir)
-        _write_chart_specs(tmp, page)
+        for page in pages:
+            _write_chart_specs(tmp, page)
         _drop_astro_internals(tmp)
-        _mark_complete(tmp)
+        _mark_complete(tmp, required)
         if dest.exists():
             if old.exists():
                 shutil.rmtree(old)
@@ -88,18 +131,31 @@ def _write_render_tree(data_root: Path, vintage_id: str, cms_root: Path, page: B
     return dest
 
 
-def _write_bound_inputs(bound_dir: Path, page: BoundPage) -> None:
-    (bound_dir / "body.html").write_text(page.body_html, encoding="utf-8", newline="\n")
-    payload = {
-        "template_id": page.template_id,
-        "vintage_id": page.vintage_id,
-        "charts": page.charts,
-    }
-    (bound_dir / "bound.json").write_bytes(json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2).encode("utf-8") + b"\n")
+def _write_bound_inputs(
+    bound_dir: Path, catalog: dict[str, object], pages: tuple[BoundPage, ...]
+) -> None:
+    (bound_dir / "site.json").write_bytes(dump_site_catalog(catalog))
+    for page in pages:
+        slice_dir = bound_dir / "slices" / page.template_id
+        slice_dir.mkdir(parents=True)
+        (slice_dir / "body.html").write_text(
+            page.body_html, encoding="utf-8", newline="\n"
+        )
+        payload = {
+            "template_id": page.template_id,
+            "vintage_id": page.vintage_id,
+            "charts": page.charts,
+        }
+        (slice_dir / "bound.json").write_bytes(
+            json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2).encode(
+                "utf-8"
+            )
+            + b"\n"
+        )
 
 
 def _write_chart_specs(dest: Path, page: BoundPage) -> None:
-    charts_dir = dest / "charts"
+    charts_dir = dest / page.path.strip("/") / "charts"
     charts_dir.mkdir(parents=True, exist_ok=True)
     for chart_id, spec in page.charts.items():
         path = charts_dir / f"{chart_id}.vl.json"
@@ -116,8 +172,10 @@ def _drop_astro_internals(dest: Path) -> None:
             path.unlink()
 
 
-def _mark_complete(dest: Path) -> None:
-    missing = [name for name in REQUIRED_PAGES if not (dest / name).exists()]
+def _mark_complete(
+    dest: Path, required: tuple[str, ...] = REQUIRED_PAGES
+) -> None:
+    missing = [name for name in required if not (dest / name).exists()]
     if missing:
         raise RenderIncompleteError(
             "required template failed to render: " + ", ".join(missing)

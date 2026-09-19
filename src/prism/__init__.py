@@ -1,4 +1,4 @@
-"""Prism: schema, pointers, publish, and the C1 refresh contract."""
+"""Prism: schema, pointers, publish, and the C1 / C2 / C3 refresh contract."""
 
 from prism.pointer_store import (
     publish_citizen,
@@ -9,6 +9,10 @@ from prism.pointer_store import (
 from prism.refresh import (
     C1_SERIES,
     C1_SERIES_IDS,
+    C2_SERIES,
+    C2_SERIES_IDS,
+    C3_SERIES,
+    C3_SERIES_IDS,
     DISPLAY_TIMEZONE,
     STORE_TIMEZONE,
     vintage_id_for,
@@ -26,6 +30,10 @@ from prism.vintage_store import write_vintage
 __all__ = [
     "C1_SERIES",
     "C1_SERIES_IDS",
+    "C2_SERIES",
+    "C2_SERIES_IDS",
+    "C3_SERIES",
+    "C3_SERIES_IDS",
     "DISPLAY_TIMEZONE",
     "STORE_TIMEZONE",
     "CaveatNote",

@@ -1,0 +1,65 @@
+---
+import SiteShell from "../layouts/SiteShell.astro";
+import { loadSite } from "../lib/site";
+
+const site = loadSite();
+const house = site.house.find((item) => item.path === "/sources");
+if (!house) {
+  throw new Error("house page missing from catalog");
+}
+---
+
+<SiteShell
+  page="house"
+  path={house.path}
+  title={house.title}
+  description={house.description}
+  vintageId={site.vintage_id}
+>
+  <h1>{house.h1}</h1>
+  <p>
+    Every number on this portrait names the producing office, the series, and the
+    date. Those facts sit with the number on the same screen.
+  </p>
+
+  <h2>Pages in this snapshot</h2>
+  {
+    site.slices.length > 0 ? (
+      <>
+        <p>
+          These are the questions this snapshot can answer. Open a page to see
+          the cite next to the number.
+        </p>
+        <ul class="sleeve-index">
+          {site.slices.map((slice) => (
+            <li>
+              <a href={slice.path}>{slice.citizen_question}</a>
+            </li>
+          ))}
+        </ul>
+      </>
+    ) : (
+      <p>This snapshot has no published questions yet.</p>
+    )
+  }
+
+  <h2>How to read a cite</h2>
+  <p>
+    A cite names the producer, the series, the period the number refers to, the
+    release date in India time, the geography the producer published, and the
+    caveat. If Prism analysed an official series, that byline sits beside the
+    producer — not instead of it.
+  </p>
+  <p>
+    Two official series that both answer the question stay two series. The page
+    does not pick a winner.
+  </p>
+
+  <h2>Not the source of record</h2>
+  <p>
+    News, think tanks, private polls, and international secondary databases are
+    not the source of record. Ministry achievement pages are not either. A
+    scorecard that ranks states is not the source of the underlying official
+    table.
+  </p>
+</SiteShell>

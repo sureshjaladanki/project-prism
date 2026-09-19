@@ -1,0 +1,53 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Budget at a Glance deficit statistics, Budget Estimates 2026-27, Government of India. Producer printed order: fiscal, revenue, effective revenue, primary. Not a FRBM grade. Single fill. Do not sort by the measure.",
+  "title": {
+    "text": "Deficits the Budget prints, Budget Estimates 2026-27",
+    "subtitle": "Government of India. Producer labels, not a grade."
+  },
+  "usermeta": {
+    "slot_id": "chart-deficit-be",
+    "cite_in_same_view": true,
+    "axis_order": "producer_printed_deficit_heads",
+    "forbidden": ["sort_by_measure", "red_green_diverging", "frbm_grade", "blend_monthly_deficit"]
+  },
+  "height": { "step": 22 },
+  "data": { "name": "slot:chart-deficit-be" },
+  "transform": [
+    {
+      "calculate": "datum.status === 'value' ? datum.value : null",
+      "as": "plotValue"
+    }
+  ],
+  "mark": { "type": "bar", "color": "#1f4e79", "invalid": "break-paths" },
+  "encoding": {
+    "y": {
+      "field": "head_name",
+      "type": "nominal",
+      "title": null,
+      "sort": [
+        "Fiscal deficit",
+        "Revenue deficit",
+        "Effective revenue deficit",
+        "Primary deficit"
+      ],
+      "axis": { "labelLimit": 320 }
+    },
+    "x": {
+      "field": "plotValue",
+      "type": "quantitative",
+      "title": "Crore of rupees",
+      "scale": { "zero": true }
+    },
+    "tooltip": [
+      { "field": "head_name", "type": "nominal" },
+      { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+      { "field": "status", "type": "nominal" },
+      { "field": "reference_period", "type": "nominal" }
+    ]
+  },
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
+}

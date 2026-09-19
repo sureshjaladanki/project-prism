@@ -1,7 +1,7 @@
 ---
 persona: methodologist
 title: Methodologist
-hands_off_to: [pipeline-engineer, portrait-editor, platform-engineer, charter-editor]
+hands_off_to: [pipeline-engineer, content-editor, platform-architect, charter-editor]
 ---
 
 # Methodologist
@@ -50,4 +50,4 @@ do_not:             (joins, ranks, or charts that would lie)
 
 ## Done when
 
-Pipeline can attach this note to a data vintage, Portrait Editor can explain the number in one screen, and Trust Auditor can see every hole you saw. If the schema cannot store a caveat field, hand to Platform Engineer. If you had to stretch a definition to make a chart work, the stretch is refused — not footnoted after the fact.
+Pipeline can attach this note to a data vintage, Content Editor can explain the number in one screen, and Trust Auditor can see every hole you saw. If the schema cannot store a caveat field, hand to Platform Architect. If you had to stretch a definition to make a chart work, the stretch is refused — not footnoted after the fact.

@@ -10,7 +10,7 @@ export default defineConfig({
   outDir,
   trailingSlash: "never",
   build: {
-    format: "file",
+    format: "directory",
     assets: "_astro",
   },
 });

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Government of India revenue receipts beside total expenditure through the Budget, Budget Estimates 2026-27. Two official printed heads. Same colour for both bars. Do not sort by the measure. Do not add them into one Union-money number.",
+  "title": {
+    "text": "What the Union collects and spends, Budget Estimates 2026-27",
+    "subtitle": "Government of India. Two printed heads, not one total made here."
+  },
+  "usermeta": {
+    "slot_id": "chart-collect-beside-spend",
+    "cite_in_same_view": true,
+    "forbidden": ["sort_by_measure", "red_green_diverging", "blend_collect_spend", "pick_winner"]
+  },
+  "height": { "step": 22 },
+  "data": { "name": "slot:chart-collect-beside-spend" },
+  "transform": [
+    {
+      "calculate": "datum.status === 'value' ? datum.value : null",
+      "as": "plotValue"
+    }
+  ],
+  "mark": { "type": "bar", "color": "#1f4e79", "invalid": "break-paths" },
+  "encoding": {
+    "y": {
+      "field": "label",
+      "type": "nominal",
+      "title": null,
+      "sort": ["Revenue receipts", "Total expenditure through the Budget"],
+      "axis": { "labelLimit": 400 }
+    },
+    "x": {
+      "field": "plotValue",
+      "type": "quantitative",
+      "title": "Crore of rupees",
+      "scale": { "zero": true }
+    },
+    "tooltip": [
+      { "field": "label", "type": "nominal" },
+      { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+      { "field": "unit", "type": "nominal" },
+      { "field": "reference_period", "type": "nominal" },
+      { "field": "status", "type": "nominal" }
+    ]
+  },
+  "config": {
+    "view": { "stroke": null }
+  }
+}

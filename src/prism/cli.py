@@ -7,12 +7,15 @@ from typing import Annotated
 
 import typer
 
-from prism.ingest import ingest_c1
-from prism.pipeline import PipelineError, materialise_c1_vintage
+from prism.citizen_server import serve_citizen
+from prism.ingest import ingest as run_ingest
+from prism.ingest.retrieve import IngestError
+from prism.pipeline import PipelineError, materialise_c1_vintage, materialise_c3_vintage
 from prism.pointer_store import PublishError, publish_preview, read_preview_pointer
 from prism.preview_server import serve_preview
-from prism.render import render_c1
-from prism.schema import Completeness, YesNo
+from prism.refresh import lineage_record_blocks_completeness
+from prism.render import render
+from prism.schema import Completeness, LineageRecord
 from prism.serving import ServeError
 from prism.template_bind import RenderError
 from prism.vintage_store import VintageStoreError
@@ -25,12 +28,7 @@ def main() -> None:
     """Prism CLI. Citizen publish is not this command."""
 
 
-@app.command("ingest")
-def ingest(
-    data_root: Annotated[Path, typer.Option("--data-root")] = Path("data"),
-    series_id: Annotated[list[str] | None, typer.Option("--series-id")] = None,
-) -> None:
-    records = ingest_c1(data_root, series_ids=tuple(series_id) if series_id else None)
+def _report_lineage(records: tuple[LineageRecord, ...]) -> None:
     failed = False
     for record in records:
         typer.echo(
@@ -43,21 +41,49 @@ def ingest(
         typer.echo(f"  checksum={record.checksum}")
         typer.echo(f"  nulls={record.nulls}")
         typer.echo(f"  flags={record.flags}")
-        if record.lineage_ok is YesNo.no:
+        if lineage_record_blocks_completeness(record):
             failed = True
     if failed:
         raise typer.Exit(code=1)
+
+
+@app.command("ingest")
+def ingest_cmd(
+    data_root: Annotated[Path, typer.Option("--data-root")] = Path("data"),
+    series_id: Annotated[list[str] | None, typer.Option("--series-id")] = None,
+) -> None:
+    """Retrieve locked series into data/. Omit --series-id to ingest C1, C2, and C3."""
+
+    try:
+        records = run_ingest(
+            data_root, series_ids=tuple(series_id) if series_id else None
+        )
+    except IngestError as exc:
+        typer.echo(f"ingest failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    _report_lineage(records)
+
+
+_VINTAGE_RUNNERS = {
+    "c1": materialise_c1_vintage,
+    "c3": materialise_c3_vintage,
+}
 
 
 @app.command("vintage")
 def vintage(
     data_root: Annotated[Path, typer.Option("--data-root")] = Path("data"),
     logs_root: Annotated[Path, typer.Option("--logs-root")] = Path("logs"),
+    slice_id: Annotated[str, typer.Option("--slice-id")] = "c1",
 ) -> None:
-    """Materialise an immutable C1 data vintage. Does not publish or set preview."""
+    """Materialise an immutable data vintage. Does not publish or set preview."""
 
+    runner = _VINTAGE_RUNNERS.get(slice_id)
+    if runner is None:
+        typer.echo(f"unknown slice-id {slice_id!r}; expected c1 or c3", err=True)
+        raise typer.Exit(code=1)
     try:
-        manifest, report = materialise_c1_vintage(data_root, logs_root)
+        manifest, report = runner(data_root, logs_root)
     except (PipelineError, VintageStoreError) as exc:
         typer.echo(f"vintage failed: {exc}", err=True)
         raise typer.Exit(code=1) from exc
@@ -84,12 +110,14 @@ def render_cmd(
     vintage_id: Annotated[str, typer.Option("--vintage-id")],
     data_root: Annotated[Path, typer.Option("--data-root")] = Path("data"),
     cms_root: Annotated[Path, typer.Option("--cms-root")] = Path("src/cms"),
-    set_preview: Annotated[bool, typer.Option("--set-preview/--no-set-preview")] = False,
+    set_preview: Annotated[
+        bool, typer.Option("--set-preview/--no-set-preview")
+    ] = False,
 ) -> None:
-    """Bind C1 at one vintage and write data/renders/{vintage_id}/. Does not flip citizen."""
+    """Bind templates at one vintage and write data/renders/{vintage_id}/. Does not flip citizen."""
 
     try:
-        dest = render_c1(data_root, vintage_id, cms_root, set_preview=set_preview)
+        dest = render(data_root, vintage_id, cms_root, set_preview=set_preview)
     except (RenderError, PublishError, VintageStoreError) as exc:
         typer.echo(f"render failed: {exc}", err=True)
         raise typer.Exit(code=1) from exc
@@ -104,7 +132,9 @@ def preview_cmd(
     data_root: Annotated[Path, typer.Option("--data-root")] = Path("data"),
     host: Annotated[str, typer.Option("--host")] = "127.0.0.1",
     port: Annotated[int, typer.Option("--port")] = 4321,
-    bind_pointer: Annotated[bool, typer.Option("--bind-pointer/--no-bind-pointer")] = False,
+    bind_pointer: Annotated[
+        bool, typer.Option("--bind-pointer/--no-bind-pointer")
+    ] = False,
     vintage_id: Annotated[str | None, typer.Option("--vintage-id")] = None,
 ) -> None:
     """Serve the preview pointer with noindex. Does not flip citizen."""
@@ -124,4 +154,20 @@ def preview_cmd(
         serve_preview(data_root, host, port)
     except ServeError as exc:
         typer.echo(f"preview failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+
+
+@app.command("serve")
+def serve_cmd(
+    origin: Annotated[str, typer.Option("--origin", envvar="PRISM_CITIZEN_ORIGIN")],
+    data_root: Annotated[Path, typer.Option("--data-root")] = Path("data"),
+    host: Annotated[str, typer.Option("--host")] = "127.0.0.1",
+    port: Annotated[int, typer.Option("--port")] = 8080,
+) -> None:
+    """Serve the citizen pointer. Injects canonical and og:url. Does not scrape."""
+
+    try:
+        serve_citizen(data_root, host, port, origin)
+    except ServeError as exc:
+        typer.echo(f"serve failed: {exc}", err=True)
         raise typer.Exit(code=1) from exc

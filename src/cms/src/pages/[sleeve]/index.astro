@@ -1,0 +1,59 @@
+---
+import SiteShell from "../../layouts/SiteShell.astro";
+import {
+  hubDescription,
+  loadSite,
+  sleeveByPath,
+  slicesInSleeve,
+} from "../../lib/site";
+
+export function getStaticPaths() {
+  const site = loadSite();
+  return site.sleeves.map((sleeve) => ({
+    params: { sleeve: sleeve.path.replace(/^\//, "") },
+  }));
+}
+
+const site = loadSite();
+const sleevePath = `/${Astro.params.sleeve}`;
+const sleeve = sleeveByPath(site, sleevePath);
+if (!sleeve) {
+  throw new Error(`unknown sleeve path: ${sleevePath}`);
+}
+const slices = slicesInSleeve(site, sleeve.token);
+const title = `${sleeve.hub_label} — official record · Prism`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Prism", item: "/" },
+    { "@type": "ListItem", position: 2, name: sleeve.hub_label },
+  ],
+};
+---
+
+<SiteShell
+  page="sleeve"
+  path={sleeve.path}
+  title={title}
+  description={hubDescription(sleeve.hub_label)}
+  vintageId={site.vintage_id}
+  currentSleevePath={sleeve.path}
+  breadcrumb={[
+    { href: "/", label: "Prism" },
+    { label: sleeve.hub_label },
+  ]}
+  jsonLd={jsonLd}
+>
+  <h1>{sleeve.hub_label}</h1>
+  {slices.length > 0 && (
+    <ul class="sleeve-index">
+      {slices.map((slice) => (
+        <li>
+          <a href={slice.path}>{slice.citizen_question}</a>
+          <p class="byline">{slice.fact_lede}</p>
+        </li>
+      ))}
+    </ul>
+  )}
+</SiteShell>

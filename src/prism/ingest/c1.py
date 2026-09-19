@@ -224,7 +224,9 @@ def _ingest_monthly_series(
 
     parsed = _PARSERS[series_id](monthly.content)
     share_note = f"shared_monthly_xlsx:{how}"
-    companion_note = companion.flags if companion is not None else "companion_annex_absent"
+    companion_note = (
+        companion.flags if companion is not None else "companion_annex_absent"
+    )
     flags = _combine_flags(parsed.flags, share_note, companion_note, annex_store_flag)
     record = LineageRecord(
         raw_path=_record_path(data_root, artifact_path),

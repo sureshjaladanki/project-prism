@@ -91,9 +91,7 @@ FRAME_A_GEOGRAPHY = GeographyVintage(
     code_system=CodeSystem.producer_specific,
     frame="Union | state | UT",
     units_included=tuple(
-        GeographyUnit(
-            code=code, name_en=name, geography_vintage=C1_GEOGRAPHY_VINTAGE
-        )
+        GeographyUnit(code=code, name_en=name, geography_vintage=C1_GEOGRAPHY_VINTAGE)
         for code, name in FRAME_A_UNITS
     ),
     units_missing=(

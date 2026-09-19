@@ -4,7 +4,7 @@ Persona: Methodologist. Sleeve: **Prices and production**. Slice: **C1**.
 
 Citizen question: How fast are retail prices rising in India, including food?
 
-These notes are for Pipeline to attach (`caveat_id` on each series) and for Portrait Editor to explain a number without a verdict. They do not recode geography, rewrite citation cards, or land files in `data/`. Schema for caveats already exists in [`docs/architectural-blueprint.md`](../architectural-blueprint.md) (`caveat_id`, `concept`, `unit`, `population`, `reference_period`, `producer_definition`, `comparable_from`, `breaks`, `lags`, `disagrees_with`, `do_not`). This pass writes the notes, not the store. When the slice becomes a product, Platform Engineer still owns CMS and the refresh contract.
+These notes are for Pipeline to attach (`caveat_id` on each series) and for Content Editor to explain a number without a verdict. They do not recode geography, rewrite citation cards, or land files in `data/`. Schema for caveats already exists in [`docs/data-contracts.md`](../data-contracts.md) (`caveat_id`, `concept`, `unit`, `population`, `reference_period`, `producer_definition`, `comparable_from`, `breaks`, `lags`, `disagrees_with`, `do_not`). This pass writes the notes, not the store. When the slice becomes a product, Platform Architect still owns CMS and the refresh contract.
 
 Locked inputs: [`c1-citation-cards.md`](c1-citation-cards.md), [`c1-geography-frame.md`](c1-geography-frame.md).
 
@@ -90,7 +90,7 @@ do_not:             Do not present these indexes as independently compiled 2024-
 
 ---
 
-## Do not chart (Portrait Editor)
+## Do not chart (Content Editor)
 
 A chart that does any of the following is a lie for this slice:
 
@@ -108,7 +108,7 @@ A chart that does any of the following is a lie for this slice:
 12. **Forecasts, nowcasts, or interpolated holes.**
 13. **Recomputed higher-level indexes from rounded published figures** treated as a producer revision.
 
-Portrait may show Rural, Urban, and Combined as three published series; CFPI next to (not instead of, not relabelled as) Division 01; index and inflation as separate series so blank inflation is a hole, not a dip to zero; All India beside named missing units (districts parked; on Card 4, all 36 States/UTs missing).
+Content Editor may show Rural, Urban, and Combined as three published series; CFPI next to (not instead of, not relabelled as) Division 01; index and inflation as separate series so blank inflation is a hole, not a dip to zero; All India beside named missing units (districts parked; on Card 4, all 36 States/UTs missing).
 
 ---
 
@@ -142,4 +142,4 @@ First crew memo for **C1** is complete (Charter Editor → Source Librarian → 
 
 **Do not fetch. Do not start C2–C20. Do not ingest into `data/`.**
 
-Next when this slice becomes a product: **Platform Engineer** (CMS + refresh contract), then Ingest, Pipeline, Portrait, CMS, Trust — [`docs/team.md`](../team.md) First crew.
+Next when this slice becomes a product: **Platform Architect** (CMS + refresh contract), then Ingest, Pipeline, Content Editor, UI/UX, Trust — [`docs/team.md`](../team.md) First crew.

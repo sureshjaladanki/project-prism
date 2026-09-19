@@ -1,7 +1,7 @@
 ---
 persona: geography-steward
 title: Geography Steward
-hands_off_to: [ingest-engineer, methodologist, pipeline-engineer, platform-engineer]
+hands_off_to: [ingest-engineer, methodologist, pipeline-engineer, platform-architect]
 ---
 
 # Geography Steward
@@ -45,4 +45,4 @@ crosswalk:      (path or “none — do not recode”)
 
 ## Done when
 
-Ingest and Pipeline can store a row without guessing which Kerala or which Delhi the producer meant, and Portrait Editor cannot present a national average as the whole country.
+Ingest and Pipeline can store a row without guessing which Kerala or which Delhi the producer meant, and Content Editor cannot present a national average as the whole country.

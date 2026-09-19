@@ -1,0 +1,102 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Central Government total liabilities, year-end Actuals 2021-22 through 2024-25 as a line. Revised Estimates 2025-26 and Budget Estimates 2026-27 as points, not joined as Actuals. Stock, not a year’s deficit. Not FRBM-defined debt. 1950-51 is not on this chart.",
+  "title": {
+    "text": "Outstanding liabilities, Central Government",
+    "subtitle": "Year-end Actuals as a line. Revised and Budget are points, not Actuals."
+  },
+  "usermeta": {
+    "slot_id": "chart-liabilities-actuals",
+    "cite_in_same_view": true,
+    "forbidden": ["stitch_re_be_as_actuals", "red_green_diverging", "merge_frbm_debt", "splice_1950_51", "sort_by_measure"]
+  },
+  "width": 720,
+  "height": 280,
+  "layer": [
+    {
+      "data": { "name": "slot:chart-liabilities-actuals" },
+      "transform": [
+        {
+          "calculate": "datum.status === 'value' ? datum.value : null",
+          "as": "plotValue"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "color": "#1f4e79",
+        "strokeWidth": 2,
+        "invalid": "break-paths"
+      },
+      "encoding": {
+        "x": {
+          "field": "reference_period",
+          "type": "ordinal",
+          "title": "Year-end as labelled",
+          "sort": [
+            "end-2021-2022",
+            "end-2022-2023",
+            "end-2023-24",
+            "end-2024-25",
+            "revised-2025-26",
+            "budget-2026-27"
+          ]
+        },
+        "y": {
+          "field": "plotValue",
+          "type": "quantitative",
+          "title": "Crore of rupees",
+          "scale": { "zero": true }
+        },
+        "tooltip": [
+          { "field": "reference_period", "type": "nominal" },
+          { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+          { "field": "status", "type": "nominal" }
+        ]
+      }
+    },
+    {
+      "data": { "name": "slot:chart-liabilities-estimates" },
+      "transform": [
+        {
+          "calculate": "datum.status === 'value' ? datum.value : null",
+          "as": "plotValue"
+        }
+      ],
+      "mark": {
+        "type": "point",
+        "color": "#7a542e",
+        "filled": true,
+        "size": 80,
+        "invalid": "break-paths"
+      },
+      "encoding": {
+        "x": {
+          "field": "reference_period",
+          "type": "ordinal",
+          "sort": [
+            "end-2021-2022",
+            "end-2022-2023",
+            "end-2023-24",
+            "end-2024-25",
+            "revised-2025-26",
+            "budget-2026-27"
+          ]
+        },
+        "y": {
+          "field": "plotValue",
+          "type": "quantitative",
+          "scale": { "zero": true }
+        },
+        "tooltip": [
+          { "field": "reference_period", "type": "nominal" },
+          { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+          { "field": "status", "type": "nominal" }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
+}

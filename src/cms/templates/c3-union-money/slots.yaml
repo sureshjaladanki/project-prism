@@ -1,0 +1,734 @@
+# C3 citizen template bindings. Content Editor. No observation numerals.
+# UI/UX Developer: bind each slot with prism.schema.SlotSelector against vintage
+# dv-20260918-846e99d0ca57. Fail the render if a required observation slot
+# required observation slot would show a number without producer, series, date,
+# geography vintage, and caveat. Missing observation → unknown / not published.
+# Never paste a remembered figure. Do not move citizen_pointer.
+#
+# Pipeline (new vintage, same SlotSelector, no schema edit):
+#   rupee columns: unit = "₹ crore; {line_label}"
+#   monthly %:     unit = "% of BE; {line_label}" or "% of BE (COPPY); {line_label}"
+#   Card 8 hole:   unit = "not a table" (already)
+# Copy line_label from the derived table as printed. Do not recode. Do not
+# invent a head. After that vintage exists, fill bound_vintage_id.
+
+template_id: c3-union-money
+charter: C3
+bound_vintage_id: dv-20260918-846e99d0ca57
+code_system: none
+display_timezone: Asia/Kolkata
+axis_order: producer_printed
+citizen_pointer: untouched
+
+period_roles:
+  budget_estimates_2026_27:
+    label: Budget Estimates 2026-27
+    year_label: 2026-27
+  revised_2025_26:
+    label: Revised Estimates 2025-26
+    year_label: 2025-26
+  actuals_2024_25:
+    label: Actuals 2024-25
+    year_label: 2024-25
+  annex1_actuals_from:
+    label: 2017-18
+  annex1_actuals_to:
+    label: 2024-25
+  finance_accounts_2024_25:
+    label: 2024-25
+  cga_monthly_upto_july_2026:
+    label: April–July 2026
+
+frames:
+  c3-frame-a:
+    series:
+      - budget-2026-27-tax-revenue
+      - budget-2026-27-non-tax-revenue
+      - budget-2026-27-capital-receipts
+      - budget-2026-27-annex1-trends-receipts
+      - budget-2026-27-expenditure-stat1
+      - budget-2026-27-deficit-statistics
+      - budget-2026-27-liabilities
+      - budget-2026-27-frbm-statements
+      - budget-2026-27-afs
+    units_included_note: one Union government unit as labelled on that card
+    units_missing:
+      - all States as own governments (C5)
+      - all Union Territories as own governments (C5)
+      - districts and below (parked)
+      - local-body accounts
+  c3-frame-b:
+    series: [cga-monthly-glance-2026-07]
+    units_included: [union-government]
+    units_missing:
+      - all States as own governments
+      - all Union Territories as own governments
+      - districts and below (parked)
+  c3-frame-c:
+    series: [cga-finance-accounts-2024-25-stat1]
+    units_included: [union-government]
+    geography_vintage: "2024"
+    units_missing:
+      - all States as own governments
+      - all Union Territories as own governments
+      - districts and below (parked)
+
+tax_head_order:
+  - {unit: "₹ crore; 1. Corporation Tax", name: Corporation tax}
+  - {unit: "₹ crore; 2. Taxes on Income", name: Income tax other than corporation tax}
+  - {unit: "₹ crore; 8.01 Central Goods and Services Tax (CGST)", name: CGST}
+  - {unit: "₹ crore; 8.02 Integrated Goods and Services Tax (IGST)", name: IGST}
+  - {unit: "₹ crore; 8.03 GST Compensation Cess", name: GST Compensation Cess}
+  - {unit: "₹ crore; 5. Customs", name: Customs}
+  - {unit: "₹ crore; 6. Union Excise Duties", name: Union excise duties}
+
+deficit_order:
+  - {unit: "₹ crore; 1. राजकोषीय घाटा 1. Fiscal Deficit", name: Fiscal deficit}
+  - {unit: "₹ crore; 2. राजस्व घाटा 2. Revenue Deficit", name: Revenue deficit}
+  - {unit: "₹ crore; 3. प्रभावी राजस्व घाटा 3. Effective Revenue Deficit", name: Effective revenue deficit}
+  - {unit: "₹ crore; 4. प्राथमिक घाटा 4. Primary Deficit", name: Primary deficit}
+
+annex1_actuals_order:
+  - actual-2017-18
+  - actual-2018-19
+  - actual-2019-20
+  - actual-2020-21
+  - actual-2021-22
+  - actual-2022-23
+  - actual-2023-24
+  - actual-2024-25
+
+liabilities_actuals_order:
+  - end-2021-2022
+  - end-2022-2023
+  - end-2023-24
+  - end-2024-25
+
+serve:
+  observation: prism.schema.ServedObservation
+  never_serve_bare_float: true
+  unknown_copy: unknown / not a table
+
+charts:
+  collect-beside-spend: ./charts/collect-beside-spend.vl.json
+  tax-heads-be: ./charts/tax-heads-be.vl.json
+  spend-blocks-be: ./charts/spend-blocks-be.vl.json
+  deficit-be: ./charts/deficit-be.vl.json
+  liabilities-stock: ./charts/liabilities-stock.vl.json
+  receipts-run: ./charts/receipts-run.vl.json
+
+slots:
+
+  # --- First screen: one printed collect head, one printed spend head ---
+  - slot_id: annex1-revenue-receipts-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-annex1-trends-receipts
+    caveat_id: caveat-c3-budget-2026-27-annex1-trends-receipts
+    selector:
+      series_id: budget-2026-27-annex1-trends-receipts
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: be-2026-27
+      unit: "₹ crore; REVENUE RECEIPTS"
+      status: value
+
+  - slot_id: stat1-total-expenditure-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-expenditure-stat1
+    caveat_id: caveat-c3-budget-2026-27-expenditure-stat1
+    selector:
+      series_id: budget-2026-27-expenditure-stat1
+      geography_code: union-budget-heads
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027-total
+      unit: "₹ crore; 9. Total Expenditure through Budget (1+5)"
+      status: value
+
+  # --- Card 1 tax heads, Budget Estimates 2026-27 ---
+  - slot_id: tax-corporation-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-tax-revenue
+    caveat_id: caveat-c3-budget-2026-27-tax-revenue
+    selector:
+      series_id: budget-2026-27-tax-revenue
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; 1. Corporation Tax"
+      status: value
+
+  - slot_id: tax-income-other-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-tax-revenue
+    caveat_id: caveat-c3-budget-2026-27-tax-revenue
+    selector:
+      series_id: budget-2026-27-tax-revenue
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; 2. Taxes on Income"
+      status: value
+
+  - slot_id: tax-cgst-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-tax-revenue
+    caveat_id: caveat-c3-budget-2026-27-tax-revenue
+    selector:
+      series_id: budget-2026-27-tax-revenue
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; 8.01 Central Goods and Services Tax (CGST)"
+      status: value
+
+  - slot_id: tax-igst-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-tax-revenue
+    caveat_id: caveat-c3-budget-2026-27-tax-revenue
+    selector:
+      series_id: budget-2026-27-tax-revenue
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; 8.02 Integrated Goods and Services Tax (IGST)"
+      status: value
+
+  - slot_id: tax-customs-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-tax-revenue
+    caveat_id: caveat-c3-budget-2026-27-tax-revenue
+    selector:
+      series_id: budget-2026-27-tax-revenue
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; 5. Customs"
+      status: value
+
+  - slot_id: tax-excise-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-tax-revenue
+    caveat_id: caveat-c3-budget-2026-27-tax-revenue
+    selector:
+      series_id: budget-2026-27-tax-revenue
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; 6. Union Excise Duties"
+      status: value
+
+  # --- Card 2 / Card 3 printed heads, not a Prism sum ---
+  - slot_id: ntr-non-tax-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-non-tax-revenue
+    caveat_id: caveat-c3-budget-2026-27-non-tax-revenue
+    selector:
+      series_id: budget-2026-27-non-tax-revenue
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; Grand Total"
+      status: value
+
+  - slot_id: capital-non-debt-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-capital-receipts
+    caveat_id: caveat-c3-budget-2026-27-capital-receipts
+    selector:
+      series_id: budget-2026-27-capital-receipts
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; Total-Non Debt Receipts"
+      status: value
+
+  - slot_id: capital-debt-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-capital-receipts
+    caveat_id: caveat-c3-budget-2026-27-capital-receipts
+    selector:
+      series_id: budget-2026-27-capital-receipts
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; Total-Debt Receipts"
+      status: value
+
+  # --- Card 5 spend blocks and the second printed total ---
+  - slot_id: stat1-central-expenditure-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-expenditure-stat1
+    caveat_id: caveat-c3-budget-2026-27-expenditure-stat1
+    selector:
+      series_id: budget-2026-27-expenditure-stat1
+      geography_code: union-budget-heads
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027-total
+      unit: "₹ crore; 1. Central Expenditure (2+3+4)"
+      status: value
+
+  - slot_id: stat1-transfers-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-expenditure-stat1
+    caveat_id: caveat-c3-budget-2026-27-expenditure-stat1
+    selector:
+      series_id: budget-2026-27-expenditure-stat1
+      geography_code: union-budget-heads
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027-total
+      unit: "₹ crore; 5. Transfers (6+7+8)"
+      status: value
+
+  - slot_id: stat1-total-with-psu-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-expenditure-stat1
+    caveat_id: caveat-c3-budget-2026-27-expenditure-stat1
+    selector:
+      series_id: budget-2026-27-expenditure-stat1
+      geography_code: union-budget-heads
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027-total
+      unit: "₹ crore; 11. Total Expenditure through Budget and Resources of Public Enterprises (9+10)"
+      status: value
+
+  # --- Card 6 deficit heads, Budget Estimates ---
+  - slot_id: deficit-fiscal-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-deficit-statistics
+    caveat_id: caveat-c3-budget-2026-27-deficit-statistics
+    selector:
+      series_id: budget-2026-27-deficit-statistics
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; 1. राजकोषीय घाटा 1. Fiscal Deficit"
+      status: value
+
+  - slot_id: deficit-revenue-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-deficit-statistics
+    caveat_id: caveat-c3-budget-2026-27-deficit-statistics
+    selector:
+      series_id: budget-2026-27-deficit-statistics
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; 2. राजस्व घाटा 2. Revenue Deficit"
+      status: value
+
+  - slot_id: deficit-effective-revenue-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-deficit-statistics
+    caveat_id: caveat-c3-budget-2026-27-deficit-statistics
+    selector:
+      series_id: budget-2026-27-deficit-statistics
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; 3. प्रभावी राजस्व घाटा 3. Effective Revenue Deficit"
+      status: value
+
+  - slot_id: deficit-primary-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-deficit-statistics
+    caveat_id: caveat-c3-budget-2026-27-deficit-statistics
+    selector:
+      series_id: budget-2026-27-deficit-statistics
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; 4. प्राथमिक घाटा 4. Primary Deficit"
+      status: value
+
+  # --- Card 8 named hole ---
+  - slot_id: frbm-not-a-table
+    kind: observation
+    required: true
+    on_unknown: hole_not_zero
+    miss_copy: unknown / not a table
+    citation_id: cite-c3-budget-2026-27-frbm-statements
+    caveat_id: caveat-c3-budget-2026-27-frbm-statements
+    selector:
+      series_id: budget-2026-27-frbm-statements
+      geography_code: central-government
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: "2026-27"
+      unit: not a table
+      status: unknown
+
+  # --- Card 7 liabilities, end-2024-25 Actuals ---
+  - slot_id: liabilities-public-debt-end-2024-25
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-liabilities
+    caveat_id: caveat-c3-budget-2026-27-liabilities
+    selector:
+      series_id: budget-2026-27-liabilities
+      geography_code: central-government
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: end-2024-25
+      unit: "₹ crore; A. Public Debt"
+      status: value
+
+  - slot_id: liabilities-other-end-2024-25
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-liabilities
+    caveat_id: caveat-c3-budget-2026-27-liabilities
+    selector:
+      series_id: budget-2026-27-liabilities
+      geography_code: central-government
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: end-2024-25
+      unit: "₹ crore; B. Other Liabilities"
+      status: value
+
+  - slot_id: liabilities-total-end-2024-25
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-liabilities
+    caveat_id: caveat-c3-budget-2026-27-liabilities
+    selector:
+      series_id: budget-2026-27-liabilities
+      geography_code: central-government
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: end-2024-25
+      unit: "₹ crore; Total - Liabilities"
+      status: value
+
+  # --- Card 4 Actuals 2024-25 (three records) ---
+  - slot_id: annex1-revenue-receipts-actuals-2024-25
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-annex1-trends-receipts
+    caveat_id: caveat-c3-budget-2026-27-annex1-trends-receipts
+    selector:
+      series_id: budget-2026-27-annex1-trends-receipts
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: actual-2024-25
+      unit: "₹ crore; REVENUE RECEIPTS"
+      status: value
+
+  # --- Card 9 AFS corporation tax BE (constitutional statement, not Receipt Budget) ---
+  - slot_id: afs-corporation-tax-be
+    kind: observation
+    required: true
+    citation_id: cite-c3-budget-2026-27-afs
+    caveat_id: caveat-c3-budget-2026-27-afs
+    selector:
+      series_id: budget-2026-27-afs
+      geography_code: central-government
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit: "₹ crore; Corporation Tax 0020 िनगम कर"
+      status: value
+
+  # --- Card 10 monthly ---
+  - slot_id: cga-monthly-revenue-receipts-upto-july-2026
+    kind: observation
+    required: true
+    citation_id: cite-c3-cga-monthly-glance-2026-07
+    caveat_id: caveat-c3-cga-monthly-glance-2026-07
+    selector:
+      series_id: cga-monthly-glance-2026-07
+      geography_code: union-government
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: actuals-upto-july-2026
+      unit: "₹ crore; Revenue Receipts"
+      status: value
+
+  # --- Card 11 Finance Accounts ---
+  - slot_id: fa-revenue-receipts-actuals-2024-25
+    kind: observation
+    required: true
+    citation_id: cite-c3-cga-finance-accounts-2024-25-stat1
+    caveat_id: caveat-c3-cga-finance-accounts-2024-25-stat1
+    selector:
+      series_id: cga-finance-accounts-2024-25-stat1
+      geography_code: union-government
+      geography_vintage: "2024"
+      code_system: none
+      sector: Union
+      reference_period: actuals-2024-2025
+      unit: "₹ crore; (*) (REVENUE ACCOUNT) (*)"
+      status: value
+
+  # --- Chart collections ---
+  - slot_id: chart-collect-beside-spend
+    kind: collection
+    chart: collect-beside-spend
+    members:
+      - slot_id: annex1-revenue-receipts-be
+        label: Revenue receipts
+      - slot_id: stat1-total-expenditure-be
+        label: Total expenditure through the Budget
+    sort:
+      field: label
+      order: [Revenue receipts, Total expenditure through the Budget]
+      never: measure
+
+  - slot_id: chart-tax-heads-be
+    kind: collection
+    chart: tax-heads-be
+    citation_id: cite-c3-budget-2026-27-tax-revenue
+    caveat_id: caveat-c3-budget-2026-27-tax-revenue
+    selector:
+      series_id: budget-2026-27-tax-revenue
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit_prefix: "₹ crore; "
+      units:
+        - "₹ crore; 1. Corporation Tax"
+        - "₹ crore; 2. Taxes on Income"
+        - "₹ crore; 8.01 Central Goods and Services Tax (CGST)"
+        - "₹ crore; 8.02 Integrated Goods and Services Tax (IGST)"
+        - "₹ crore; 8.03 GST Compensation Cess"
+        - "₹ crore; 5. Customs"
+        - "₹ crore; 6. Union Excise Duties"
+      status: [value, unknown]
+    labels: tax_head_order
+    on_unknown: hole_not_zero
+    sort:
+      field: tax_head_order
+      never: measure
+    do_not:
+      - add these heads into a Prism collections total
+      - chart a blank cess as zero
+      - treat gross tax as tax after States’ share
+
+  - slot_id: chart-spend-blocks-be
+    kind: collection
+    chart: spend-blocks-be
+    members:
+      - slot_id: stat1-central-expenditure-be
+        label: Central expenditure
+      - slot_id: stat1-transfers-be
+        label: Transfers
+    sort:
+      field: label
+      order: [Central expenditure, Transfers]
+      never: measure
+    do_not:
+      - put the two printed totals on this chart
+      - treat Transfers as C5
+      - sort by the measure
+
+  - slot_id: chart-deficit-be
+    kind: collection
+    chart: deficit-be
+    citation_id: cite-c3-budget-2026-27-deficit-statistics
+    caveat_id: caveat-c3-budget-2026-27-deficit-statistics
+    selector:
+      series_id: budget-2026-27-deficit-statistics
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: budget-2026-2027
+      unit_prefix: "₹ crore; "
+      units:
+        - "₹ crore; 1. राजकोषीय घाटा 1. Fiscal Deficit"
+        - "₹ crore; 2. राजस्व घाटा 2. Revenue Deficit"
+        - "₹ crore; 3. प्रभावी राजस्व घाटा 3. Effective Revenue Deficit"
+        - "₹ crore; 4. प्राथमिक घाटा 4. Primary Deficit"
+      status: value
+    labels: deficit_order
+    sort:
+      field: deficit_order
+      never: measure
+    do_not:
+      - grade FRBM targets
+      - blend monthly fiscal deficit into this chart
+      - sort by the measure
+
+  - slot_id: chart-liabilities-actuals
+    kind: collection
+    chart: liabilities-stock
+    layer: year_end_actuals
+    citation_id: cite-c3-budget-2026-27-liabilities
+    caveat_id: caveat-c3-budget-2026-27-liabilities
+    selector:
+      series_id: budget-2026-27-liabilities
+      geography_code: central-government
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period:
+        - end-2021-2022
+        - end-2022-2023
+        - end-2023-24
+        - end-2024-25
+      unit: "₹ crore; Total - Liabilities"
+      status: value
+    do_not:
+      - splice 1950-51 into this run
+      - connect Revised or Budget columns as Actuals
+      - merge FRBM-defined debt
+
+  - slot_id: chart-liabilities-estimates
+    kind: collection
+    chart: liabilities-stock
+    layer: revised_and_budget
+    citation_id: cite-c3-budget-2026-27-liabilities
+    caveat_id: caveat-c3-budget-2026-27-liabilities
+    selector:
+      series_id: budget-2026-27-liabilities
+      geography_code: central-government
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: [revised-2025-26, budget-2026-27]
+      unit: "₹ crore; Total - Liabilities"
+      status: value
+    mark: point
+    do_not:
+      - draw a line from end-2024-25 through Revised and Budget
+
+  - slot_id: chart-receipts-actuals
+    kind: collection
+    chart: receipts-run
+    layer: actuals
+    citation_id: cite-c3-budget-2026-27-annex1-trends-receipts
+    caveat_id: caveat-c3-budget-2026-27-annex1-trends-receipts
+    selector:
+      series_id: budget-2026-27-annex1-trends-receipts
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period:
+        - actual-2017-18
+        - actual-2018-19
+        - actual-2019-20
+        - actual-2020-21
+        - actual-2021-22
+        - actual-2022-23
+        - actual-2023-24
+        - actual-2024-25
+      unit: "₹ crore; REVENUE RECEIPTS"
+      status: value
+    do_not:
+      - chart Revised or Budget as Actuals
+      - extend the run with RBI or IMF
+      - treat tax in this annex as gross tax heads
+
+  - slot_id: chart-receipts-estimates
+    kind: collection
+    chart: receipts-run
+    layer: revised_and_budget
+    citation_id: cite-c3-budget-2026-27-annex1-trends-receipts
+    caveat_id: caveat-c3-budget-2026-27-annex1-trends-receipts
+    selector:
+      series_id: budget-2026-27-annex1-trends-receipts
+      geography_code: government-of-india
+      geography_vintage: "2026"
+      code_system: none
+      sector: Union
+      reference_period: [re-2025-26, be-2026-27]
+      unit: "₹ crore; REVENUE RECEIPTS"
+      status: value
+    mark: point
+    do_not:
+      - join these points to the Actuals line as one series
+
+  - slot_id: caveat-annex1-population
+    kind: caveat_field
+    caveat_id: caveat-c3-budget-2026-27-annex1-trends-receipts
+    field: population
+
+do_not:
+  - type an observation numeral into template.md or a Vega-Lite values[] of Budget or CGA
+  - add Cards 1–3 into a Prism collections total
+  - treat gross tax as tax after States’ share
+  - treat net debt receipts as gross borrowings
+  - swap the two printed expenditure totals
+  - present Union accounts as the country’s public money
+  - treat Transfers, tax assignment, or UT receipts heads as C5
+  - merge Statement of Liabilities with FRBM-defined debt
+  - grade FRBM 3% / 40% / 60%
+  - print a reconstructed FRBM receipts/expenditure/deficit/debt grid
+  - annualise April–July as a year-end actual
+  - draw Finance Accounts 2024-25 as Budget 2026-27
+  - ingest allafs.xlsx as this vintage
+  - chart blank or dotted cells as zero
+  - chart BE, RE, and Actuals as one continuous collect or spend
+  - blend Budget, monthly accounts, and Finance Accounts into one Union-money number
+  - per-person ranks, waste/welfare verdicts, scheme report cards, Economic Survey prose
+  - extend a run with RBI, IMF, or ratings
+  - forecast from FRBM medium-term text
+  - present PDF/HTML reconstruction as a spreadsheet cell map
+  - guess an ambiguous PDF amount into a year column
+  - draw Finance Accounts column-index rows as crore amounts
+  - move citizen_pointer

@@ -14,6 +14,7 @@ from typing import Any
 import markdown
 import yaml
 
+from prism.cms_site import plain_fact_lede, sleeve_path
 from prism.paths import (
     CAVEAT_FILENAME,
     CITATION_FILENAME,
@@ -42,6 +43,9 @@ from prism.vintage_store import load_manifest
 
 C1_TEMPLATE_ID = "c1-prices-people-pay"
 C1_TEMPLATE_DIRNAME = "c1-prices-people-pay"
+C3_TEMPLATE_ID = "c3-union-money"
+C3_TEMPLATE_DIRNAME = "c3-union-money"
+
 
 @dataclass(frozen=True)
 class CiteBlock:
@@ -68,6 +72,19 @@ CITE_BLOCKS: dict[str, CiteBlock] = {
         ("cite-c1-cpi-cfpi-base-2024-2026-08",),
         observation_slots=("all-india-combined-cfpi-inflation-latest-f",),
     ),
+    "annex1": CiteBlock(("cite-c3-budget-2026-27-annex1-trends-receipts",)),
+    "tax": CiteBlock(("cite-c3-budget-2026-27-tax-revenue",)),
+    "non-tax": CiteBlock(("cite-c3-budget-2026-27-non-tax-revenue",)),
+    "capital": CiteBlock(("cite-c3-budget-2026-27-capital-receipts",)),
+    "expenditure": CiteBlock(("cite-c3-budget-2026-27-expenditure-stat1",)),
+    "deficit": CiteBlock(("cite-c3-budget-2026-27-deficit-statistics",)),
+    "liabilities": CiteBlock(("cite-c3-budget-2026-27-liabilities",)),
+    "frbm-hole": CiteBlock(("cite-c3-budget-2026-27-frbm-statements",)),
+    "afs": CiteBlock(("cite-c3-budget-2026-27-afs",)),
+    "cga-monthly": CiteBlock(("cite-c3-cga-monthly-glance-2026-07",)),
+    "finance-accounts": CiteBlock(
+        ("cite-c3-cga-finance-accounts-2024-25-stat1",)
+    ),
 }
 
 LAYOUT_BLOCKS: dict[str, tuple[str, str]] = {
@@ -85,7 +102,9 @@ CHART_RE = re.compile(r"\{\{chart:([^}]+)\}\}")
 CITE_FIELD_RE = re.compile(r"\{\{cite:([^.}]+)\.([^}]+)\}\}")
 PERIOD_RE = re.compile(r"\{\{period\.([^.}]+)\.([^}]+)\}\}")
 LEFTOVER_MUSTACHE_RE = re.compile(r"\{\{[^}]+\}\}")
-CITE_VIEW_COMMENT_RE = re.compile(r"<!--\s*cite-view:\s*([A-Za-z0-9_-]+)", re.IGNORECASE)
+CITE_VIEW_COMMENT_RE = re.compile(
+    r"<!--\s*cite-view:\s*([A-Za-z0-9_-]+)", re.IGNORECASE
+)
 CITE_VIEW_OPEN_RE = re.compile(
     r'<section class="cite-view(?:\s[^"]*)?"(?:\s+data-cite-view="([^"]+)")?\s*>',
     re.IGNORECASE,
@@ -117,6 +136,12 @@ class BoundCopy:
 class BoundPage:
     template_id: str
     vintage_id: str
+    sleeve: str
+    slug: str
+    path: str
+    charter: str
+    citizen_question: str
+    fact_lede: str
     body_html: str
     charts: dict[str, dict[str, Any]]
 
@@ -129,13 +154,43 @@ def c1_template_dir(cms_root: Path) -> Path:
     return templates_dir(cms_root) / C1_TEMPLATE_DIRNAME
 
 
+def c3_template_dir(cms_root: Path) -> Path:
+    return templates_dir(cms_root) / C3_TEMPLATE_DIRNAME
+
+
 def bind_c1_page(data_root: Path, vintage_id: str, cms_root: Path) -> BoundPage:
-    template_dir = c1_template_dir(cms_root)
+    return bind_page(data_root, vintage_id, c1_template_dir(cms_root))
+
+
+def bind_c3_page(data_root: Path, vintage_id: str, cms_root: Path) -> BoundPage:
+    return bind_page(data_root, vintage_id, c3_template_dir(cms_root))
+
+
+def bind_pages_for_vintage(
+    data_root: Path, vintage_id: str, cms_root: Path
+) -> tuple[BoundPage, ...]:
+    pages: list[BoundPage] = []
+    root = templates_dir(cms_root)
+    if not root.is_dir():
+        raise RenderError("CMS templates directory is missing")
+    for folder in sorted(root.iterdir()):
+        slots_path = folder / "slots.yaml"
+        if not folder.is_dir() or not slots_path.exists():
+            continue
+        spec = _load_yaml(slots_path)
+        if spec.get("bound_vintage_id") != vintage_id:
+            continue
+        pages.append(bind_page(data_root, vintage_id, folder))
+    if not pages:
+        raise RenderError(f"no template bound at vintage {vintage_id}")
+    return tuple(pages)
+
+
+def bind_page(data_root: Path, vintage_id: str, template_dir: Path) -> BoundPage:
     slots_path = template_dir / "slots.yaml"
     copy_path = template_dir / "template.md"
     spec = _load_yaml(slots_path)
-    if spec["template_id"] != C1_TEMPLATE_ID:
-        raise RenderError("unexpected template_id")
+    template_id = str(spec["template_id"])
     bound_id = spec["bound_vintage_id"]
     if bound_id != vintage_id:
         raise RenderError(
@@ -145,15 +200,32 @@ def bind_c1_page(data_root: Path, vintage_id: str, cms_root: Path) -> BoundPage:
     if manifest.vintage_id != vintage_id:
         raise RenderError("one page cannot bind slots from two vintage_ids")
 
-    cards = _load_cards(data_root, vintage_id, tuple(entry.series_id for entry in manifest.series))
+    cards = _load_cards(
+        data_root, vintage_id, tuple(entry.series_id for entry in manifest.series)
+    )
     connection = connect_vintage(data_root, vintage_id)
     try:
         bound_slots = _bind_observation_slots(connection, vintage_id, spec, cards)
-        charts = _bind_charts(connection, vintage_id, spec, cards, template_dir, bound_slots)
+        charts = _bind_charts(
+            connection, vintage_id, spec, cards, template_dir, bound_slots
+        )
     finally:
         connection.close()
 
-    markdown_copy = _strip_front_matter(copy_path.read_text(encoding="utf-8"))
+    front_matter, markdown_copy = _parse_front_matter(
+        copy_path.read_text(encoding="utf-8")
+    )
+    if front_matter.get("template_id") != template_id:
+        raise RenderError("unexpected template_id")
+    sleeve = str(front_matter.get("sleeve") or "")
+    slug = str(front_matter.get("slug") or "")
+    charter = str(front_matter.get("charter") or "")
+    citizen_question = str(front_matter.get("citizen_question") or "").strip()
+    if charter == "":
+        raise RenderError("template front matter is missing charter")
+    if citizen_question == "":
+        raise RenderError("citizen_question is missing")
+    path = sleeve_path(sleeve, slug)
     expanded = _expand_copy(markdown_copy, vintage_id, spec, bound_slots, cards, charts)
     body_html = wrap_cite_views(
         markdown.markdown(expanded, extensions=["extra", "md_in_html"])
@@ -162,9 +234,16 @@ def bind_c1_page(data_root: Path, vintage_id: str, cms_root: Path) -> BoundPage:
     if leftover is not None:
         raise RenderError(f"unbound template token: {leftover.group(0)}")
     assert_cite_views_complete(body_html)
+    fact_lede = plain_fact_lede(body_html)
     return BoundPage(
-        template_id=C1_TEMPLATE_ID,
+        template_id=template_id,
         vintage_id=vintage_id,
+        sleeve=sleeve,
+        slug=slug,
+        path=path,
+        charter=charter,
+        citizen_question=citizen_question,
+        fact_lede=fact_lede,
         body_html=body_html,
         charts=charts,
     )
@@ -173,7 +252,8 @@ def bind_c1_page(data_root: Path, vintage_id: str, cms_root: Path) -> BoundPage:
 def write_contract_schema(dest: Path) -> None:
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(
-        json.dumps(contract_json_schema(), indent=2, sort_keys=True, ensure_ascii=False) + "\n",
+        json.dumps(contract_json_schema(), indent=2, sort_keys=True, ensure_ascii=False)
+        + "\n",
         encoding="utf-8",
     )
 
@@ -227,7 +307,11 @@ def assert_cite_views_complete(html_text: str) -> None:
     for name, section_html in iter_cite_views(html_text):
         if BOUND_NUMBER_RE.search(section_html) is None:
             continue
-        missing = [label for label, needle in REQUIRED_CARD_MARKERS if needle not in section_html]
+        missing = [
+            label
+            for label, needle in REQUIRED_CARD_MARKERS
+            if needle not in section_html
+        ]
         if not missing:
             continue
         label = name or "unnamed"
@@ -245,13 +329,16 @@ def _load_yaml(path: Path) -> dict[str, Any]:
     return loaded
 
 
-def _strip_front_matter(text: str) -> str:
+def _parse_front_matter(text: str) -> tuple[dict[str, Any], str]:
     if not text.startswith("---"):
-        return text
+        raise RenderError("template.md is missing front matter")
     end = text.find("\n---", 3)
     if end == -1:
         raise RenderError("template.md front matter is not closed")
-    return text[end + 4 :].lstrip("\n")
+    loaded = yaml.safe_load(text[3:end])
+    if not isinstance(loaded, dict):
+        raise RenderError("template front matter is not a mapping")
+    return loaded, text[end + 4 :].lstrip("\n")
 
 
 def _load_cards(
@@ -260,9 +347,13 @@ def _load_cards(
     cards: dict[str, tuple[Citation, CaveatNote, GeographyVintage]] = {}
     for series_id in series_ids:
         folder = series_dir(data_root, vintage_id, series_id)
-        citation = Citation.model_validate_json((folder / CITATION_FILENAME).read_bytes())
+        citation = Citation.model_validate_json(
+            (folder / CITATION_FILENAME).read_bytes()
+        )
         caveat = CaveatNote.model_validate_json((folder / CAVEAT_FILENAME).read_bytes())
-        geography = GeographyVintage.model_validate_json((folder / GEOGRAPHY_FILENAME).read_bytes())
+        geography = GeographyVintage.model_validate_json(
+            (folder / GEOGRAPHY_FILENAME).read_bytes()
+        )
         cards[series_id] = (citation, caveat, geography)
     return cards
 
@@ -344,8 +435,13 @@ def _bind_one_observation(
             )
         return str(slot.get("miss_copy", "not published"))
     citation, caveat, _geography = _cards_for_series(cards, selector.series_id)
-    if citation.citation_id != slot["citation_id"] or caveat.caveat_id != slot["caveat_id"]:
-        raise RenderError(f"slot {slot['slot_id']} citation or caveat does not match the vintage")
+    if (
+        citation.citation_id != slot["citation_id"]
+        or caveat.caveat_id != slot["caveat_id"]
+    ):
+        raise RenderError(
+            f"slot {slot['slot_id']} citation or caveat does not match the vintage"
+        )
     served = bind_observation(matches[0], citation, caveat, selector)
     _assert_cite_complete(served)
     return served
@@ -401,29 +497,13 @@ def _bind_charts(
     template_dir: Path,
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
 ) -> dict[str, dict[str, Any]]:
-    collections = {slot["slot_id"]: slot for slot in spec["slots"] if slot["kind"] == "collection"}
     datasets: dict[str, list[dict[str, object]]] = {}
-    datasets["chart-all-india-sectors-inflation-latest-p"] = _collection_rows(
-        connection, vintage_id, collections["chart-all-india-sectors-inflation-latest-p"], spec, cards
-    )
-    datasets["chart-cfpi-beside-division-01"] = _member_rows(
-        collections["chart-cfpi-beside-division-01"], bound_slots
-    )
-    datasets["chart-state-ut-combined-inflation-latest-p"] = _state_rows(
-        connection, vintage_id, collections["chart-state-ut-combined-inflation-latest-p"], spec, cards
-    )
-    datasets["chart-linked-index-all-india"] = _range_rows(
-        connection, vintage_id, collections["chart-linked-index-all-india"], cards
-    )
-    datasets["chart-compiled-index-all-india"] = _collection_rows(
-        connection, vintage_id, collections["chart-compiled-index-all-india"], spec, cards
-    )
-    datasets["chart-linked-inflation-all-india"] = _range_rows(
-        connection, vintage_id, collections["chart-linked-inflation-all-india"], cards
-    )
-    datasets["chart-division-inflation-latest-p"] = _division_rows(
-        connection, vintage_id, collections["chart-division-inflation-latest-p"], spec, cards
-    )
+    for slot in spec["slots"]:
+        if slot["kind"] != "collection":
+            continue
+        datasets[slot["slot_id"]] = _bind_collection(
+            connection, vintage_id, slot, spec, cards, bound_slots
+        )
 
     charts: dict[str, dict[str, Any]] = {}
     for chart_id, relpath in spec["charts"].items():
@@ -435,13 +515,79 @@ def _bind_charts(
     return charts
 
 
+def _bind_collection(
+    connection: Any,
+    vintage_id: str,
+    slot: dict[str, Any],
+    spec: dict[str, Any],
+    cards: dict[str, tuple[Citation, CaveatNote, GeographyVintage]],
+    bound_slots: dict[str, ServedObservation | BoundCopy | str],
+) -> list[dict[str, object]]:
+    if "members" in slot:
+        return _member_rows(slot, bound_slots)
+    selector = slot["selector"]
+    period = selector.get("reference_period")
+    if selector.get("geography_codes") == "state_ut_order" or "exclude_geography_codes" in slot:
+        return _state_rows(connection, vintage_id, slot, spec, cards)
+    if isinstance(period, dict) and "from" in period:
+        return _range_rows(connection, vintage_id, slot, cards)
+    if "units" in selector:
+        label_key = slot.get("labels")
+        if label_key and "unit" in spec[label_key][0]:
+            return _labelled_unit_rows(connection, vintage_id, slot, spec, cards)
+        return _division_rows(connection, vintage_id, slot, spec, cards)
+    return _collection_rows(connection, vintage_id, slot, spec, cards)
+
+
+def _labelled_unit_rows(
+    connection: Any,
+    vintage_id: str,
+    slot: dict[str, Any],
+    spec: dict[str, Any],
+    cards: dict[str, tuple[Citation, CaveatNote, GeographyVintage]],
+) -> list[dict[str, object]]:
+    selector = slot["selector"]
+    units = tuple(str(item) for item in selector["units"])
+    statuses = tuple(ObservationStatus(item) for item in _as_tuple(selector["status"]))
+    observations = observations_matching(
+        connection,
+        vintage_id,
+        series_id=selector["series_id"],
+        geography_codes=(str(selector["geography_code"]),),
+        geography_vintage=str(selector["geography_vintage"]),
+        code_system=CodeSystem(selector["code_system"]),
+        sectors=(selector["sector"],),
+        reference_periods=_as_tuple(selector["reference_period"]),
+        units=units,
+        statuses=statuses,
+    )
+    by_unit = {item.unit: item for item in observations}
+    names = {item["unit"]: item["name"] for item in spec[slot["labels"]]}
+    rows: list[dict[str, object]] = []
+    for unit in units:
+        observation = by_unit.get(unit)
+        if observation is None:
+            raise RenderError(
+                f"collection {slot['slot_id']} missing unit {unit}; not inventing a figure"
+            )
+        rows.append(
+            _row(_serve(observation, cards), {"head_name": names[unit]})
+        )
+    return rows
+
+
 def _serve(
     observation: Observation,
     cards: dict[str, tuple[Citation, CaveatNote, GeographyVintage]],
 ) -> ServedObservation:
     citation, caveat, _geography = _cards_for_series(cards, observation.series_id)
-    if observation.citation_id != citation.citation_id or observation.caveat_id != caveat.caveat_id:
-        raise RenderError("observation cards do not match the series files in this vintage")
+    if (
+        observation.citation_id != citation.citation_id
+        or observation.caveat_id != caveat.caveat_id
+    ):
+        raise RenderError(
+            "observation cards do not match the series files in this vintage"
+        )
     selector = SlotSelector(
         series_id=observation.series_id,
         geography_code=observation.geography.code,
@@ -457,7 +603,9 @@ def _serve(
     return served
 
 
-def _row(served: ServedObservation, extra: dict[str, object] | None = None) -> dict[str, object]:
+def _row(
+    served: ServedObservation, extra: dict[str, object] | None = None
+) -> dict[str, object]:
     payload = chart_payload(served)
     if extra:
         payload.update(extra)
@@ -490,7 +638,9 @@ def _collection_rows(
     by_key = {(item.sector, item.reference_period): item for item in observations}
     rows: list[dict[str, object]] = []
     sector_order = [str(item) for item in spec.get("sector_order", [])]
-    ordered_sectors = [item for item in sector_order if item in sectors] or list(sectors)
+    ordered_sectors = [item for item in sector_order if item in sectors] or list(
+        sectors
+    )
     for sector in ordered_sectors:
         for period in periods:
             observation = by_key.get((sector, str(period)))
@@ -559,7 +709,12 @@ def _state_rows(
         observation = by_code.get(code)
         if observation is None:
             raise RenderError(f"state/UT {code} is missing; not inventing a figure")
-        rows.append(_row(_serve(observation, cards), {"geography_code": code, "geography_name_en": name_en}))
+        rows.append(
+            _row(
+                _serve(observation, cards),
+                {"geography_code": code, "geography_name_en": name_en},
+            )
+        )
     return rows
 
 
@@ -591,7 +746,9 @@ def _division_rows(
     for unit in units:
         observation = by_unit.get(unit)
         if observation is None:
-            raise RenderError(f"division unit {unit} is missing; not inventing a figure")
+            raise RenderError(
+                f"division unit {unit} is missing; not inventing a figure"
+            )
         code = unit.rsplit(" ", 1)[-1]
         rows.append(
             _row(
@@ -614,13 +771,17 @@ def _member_rows(
     return rows
 
 
-def _fill_named_datasets(spec: dict[str, Any], datasets: dict[str, list[dict[str, object]]]) -> dict[str, Any]:
+def _fill_named_datasets(
+    spec: dict[str, Any], datasets: dict[str, list[dict[str, object]]]
+) -> dict[str, Any]:
     filled = copy.deepcopy(spec)
     _replace_named_data(filled, datasets)
     return filled
 
 
-def _replace_named_data(node: Any, datasets: dict[str, list[dict[str, object]]]) -> None:
+def _replace_named_data(
+    node: Any, datasets: dict[str, list[dict[str, object]]]
+) -> None:
     if isinstance(node, dict):
         data = node.get("data")
         if isinstance(data, dict) and isinstance(data.get("name"), str):
@@ -652,22 +813,32 @@ def _expand_copy(
     charts: dict[str, dict[str, Any]],
 ) -> str:
     text = markdown_copy.replace("{{data_vintage_id}}", html.escape(vintage_id))
-    text = PERIOD_RE.sub(lambda match: _period_field(spec, match.group(1), match.group(2)), text)
+    text = PERIOD_RE.sub(
+        lambda match: _period_field(spec, match.group(1), match.group(2)), text
+    )
     text = CITE_FIELD_RE.sub(
-        lambda match: html.escape(_cite_field(_citation_by_id(cards, match.group(1)), match.group(2))),
+        lambda match: html.escape(
+            _cite_field(_citation_by_id(cards, match.group(1)), match.group(2))
+        ),
         text,
     )
     text = STAT_RE.sub(
-        lambda match: _stat_html(match.group(1), match.group(2), bound_slots, vintage_id),
+        lambda match: _stat_html(
+            match.group(1), match.group(2), bound_slots, vintage_id
+        ),
         text,
     )
-    text = SLOT_RE.sub(lambda match: _slot_html(match.group(1), bound_slots, vintage_id), text)
+    text = SLOT_RE.sub(
+        lambda match: _slot_html(match.group(1), bound_slots, vintage_id), text
+    )
     text = CITE_BLOCK_RE.sub(
         lambda match: _cite_block_html(match.group(1), cards, vintage_id, bound_slots),
         text,
     )
     text = CAVEAT_BLOCK_RE.sub(
-        lambda match: _caveat_block_html(_caveat_by_id(cards, match.group(1)), vintage_id),
+        lambda match: _caveat_block_html(
+            _caveat_by_id(cards, match.group(1)), vintage_id
+        ),
         text,
     )
     text = CHART_RE.sub(lambda match: _chart_placeholder(match.group(1), charts), text)
@@ -715,6 +886,14 @@ def _slot_html(
             f"{html.escape(bound)}</span>"
         )
     observation = bound.observation
+    if observation.status is not ObservationStatus.value:
+        copy = "unknown / not a table"
+        return (
+            f'<span class="observation observation-missing" data-slot-id="{html.escape(slot_id)}" '
+            f'data-observation-id="{html.escape(observation.observation_id)}" '
+            f'data-vintage-id="{html.escape(vintage_id)}">'
+            f"{html.escape(copy)}</span>"
+        )
     if observation.value is None:
         raise RenderError(f"slot {slot_id} has status value without a number")
     return (
@@ -727,8 +906,7 @@ def _slot_html(
 
 
 def _format_number(value: float) -> str:
-    text = f"{value:.10f}".rstrip("0").rstrip(".")
-    return text
+    return format(value, ".12g")
 
 
 def _stat_html(
@@ -746,7 +924,9 @@ def _stat_html(
 
 def _expand_layout_tokens(text: str) -> str:
     for name, (tag, class_name) in LAYOUT_BLOCKS.items():
-        text = text.replace(f"{{{{{name}}}}}", f'<{tag} class="{class_name}" markdown="1">')
+        text = text.replace(
+            f"{{{{{name}}}}}", f'<{tag} class="{class_name}" markdown="1">'
+        )
         text = text.replace(f"{{{{/{name}}}}}", f"</{tag}>")
     return text
 
@@ -798,7 +978,9 @@ def _cite_from_slots(
         except KeyError as exc:
             raise RenderError(f"cite-block names unknown slot {slot_id}") from exc
         if not isinstance(bound, ServedObservation):
-            raise RenderError(f"cite-block slot {slot_id} is not a published observation")
+            raise RenderError(
+                f"cite-block slot {slot_id} is not a published observation"
+            )
         observation = bound.observation
         if observation.citation_id not in block.citation_ids:
             raise RenderError(
@@ -809,7 +991,9 @@ def _cite_from_slots(
         if _producer_status_from_id(observation.observation_id) == "F":
             caveat_one_line = bound.caveat.reference_period
     if len(periods) != 1:
-        raise RenderError("cite-block observation slots must share one reference period")
+        raise RenderError(
+            "cite-block observation slots must share one reference period"
+        )
     return next(iter(periods)), caveat_one_line
 
 
@@ -862,7 +1046,8 @@ def _caveat_block_html(caveat: CaveatNote, vintage_id: str) -> str:
         ("Do not", caveat.do_not),
     )
     rows = "".join(
-        f"<dt>{html.escape(label)}</dt><dd>{html.escape(value)}</dd>" for label, value in fields
+        f"<dt>{html.escape(label)}</dt><dd>{html.escape(value)}</dd>"
+        for label, value in fields
     )
     return (
         f'<details class="caveat-note" data-caveat-id="{html.escape(caveat.caveat_id)}" '
@@ -888,12 +1073,17 @@ def assert_single_vintage(page: BoundPage, vintage_id: str) -> None:
 
 __all__ = [
     "C1_TEMPLATE_ID",
+    "C3_TEMPLATE_ID",
     "BoundPage",
     "RenderError",
     "assert_cite_views_complete",
     "assert_single_vintage",
     "bind_c1_page",
+    "bind_c3_page",
+    "bind_page",
+    "bind_pages_for_vintage",
     "c1_template_dir",
+    "c3_template_dir",
     "iter_cite_views",
     "wrap_cite_views",
     "write_contract_schema",

@@ -15,8 +15,10 @@ from prism.paths import HEADERS_FILENAME, posix
 from prism.refresh import ensure_utc
 
 XLSX_MAGIC = b"PK\x03\x04"
+PDF_MAGIC = b"%PDF"
+XLS_OLE_MAGIC = b"\xd0\xcf\x11\xe0"
 DEFAULT_TIMEOUT = httpx.Timeout(120.0)
-USER_AGENT = "prism-ingest/mospi-cpi-xlsx-1.0.0"
+USER_AGENT = "prism-ingest/1.0.0"
 
 
 class IngestError(ValueError):
@@ -83,6 +85,31 @@ def is_xlsx(payload: bytes) -> bool:
     return payload.startswith(XLSX_MAGIC)
 
 
+def is_pdf(payload: bytes) -> bool:
+    return payload.startswith(PDF_MAGIC)
+
+
+def is_xls_ole(payload: bytes) -> bool:
+    return payload.startswith(XLS_OLE_MAGIC)
+
+
+def assert_payload_kind(payload: bytes, kind: str, url: str) -> None:
+    if kind == "xlsx" and not is_xlsx(payload):
+        raise IngestError(f"not an xlsx (magic missing) at {url}")
+    if kind == "pdf" and not is_pdf(payload):
+        raise IngestError(f"not a pdf (magic missing) at {url}")
+    if kind == "xls" and not is_xls_ole(payload):
+        raise IngestError(f"not an xls OLE compound file (magic missing) at {url}")
+    if kind == "html":
+        if is_pdf(payload) or is_xlsx(payload) or is_xls_ole(payload):
+            raise IngestError(f"not html (office/pdf magic present) at {url}")
+        head = payload.lstrip()[:2048].lower()
+        if b"<html" not in head and b"<!doctype" not in head:
+            raise IngestError(f"not html (no html/doctype in head) at {url}")
+    if kind not in {"xlsx", "pdf", "xls", "html"}:
+        raise IngestError(f"unknown artifact kind {kind} at {url}")
+
+
 def write_headers(
     dest_dir: Path,
     artifact: RetrievedArtifact,
@@ -121,14 +148,14 @@ def write_raw_artifact(
     *,
     link_from: Path | None = None,
     headers_name: str = HEADERS_FILENAME,
+    kind: str = "xlsx",
 ) -> tuple[Path, str]:
     write_headers(dest_dir, artifact, headers_name)
     if artifact.http_status != 200:
         raise IngestError(
             f"http_{artifact.http_status} for {artifact.url}; not substituting another file"
         )
-    if not is_xlsx(artifact.content):
-        raise IngestError(f"not an xlsx (magic missing) at {artifact.url}")
+    assert_payload_kind(artifact.content, kind, artifact.url)
     artifact_path = dest_dir / artifact.filename
     how = install_file(artifact_path, artifact.content, link_from=link_from)
     return artifact_path, how

@@ -1,0 +1,110 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Annex-1 revenue receipts. Actuals 2017-18 through 2024-25 as a line. Revised Estimates 2025-26 and Budget Estimates 2026-27 as points, not Actuals. Tax in this annex is net of States’ share. Do not extend with RBI or IMF.",
+  "title": {
+    "text": "Revenue receipts in this Budget book",
+    "subtitle": "Actuals as a line through 2024-25. Revised and Budget are points, not Actuals."
+  },
+  "usermeta": {
+    "slot_id": "chart-receipts-actuals",
+    "cite_in_same_view": true,
+    "forbidden": ["stitch_re_be_as_actuals", "red_green_diverging", "extend_with_rbi_imf", "gross_as_net", "sort_by_measure"]
+  },
+  "width": 720,
+  "height": 280,
+  "layer": [
+    {
+      "data": { "name": "slot:chart-receipts-actuals" },
+      "transform": [
+        {
+          "calculate": "datum.status === 'value' ? datum.value : null",
+          "as": "plotValue"
+        }
+      ],
+      "mark": {
+        "type": "line",
+        "color": "#1f4e79",
+        "strokeWidth": 2,
+        "invalid": "break-paths"
+      },
+      "encoding": {
+        "x": {
+          "field": "reference_period",
+          "type": "ordinal",
+          "title": "Financial year as labelled",
+          "sort": [
+            "actual-2017-18",
+            "actual-2018-19",
+            "actual-2019-20",
+            "actual-2020-21",
+            "actual-2021-22",
+            "actual-2022-23",
+            "actual-2023-24",
+            "actual-2024-25",
+            "re-2025-26",
+            "be-2026-27"
+          ]
+        },
+        "y": {
+          "field": "plotValue",
+          "type": "quantitative",
+          "title": "Crore of rupees",
+          "scale": { "zero": true }
+        },
+        "tooltip": [
+          { "field": "reference_period", "type": "nominal" },
+          { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+          { "field": "status", "type": "nominal" }
+        ]
+      }
+    },
+    {
+      "data": { "name": "slot:chart-receipts-estimates" },
+      "transform": [
+        {
+          "calculate": "datum.status === 'value' ? datum.value : null",
+          "as": "plotValue"
+        }
+      ],
+      "mark": {
+        "type": "point",
+        "color": "#7a542e",
+        "filled": true,
+        "size": 80,
+        "invalid": "break-paths"
+      },
+      "encoding": {
+        "x": {
+          "field": "reference_period",
+          "type": "ordinal",
+          "sort": [
+            "actual-2017-18",
+            "actual-2018-19",
+            "actual-2019-20",
+            "actual-2020-21",
+            "actual-2021-22",
+            "actual-2022-23",
+            "actual-2023-24",
+            "actual-2024-25",
+            "re-2025-26",
+            "be-2026-27"
+          ]
+        },
+        "y": {
+          "field": "plotValue",
+          "type": "quantitative",
+          "scale": { "zero": true }
+        },
+        "tooltip": [
+          { "field": "reference_period", "type": "nominal" },
+          { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+          { "field": "status", "type": "nominal" }
+        ]
+      }
+    }
+  ],
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
+}

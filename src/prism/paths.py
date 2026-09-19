@@ -84,7 +84,14 @@ def ingest_raw_dir(
     source_vintage: str,
     retrieved_at: str,
 ) -> Path:
-    return data_root / RAW_DIRNAME / producer_slug / series_id / source_vintage / retrieved_at
+    return (
+        data_root
+        / RAW_DIRNAME
+        / producer_slug
+        / series_id
+        / source_vintage
+        / retrieved_at
+    )
 
 
 def ingest_derived_dir(
@@ -111,7 +118,10 @@ def ingest_table_path(
     series_id: str,
     source_vintage: str,
 ) -> Path:
-    return ingest_derived_dir(data_root, producer_slug, series_id, source_vintage) / TABLE_FILENAME
+    return (
+        ingest_derived_dir(data_root, producer_slug, series_id, source_vintage)
+        / TABLE_FILENAME
+    )
 
 
 def ingest_lineage_path(
@@ -120,7 +130,10 @@ def ingest_lineage_path(
     series_id: str,
     source_vintage: str,
 ) -> Path:
-    return ingest_lineage_dir(data_root, producer_slug, series_id, source_vintage) / LINEAGE_FILENAME
+    return (
+        ingest_lineage_dir(data_root, producer_slug, series_id, source_vintage)
+        / LINEAGE_FILENAME
+    )
 
 
 def run_report_path(logs_root: Path, run_id: str) -> Path:

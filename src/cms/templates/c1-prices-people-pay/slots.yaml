@@ -1,5 +1,5 @@
-# C1 citizen template bindings. Portrait Editor. No observation numerals.
-# CMS Engineer: bind each slot with prism.schema.SlotSelector against vintage
+# C1 citizen template bindings. Content Editor. No observation numerals.
+# UI/UX Developer: bind each slot with prism.schema.SlotSelector against vintage
 # dv-20260916-234e263c8588. Fail the render if a required observation slot
 # would show a number without producer, series, date, geography vintage, and caveat.
 # Missing observation → unknown / not published. Never paste a remembered figure.
@@ -123,6 +123,7 @@ serve:
   never_serve_bare_float: true
 
 charts:
+  general-beside-food: ./charts/general-beside-food.vl.json
   all-india-sectors-inflation-latest: ./charts/all-india-sectors-inflation-latest.vl.json
   cfpi-beside-division-01: ./charts/cfpi-beside-division-01.vl.json
   state-ut-combined-inflation-latest: ./charts/state-ut-combined-inflation-latest.vl.json
@@ -305,6 +306,19 @@ slots:
       status: value
 
   # --- Chart collections ---
+  - slot_id: chart-general-beside-food
+    kind: collection
+    chart: general-beside-food
+    members:
+      - slot_id: all-india-combined-general-inflation-latest-p
+        label: CPI (General)
+      - slot_id: all-india-combined-cfpi-inflation-latest-p
+        label: Food
+    sort:
+      field: label
+      order: [CPI (General), Food]
+      never: measure
+
   - slot_id: chart-all-india-sectors-inflation-latest-p
     kind: collection
     chart: all-india-sectors-inflation-latest
@@ -329,12 +343,12 @@ slots:
     chart: cfpi-beside-division-01
     members:
       - slot_id: all-india-combined-cfpi-inflation-latest-p
-        label: CFPI / Group 01.1 Food
+        label: Consumer Food Price Index
       - slot_id: all-india-combined-div01-inflation-latest-p
-        label: Division 01 Food and beverages
+        label: Food and beverages
     sort:
       field: label
-      order: [CFPI / Group 01.1 Food, Division 01 Food and beverages]
+      order: [Consumer Food Price Index, Food and beverages]
       never: measure
 
   - slot_id: chart-state-ut-combined-inflation-latest-p

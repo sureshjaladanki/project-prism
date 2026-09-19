@@ -32,7 +32,9 @@ def connect_vintage(data_root: Path, vintage_id: str) -> duckdb.DuckDBPyConnecti
     if manifest.vintage_id != vintage_id:
         raise VintageQueryError("manifest vintage_id does not match the directory")
     paths = [
-        (series_dir(data_root, vintage_id, entry.series_id) / OBSERVATIONS_FILENAME).resolve()
+        (
+            series_dir(data_root, vintage_id, entry.series_id) / OBSERVATIONS_FILENAME
+        ).resolve()
         for entry in manifest.series
     ]
     missing = [path.as_posix() for path in paths if not path.exists()]
@@ -40,10 +42,14 @@ def connect_vintage(data_root: Path, vintage_id: str) -> duckdb.DuckDBPyConnecti
         raise VintageQueryError("missing observations parquet: " + ", ".join(missing))
 
     connection = duckdb.connect(database=":memory:")
-    connection.read_parquet([path.as_posix() for path in paths]).to_table("observations")
+    connection.read_parquet([path.as_posix() for path in paths]).to_table(
+        "observations"
+    )
     connection.execute("ALTER TABLE observations ADD COLUMN bound_vintage_id VARCHAR")
     connection.execute("UPDATE observations SET bound_vintage_id = ?", [vintage_id])
-    ids = connection.execute("SELECT DISTINCT bound_vintage_id FROM observations").fetchall()
+    ids = connection.execute(
+        "SELECT DISTINCT bound_vintage_id FROM observations"
+    ).fetchall()
     if ids != [(vintage_id,)]:
         raise VintageQueryError("DuckDB connection mixed more than one vintage_id")
     return connection
@@ -62,7 +68,13 @@ def observations_matching(
     units: tuple[str, ...],
     statuses: tuple[ObservationStatus, ...],
 ) -> tuple[Observation, ...]:
-    if not geography_codes or not sectors or not reference_periods or not units or not statuses:
+    if (
+        not geography_codes
+        or not sectors
+        or not reference_periods
+        or not units
+        or not statuses
+    ):
         raise VintageQueryError("collection query is missing a bound dimension")
     placeholders = {
         "geography": ", ".join("?" for _ in geography_codes),
@@ -76,13 +88,13 @@ def observations_matching(
         FROM observations
         WHERE bound_vintage_id = ?
           AND series_id = ?
-          AND geography_code IN ({placeholders['geography']})
+          AND geography_code IN ({placeholders["geography"]})
           AND geography_vintage = ?
           AND geography_code_system = ?
-          AND sector IN ({placeholders['sector']})
-          AND reference_period IN ({placeholders['period']})
-          AND unit IN ({placeholders['unit']})
-          AND status IN ({placeholders['status']})
+          AND sector IN ({placeholders["sector"]})
+          AND reference_period IN ({placeholders["period"]})
+          AND unit IN ({placeholders["unit"]})
+          AND status IN ({placeholders["status"]})
     """
     params: list[object] = [
         vintage_id,

@@ -150,12 +150,12 @@ def _read_sheet(data: bytes, sheet: str) -> pd.DataFrame:
     return frame
 
 
-def _require_columns(frame: pd.DataFrame, expected: tuple[str, ...], sheet: str) -> None:
+def _require_columns(
+    frame: pd.DataFrame, expected: tuple[str, ...], sheet: str
+) -> None:
     missing = [name for name in expected if name not in frame.columns]
     if missing:
-        raise IngestError(
-            f"sheet {sheet!r} missing columns: {', '.join(missing)}"
-        )
+        raise IngestError(f"sheet {sheet!r} missing columns: {', '.join(missing)}")
 
 
 def _cleanse(frame: pd.DataFrame) -> pd.DataFrame:
@@ -181,7 +181,9 @@ def _to_csv(frame: pd.DataFrame) -> str:
     return str(frame.to_csv(index=False, na_rep="", lineterminator="\n"))
 
 
-def _ok_table(frame: pd.DataFrame, value_columns: tuple[str, ...], extra_nulls: str) -> ParsedTable:
+def _ok_table(
+    frame: pd.DataFrame, value_columns: tuple[str, ...], extra_nulls: str
+) -> ParsedTable:
     if len(frame) == 0:
         return ParsedTable(
             csv_text=_to_csv(frame),
@@ -241,15 +243,25 @@ def parse_cpi_cfpi(data: bytes) -> ParsedTable:
         names = frame["Group Name"].astype("string")
         code_food = codes == CFPI_GROUP_CODE
         name_food = names == CFPI_GROUP_NAME
-        if int(code_food.sum()) != int(name_food.sum()) or bool((code_food != name_food).any()):
-            return _failed("ambiguous CFPI filter: Group code 01.1 and Group Name Food disagree")
+        if int(code_food.sum()) != int(name_food.sum()) or bool(
+            (code_food != name_food).any()
+        ):
+            return _failed(
+                "ambiguous CFPI filter: Group code 01.1 and Group Name Food disagree"
+            )
         food = frame.loc[code_food, list(GROUP_COLUMNS)].copy()
         if "Division code" in food.columns or "Division Name" in food.columns:
-            return _failed("CFPI table includes Division columns; expected Group 01.1 only")
+            return _failed(
+                "CFPI table includes Division columns; expected Group 01.1 only"
+            )
     except IngestError as exc:
         return _failed(str(exc))
     extra = _chandigarh_rural_note(food, "State Name")
-    extra = extra + ("; " if extra else "") + "CFPI = Group Food 01.1 only; Division 01 excluded"
+    extra = (
+        extra
+        + ("; " if extra else "")
+        + "CFPI = Group Food 01.1 only; Division 01 excluded"
+    )
     return _ok_table(food, ("index", "inflation (%)"), extra)
 
 
@@ -275,7 +287,14 @@ def parse_cpi_division_group(data: bytes) -> ParsedTable:
         extra = extra + "; " + extra_geo
     return _ok_table(
         stacked,
-        ("index", "inflation (%)", "Division Name", "Division code", "Group Name", "Group code"),
+        (
+            "index",
+            "inflation (%)",
+            "Division Name",
+            "Division code",
+            "Group Name",
+            "Group code",
+        ),
         extra,
     )
 

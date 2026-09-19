@@ -1,0 +1,56 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Union tax revenue by major head, Budget Estimates 2026-27, Government of India. Producer printed order. Gross heads, not tax after States’ share. GST Compensation Cess blank is a hole, not zero. Single fill. Do not rank.",
+  "title": {
+    "text": "Tax by major head, Budget Estimates 2026-27",
+    "subtitle": "Government of India. Gross heads, as printed. A blank is not zero."
+  },
+  "usermeta": {
+    "slot_id": "chart-tax-heads-be",
+    "cite_in_same_view": true,
+    "axis_order": "producer_printed_tax_heads",
+    "forbidden": ["sort_by_measure", "red_green_diverging", "blank_as_zero", "gross_as_net", "prism_collections_total"]
+  },
+  "height": { "step": 22 },
+  "data": { "name": "slot:chart-tax-heads-be" },
+  "transform": [
+    {
+      "calculate": "datum.status === 'value' ? datum.value : null",
+      "as": "plotValue"
+    }
+  ],
+  "mark": { "type": "bar", "color": "#1f4e79", "invalid": "break-paths" },
+  "encoding": {
+    "y": {
+      "field": "head_name",
+      "type": "nominal",
+      "title": null,
+      "sort": [
+        "Corporation tax",
+        "Income tax other than corporation tax",
+        "CGST",
+        "IGST",
+        "GST Compensation Cess",
+        "Customs",
+        "Union excise duties"
+      ],
+      "axis": { "labelLimit": 320 }
+    },
+    "x": {
+      "field": "plotValue",
+      "type": "quantitative",
+      "title": "Crore of rupees",
+      "scale": { "zero": true }
+    },
+    "tooltip": [
+      { "field": "head_name", "type": "nominal" },
+      { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+      { "field": "status", "type": "nominal" },
+      { "field": "reference_period", "type": "nominal" }
+    ]
+  },
+  "config": {
+    "view": { "stroke": null },
+    "axis": { "grid": true }
+  }
+}

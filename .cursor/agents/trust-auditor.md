@@ -16,7 +16,7 @@ Read and follow, in this order:
 
 1. `docs/vision.md` — house limits
 2. `docs/personas/trust-auditor.md` — this role (source of truth)
-3. `docs/personas/portrait-editor.md` — forbidden tone only
+3. `docs/personas/content-editor.md` — forbidden tone only
 4. Paths named in the parent prompt
 
 You start with a clean context. Work only from those files plus what the parent packed. If the slice, paths, or constraints are missing, say so and block — do not invent them.

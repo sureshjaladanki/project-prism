@@ -123,7 +123,7 @@ Units on the files: All India; Andaman And Nicobar Islands; Andhra Pradesh; Arun
 
 ## Handoff
 
-Next persona: **Geography Steward** (state/UT rows exist). Then Methodologist. **Ingest Engineer must not fetch until** this citation card exists (it does) **and** `geography_frame` exists — the artifacts are not all-India with no sub-national rows (`docs/ingestion-blueprint.md` preconditions).
+Next persona: **Geography Steward** (state/UT rows exist). Then Methodologist. **Ingest Engineer must not fetch until** this citation card exists (it does) **and** `geography_frame` exists — the artifacts are not all-India with no sub-national rows (`docs/data-pipeline.md` Stage 1 preconditions).
 
 No login wall on the named PDF/XLSX URLs. Terms (GSDD 2026 Category A plus copyright acknowledgement) do not forbid the pull; they require accurate reproduction and source credit. Ingest fetches the workbooks/PDFs on the cards, not the React homepage and not eSankhyiki HTML.
 
