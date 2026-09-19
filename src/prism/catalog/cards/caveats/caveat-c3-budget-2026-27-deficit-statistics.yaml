@@ -1,0 +1,19 @@
+caveat_id: caveat-c3-budget-2026-27-deficit-statistics
+concept: 'Union deficit statistics as printed: Fiscal Deficit, Revenue Deficit, Effective
+  Revenue Deficit, Primary Deficit, and Sources of Financing Fiscal Deficit. Parentheses
+  are % of GDP as printed.'
+unit: Rupees as labelled, and percent of GDP where the producer prints parentheses.
+population: Government of India as published.
+reference_period: Actuals 2024-2025, BE 2025-2026, RE 2025-2026, BE 2026-2027 on the
+  statistics table.
+producer_definition: Budget at a Glance 2026-2027 — Deficit Statistics; fetch budget_at_a_glance.xlsx
+  sheet Deficit Statistics. Do not ingest other BAG sheets.
+comparable_from: Columns on this table. Card 4 annex deficit lines are a different
+  printed table. Card 10 monthly fiscal deficit is intra-year unaudited.
+breaks: BE vs RE vs Actuals. % of GDP uses the Budget’s cited GDP. Spreadsheet cell
+  map — not a PDF scrape.
+lags: PDF CreationDate 1 February 2026. next_release unknown.
+disagrees_with: Card 4 printed deficit lines. Card 8 FRBM prose percentages. Card
+  10 monthly fiscal deficit. Card 11 year-end Actuals.
+do_not: Do not grade FRBM targets from this table. Do not blend monthly Card 10 into
+  this year-status table. Do not invent one Union money number.

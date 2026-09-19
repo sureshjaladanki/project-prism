@@ -1,0 +1,42 @@
+caveat_id: caveat-c1-cpi-back-series-linked-base-2024
+concept: Producer-linked CPI General back series expressed on Base 2024=100 — not
+  independently compiled 2024-basket observations before the new series. Rural, Urban
+  and Combined sectors as published. Group = General only.
+unit: Index points (linked onto Base 2024=100) and year-on-year inflation (%) where
+  the cell is filled. Early Inflation (%) cells are blank (None) — that is not zero.
+population: All India (`00`) only in this file. Sectors Rural / Urban / Combined.
+  Not States/UTs. Not districts. Same national CPI family as Card 1, but linked/back-cast
+  rather than the current compiled run.
+reference_period: Calendar month on the row. File rows run January 2013–December 2024
+  (opened Sheet1). This file’s own release date is not printed on the sheet — do not
+  use 14 September 2026 as this series’ reference period or as a substitute release
+  date.
+producer_definition: 'Workbook title as cited: CPI Back Series Index Inflation Based
+  on Base Year 2024; columns Base Year, State code, State name, Sector, Year, Month,
+  Group, Index, Inflation (%). Opened rows: State name = All India, State code = 00,
+  Group = General (citation Card 4). First rows: January 2013 Rural/Urban/Combined
+  indexes with Inflation (%) blank; first non-blank inflation is January 2014. Last
+  opened rows: December 2024. This is the producer’s own linked series, not a user
+  splice of 2012=100.'
+comparable_from: 'Linked General index: January 2013 onward in this file (All India).
+  Linked year-on-year inflation (%): January 2014 onward (2013 inflation blank). File
+  ends December 2024. Independently compiled 2024=100 months are Card 1 from January
+  2025 — not this card.'
+breaks: 'Linked / back-cast versus independently compiled Base 2024=100 (Cards 1–3
+  from January 2025): show a break, not one blended line. Do not stitch this file
+  to CPI 2012=100 as if they were one. Frame B has no State/UT map (Telangana, J&K/Ladakh,
+  DNH&DD reorganisation do not appear as changing units here). Do not recode Frame
+  A rows onto this card.'
+lags: Not a monthly press product; next_release unknown; no date on the sheet. Do
+  not imply it updates with the August 2026 press note.
+disagrees_with: Cards 1–3 compiled 2024-basket General/Division/Group from January
+  2025 (different compilation status). CPI 2012=100 as originally published. WPI and
+  Labour Bureau CPIs. No State/UT official CPI in this file to disagree with Frame
+  A — the hole is missing geography, not a second state series.
+do_not: Do not present these indexes as independently compiled 2024-basket prices
+  before 2025. Do not stitch to 2012=100. Do not join to Frame A State/UT rows (there
+  are none). Do not chart State-level history from this card. Do not chart inflation
+  (%) for 2013 (or any blank cell) as zero. Do not use this card for CFPI, Division,
+  or Group food. Do not hide the January 2025 compiled-series start as a smooth continuation.
+  Do not rank, forecast, overlay pumps, or call All India the whole country (States,
+  UTs, and districts are missing here).

@@ -1,0 +1,24 @@
+caveat_id: caveat-c2-census-2011-pca-sd
+concept: 'Census of India 2011 PCA SD headcount as published for Level = India or
+  STATE: persons (TOT_P), males (TOT_M), females (TOT_F), and households (No_HH) by
+  TRU = Total / Rural / Urban. Census stock on Census day, not an SRS rate and not
+  a projection.'
+unit: Persons (and households where the column is No_HH). Not thousands. Not a rate.
+population: Everyone enumerated in Census 2011 on published India and STATE rows.
+  Not DISTRICT rows. Not NPR, electoral rolls, or a 2026 usual-resident count.
+reference_period: 00:00 hours, 1 March 2011. Not the NADA catalog date.
+producer_definition: TOT_P, TOT_M, TOT_F for Level = India or STATE; TRU = Total /
+  Rural / Urban (ORGI, Census of India 2011 PCA SD, NADA catalog 6191). India (00)
+  is the published national total, not a roll-up of STATE rows.
+comparable_from: This card is one census vintage. Compare Frame A units only on the
+  2011 map.
+breaks: No Telangana STATE row; no Ladakh UT row; DAMAN & DIU (25) and DADRA & NAGAR
+  HAVELI (26) are separate. Do not recode onto Frame C or Frame E.
+lags: About fifteen years behind a 2026 reader. next_release unknown — delayed. Census
+  2021 totals were not published. Census 2027 houselisting is not a count.
+disagrees_with: Card 2 A-02 (different table and printed names). Cards 3–4 SRS 2024
+  rates. Card 5 Table 8 projections in thousands. UN / World Bank modelled stocks
+  (charter-out).
+do_not: Do not present TOT_P as how many people live in India now. Do not hide 1 March
+  2011. Do not chart DISTRICT rows. Do not add SRS rates to invent a 2024 headcount.
+  Do not splice Card 5 onto this line. Do not rank.

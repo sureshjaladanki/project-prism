@@ -3,44 +3,24 @@
 from __future__ import annotations
 
 import csv
-import json
 from dataclasses import dataclass
-from datetime import UTC, datetime
 from pathlib import Path
 
-from prism.observation_parquet import observations_from_parquet, observations_to_parquet
-from prism.paths import ingest_lineage_path, ingest_table_path, run_report_path
-from prism.pipeline.c1_cards import (
-    C1_CAVEATS,
-    C1_CITATIONS,
-    C1_GEOGRAPHIES,
-    FRAME_A_NAME_BY_CODE,
-    FRAME_B_NAME_BY_CODE,
-)
+from prism.catalog.registry import MapperSpec, register_mapper
+from prism.pipeline.errors import PipelineError
 from prism.refresh import (
-    C1_SERIES,
-    C1_SERIES_IDS,
     SERIES_CPI_BACK_SERIES_LINKED_BASE_2024,
     SERIES_CPI_CFPI_BASE_2024,
     SERIES_CPI_DIVISION_GROUP_BASE_2024,
     SERIES_CPI_GENERAL_BASE_2024,
-    SeriesBinding,
-    ensure_utc,
-    trigger_from_lineage,
 )
 from prism.schema import (
-    Completeness,
     GeographyRef,
     GeographyVintage,
-    LineageRecord,
     Observation,
     ObservationLineage,
     ObservationStatus,
-    RefreshTrigger,
-    VintageManifest,
-    YesNo,
 )
-from prism.vintage_store import SeriesWrite, latest_manifest_with_series, write_vintage
 
 MAPPER_VERSION = "c1-observations-1.0.0"
 UNIT_INDEX = "index (Base 2024=100)"
@@ -83,10 +63,6 @@ MONTH_NUMBERS = {
     "11": "11",
     "12": "12",
 }
-
-
-class PipelineError(ValueError):
-    pass
 
 
 @dataclass(frozen=True)
@@ -317,169 +293,36 @@ def map_derived_table(
     return tuple(observations)
 
 
-def load_c1_lineage(data_root: Path, binding: SeriesBinding) -> LineageRecord:
-    path = ingest_lineage_path(
-        data_root, binding.producer_slug, binding.series_id, binding.source_vintage
-    )
-    if not path.exists():
-        raise PipelineError(f"missing lineage for {binding.series_id}")
-    return LineageRecord.model_validate_json(path.read_bytes())
-
-
-def map_c1_series(
-    data_root: Path, binding: SeriesBinding, lineage: LineageRecord
-) -> SeriesWrite:
-    if lineage.lineage_ok is not YesNo.yes:
-        raise PipelineError(
-            f"{binding.series_id} lineage_ok={lineage.lineage_ok.value}; not building a vintage"
-        )
-    if lineage.citation_id != binding.citation_id:
-        raise PipelineError(
-            f"{binding.series_id} lineage citation_id {lineage.citation_id} "
-            f"does not match {binding.citation_id}"
-        )
-    citation = C1_CITATIONS[binding.series_id]
-    caveat = C1_CAVEATS[binding.series_id]
-    geography = C1_GEOGRAPHIES[binding.series_id]
-    if citation.citation_id != binding.citation_id:
-        raise PipelineError("citation_id does not match the locked card")
-    if caveat.caveat_id != binding.caveat_id:
-        raise PipelineError("caveat_id does not match the locked note")
-    names = (
-        FRAME_B_NAME_BY_CODE
-        if binding.series_id == SERIES_CPI_BACK_SERIES_LINKED_BASE_2024
-        else FRAME_A_NAME_BY_CODE
-    )
-    table_path = ingest_table_path(
-        data_root, binding.producer_slug, binding.series_id, binding.source_vintage
-    )
-    if not table_path.exists():
-        raise PipelineError(f"missing derived table for {binding.series_id}")
-    observations = map_derived_table(
-        series_id=binding.series_id,
-        rows=_read_rows(table_path),
-        citation_id=citation.citation_id,
-        caveat_id=caveat.caveat_id,
+def map_state_sector_period(
+    rows: list[dict[str, str]],
+    series_id: str,
+    citation_id: str,
+    caveat_id: str,
+    geography: GeographyVintage,
+    lineage: ObservationLineage,
+) -> tuple[Observation, ...]:
+    names = {unit.code: unit.name_en for unit in geography.units_included}
+    return map_derived_table(
+        series_id=series_id,
+        rows=rows,
+        citation_id=citation_id,
+        caveat_id=caveat_id,
         geography=geography,
         names=names,
-        lineage=ObservationLineage(
-            raw_path=lineage.raw_path,
-            derived_path=lineage.derived_path,
-            checksum=lineage.checksum,
-        ),
-    )
-    return SeriesWrite(
-        producer=binding.producer,
-        series_id=binding.series_id,
-        source_vintage=binding.source_vintage,
-        raw_checksum=lineage.checksum,
-        parser_version=lineage.parser,
-        lineage_ok=lineage.lineage_ok,
-        geography_vintage=geography.geography_vintage,
-        geography_frame_id=binding.geography_frame_id,
-        caveat_id=caveat.caveat_id,
-        mapper_version=MAPPER_VERSION,
-        observations_parquet=observations_to_parquet(observations),
-        citation=citation,
-        caveat=caveat,
-        geography=geography,
+        lineage=lineage,
     )
 
 
-def trigger_for_records(records: tuple[LineageRecord, ...]) -> RefreshTrigger:
-    if any(
-        trigger_from_lineage(record) is RefreshTrigger.source_change
-        for record in records
-    ):
-        return RefreshTrigger.source_change
-    return RefreshTrigger.on_demand
-
-
-def _write_report(logs_root: Path, run_id: str, payload: dict[str, object]) -> Path:
-    path = run_report_path(logs_root, run_id)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
-    return path
-
-
-def observation_count(item: SeriesWrite) -> int:
-    return len(observations_from_parquet(item.observations_parquet))
-
-
-def materialise_c1_vintage(
-    data_root: Path,
-    logs_root: Path,
-    *,
-    created_at: datetime | None = None,
-) -> tuple[VintageManifest, dict[str, object]]:
-    """Write a new C1 vintage. Does not move preview or citizen pointers."""
-
-    moment = ensure_utc(created_at if created_at is not None else datetime.now(UTC))
-    run_id = moment.strftime("%Y%m%dT%H%M%SZ")
-    series_rows: list[dict[str, object]] = []
-    report: dict[str, object] = {
-        "run_id": run_id,
-        "vintage_id": None,
-        "trigger": None,
-        "completeness": Completeness.failed.value,
-        "series": series_rows,
-        "flags": "none",
-        "pointers": "untouched",
-    }
-    try:
-        records: list[LineageRecord] = []
-        writes: list[SeriesWrite] = []
-        for binding in C1_SERIES:
-            lineage = load_c1_lineage(data_root, binding)
-            records.append(lineage)
-            item = map_c1_series(data_root, binding, lineage)
-            writes.append(item)
-            series_rows.append(
-                {
-                    "series_id": item.series_id,
-                    "observation_count": observation_count(item),
-                    "lineage_ok": item.lineage_ok.value,
-                    "source_vintage": item.source_vintage,
-                    "reused": None,
-                    "rewritten": None,
-                }
-            )
-        trigger = trigger_for_records(tuple(records))
-        report["trigger"] = trigger.value
-        previous = latest_manifest_with_series(data_root, C1_SERIES_IDS)
-        manifest = write_vintage(
-            data_root,
-            created_at=moment,
-            trigger=trigger,
-            series=tuple(writes),
-            completeness=Completeness.complete,
-            previous=previous,
-        )
-        reused_by_id = {entry.series_id: entry.reused for entry in manifest.series}
-        for row in series_rows:
-            reused = reused_by_id[str(row["series_id"])]
-            row["reused"] = reused.value
-            row["rewritten"] = (
-                YesNo.no.value if reused is YesNo.yes else YesNo.yes.value
-            )
-        report["vintage_id"] = manifest.vintage_id
-        report["completeness"] = manifest.completeness.value
-        _write_report(logs_root, run_id, report)
-        return manifest, report
-    except Exception as exc:
-        report["flags"] = str(exc)
-        _write_report(logs_root, run_id, report)
-        raise
-
+register_mapper(
+    "state-sector-period",
+    MapperSpec(map_rows=map_state_sector_period, version=MAPPER_VERSION),
+)
 
 __all__ = [
     "MAPPER_VERSION",
     "UNIT_INDEX",
     "UNIT_INFLATION",
     "PipelineError",
-    "map_c1_series",
     "map_derived_table",
-    "materialise_c1_vintage",
+    "map_state_sector_period",
 ]

@@ -72,9 +72,7 @@ def render(
     pages = bind_pages_for_desk(data_root, cms_root, cms_mode=cms_mode)
     for page in pages:
         assert_single_vintage(page, page.vintage_id)
-    dest = _write_render_tree(
-        data_root, vintage_id, cms_root, pages, cms_mode=cms_mode
-    )
+    dest = _write_render_tree(data_root, vintage_id, cms_root, pages, cms_mode=cms_mode)
     if set_preview:
         if read_citizen_pointer(data_root) == vintage_id:
             raise RenderError(
@@ -182,9 +180,7 @@ def _drop_astro_internals(dest: Path) -> None:
             path.unlink()
 
 
-def _mark_complete(
-    dest: Path, required: tuple[str, ...] = REQUIRED_PAGES
-) -> None:
+def _mark_complete(dest: Path, required: tuple[str, ...] = REQUIRED_PAGES) -> None:
     missing = [name for name in required if not (dest / name).exists()]
     if missing:
         raise RenderIncompleteError(

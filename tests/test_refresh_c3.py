@@ -193,11 +193,23 @@ def test_c3_bindings_lock_producer_slug_and_geography_vintage() -> None:
 
 
 def test_card_8_lineage_ok_no_does_not_block_completeness() -> None:
-    assert lineage_blocks_completeness(SERIES_BUDGET_2026_27_FRBM_STATEMENTS, YesNo.no) is False
-    assert lineage_blocks_completeness(SERIES_BUDGET_2026_27_TAX_REVENUE, YesNo.no) is True
-    assert lineage_blocks_completeness(SERIES_BUDGET_2026_27_TAX_REVENUE, YesNo.yes) is False
-    assert lineage_record_blocks_completeness(_lineage(CITE_C3_CARD_8, YesNo.no)) is False
-    assert lineage_record_blocks_completeness(_lineage(CITE_C3_CARD_1, YesNo.no)) is True
+    assert (
+        lineage_blocks_completeness(SERIES_BUDGET_2026_27_FRBM_STATEMENTS, YesNo.no)
+        is False
+    )
+    assert (
+        lineage_blocks_completeness(SERIES_BUDGET_2026_27_TAX_REVENUE, YesNo.no) is True
+    )
+    assert (
+        lineage_blocks_completeness(SERIES_BUDGET_2026_27_TAX_REVENUE, YesNo.yes)
+        is False
+    )
+    assert (
+        lineage_record_blocks_completeness(_lineage(CITE_C3_CARD_8, YesNo.no)) is False
+    )
+    assert (
+        lineage_record_blocks_completeness(_lineage(CITE_C3_CARD_1, YesNo.no)) is True
+    )
 
 
 def test_complete_c3_vintage_lists_all_eleven_series(tmp_path: Path) -> None:
@@ -243,11 +255,14 @@ def test_complete_c3_vintage_allows_card_8_named_hole(tmp_path: Path) -> None:
     assert list(by_id) == list(C3_SERIES_IDS)
     assert by_id[SERIES_BUDGET_2026_27_FRBM_STATEMENTS].lineage_ok is YesNo.no
     assert all(
-        by_id[series_id].lineage_ok is YesNo.yes for series_id in C3_LINEAGE_REQUIRED_SERIES_IDS
+        by_id[series_id].lineage_ok is YesNo.yes
+        for series_id in C3_LINEAGE_REQUIRED_SERIES_IDS
     )
     stored = observations_from_parquet(
         (
-            series_dir(tmp_path, manifest.vintage_id, SERIES_BUDGET_2026_27_FRBM_STATEMENTS)
+            series_dir(
+                tmp_path, manifest.vintage_id, SERIES_BUDGET_2026_27_FRBM_STATEMENTS
+            )
             / OBSERVATIONS_FILENAME
         ).read_bytes()
     )

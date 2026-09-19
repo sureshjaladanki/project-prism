@@ -1,0 +1,62 @@
+caveat_id: caveat-c1-cpi-general-base-2024
+concept: 'All-India and State/UT Consumer Price Index (CPI) General — the producer’s
+  headline retail price index of selected goods and services, Base 2024=100. Published
+  as three sectors: Rural, Urban, and Combined. Combined is a published sector in
+  the same tables, not a user merge of Rural and Urban.'
+unit: Index points (Base 2024=100) and, where the producer prints it, year-on-year
+  inflation (%) — August 2026 over August 2025 in the latest press table. Status F/P
+  as printed. Do not treat a blank inflation cell as 0.
+population: 'Prices from the NSO Field Operations Division collection: selected 1407
+  urban markets (including online markets) and 1465 villages covering all States/UTs
+  (August 2026 press note). Not a census of all transactions. Not districts. Not a
+  city ranking of the 1407/1465 collection points.'
+reference_period: 'Calendar month named on the row (latest on these cards: August
+  2026 Provisional and July 2026 Final). Not the press date 14 September 2026.'
+producer_definition: 'Year-on-year inflation rate based on All India Consumer Price
+  Index (CPI) with base year 2024 for the month of August, 2026 over August, 2025
+  is 4.82%(Provisional). Corresponding inflation rates for rural and urban are 5.23%
+  and 4.31%, respectively. Same note prints CPI (General) Index and Inflation for
+  Rural, Urban and Combined in one Key Statistics table (July 2026 Final beside August
+  2026 Provisional). Collection: selected 1407 urban markets and 1465 villages covering
+  all States/UTs, weekly roster (NSO/MoSPI, Press Release of Consumer Price Index
+  on Base 2024=100 for August, 2026, 14 September 2026). Annexure-III footnote: *:
+  No rural market in Chandigarh. Rounding: Indices at all levels and inflation rates
+  are compiled using the actual index values without rounding off. However, the indices
+  published are rounded off to two decimal places.'
+comparable_from: 'Independently compiled Base 2024=100 General index: January 2025
+  onward (time-series workbooks and Annexure-IV). Year-on-year inflation (%) on this
+  base: January 2026 onward in Annexure-IV (Jan–Dec 2025 inflation cells are blank
+  because there is no prior year on this base). Do not use Card 4 to fill those 2025
+  blanks.'
+breaks: 'Base-year break versus CPI 2012=100 (and 2010=100 remnants): show a break,
+  never a blended line. Linked back series (Card 4) is not this card. Sector Combined
+  is not a geography break. Frame A already uses current units (Telangana 36 / Andhra
+  Pradesh 28; Jammu And Kashmir 01 / Ladakh 37; DNH&DD 25). Chandigarh (04) Rural
+  is withheld (dash / no Rural row); Combined equals Urban on that row — not a missing
+  UT. Code 26 unused. `00` All India is a published national unit, not a roll-up of
+  State/UT Combined.'
+lags: August 2026 figures released 14 September 2026; next release 12 October 2026
+  (CPI for September 2026). Latest month is Provisional until the producer prints
+  Final (here July 2026 Final sits beside August 2026 Provisional). Status P and F
+  are different observations, not one smoothed number.
+disagrees_with: 'CPI Base 2012=100 (previous series; still appears on some product-9
+  files — not this line). National Metadata Structure PDF on the MoSPI site still
+  describes older grouping (NSS 68th round weights / six groups) while live 2024=100
+  releases use COICOP 2018 — cite the live workbook, not the stale metadata PDF, as
+  the grouping of record. Out of this slice but official and not the same number:
+  WPI (DPIIT wholesale); Labour Bureau CPI-IW and CPI-AL/RL (different populations
+  and baskets). Division 01 Food and beverages (Card 3) is not this General index.
+  CFPI (Card 2) is not this General index. Pump prices (PPAC) are not this series
+  (press note: petrol, diesel and LPG price reference is the 15th of the month inside
+  the CPI collection — that is not a PPAC overlay).'
+do_not: Do not average Rural and Urban to invent Combined. Do not present `00` All
+  India as the whole country (districts parked; Chandigarh Rural withheld; All India
+  is not a sum of State/UT Combined). Do not recode State Codes. Do not join Frame
+  A State/UT rows to Card 4 (Card 4 has none). Do not stitch 2012=100 onto this series.
+  Do not chart a continuous line from Card 4 linked indexes into this compiled series
+  as if they were one independently compiled run — state the break at January 2025.
+  Do not chart blank inflation (%) as zero. Do not replace Provisional with Final
+  or blend them. Do not rank States/UTs or cities; press top five States tables are
+  not a series. Do not overlay petrol pump prices. Do not issue cheap/expensive or
+  forecast copy. Do not recompute higher-level indexes from rounded published figures
+  and treat the difference as a revision.

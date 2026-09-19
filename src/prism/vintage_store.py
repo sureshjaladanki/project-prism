@@ -21,7 +21,6 @@ from prism.paths import (
     vintages_dir,
 )
 from prism.refresh import (
-    C1_SERIES_IDS,
     VINTAGE_ID_PATTERN,
     ensure_utc,
     lineage_blocks_completeness,
@@ -123,7 +122,7 @@ def write_vintage(
     series: tuple[SeriesWrite, ...],
     completeness: Completeness,
     previous: VintageManifest | None,
-    required_series_ids: tuple[str, ...] = C1_SERIES_IDS,
+    required_series_ids: tuple[str, ...],
 ) -> VintageManifest:
     created_at = ensure_utc(created_at)
     if not series:
@@ -260,7 +259,7 @@ def latest_manifest_with_series(
     matches = [
         item
         for item in list_manifests(data_root)
-        if tuple(entry.series_id for entry in item.series) == series_ids
+        if {entry.series_id for entry in item.series} == set(series_ids)
     ]
     if not matches:
         return None

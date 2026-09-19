@@ -1,0 +1,22 @@
+citation_id: cite-c1-cpi-division-group-base-2024-2026-08
+producer: National Statistics Office, Price Statistics Division, Ministry of Statistics
+  and Programme Implementation (MoSPI)
+series: CPI Division indexes and CPI Group indexes, Rural / Urban / Combined (Base
+  2024=100), COICOP 2018 (12 Divisions, 43 Groups)
+id: 'Same monthly workbook as Card 1, sheets Division and Group; press Annexure-I
+  (division) and Annexure-II (group); Documents id 314 Annex.xlsx. Time series: CPI_2024-Jan2025-Dec2025.xlsx
+  and CPI_2024-Jan2026.xlsx sheets Division and Group.'
+reference_period: 2026-08
+release_date: '2026-09-14'
+url: https://www.mospi.gov.in/uploads/documents/productChartTable/1789491098345-Data_August_CPI_2026_14092026.xlsx
+geography_as_published: All India and States/UTs as in State Name; Sector = Rural
+  / Urban / Combined. Not districts. Not city/centre rankings.
+frequency: monthly
+licence: 'Not stated on the workbook or press PDF. MoSPI Copyrights Policy: reproduce
+  accurately, not in a derogatory or misleading context, source acknowledged. GSDD
+  2026 Category A (open access) lists Consumer Price Index (CPI). Not stated as CC-BY.'
+next_release: '2026-10-12'
+caveat_one_line: Division 01 is Food and beverages; food-only is Card 2. Item and
+  Subclass sheets exist in the same workbook — do not use them to rank cities. Some
+  item indices on eSankhyiki are thin-sample (press note warning); this slice uses
+  Division/Group/General as published.

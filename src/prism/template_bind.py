@@ -85,9 +85,7 @@ CITE_BLOCKS: dict[str, CiteBlock] = {
     "frbm-hole": CiteBlock(("cite-c3-budget-2026-27-frbm-statements",)),
     "afs": CiteBlock(("cite-c3-budget-2026-27-afs",)),
     "cga-monthly": CiteBlock(("cite-c3-cga-monthly-glance-2026-07",)),
-    "finance-accounts": CiteBlock(
-        ("cite-c3-cga-finance-accounts-2024-25-stat1",)
-    ),
+    "finance-accounts": CiteBlock(("cite-c3-cga-finance-accounts-2024-25-stat1",)),
     "census-pca": CiteBlock(("cite-c2-census-2011-pca-sd",)),
     "census-a02": CiteBlock(("cite-c2-census-2011-a02-decadal",)),
     "srs-bulletin": CiteBlock(("cite-c2-srs-bulletin-2024",)),
@@ -573,7 +571,10 @@ def _bind_collection(
         return _member_rows(slot, bound_slots)
     selector = slot["selector"]
     period = selector.get("reference_period")
-    if selector.get("geography_codes") == "state_ut_order" or "exclude_geography_codes" in slot:
+    if (
+        selector.get("geography_codes") == "state_ut_order"
+        or "exclude_geography_codes" in slot
+    ):
         return _state_rows(connection, vintage_id, slot, spec, cards)
     if isinstance(period, dict) and "from" in period:
         return _range_rows(connection, vintage_id, slot, cards)
@@ -616,9 +617,7 @@ def _labelled_unit_rows(
             raise RenderError(
                 f"collection {slot['slot_id']} missing unit {unit}; not inventing a figure"
             )
-        rows.append(
-            _row(_serve(observation, cards), {"head_name": names[unit]})
-        )
+        rows.append(_row(_serve(observation, cards), {"head_name": names[unit]}))
     return rows
 
 

@@ -1,0 +1,125 @@
+frame_id: c2-frame-e
+geography_vintage: '2019'
+code_system: none
+frame: Union | state | UT
+units_included:
+- code: india
+  name_en: INDIA
+  geography_vintage: '2019'
+- code: jammu-kashmir-ut
+  name_en: JAMMU & KASHMIR*(UT)
+  geography_vintage: '2019'
+- code: himachal-pradesh
+  name_en: HIMACHAL PRADESH
+  geography_vintage: '2019'
+- code: punjab
+  name_en: PUNJAB
+  geography_vintage: '2019'
+- code: chandigarh
+  name_en: CHANDIGARH*
+  geography_vintage: '2019'
+- code: uttarakhand
+  name_en: UTTARAKHAND
+  geography_vintage: '2019'
+- code: haryana
+  name_en: HARYANA
+  geography_vintage: '2019'
+- code: nct-of-delhi
+  name_en: NCT OF DELHI*
+  geography_vintage: '2019'
+- code: rajasthan
+  name_en: RAJASTHAN
+  geography_vintage: '2019'
+- code: uttar-pradesh
+  name_en: UTTAR PRADESH
+  geography_vintage: '2019'
+- code: bihar
+  name_en: BIHAR
+  geography_vintage: '2019'
+- code: sikkim
+  name_en: SIKKIM
+  geography_vintage: '2019'
+- code: arunachal-pradesh
+  name_en: ARUNACHAL PRADESH
+  geography_vintage: '2019'
+- code: nagaland
+  name_en: NAGALAND
+  geography_vintage: '2019'
+- code: manipur
+  name_en: MANIPUR
+  geography_vintage: '2019'
+- code: mizoram
+  name_en: MIZORAM
+  geography_vintage: '2019'
+- code: tripura
+  name_en: TRIPURA
+  geography_vintage: '2019'
+- code: meghalaya
+  name_en: MEGHALAYA
+  geography_vintage: '2019'
+- code: assam
+  name_en: ASSAM
+  geography_vintage: '2019'
+- code: west-bengal
+  name_en: WEST BENGAL
+  geography_vintage: '2019'
+- code: jharkhand
+  name_en: JHARKHAND
+  geography_vintage: '2019'
+- code: odisha
+  name_en: ODISHA
+  geography_vintage: '2019'
+- code: chhattisgarh
+  name_en: CHHATTISGARH
+  geography_vintage: '2019'
+- code: madhya-pradesh
+  name_en: MADHYA PRADESH
+  geography_vintage: '2019'
+- code: gujarat
+  name_en: GUJARAT
+  geography_vintage: '2019'
+- code: daman-diu
+  name_en: DAMAN & DIU*
+  geography_vintage: '2019'
+- code: dadra-nagar
+  name_en: DADRA & NAGAR
+  geography_vintage: '2019'
+- code: maharashtra
+  name_en: MAHARASHTRA
+  geography_vintage: '2019'
+- code: andhra-pradesh
+  name_en: ANDHRA PRADESH
+  geography_vintage: '2019'
+- code: karnataka
+  name_en: KARNATAKA
+  geography_vintage: '2019'
+- code: goa
+  name_en: GOA
+  geography_vintage: '2019'
+- code: lakshadweep
+  name_en: LAKSHADWEEP*
+  geography_vintage: '2019'
+- code: kerala
+  name_en: KERALA
+  geography_vintage: '2019'
+- code: tamil-nadu
+  name_en: TAMIL NADU
+  geography_vintage: '2019'
+- code: puducherry
+  name_en: PUDUCHERRY*
+  geography_vintage: '2019'
+- code: andaman-nicobar
+  name_en: ANDAMAN & NICOBAR
+  geography_vintage: '2019'
+- code: telangana
+  name_en: TELANGANA
+  geography_vintage: '2019'
+- code: ladakh
+  name_en: LADAKH*
+  geography_vintage: '2019'
+units_missing:
+- districts (not in Table 8)
+- any unit Table 8 does not print — labels are truncated as in the PDF words
+breaks: November 2019 projection map, Census 2011 base. JAMMU & KASHMIR*(UT) and LADAKH*
+  are printed Table 8 units. Do not recode onto Frame A or Frame C.
+crosswalk: none

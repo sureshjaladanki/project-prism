@@ -95,9 +95,10 @@ def _require_complete_render(
         raise ServeError(f"render is not complete for {vintage_id}")
     if not (dest / "index.html").exists():
         raise ServeError(f"required template failed to render for {vintage_id}")
-    if require_c1_slice and not (
-        dest / "prices" / "retail-prices" / "index.html"
-    ).exists():
+    if (
+        require_c1_slice
+        and not (dest / "prices" / "retail-prices" / "index.html").exists()
+    ):
         raise ServeError(f"required template failed to render for {vintage_id}")
     return dest
 

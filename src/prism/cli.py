@@ -10,12 +10,7 @@ import typer
 from prism.citizen_server import serve_citizen
 from prism.ingest import ingest as run_ingest
 from prism.ingest.retrieve import IngestError
-from prism.pipeline import (
-    PipelineError,
-    materialise_c1_vintage,
-    materialise_c2_vintage,
-    materialise_c3_vintage,
-)
+from prism.pipeline import PipelineError, materialise_vintage
 from prism.pointer_store import PublishError, publish_preview, read_preview_pointer
 from prism.preview_server import serve_preview
 from prism.refresh import lineage_record_blocks_completeness
@@ -69,11 +64,30 @@ def ingest_cmd(
     _report_lineage(records)
 
 
-_VINTAGE_RUNNERS = {
-    "c1": materialise_c1_vintage,
-    "c2": materialise_c2_vintage,
-    "c3": materialise_c3_vintage,
-}
+catalog_app = typer.Typer(help="List and validate the typed catalog.")
+app.add_typer(catalog_app, name="catalog")
+
+
+@catalog_app.command("list")
+def catalog_list() -> None:
+    from prism.catalog import list_catalog_rows
+
+    for slice_id, series_id, parser_id, mapper_id in list_catalog_rows():
+        typer.echo(f"{slice_id}\t{series_id}\t{parser_id}\t{mapper_id}")
+
+
+@catalog_app.command("validate")
+def catalog_validate() -> None:
+    from prism.catalog import CatalogError, default_catalog
+
+    try:
+        catalog = default_catalog()
+    except CatalogError as exc:
+        typer.echo(f"catalog invalid: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(
+        f"catalog ok slices={len(catalog.slices)} series={len(catalog.series_ids())}"
+    )
 
 
 @app.command("vintage")
@@ -84,12 +98,15 @@ def vintage(
 ) -> None:
     """Materialise an immutable data vintage. Does not publish or set preview."""
 
-    runner = _VINTAGE_RUNNERS.get(slice_id)
-    if runner is None:
-        typer.echo(f"unknown slice-id {slice_id!r}; expected c1, c2, or c3", err=True)
-        raise typer.Exit(code=1)
+    from prism.catalog import CatalogError, default_catalog
+
     try:
-        manifest, report = runner(data_root, logs_root)
+        default_catalog().slice(slice_id)
+    except CatalogError:
+        typer.echo(f"unknown slice-id {slice_id!r}", err=True)
+        raise typer.Exit(code=1) from None
+    try:
+        manifest, report = materialise_vintage(data_root, logs_root, slice_id=slice_id)
     except (PipelineError, VintageStoreError) as exc:
         typer.echo(f"vintage failed: {exc}", err=True)
         raise typer.Exit(code=1) from exc

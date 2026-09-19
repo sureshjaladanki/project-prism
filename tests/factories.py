@@ -136,7 +136,9 @@ def make_selector(**overrides: object) -> SlotSelector:
     return SlotSelector.model_validate(payload)
 
 
-def make_series_write(series_id: str, observations_parquet: bytes, **overrides: object) -> SeriesWrite:
+def make_series_write(
+    series_id: str, observations_parquet: bytes, **overrides: object
+) -> SeriesWrite:
     citation = make_citation()
     caveat = make_caveat()
     geography = make_geography()

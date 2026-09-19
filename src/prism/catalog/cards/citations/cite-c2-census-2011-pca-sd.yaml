@@ -1,0 +1,19 @@
+citation_id: cite-c2-census-2011-pca-sd
+producer: Office of the Registrar General & Census Commissioner, India (ORGI), Ministry
+  of Home Affairs
+series: 'Census of India 2011 — Primary Census Abstract (PCA SD): population, households,
+  and related PCA columns as published'
+id: 'NADA catalog 6191; Reference ID PC11_PCA-SD; file DDW_PCA0000_2011_Indiastatedist.xlsx
+  sheet Sheet1. Population of record: TOT_P, TOT_M, TOT_F for Level = India or STATE
+  (not DISTRICT).'
+reference_period: '2011-03-01'
+release_date: unknown
+url: https://censusindia.gov.in/nada/index.php/catalog/6191/download/9268/DDW_PCA0000_2011_Indiastatedist.xlsx
+geography_as_published: India and States/UTs as labelled in Name where Level = India
+  or STATE; TRU = Total / Rural / Urban. DISTRICT rows parked.
+frequency: decennial census
+licence: 'Not stated on the artifact. ORGI site footer: all rights reserved. NADA:
+  © 2026, ORGI Digital Library, All Rights Reserved. Not stated as CC-BY.'
+next_release: unknown
+caveat_one_line: This is a 1 March 2011 count, about fifteen years behind a 2026 reader.
+  Not a current headcount. Districts parked.

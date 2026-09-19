@@ -308,3 +308,23 @@ def parse_cpi_back_series(data: bytes) -> ParsedTable:
         return _failed(str(exc))
     extra = "blank Inflation (%) kept null; All India only as published; no State/UT rows invented"
     return _ok_table(frame, ("Index", "Inflation (%)"), extra)
+
+
+from prism.catalog.registry import ParserSpec, register_parser
+
+register_parser(
+    "mospi-cpi-general",
+    ParserSpec(parse=parse_cpi_general, lineage_name=PARSER, kind="xlsx"),
+)
+register_parser(
+    "mospi-cpi-cfpi",
+    ParserSpec(parse=parse_cpi_cfpi, lineage_name=PARSER, kind="xlsx"),
+)
+register_parser(
+    "mospi-cpi-division-group",
+    ParserSpec(parse=parse_cpi_division_group, lineage_name=PARSER, kind="xlsx"),
+)
+register_parser(
+    "mospi-cpi-back-series",
+    ParserSpec(parse=parse_cpi_back_series, lineage_name=PARSER, kind="xlsx"),
+)

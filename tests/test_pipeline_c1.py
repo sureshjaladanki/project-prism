@@ -11,6 +11,12 @@ from pathlib import Path
 
 import pytest
 
+from prism.catalog import (
+    names_by_code,
+    slice_caveats,
+    slice_citations,
+    slice_geographies,
+)
 from prism.ingest.parse import (
     parse_cpi_back_series,
     parse_cpi_cfpi,
@@ -31,8 +37,8 @@ from prism.pipeline.c1 import (
     MAPPER_VERSION,
     PipelineError,
     map_derived_table,
-    materialise_c1_vintage,
 )
+from prism.pipeline.run import materialise_vintage
 from prism.refresh import (
     C1_SERIES,
     C1_SERIES_IDS,
@@ -56,6 +62,13 @@ from prism.schema import (
 from prism.vintage_store import load_manifest, payload_checksum
 from tests.cpi_xlsx_fixtures import back_series_bytes, monthly_workbook_bytes
 from tests.factories import CREATED_AT
+
+C1_CAVEATS = slice_caveats("c1")
+C1_CITATIONS = slice_citations("c1")
+C1_GEOGRAPHIES = slice_geographies("c1")
+FRAME_A_NAME_BY_CODE = names_by_code(SERIES_CPI_GENERAL_BASE_2024)
+FRAME_B_NAME_BY_CODE = names_by_code(SERIES_CPI_BACK_SERIES_LINKED_BASE_2024)
+FRAME_A_GEOGRAPHY = C1_GEOGRAPHIES[SERIES_CPI_GENERAL_BASE_2024]
 
 LATER = datetime(2026, 9, 16, 10, 0, tzinfo=UTC)
 
@@ -95,7 +108,9 @@ def _seed_c1(data_root: Path, *, lineage_ok: YesNo = YesNo.yes) -> None:
             lineage_ok=lineage_ok,
             flags="none",
         )
-        lineage_path.write_text(record.model_dump_json(indent=2) + "\n", encoding="utf-8")
+        lineage_path.write_text(
+            record.model_dump_json(indent=2) + "\n", encoding="utf-8"
+        )
 
 
 def _lineage() -> ObservationLineage:
@@ -111,12 +126,6 @@ def _rows(csv_text: str) -> list[dict[str, str]]:
 
 
 def test_mapper_does_not_invent_chandigarh_rural() -> None:
-    from prism.pipeline.c1_cards import (
-        C1_CAVEATS,
-        C1_CITATIONS,
-        C1_GEOGRAPHIES,
-        FRAME_A_NAME_BY_CODE,
-    )
 
     observations = map_derived_table(
         series_id=SERIES_CPI_GENERAL_BASE_2024,
@@ -138,12 +147,6 @@ def test_mapper_does_not_invent_chandigarh_rural() -> None:
 
 
 def test_combined_is_a_published_sector_not_geography() -> None:
-    from prism.pipeline.c1_cards import (
-        C1_CAVEATS,
-        C1_CITATIONS,
-        C1_GEOGRAPHIES,
-        FRAME_A_NAME_BY_CODE,
-    )
 
     observations = map_derived_table(
         series_id=SERIES_CPI_GENERAL_BASE_2024,
@@ -161,12 +164,6 @@ def test_combined_is_a_published_sector_not_geography() -> None:
 
 
 def test_blank_inflation_is_unknown_not_zero() -> None:
-    from prism.pipeline.c1_cards import (
-        C1_CAVEATS,
-        C1_CITATIONS,
-        C1_GEOGRAPHIES,
-        FRAME_A_NAME_BY_CODE,
-    )
 
     observations = map_derived_table(
         series_id=SERIES_CPI_GENERAL_BASE_2024,
@@ -180,7 +177,9 @@ def test_blank_inflation_is_unknown_not_zero() -> None:
     inflation = [
         item
         for item in observations
-        if item.geography.code == "01" and item.sector == "Rural" and item.unit == "inflation (%)"
+        if item.geography.code == "01"
+        and item.sector == "Rural"
+        and item.unit == "inflation (%)"
     ]
     assert len(inflation) == 1
     assert inflation[0].value is None
@@ -188,12 +187,6 @@ def test_blank_inflation_is_unknown_not_zero() -> None:
 
 
 def test_card_4_is_not_stitched_into_card_1() -> None:
-    from prism.pipeline.c1_cards import (
-        C1_CAVEATS,
-        C1_CITATIONS,
-        C1_GEOGRAPHIES,
-        FRAME_B_NAME_BY_CODE,
-    )
 
     observations = map_derived_table(
         series_id=SERIES_CPI_BACK_SERIES_LINKED_BASE_2024,
@@ -204,13 +197,14 @@ def test_card_4_is_not_stitched_into_card_1() -> None:
         names=FRAME_B_NAME_BY_CODE,
         lineage=_lineage(),
     )
-    assert {item.series_id for item in observations} == {SERIES_CPI_BACK_SERIES_LINKED_BASE_2024}
+    assert {item.series_id for item in observations} == {
+        SERIES_CPI_BACK_SERIES_LINKED_BASE_2024
+    }
     assert {item.geography.code for item in observations} == {"00"}
     assert all(item.geography.geography_vintage == "2024" for item in observations)
 
 
 def test_map_fails_without_citation_id() -> None:
-    from prism.pipeline.c1_cards import C1_CAVEATS, C1_GEOGRAPHIES, FRAME_A_NAME_BY_CODE
 
     with pytest.raises(PipelineError, match="citation_id"):
         map_derived_table(
@@ -225,7 +219,6 @@ def test_map_fails_without_citation_id() -> None:
 
 
 def test_all_india_is_published_unit() -> None:
-    from prism.pipeline.c1_cards import FRAME_A_GEOGRAPHY
 
     codes = {unit.code for unit in FRAME_A_GEOGRAPHY.units_included}
     assert "00" in codes
@@ -237,7 +230,7 @@ def test_lineage_ok_no_does_not_write_vintage(tmp_path: Path) -> None:
     logs_root = tmp_path / "logs"
     _seed_c1(data_root, lineage_ok=YesNo.no)
     with pytest.raises(PipelineError, match="lineage_ok"):
-        materialise_c1_vintage(data_root, logs_root, created_at=CREATED_AT)
+        materialise_vintage(data_root, logs_root, slice_id="c1", created_at=CREATED_AT)
     assert not (data_root / "vintages").exists() or not any(
         (data_root / "vintages").iterdir()
     )
@@ -247,7 +240,9 @@ def test_first_vintage_rewrites_all_four_and_leaves_pointers(tmp_path: Path) -> 
     data_root = tmp_path / "data"
     logs_root = tmp_path / "logs"
     _seed_c1(data_root)
-    manifest, report = materialise_c1_vintage(data_root, logs_root, created_at=CREATED_AT)
+    manifest, report = materialise_vintage(
+        data_root, logs_root, slice_id="c1", created_at=CREATED_AT
+    )
     assert manifest.completeness is Completeness.complete
     assert manifest.trigger is RefreshTrigger.source_change
     assert [entry.series_id for entry in manifest.series] == list(C1_SERIES_IDS)
@@ -258,7 +253,8 @@ def test_first_vintage_rewrites_all_four_and_leaves_pointers(tmp_path: Path) -> 
     assert not preview_pointer_path(data_root).exists()
     for entry in manifest.series:
         parquet = (
-            series_dir(data_root, manifest.vintage_id, entry.series_id) / "observations.parquet"
+            series_dir(data_root, manifest.vintage_id, entry.series_id)
+            / "observations.parquet"
         )
         digest = hashlib.sha256(parquet.read_bytes()).hexdigest()
         cas = cas_path(data_root, digest)
@@ -269,14 +265,20 @@ def test_second_vintage_hard_links_unchanged_series(tmp_path: Path) -> None:
     data_root = tmp_path / "data"
     logs_root = tmp_path / "logs"
     _seed_c1(data_root)
-    first, _report_a = materialise_c1_vintage(data_root, logs_root, created_at=CREATED_AT)
-    second, report_b = materialise_c1_vintage(data_root, logs_root, created_at=LATER)
+    first, _report_a = materialise_vintage(
+        data_root, logs_root, slice_id="c1", created_at=CREATED_AT
+    )
+    second, report_b = materialise_vintage(
+        data_root, logs_root, slice_id="c1", created_at=LATER
+    )
     assert first.vintage_id != second.vintage_id
     assert all(entry.reused is YesNo.yes for entry in second.series)
     assert all(row["rewritten"] == "no" for row in report_b["series"])  # type: ignore[index]
     series_id = SERIES_CPI_GENERAL_BASE_2024
     path_a = series_dir(data_root, first.vintage_id, series_id) / "observations.parquet"
-    path_b = series_dir(data_root, second.vintage_id, series_id) / "observations.parquet"
+    path_b = (
+        series_dir(data_root, second.vintage_id, series_id) / "observations.parquet"
+    )
     digest = hashlib.sha256(path_a.read_bytes()).hexdigest()
     cas = cas_path(data_root, digest)
     assert os.path.samefile(path_a, cas)
@@ -287,12 +289,6 @@ def test_second_vintage_hard_links_unchanged_series(tmp_path: Path) -> None:
 
 
 def test_card_3_units_keep_division_and_group_distinct() -> None:
-    from prism.pipeline.c1_cards import (
-        C1_CAVEATS,
-        C1_CITATIONS,
-        C1_GEOGRAPHIES,
-        FRAME_A_NAME_BY_CODE,
-    )
 
     observations = map_derived_table(
         series_id=SERIES_CPI_DIVISION_GROUP_BASE_2024,
@@ -304,7 +300,9 @@ def test_card_3_units_keep_division_and_group_distinct() -> None:
         lineage=_lineage(),
     )
     units = {item.unit for item in observations}
-    assert any(unit.startswith("index (Base 2024=100); Division code ") for unit in units)
+    assert any(
+        unit.startswith("index (Base 2024=100); Division code ") for unit in units
+    )
     assert any(unit.startswith("index (Base 2024=100); Group code ") for unit in units)
     assert "index (Base 2024=100); Division code 12" not in units
 
@@ -313,14 +311,18 @@ def test_payload_checksum_matches_cas_parts(tmp_path: Path) -> None:
     data_root = tmp_path / "data"
     logs_root = tmp_path / "logs"
     _seed_c1(data_root)
-    manifest, _report = materialise_c1_vintage(data_root, logs_root, created_at=CREATED_AT)
+    manifest, _report = materialise_vintage(
+        data_root, logs_root, slice_id="c1", created_at=CREATED_AT
+    )
     from prism.paths import CAVEAT_FILENAME, CITATION_FILENAME, GEOGRAPHY_FILENAME
     from prism.schema import CaveatNote, Citation, GeographyVintage
 
     for entry in manifest.series:
         folder = series_dir(data_root, manifest.vintage_id, entry.series_id)
         observations = folder / "observations.parquet"
-        citation = Citation.model_validate_json((folder / CITATION_FILENAME).read_bytes())
+        citation = Citation.model_validate_json(
+            (folder / CITATION_FILENAME).read_bytes()
+        )
         caveat = CaveatNote.model_validate_json((folder / CAVEAT_FILENAME).read_bytes())
         geography = GeographyVintage.model_validate_json(
             (folder / GEOGRAPHY_FILENAME).read_bytes()
@@ -333,7 +335,10 @@ def test_payload_checksum_matches_cas_parts(tmp_path: Path) -> None:
         assert loaded
         assert all(item.citation_id == citation.citation_id for item in loaded)
         assert all(item.caveat_id == caveat.caveat_id for item in loaded)
-        assert all(item.geography.geography_vintage == geography.geography_vintage for item in loaded)
+        assert all(
+            item.geography.geography_vintage == geography.geography_vintage
+            for item in loaded
+        )
 
 
 def test_source_vintages_stay_split() -> None:

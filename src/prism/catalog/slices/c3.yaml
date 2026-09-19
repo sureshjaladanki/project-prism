@@ -1,0 +1,225 @@
+slice_id: c3
+charter: C3
+template_id: c3-union-money
+artifacts:
+  - artifact_id: receipt-budget-tr-xlsx
+    url: https://www.indiabudget.gov.in/doc/rec/tr.xlsx
+    kind: xlsx
+    share_note: ""
+    companions: []
+  - artifact_id: receipt-budget-ntr-xlsx
+    url: https://www.indiabudget.gov.in/doc/rec/ntr.xlsx
+    kind: xlsx
+    share_note: ""
+    companions: []
+  - artifact_id: receipt-budget-ctr-xlsx
+    url: https://www.indiabudget.gov.in/doc/rec/ctr.xlsx
+    kind: xlsx
+    share_note: ""
+    companions: []
+  - artifact_id: receipt-budget-annex1-pdf
+    url: https://www.indiabudget.gov.in/doc/rec/annex1.pdf
+    kind: pdf
+    share_note: ""
+    companions: []
+  - artifact_id: expenditure-stat1-xlsx
+    url: https://www.indiabudget.gov.in/doc/eb/stat1.xlsx
+    kind: xlsx
+    share_note: ""
+    companions: []
+  - artifact_id: budget-at-a-glance-xlsx
+    url: https://www.indiabudget.gov.in/doc/Budget_at_Glance/budget_at_a_glance.xlsx
+    kind: xlsx
+    share_note: ""
+    companions: []
+  - artifact_id: receipt-annex91-pdf
+    url: https://www.indiabudget.gov.in/doc/rec/annex91.pdf
+    kind: pdf
+    share_note: ""
+    companions: []
+  - artifact_id: frbm1-pdf
+    url: https://www.indiabudget.gov.in/doc/frbm1.pdf
+    kind: pdf
+    share_note: ""
+    companions: []
+  - artifact_id: allafs-pdf
+    url: https://www.indiabudget.gov.in/doc/AFS/allafs.pdf
+    kind: pdf
+    share_note: ""
+    companions: []
+  - artifact_id: cga-monthly-html
+    url: https://cga.gov.in/writereaddata/MonthAccount/72026/DATA2627.htm
+    kind: html
+    share_note: ""
+    companions: []
+  - artifact_id: cga-fa-stat1-pdf
+    url: https://cga.gov.in/writereaddata/file/Fin20242025Statement1.pdf
+    kind: pdf
+    share_note: ""
+    companions: []
+series:
+  - series_id: budget-2026-27-tax-revenue
+    card: 1
+    name: Receipt Budget, 2026-2027 — I. Tax Revenue (major heads as published)
+    producer: Ministry of Finance, Budget Division, Government of India
+    producer_slug: mof-budget
+    source_vintage: "2026-27"
+    next_release: unknown
+    geography_frame_id: c3-frame-a
+    geography_vintage: "2026"
+    citation_id: cite-c3-budget-2026-27-tax-revenue
+    caveat_id: caveat-c3-budget-2026-27-tax-revenue
+    artifact_id: receipt-budget-tr-xlsx
+    parser_id: budget-receipt-xlsx
+    mapper_id: wide-measure-columns/budget-four-year
+    named_hole: false
+  - series_id: budget-2026-27-non-tax-revenue
+    card: 2
+    name: Receipt Budget, 2026-2027 — II. Non-Tax Revenue
+    producer: Ministry of Finance, Budget Division, Government of India
+    producer_slug: mof-budget
+    source_vintage: "2026-27"
+    next_release: unknown
+    geography_frame_id: c3-frame-a
+    geography_vintage: "2026"
+    citation_id: cite-c3-budget-2026-27-non-tax-revenue
+    caveat_id: caveat-c3-budget-2026-27-non-tax-revenue
+    artifact_id: receipt-budget-ntr-xlsx
+    parser_id: budget-receipt-xlsx
+    mapper_id: wide-measure-columns/budget-four-year
+    named_hole: false
+  - series_id: budget-2026-27-capital-receipts
+    card: 3
+    name: Receipt Budget, 2026-2027 — III. Capital Receipts (Non-Debt Receipts and Debt Receipts / Borrowings as printed)
+    producer: Ministry of Finance, Budget Division, Government of India
+    producer_slug: mof-budget
+    source_vintage: "2026-27"
+    next_release: unknown
+    geography_frame_id: c3-frame-a
+    geography_vintage: "2026"
+    citation_id: cite-c3-budget-2026-27-capital-receipts
+    caveat_id: caveat-c3-budget-2026-27-capital-receipts
+    artifact_id: receipt-budget-ctr-xlsx
+    parser_id: budget-receipt-xlsx
+    mapper_id: wide-measure-columns/budget-four-year
+    named_hole: false
+  - series_id: budget-2026-27-annex1-trends-receipts
+    card: 4
+    name: Receipt Budget, 2026-2027 — Annex-1 Trends in Receipts
+    producer: Ministry of Finance, Budget Division, Government of India
+    producer_slug: mof-budget
+    source_vintage: "2026-27"
+    next_release: unknown
+    geography_frame_id: c3-frame-a
+    geography_vintage: "2026"
+    citation_id: cite-c3-budget-2026-27-annex1-trends-receipts
+    caveat_id: caveat-c3-budget-2026-27-annex1-trends-receipts
+    artifact_id: receipt-budget-annex1-pdf
+    parser_id: budget-annex1-pdf
+    mapper_id: wide-measure-columns/annex1
+    named_hole: false
+  - series_id: budget-2026-27-expenditure-stat1
+    card: 5
+    name: Expenditure Profile 2026-2027 — Statement 1 Summary of Expenditure
+    producer: Ministry of Finance, Budget Division, Government of India
+    producer_slug: mof-budget
+    source_vintage: "2026-27"
+    next_release: unknown
+    geography_frame_id: c3-frame-a
+    geography_vintage: "2026"
+    citation_id: cite-c3-budget-2026-27-expenditure-stat1
+    caveat_id: caveat-c3-budget-2026-27-expenditure-stat1
+    artifact_id: expenditure-stat1-xlsx
+    parser_id: budget-expenditure-stat1-xlsx
+    mapper_id: wide-measure-columns/stat1
+    named_hole: false
+  - series_id: budget-2026-27-deficit-statistics
+    card: 6
+    name: Budget at a Glance 2026-2027 — Deficit Statistics (Fiscal Deficit, Revenue Deficit, Effective Revenue Deficit, Primary Deficit, and Sources of Financing Fiscal Deficit)
+    producer: Ministry of Finance, Budget Division, Government of India
+    producer_slug: mof-budget
+    source_vintage: "2026-27"
+    next_release: unknown
+    geography_frame_id: c3-frame-a
+    geography_vintage: "2026"
+    citation_id: cite-c3-budget-2026-27-deficit-statistics
+    caveat_id: caveat-c3-budget-2026-27-deficit-statistics
+    artifact_id: budget-at-a-glance-xlsx
+    parser_id: budget-deficit-xlsx
+    mapper_id: wide-measure-columns/budget-four-year
+    named_hole: false
+  - series_id: budget-2026-27-liabilities
+    card: 7
+    name: "Receipt Budget, 2026-2027 — Part B: 1 (i) Statement of Liabilities of the Central Government"
+    producer: Ministry of Finance, Budget Division, Government of India
+    producer_slug: mof-budget
+    source_vintage: "2026-27"
+    next_release: unknown
+    geography_frame_id: c3-frame-a
+    geography_vintage: "2026"
+    citation_id: cite-c3-budget-2026-27-liabilities
+    caveat_id: caveat-c3-budget-2026-27-liabilities
+    artifact_id: receipt-annex91-pdf
+    parser_id: budget-liabilities-pdf
+    mapper_id: wide-measure-columns/liabilities
+    named_hole: false
+  - series_id: budget-2026-27-frbm-statements
+    card: 8
+    name: Statements of Fiscal Policy as required under the Fiscal Responsibility and Budget Management Act, 2003 (Budget 2026-2027)
+    producer: Ministry of Finance, Budget Division, Government of India
+    producer_slug: mof-budget
+    source_vintage: "2026-27"
+    next_release: unknown
+    geography_frame_id: c3-frame-a
+    geography_vintage: "2026"
+    citation_id: cite-c3-budget-2026-27-frbm-statements
+    caveat_id: caveat-c3-budget-2026-27-frbm-statements
+    artifact_id: frbm1-pdf
+    parser_id: budget-frbm-pdf
+    mapper_id: named-hole-union
+    named_hole: true
+  - series_id: budget-2026-27-afs
+    card: 9
+    name: Annual Financial Statement of the Central Government for 2026-2027
+    producer: Ministry of Finance, Budget Division, Government of India
+    producer_slug: mof-budget
+    source_vintage: "2026-27"
+    next_release: unknown
+    geography_frame_id: c3-frame-a
+    geography_vintage: "2026"
+    citation_id: cite-c3-budget-2026-27-afs
+    caveat_id: caveat-c3-budget-2026-27-afs
+    artifact_id: allafs-pdf
+    parser_id: budget-afs-pdf
+    mapper_id: wide-measure-columns/budget-four-year
+    named_hole: false
+  - series_id: cga-monthly-glance-2026-07
+    card: 10
+    name: Union Government Accounts at a Glance as at the end of July 2026 (Monthly Accounts)
+    producer: Controller General of Accounts (CGA), Department of Expenditure, Ministry of Finance
+    producer_slug: cga
+    source_vintage: "2026-07"
+    next_release: unknown
+    geography_frame_id: c3-frame-b
+    geography_vintage: "2026"
+    citation_id: cite-c3-cga-monthly-glance-2026-07
+    caveat_id: caveat-c3-cga-monthly-glance-2026-07
+    artifact_id: cga-monthly-html
+    parser_id: cga-monthly-html
+    mapper_id: wide-measure-columns/cga-monthly
+    named_hole: false
+  - series_id: cga-finance-accounts-2024-25-stat1
+    card: 11
+    name: Finance Accounts, Union Government, 2024-2025 — No. 1 Summary of Transactions (receipts and disbursements, Actuals)
+    producer: Controller General of Accounts (CGA), Department of Expenditure, Ministry of Finance
+    producer_slug: cga
+    source_vintage: "2024-25"
+    next_release: unknown
+    geography_frame_id: c3-frame-c
+    geography_vintage: "2024"
+    citation_id: cite-c3-cga-finance-accounts-2024-25-stat1
+    caveat_id: caveat-c3-cga-finance-accounts-2024-25-stat1
+    artifact_id: cga-fa-stat1-pdf
+    parser_id: cga-finance-accounts-pdf
+    mapper_id: wide-measure-columns/finance-accounts
+    named_hole: false

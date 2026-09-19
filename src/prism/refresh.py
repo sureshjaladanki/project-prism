@@ -1,4 +1,4 @@
-"""Refresh contract: vintage ids, triggers, and locked C1 / C2 / C3 series bindings."""
+"""Refresh contract: vintage ids, triggers, and slice series bindings from the catalog."""
 
 from __future__ import annotations
 
@@ -9,7 +9,6 @@ from datetime import UTC, date, datetime, timedelta
 from typing import Literal
 from zoneinfo import ZoneInfo
 
-from prism.paths import PRODUCER_SLUG_MOSPI
 from prism.schema import (
     InputManifest,
     LineageRecord,
@@ -58,89 +57,6 @@ CAVEAT_C1_CARD_4 = "caveat-c1-cpi-back-series-linked-base-2024"
 CARDS_1_3_NEXT_RELEASE = date(2026, 10, 12)
 CARDS_1_3_SOURCE_VINTAGE = "2026-08"
 CARD_4_SOURCE_VINTAGE = "2013-2024-linked"
-
-
-@dataclass(frozen=True)
-class SeriesBinding:
-    card: int
-    series_id: str
-    name: str
-    producer: str
-    producer_slug: str
-    next_release: date | Literal["unknown"]
-    geography_frame_id: str
-    geography_vintage: str
-    source_vintage: str
-    citation_id: str
-    caveat_id: str
-
-
-C1_SERIES: tuple[SeriesBinding, ...] = (
-    SeriesBinding(
-        card=1,
-        series_id=SERIES_CPI_GENERAL_BASE_2024,
-        name="Consumer Price Index (CPI) General — Rural, Urban and Combined (Base 2024=100)",
-        producer=MOSPI_NSO_PSD,
-        producer_slug=PRODUCER_SLUG_MOSPI,
-        next_release=CARDS_1_3_NEXT_RELEASE,
-        geography_frame_id=C1_FRAME_A_ID,
-        geography_vintage=C1_GEOGRAPHY_VINTAGE,
-        source_vintage=CARDS_1_3_SOURCE_VINTAGE,
-        citation_id=CITE_C1_CARD_1,
-        caveat_id=CAVEAT_C1_CARD_1,
-    ),
-    SeriesBinding(
-        card=2,
-        series_id=SERIES_CPI_CFPI_BASE_2024,
-        name=(
-            "Consumer Food Price Index (CFPI) — Rural, Urban and Combined; "
-            "same values as CPI Group name Food, Group code 01.1 (Base 2024=100)"
-        ),
-        producer=MOSPI_NSO_PSD,
-        producer_slug=PRODUCER_SLUG_MOSPI,
-        next_release=CARDS_1_3_NEXT_RELEASE,
-        geography_frame_id=C1_FRAME_A_ID,
-        geography_vintage=C1_GEOGRAPHY_VINTAGE,
-        source_vintage=CARDS_1_3_SOURCE_VINTAGE,
-        citation_id=CITE_C1_CARD_2,
-        caveat_id=CAVEAT_C1_CARD_2,
-    ),
-    SeriesBinding(
-        card=3,
-        series_id=SERIES_CPI_DIVISION_GROUP_BASE_2024,
-        name=(
-            "CPI Division indexes and CPI Group indexes, Rural / Urban / Combined "
-            "(Base 2024=100), COICOP 2018 (12 Divisions, 43 Groups)"
-        ),
-        producer=MOSPI_NSO_PSD,
-        producer_slug=PRODUCER_SLUG_MOSPI,
-        next_release=CARDS_1_3_NEXT_RELEASE,
-        geography_frame_id=C1_FRAME_A_ID,
-        geography_vintage=C1_GEOGRAPHY_VINTAGE,
-        source_vintage=CARDS_1_3_SOURCE_VINTAGE,
-        citation_id=CITE_C1_CARD_3,
-        caveat_id=CAVEAT_C1_CARD_3,
-    ),
-    SeriesBinding(
-        card=4,
-        series_id=SERIES_CPI_BACK_SERIES_LINKED_BASE_2024,
-        name="CPI Back Series Index Inflation Based on Base Year 2024 (linked General only)",
-        producer=MOSPI_NSO_PSD,
-        producer_slug=PRODUCER_SLUG_MOSPI,
-        next_release="unknown",
-        geography_frame_id=C1_FRAME_B_ID,
-        geography_vintage=C1_GEOGRAPHY_VINTAGE,
-        source_vintage=CARD_4_SOURCE_VINTAGE,
-        citation_id=CITE_C1_CARD_4,
-        caveat_id=CAVEAT_C1_CARD_4,
-    ),
-)
-
-C1_SERIES_IDS: tuple[str, ...] = tuple(binding.series_id for binding in C1_SERIES)
-
-C1_SERIES_BY_ID: dict[str, SeriesBinding] = {
-    binding.series_id: binding for binding in C1_SERIES
-}
 
 ORGI = (
     "Office of the Registrar General & Census Commissioner, India (ORGI), "
@@ -197,94 +113,6 @@ C2_CARD_2_SOURCE_VINTAGE = "2011"
 C2_CARD_3_SOURCE_VINTAGE = "2024"
 C2_CARD_4_SOURCE_VINTAGE = "2024"
 C2_CARD_5_SOURCE_VINTAGE = "2011-2036-table8"
-
-
-C2_SERIES: tuple[SeriesBinding, ...] = (
-    SeriesBinding(
-        card=1,
-        series_id=SERIES_CENSUS_2011_PCA_SD,
-        name=(
-            "Census of India 2011 — Primary Census Abstract (PCA SD): "
-            "population, households, and related PCA columns as published"
-        ),
-        producer=ORGI,
-        producer_slug=PRODUCER_SLUG_ORGI,
-        next_release="unknown",
-        geography_frame_id=C2_FRAME_A_ID,
-        geography_vintage=C2_GEOGRAPHY_VINTAGE_2011,
-        source_vintage=C2_CARD_1_SOURCE_VINTAGE,
-        citation_id=CITE_C2_CARD_1,
-        caveat_id=CAVEAT_C2_CARD_1,
-    ),
-    SeriesBinding(
-        card=2,
-        series_id=SERIES_CENSUS_2011_A02_DECADAL,
-        name="Census of India 2011 — Table A-02: Decadal variation in population since 1901",
-        producer=ORGI,
-        producer_slug=PRODUCER_SLUG_ORGI,
-        next_release="unknown",
-        geography_frame_id=C2_FRAME_B_ID,
-        geography_vintage=C2_GEOGRAPHY_VINTAGE_2011,
-        source_vintage=C2_CARD_2_SOURCE_VINTAGE,
-        citation_id=CITE_C2_CARD_2,
-        caveat_id=CAVEAT_C2_CARD_2,
-    ),
-    SeriesBinding(
-        card=3,
-        series_id=SERIES_SRS_BULLETIN_2024,
-        name=(
-            "Sample Registration System (SRS) Bulletin — estimated Birth Rate, "
-            "Death Rate, Natural Growth Rate and Infant Mortality Rate"
-        ),
-        producer=ORGI_VSD,
-        producer_slug=PRODUCER_SLUG_ORGI,
-        next_release="unknown",
-        geography_frame_id=C2_FRAME_C_ID,
-        geography_vintage=C2_GEOGRAPHY_VINTAGE_2024,
-        source_vintage=C2_CARD_3_SOURCE_VINTAGE,
-        citation_id=CITE_C2_CARD_3,
-        caveat_id=CAVEAT_C2_CARD_3,
-    ),
-    SeriesBinding(
-        card=4,
-        series_id=SERIES_SRS_STATISTICAL_REPORT_2024,
-        name=(
-            "Sample Registration System (SRS) Statistical Report 2024 — "
-            "fertility and mortality indicators as published "
-            "(including Crude Birth Rate and Total Fertility Rate)"
-        ),
-        producer=ORGI,
-        producer_slug=PRODUCER_SLUG_ORGI,
-        next_release="unknown",
-        geography_frame_id=C2_FRAME_D_ID,
-        geography_vintage=C2_GEOGRAPHY_VINTAGE_2024,
-        source_vintage=C2_CARD_4_SOURCE_VINTAGE,
-        citation_id=CITE_C2_CARD_4,
-        caveat_id=CAVEAT_C2_CARD_4,
-    ),
-    SeriesBinding(
-        card=5,
-        series_id=SERIES_NCP_PROJECTIONS_2011_2036_TABLE8,
-        name=(
-            "Census of India 2011 — Population Projections for India and States "
-            "2011–2036 (projections, not a census)"
-        ),
-        producer=NCP_MOHFW,
-        producer_slug=PRODUCER_SLUG_NCP_MOHFW,
-        next_release="unknown",
-        geography_frame_id=C2_FRAME_E_ID,
-        geography_vintage=C2_GEOGRAPHY_VINTAGE_2019,
-        source_vintage=C2_CARD_5_SOURCE_VINTAGE,
-        citation_id=CITE_C2_CARD_5,
-        caveat_id=CAVEAT_C2_CARD_5,
-    ),
-)
-
-C2_SERIES_IDS: tuple[str, ...] = tuple(binding.series_id for binding in C2_SERIES)
-
-C2_SERIES_BY_ID: dict[str, SeriesBinding] = {
-    binding.series_id: binding for binding in C2_SERIES
-}
 
 MOF_BUDGET = "Ministry of Finance, Budget Division, Government of India"
 CGA = "Controller General of Accounts (CGA), Department of Expenditure, Ministry of Finance"
@@ -351,188 +179,19 @@ C3_CGA_MONTHLY_SOURCE_VINTAGE = "2026-07"
 C3_CGA_FA_SOURCE_VINTAGE = "2024-25"
 
 
-C3_SERIES: tuple[SeriesBinding, ...] = (
-    SeriesBinding(
-        card=1,
-        series_id=SERIES_BUDGET_2026_27_TAX_REVENUE,
-        name="Receipt Budget, 2026-2027 — I. Tax Revenue (major heads as published)",
-        producer=MOF_BUDGET,
-        producer_slug=PRODUCER_SLUG_MOF_BUDGET,
-        next_release="unknown",
-        geography_frame_id=C3_FRAME_A_ID,
-        geography_vintage=C3_GEOGRAPHY_VINTAGE_2026,
-        source_vintage=C3_BUDGET_SOURCE_VINTAGE,
-        citation_id=CITE_C3_CARD_1,
-        caveat_id=CAVEAT_C3_CARD_1,
-    ),
-    SeriesBinding(
-        card=2,
-        series_id=SERIES_BUDGET_2026_27_NON_TAX_REVENUE,
-        name="Receipt Budget, 2026-2027 — II. Non-Tax Revenue",
-        producer=MOF_BUDGET,
-        producer_slug=PRODUCER_SLUG_MOF_BUDGET,
-        next_release="unknown",
-        geography_frame_id=C3_FRAME_A_ID,
-        geography_vintage=C3_GEOGRAPHY_VINTAGE_2026,
-        source_vintage=C3_BUDGET_SOURCE_VINTAGE,
-        citation_id=CITE_C3_CARD_2,
-        caveat_id=CAVEAT_C3_CARD_2,
-    ),
-    SeriesBinding(
-        card=3,
-        series_id=SERIES_BUDGET_2026_27_CAPITAL_RECEIPTS,
-        name=(
-            "Receipt Budget, 2026-2027 — III. Capital Receipts "
-            "(Non-Debt Receipts and Debt Receipts / Borrowings as printed)"
-        ),
-        producer=MOF_BUDGET,
-        producer_slug=PRODUCER_SLUG_MOF_BUDGET,
-        next_release="unknown",
-        geography_frame_id=C3_FRAME_A_ID,
-        geography_vintage=C3_GEOGRAPHY_VINTAGE_2026,
-        source_vintage=C3_BUDGET_SOURCE_VINTAGE,
-        citation_id=CITE_C3_CARD_3,
-        caveat_id=CAVEAT_C3_CARD_3,
-    ),
-    SeriesBinding(
-        card=4,
-        series_id=SERIES_BUDGET_2026_27_ANNEX1_TRENDS_RECEIPTS,
-        name="Receipt Budget, 2026-2027 — Annex-1 Trends in Receipts",
-        producer=MOF_BUDGET,
-        producer_slug=PRODUCER_SLUG_MOF_BUDGET,
-        next_release="unknown",
-        geography_frame_id=C3_FRAME_A_ID,
-        geography_vintage=C3_GEOGRAPHY_VINTAGE_2026,
-        source_vintage=C3_BUDGET_SOURCE_VINTAGE,
-        citation_id=CITE_C3_CARD_4,
-        caveat_id=CAVEAT_C3_CARD_4,
-    ),
-    SeriesBinding(
-        card=5,
-        series_id=SERIES_BUDGET_2026_27_EXPENDITURE_STAT1,
-        name="Expenditure Profile 2026-2027 — Statement 1 Summary of Expenditure",
-        producer=MOF_BUDGET,
-        producer_slug=PRODUCER_SLUG_MOF_BUDGET,
-        next_release="unknown",
-        geography_frame_id=C3_FRAME_A_ID,
-        geography_vintage=C3_GEOGRAPHY_VINTAGE_2026,
-        source_vintage=C3_BUDGET_SOURCE_VINTAGE,
-        citation_id=CITE_C3_CARD_5,
-        caveat_id=CAVEAT_C3_CARD_5,
-    ),
-    SeriesBinding(
-        card=6,
-        series_id=SERIES_BUDGET_2026_27_DEFICIT_STATISTICS,
-        name=(
-            "Budget at a Glance 2026-2027 — Deficit Statistics "
-            "(Fiscal Deficit, Revenue Deficit, Effective Revenue Deficit, "
-            "Primary Deficit, and Sources of Financing Fiscal Deficit)"
-        ),
-        producer=MOF_BUDGET,
-        producer_slug=PRODUCER_SLUG_MOF_BUDGET,
-        next_release="unknown",
-        geography_frame_id=C3_FRAME_A_ID,
-        geography_vintage=C3_GEOGRAPHY_VINTAGE_2026,
-        source_vintage=C3_BUDGET_SOURCE_VINTAGE,
-        citation_id=CITE_C3_CARD_6,
-        caveat_id=CAVEAT_C3_CARD_6,
-    ),
-    SeriesBinding(
-        card=7,
-        series_id=SERIES_BUDGET_2026_27_LIABILITIES,
-        name=(
-            "Receipt Budget, 2026-2027 — Part B: 1 (i) Statement of "
-            "Liabilities of the Central Government"
-        ),
-        producer=MOF_BUDGET,
-        producer_slug=PRODUCER_SLUG_MOF_BUDGET,
-        next_release="unknown",
-        geography_frame_id=C3_FRAME_A_ID,
-        geography_vintage=C3_GEOGRAPHY_VINTAGE_2026,
-        source_vintage=C3_BUDGET_SOURCE_VINTAGE,
-        citation_id=CITE_C3_CARD_7,
-        caveat_id=CAVEAT_C3_CARD_7,
-    ),
-    SeriesBinding(
-        card=8,
-        series_id=SERIES_BUDGET_2026_27_FRBM_STATEMENTS,
-        name=(
-            "Statements of Fiscal Policy as required under the Fiscal "
-            "Responsibility and Budget Management Act, 2003 (Budget 2026-2027)"
-        ),
-        producer=MOF_BUDGET,
-        producer_slug=PRODUCER_SLUG_MOF_BUDGET,
-        next_release="unknown",
-        geography_frame_id=C3_FRAME_A_ID,
-        geography_vintage=C3_GEOGRAPHY_VINTAGE_2026,
-        source_vintage=C3_BUDGET_SOURCE_VINTAGE,
-        citation_id=CITE_C3_CARD_8,
-        caveat_id=CAVEAT_C3_CARD_8,
-    ),
-    SeriesBinding(
-        card=9,
-        series_id=SERIES_BUDGET_2026_27_AFS,
-        name="Annual Financial Statement of the Central Government for 2026-2027",
-        producer=MOF_BUDGET,
-        producer_slug=PRODUCER_SLUG_MOF_BUDGET,
-        next_release="unknown",
-        geography_frame_id=C3_FRAME_A_ID,
-        geography_vintage=C3_GEOGRAPHY_VINTAGE_2026,
-        source_vintage=C3_BUDGET_SOURCE_VINTAGE,
-        citation_id=CITE_C3_CARD_9,
-        caveat_id=CAVEAT_C3_CARD_9,
-    ),
-    SeriesBinding(
-        card=10,
-        series_id=SERIES_CGA_MONTHLY_GLANCE_2026_07,
-        name=(
-            "Union Government Accounts at a Glance as at the end of July 2026 "
-            "(Monthly Accounts)"
-        ),
-        producer=CGA,
-        producer_slug=PRODUCER_SLUG_CGA,
-        next_release="unknown",
-        geography_frame_id=C3_FRAME_B_ID,
-        geography_vintage=C3_GEOGRAPHY_VINTAGE_2026,
-        source_vintage=C3_CGA_MONTHLY_SOURCE_VINTAGE,
-        citation_id=CITE_C3_CARD_10,
-        caveat_id=CAVEAT_C3_CARD_10,
-    ),
-    SeriesBinding(
-        card=11,
-        series_id=SERIES_CGA_FINANCE_ACCOUNTS_2024_25_STAT1,
-        name=(
-            "Finance Accounts, Union Government, 2024-2025 — No. 1 Summary of "
-            "Transactions (receipts and disbursements, Actuals)"
-        ),
-        producer=CGA,
-        producer_slug=PRODUCER_SLUG_CGA,
-        next_release="unknown",
-        geography_frame_id=C3_FRAME_C_ID,
-        geography_vintage=C3_GEOGRAPHY_VINTAGE_2024,
-        source_vintage=C3_CGA_FA_SOURCE_VINTAGE,
-        citation_id=CITE_C3_CARD_11,
-        caveat_id=CAVEAT_C3_CARD_11,
-    ),
-)
-
-C3_SERIES_IDS: tuple[str, ...] = tuple(binding.series_id for binding in C3_SERIES)
-
-C3_SERIES_BY_ID: dict[str, SeriesBinding] = {
-    binding.series_id: binding for binding in C3_SERIES
-}
-
-# Card 8 FRBM statutory packet: listed, cited, unknown / not a table.
-C3_NAMED_HOLE_SERIES_IDS: tuple[str, ...] = (SERIES_BUDGET_2026_27_FRBM_STATEMENTS,)
-C3_LINEAGE_REQUIRED_SERIES_IDS: tuple[str, ...] = tuple(
-    series_id
-    for series_id in C3_SERIES_IDS
-    if series_id not in C3_NAMED_HOLE_SERIES_IDS
-)
-NAMED_HOLE_SERIES_IDS: frozenset[str] = frozenset(C3_NAMED_HOLE_SERIES_IDS)
-NAMED_HOLE_CITATION_IDS: frozenset[str] = frozenset(
-    C3_SERIES_BY_ID[series_id].citation_id for series_id in C3_NAMED_HOLE_SERIES_IDS
-)
+@dataclass(frozen=True)
+class SeriesBinding:
+    card: int
+    series_id: str
+    name: str
+    producer: str
+    producer_slug: str
+    next_release: date | Literal["unknown"]
+    geography_frame_id: str
+    geography_vintage: str
+    source_vintage: str
+    citation_id: str
+    caveat_id: str
 
 
 def ensure_utc(moment: datetime) -> datetime:
@@ -563,25 +222,97 @@ def trigger_from_lineage(record: LineageRecord) -> RefreshTrigger | None:
     return RefreshTrigger.source_change
 
 
+def _named_hole_series_ids() -> frozenset[str]:
+    from prism.catalog import default_catalog
+
+    return default_catalog().named_hole_series_ids()
+
+
+def _named_hole_citation_ids() -> frozenset[str]:
+    from prism.catalog import default_catalog
+
+    return default_catalog().named_hole_citation_ids()
+
+
 def lineage_blocks_completeness(series_id: str, lineage_ok: YesNo) -> bool:
     """Named holes may be lineage_ok: no on a complete vintage. Other series may not."""
 
     if lineage_ok is YesNo.yes:
         return False
-    return series_id not in NAMED_HOLE_SERIES_IDS
+    return series_id not in _named_hole_series_ids()
 
 
 def lineage_record_blocks_completeness(record: LineageRecord) -> bool:
     if record.lineage_ok is YesNo.yes:
         return False
-    return record.citation_id not in NAMED_HOLE_CITATION_IDS
+    return record.citation_id not in _named_hole_citation_ids()
+
+
+def _as_binding(entry: object) -> SeriesBinding:
+    return SeriesBinding(
+        card=entry.card,  # type: ignore[attr-defined]
+        series_id=entry.series_id,  # type: ignore[attr-defined]
+        name=entry.name,  # type: ignore[attr-defined]
+        producer=entry.producer,  # type: ignore[attr-defined]
+        producer_slug=entry.producer_slug,  # type: ignore[attr-defined]
+        next_release=entry.next_release,  # type: ignore[attr-defined]
+        geography_frame_id=entry.geography_frame_id,  # type: ignore[attr-defined]
+        geography_vintage=entry.geography_vintage,  # type: ignore[attr-defined]
+        source_vintage=entry.source_vintage,  # type: ignore[attr-defined]
+        citation_id=entry.citation_id,  # type: ignore[attr-defined]
+        caveat_id=entry.caveat_id,  # type: ignore[attr-defined]
+    )
+
+
+def _slice_bindings(slice_id: str) -> tuple[SeriesBinding, ...]:
+    from prism.catalog import default_catalog
+
+    return tuple(
+        _as_binding(entry) for entry in default_catalog().slice(slice_id).series
+    )
+
+
+C1_SERIES: tuple[SeriesBinding, ...] = _slice_bindings("c1")
+C1_SERIES_IDS: tuple[str, ...] = tuple(binding.series_id for binding in C1_SERIES)
+C1_SERIES_BY_ID: dict[str, SeriesBinding] = {
+    binding.series_id: binding for binding in C1_SERIES
+}
+
+C2_SERIES: tuple[SeriesBinding, ...] = _slice_bindings("c2")
+C2_SERIES_IDS: tuple[str, ...] = tuple(binding.series_id for binding in C2_SERIES)
+C2_SERIES_BY_ID: dict[str, SeriesBinding] = {
+    binding.series_id: binding for binding in C2_SERIES
+}
+
+C3_SERIES: tuple[SeriesBinding, ...] = _slice_bindings("c3")
+C3_SERIES_IDS: tuple[str, ...] = tuple(binding.series_id for binding in C3_SERIES)
+C3_SERIES_BY_ID: dict[str, SeriesBinding] = {
+    binding.series_id: binding for binding in C3_SERIES
+}
+
+C3_NAMED_HOLE_SERIES_IDS: tuple[str, ...] = tuple(
+    binding.series_id
+    for binding in C3_SERIES
+    if binding.series_id in _named_hole_series_ids()
+)
+C3_LINEAGE_REQUIRED_SERIES_IDS: tuple[str, ...] = tuple(
+    series_id
+    for series_id in C3_SERIES_IDS
+    if series_id not in C3_NAMED_HOLE_SERIES_IDS
+)
+NAMED_HOLE_SERIES_IDS: frozenset[str] = _named_hole_series_ids()
+NAMED_HOLE_CITATION_IDS: frozenset[str] = _named_hole_citation_ids()
 
 
 def scheduled_series_on(day: date) -> tuple[SeriesBinding, ...]:
     """Schedule follows each series' next_release, not a hidden global clock."""
 
-    return tuple(
-        binding
-        for binding in C1_SERIES
-        if binding.next_release != "unknown" and binding.next_release == day
-    )
+    from prism.catalog import default_catalog
+
+    bindings = [
+        _as_binding(entry)
+        for item in default_catalog().slices
+        for entry in item.series
+        if entry.next_release != "unknown" and entry.next_release == day
+    ]
+    return tuple(bindings)

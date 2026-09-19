@@ -1,0 +1,38 @@
+caveat_id: caveat-c1-cpi-cfpi-base-2024
+concept: 'Consumer Food Price Index (CFPI): the producer’s named food price index,
+  Base 2024=100, Rural / Urban / Combined. Same figures as CPI Group Food, Group code
+  01.1. Not Division 01 Food and beverages.'
+unit: Index points (Base 2024=100) and year-on-year inflation (%) as printed. Blank
+  inflation is not zero. Status Provisional / Final as printed.
+population: Same price-collection system as Card 1 (1407 urban markets including online;
+  1465 villages; all States/UTs). Food as Group 01.1, not every item a household buys.
+reference_period: Calendar month on the row (August 2026 Provisional and July 2026
+  Final on these cards). Not 14 September 2026.
+producer_definition: Year-on-year inflation rate based on All India Consumer Food
+  Price Index (CFPI) for the month of August, 2026 over August, 2025 is 5.95% (Provisional).
+  Corresponding inflation rates for rural and urban are 6.13% and 5.64%, respectively.
+  Key Statistics prints CFPI Index and Inflation beside CPI (General) (NSO/MoSPI press
+  note, 14 September 2026). Annexure-II row Group code 01.1 Food Combined inflation
+  5.95% matches that CFPI figure. Annexure-I Division 01 Food and beverages Combined
+  inflation is 5.66% — a different published number (Division 01 also includes Group
+  01.2 Beverages and Group 01.3 Services for processing primary goods for food).
+comparable_from: 'Same as Card 1 for this base: Group 01.1 / CFPI index from January
+  2025; year-on-year inflation on this base from January 2026 where the producer prints
+  it. Card 4 has Group = General only — no CFPI back series in that file.'
+breaks: Same base-year break versus 2012=100. Same Frame A geography notes as Card
+  1 (including Chandigarh Rural withheld). Do not treat Division 01 as a continuation
+  of CFPI.
+lags: Same monthly calendar as Card 1 (August 2026 Provisional in the 14 September
+  2026 release; July 2026 Final in the same book).
+disagrees_with: Division 01 Food and beverages (Card 3) — same producer, same month,
+  different basket (food plus beverages and food-processing services). Headline CPI
+  General (Card 1). CPI 2012=100 food groupings. WPI food articles (wholesale, different
+  office). Labour Bureau food components of CPI-IW / CPI-AL/RL. Stale National Metadata
+  Structure six-group description versus live COICOP 2018 Group 01.1.
+do_not: 'Do not chart Division 01 as food or as CFPI. Do not mix 01.1 with 01.2 or
+  01.3 into a homemade food index. Do not use Card 4 for food. Do not rank states
+  or cities by food inflation. Do not overlay tomato/onion item spikes as the food
+  index (item tables are out of this slice; press also warns some item indices use
+  thin samples). Same geography and status do-nots as Card 1: no All-India-as-whole-country,
+  no Rural/Urban merge, no blank-as-zero, no Provisional/Final blend, no pump prices,
+  no cheap/expensive, no forecast.'

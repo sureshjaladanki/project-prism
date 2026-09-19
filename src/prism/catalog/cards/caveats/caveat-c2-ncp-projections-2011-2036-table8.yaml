@@ -1,0 +1,19 @@
+caveat_id: caveat-c2-ncp-projections-2011-2036-table8
+concept: Projected total population by sex as on 1st March, 2011–2036, TABLE-8 of
+  the Technical Group report. A projection, not a census.
+unit: Thousands ('000) as printed. Still not Census PCA persons.
+population: India, States and UTs as labelled on TABLE-8. Not districts.
+reference_period: Projected years 2011–2036 as on 1st March. Not Table 11 (1st July).
+producer_definition: TABLE-8 Projected Total Population by Sex as on 1st March 2011–2036
+  (NCP / MoHFW, November 2019). Hosted PDF from nhm.gov.in.
+comparable_from: Table 8 columns inside this 2019 report. The 2011 column is a smoothed
+  projected base, not Card 1 TOT_P.
+breaks: Projection map as of November 2019. Jammu & Kashmir*(UT) and Ladakh* are printed
+  Table 8 units. No successor Technical Group report on these cards.
+lags: Report dated November 2019. A 2026 Table-8 cell is still a 2019 projection,
+  not a new enumeration.
+disagrees_with: Card 1 PCA. Card 2 A-02. Cards 3–4 SRS rates. TABLE-11 in the same
+  PDF. UN WPP (charter-out).
+do_not: Do not present a Table-8 figure as India has X people without naming Table
+  8, thousands, 1st March, and that it is a projection. Do not merge Table 8 and Table
+  11. Do not paper the missing Census 2021/2027.

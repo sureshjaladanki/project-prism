@@ -1,0 +1,137 @@
+frame_id: c1-frame-a
+geography_vintage: '2024'
+code_system: producer-specific
+frame: Union | state | UT
+units_included:
+- code: '00'
+  name_en: All India
+  geography_vintage: '2024'
+- code: '01'
+  name_en: Jammu And Kashmir
+  geography_vintage: '2024'
+- code: '02'
+  name_en: Himachal Pradesh
+  geography_vintage: '2024'
+- code: '03'
+  name_en: Punjab
+  geography_vintage: '2024'
+- code: '04'
+  name_en: Chandigarh
+  geography_vintage: '2024'
+- code: '05'
+  name_en: Uttarakhand
+  geography_vintage: '2024'
+- code: '06'
+  name_en: Haryana
+  geography_vintage: '2024'
+- code: '07'
+  name_en: NCT of Delhi
+  geography_vintage: '2024'
+- code: 08
+  name_en: Rajasthan
+  geography_vintage: '2024'
+- code: 09
+  name_en: Uttar Pradesh
+  geography_vintage: '2024'
+- code: '10'
+  name_en: Bihar
+  geography_vintage: '2024'
+- code: '11'
+  name_en: Sikkim
+  geography_vintage: '2024'
+- code: '12'
+  name_en: Arunachal Pradesh
+  geography_vintage: '2024'
+- code: '13'
+  name_en: Nagaland
+  geography_vintage: '2024'
+- code: '14'
+  name_en: Manipur
+  geography_vintage: '2024'
+- code: '15'
+  name_en: Mizoram
+  geography_vintage: '2024'
+- code: '16'
+  name_en: Tripura
+  geography_vintage: '2024'
+- code: '17'
+  name_en: Meghalaya
+  geography_vintage: '2024'
+- code: '18'
+  name_en: Assam
+  geography_vintage: '2024'
+- code: '19'
+  name_en: West Bengal
+  geography_vintage: '2024'
+- code: '20'
+  name_en: Jharkhand
+  geography_vintage: '2024'
+- code: '21'
+  name_en: Odisha
+  geography_vintage: '2024'
+- code: '22'
+  name_en: Chhattisgarh
+  geography_vintage: '2024'
+- code: '23'
+  name_en: Madhya Pradesh
+  geography_vintage: '2024'
+- code: '24'
+  name_en: Gujarat
+  geography_vintage: '2024'
+- code: '25'
+  name_en: The Dadra And Nagar Haveli And Daman And Diu
+  geography_vintage: '2024'
+- code: '27'
+  name_en: Maharashtra
+  geography_vintage: '2024'
+- code: '28'
+  name_en: Andhra Pradesh
+  geography_vintage: '2024'
+- code: '29'
+  name_en: Karnataka
+  geography_vintage: '2024'
+- code: '30'
+  name_en: Goa
+  geography_vintage: '2024'
+- code: '31'
+  name_en: Lakshadweep
+  geography_vintage: '2024'
+- code: '32'
+  name_en: Kerala
+  geography_vintage: '2024'
+- code: '33'
+  name_en: Tamil Nadu
+  geography_vintage: '2024'
+- code: '34'
+  name_en: Puducherry
+  geography_vintage: '2024'
+- code: '35'
+  name_en: Andaman And Nicobar Islands
+  geography_vintage: '2024'
+- code: '36'
+  name_en: Telangana
+  geography_vintage: '2024'
+- code: '37'
+  name_en: Ladakh
+  geography_vintage: '2024'
+units_missing:
+- districts and below (not in these artifacts; parked — do not pull, do not recode)
+- city / centre geographies (charter-out; not this frame)
+- 'Chandigarh Rural: not a missing UT. Unit 04 Chandigarh is included. Workbook General:
+  Urban and Combined rows only (no Rural row). Annexure-III prints Chandigarh* with
+  Rural cells blank; footnote *: No rural market in Chandigarh. Combined equals Urban
+  on that row. Do not recode; do not treat Combined as a missing unit.'
+- No current State or UT is absent from State Name (28 states + 8 UTs + All India
+  = 37 labels).
+- Code 26 is unused; it is not a missing published unit.
+breaks: 'This Base 2024=100 map is post-reorganisation throughout the comparable run
+  (January 2025 onward). Hits that already sit on the sheet as separate current units:
+  2014 Telangana (36) and Andhra Pradesh (28) are distinct; undivided Andhra Pradesh
+  is not a unit here. 2019 Jammu And Kashmir (01) and Ladakh (37) are distinct UTs;
+  undivided Jammu & Kashmir state is not a unit here. 2020 Dadra and Nagar Haveli
+  and Daman and Diu are one UT (25); former separate UTs and census-style code 26
+  are not published. Do not recode 2012=100 (or earlier) geographies onto these rows.
+  State/UT Combined is not comparable to a user average of districts: districts are
+  not on the map. `00` All India is a published national unit, not a roll-up of State/UT
+  Combined.'
+crosswalk: none

@@ -1,0 +1,18 @@
+caveat_id: caveat-c3-cga-finance-accounts-2024-25-stat1
+concept: 'Union Finance Accounts 2024-2025 No. 1 Summary of Transactions: receipts
+  and disbursements, Actuals, with 2023-2024 comparatives.'
+unit: Crores of rupees as printed.
+population: Union Government as printed. Annexure proceeds assigned to States is Union
+  tax assignment, not C5.
+reference_period: Financial year 2024-2025 (with 2023-2024 comparatives). Annual Actuals,
+  not BE/RE.
+producer_definition: Fin20242025Statement1.pdf. PDF word-to-column; ambiguous=0. Ingest
+  drops 1–2 digit column-index rows; they are not crores.
+comparable_from: The two Actuals columns on Statement No. 1.
+breaks: Reconstructed from PDF. Annual Actuals, not Budget BE/RE. Do not recode the
+  States annexure into C5.
+lags: PDF CreationDate 20 December 2025. Finance Accounts 2025-26 not on the CGA dropdown
+  as of 18 September 2026.
+disagrees_with: Budget printed Actuals 2024-25 (Card 1–9). Card 10 monthly actuals.
+do_not: Do not hide PDF reconstruction. Do not treat 1–2 digit column-index rows as
+  crores. Do not silent-substitute this file for monthly accounts or Budget BE.

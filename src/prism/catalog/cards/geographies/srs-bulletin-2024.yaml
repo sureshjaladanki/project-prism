@@ -1,0 +1,123 @@
+frame_id: c2-frame-c
+geography_vintage: '2024'
+code_system: none
+frame: Union | state | UT
+units_included:
+- code: india
+  name_en: India
+  geography_vintage: '2024'
+- code: 1-andhra-pradesh
+  name_en: 1. Andhra Pradesh
+  geography_vintage: '2024'
+- code: 2-assam
+  name_en: 2. Assam
+  geography_vintage: '2024'
+- code: 3-bihar
+  name_en: 3. Bihar
+  geography_vintage: '2024'
+- code: 4-chhattisgarh
+  name_en: 4. Chhattisgarh
+  geography_vintage: '2024'
+- code: 5-nct-of-delhi
+  name_en: 5. NCT of Delhi
+  geography_vintage: '2024'
+- code: 6-gujarat
+  name_en: 6. Gujarat
+  geography_vintage: '2024'
+- code: 7-haryana
+  name_en: 7. Haryana
+  geography_vintage: '2024'
+- code: 8-jammu-kashmir
+  name_en: 8. Jammu & Kashmir
+  geography_vintage: '2024'
+- code: 9-jharkhand
+  name_en: 9. Jharkhand
+  geography_vintage: '2024'
+- code: 10-karnataka
+  name_en: 10. Karnataka
+  geography_vintage: '2024'
+- code: 11-kerala
+  name_en: 11. Kerala
+  geography_vintage: '2024'
+- code: 12-madhya-pradesh
+  name_en: 12. Madhya Pradesh
+  geography_vintage: '2024'
+- code: 13-maharashtra
+  name_en: 13. Maharashtra
+  geography_vintage: '2024'
+- code: 14-odisha
+  name_en: 14. Odisha
+  geography_vintage: '2024'
+- code: 15-punjab
+  name_en: 15. Punjab
+  geography_vintage: '2024'
+- code: 16-rajasthan
+  name_en: 16. Rajasthan
+  geography_vintage: '2024'
+- code: 17-tamil-nadu
+  name_en: 17. Tamil Nadu
+  geography_vintage: '2024'
+- code: 18-telangana
+  name_en: 18. Telangana
+  geography_vintage: '2024'
+- code: 19-uttar-pradesh
+  name_en: 19. Uttar Pradesh
+  geography_vintage: '2024'
+- code: 20-uttarakhand
+  name_en: 20. Uttarakhand
+  geography_vintage: '2024'
+- code: 21-west-bengal
+  name_en: 21. West Bengal
+  geography_vintage: '2024'
+- code: 1-arunachal-pradesh
+  name_en: 1. Arunachal Pradesh
+  geography_vintage: '2024'
+- code: 2-goa
+  name_en: 2. Goa
+  geography_vintage: '2024'
+- code: 3-himachal-pradesh
+  name_en: 3. Himachal Pradesh
+  geography_vintage: '2024'
+- code: 4-manipur
+  name_en: 4. Manipur*
+  geography_vintage: '2024'
+- code: 5-meghalaya
+  name_en: 5. Meghalaya
+  geography_vintage: '2024'
+- code: 6-mizoram
+  name_en: 6. Mizoram
+  geography_vintage: '2024'
+- code: 7-nagaland
+  name_en: 7. Nagaland
+  geography_vintage: '2024'
+- code: 8-sikkim
+  name_en: 8. Sikkim
+  geography_vintage: '2024'
+- code: 9-tripura
+  name_en: 9. Tripura
+  geography_vintage: '2024'
+- code: 1-andaman-nicobar-islands
+  name_en: 1. Andaman & Nicobar Islands
+  geography_vintage: '2024'
+- code: 2-chandigarh
+  name_en: 2. Chandigarh
+  geography_vintage: '2024'
+- code: 3-dadra-nagar-haveli-and-daman-diu
+  name_en: 3. Dadra & Nagar Haveli and Daman & Diu
+  geography_vintage: '2024'
+- code: 4-ladakh
+  name_en: 4. Ladakh
+  geography_vintage: '2024'
+- code: 5-lakshadweep
+  name_en: 5. Lakshadweep
+  geography_vintage: '2024'
+- code: 6-puducherry
+  name_en: 6. Puducherry
+  geography_vintage: '2024'
+units_missing:
+- districts and below (parked)
+- '2011-only labels: undivided Andhra Pradesh; undivided Jammu & Kashmir state; separate
+  Daman & Diu; separate Dadra & Nagar Haveli'
+breaks: 2024 SRS Table 1 stubs as printed, including numbering. Do not recode Frame
+  A/B codes onto these rows. Manipur* is one unit.
+crosswalk: none

@@ -1,0 +1,19 @@
+frame_id: c1-frame-b
+geography_vintage: '2024'
+code_system: producer-specific
+frame: Union
+units_included:
+- code: '00'
+  name_en: All India
+  geography_vintage: '2024'
+units_missing:
+- all 36 States and Union Territories published on Frame A (Jammu And Kashmir through
+  Ladakh / The Dadra And Nagar Haveli And Daman And Diu — none appear as rows in this
+  file)
+- districts and below (parked)
+- city / centre geographies (charter-out; not this frame)
+breaks: File does not carry a State/UT map, so Telangana, J&K reorganisation, Ladakh,
+  and the DNH–DD merger do not appear as changing units here. Linked national All
+  India only; do not treat this as a state-level historical map. Do not recode Frame
+  A State/UT rows onto Card 4.
+crosswalk: none

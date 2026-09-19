@@ -1,0 +1,42 @@
+caveat_id: caveat-c1-cpi-division-group-base-2024
+concept: CPI Division indexes (COICOP 2018, 12 Divisions as named) and CPI Group indexes
+  (43 Groups as named), Rural / Urban / Combined, Base 2024=100. Headline General
+  is Card 1. Food-only is Card 2 (Group 01.1 / CFPI). Division 01 is Food and beverages.
+unit: Index points (Base 2024=100) and year-on-year inflation (%) as printed. Blank
+  inflation is not zero. Status Provisional / Final as printed.
+population: Same collection system as Card 1. Each Division/Group is the producer’s
+  COICOP 2018 aggregate, not a user basket.
+reference_period: Calendar month on the row (August 2026 Provisional and July 2026
+  Final on these cards). Not 14 September 2026.
+producer_definition: 'Annexure-I title: All India General (Rural, Urban and Combined)
+  division wise indices and inflation for August, 2026 (Provisional); Division 01
+  Food and beverages is one row among twelve named divisions; a bottom All India row
+  is General (Card 1), not Division 01 (NSO/MoSPI press note, 14 September 2026).
+  Annexure-II title: group wise indices; first row is 01.1 Food. Live 2024=100 grouping
+  is COICOP 2018 (product-9 metadata and these annexes). Division names as printed
+  for August 2026: Food and beverages; Paan, tobacco and intoxicants; Clothing and
+  footwear; Housing, water, electricity, gas and other fuels; Furnishings, household
+  equipment and routine household maintenance; Health; Transport; Information and
+  communication; Recreation, sport and culture; Education services; Restaurants and
+  accommodation services; Personal care, social protection and miscellaneous goods
+  and services.'
+comparable_from: January 2025 for Division/Group indexes on Base 2024=100. Year-on-year
+  inflation where printed with a prior year on this base (from January 2026 for All
+  India General lookback; do not invent missing Group YoY). Card 4 does not carry
+  Division/Group back series.
+breaks: Base-year break versus 2012=100 (old six-group structure is not these Divisions).
+  Same Frame A geography notes as Card 1. Annexure-I prints Division codes 01–11 then
+  13 as on the sheet — use printed names and codes; do not invent a Division 12 series
+  for this slice.
+lags: Same as Card 1.
+disagrees_with: 'National Metadata Structure PDF (older NSS 68th / six groups) versus
+  these COICOP 2018 Divisions/Groups. Group 01.1 / CFPI (Card 2) versus Division 01.
+  Item/Subclass sheets in the same workbook (out of slice; press: State-level item
+  indices available on the portal should be interpreted and used with caution, as
+  the indices for some items may have been compiled using thin samples of price quotations.).
+  CPI 2012=100 group files. WPI and Labour Bureau CPIs (different concepts).'
+do_not: Do not label Division 01 as food. Do not use Item or Subclass sheets to rank
+  cities or to thicken a Division chart. Do not treat press top five key items tables
+  as this series. Do not chart Housing or Transport as petrol pump prices. Same geography,
+  rank, forecast, Combined-merge, blank-as-zero, and 2012=100 do-nots as Card 1. Do
+  not join these rows to Card 4.

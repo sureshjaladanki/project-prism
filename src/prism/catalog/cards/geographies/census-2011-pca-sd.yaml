@@ -1,0 +1,121 @@
+frame_id: c2-frame-a
+geography_vintage: '2011'
+code_system: census
+frame: Union | state | UT
+units_included:
+- code: '00'
+  name_en: India
+  geography_vintage: '2011'
+- code: '01'
+  name_en: JAMMU & KASHMIR
+  geography_vintage: '2011'
+- code: '02'
+  name_en: HIMACHAL PRADESH
+  geography_vintage: '2011'
+- code: '03'
+  name_en: PUNJAB
+  geography_vintage: '2011'
+- code: '04'
+  name_en: CHANDIGARH
+  geography_vintage: '2011'
+- code: '05'
+  name_en: UTTARAKHAND
+  geography_vintage: '2011'
+- code: '06'
+  name_en: HARYANA
+  geography_vintage: '2011'
+- code: '07'
+  name_en: NCT OF DELHI
+  geography_vintage: '2011'
+- code: 08
+  name_en: RAJASTHAN
+  geography_vintage: '2011'
+- code: 09
+  name_en: UTTAR PRADESH
+  geography_vintage: '2011'
+- code: '10'
+  name_en: BIHAR
+  geography_vintage: '2011'
+- code: '11'
+  name_en: SIKKIM
+  geography_vintage: '2011'
+- code: '12'
+  name_en: ARUNACHAL PRADESH
+  geography_vintage: '2011'
+- code: '13'
+  name_en: NAGALAND
+  geography_vintage: '2011'
+- code: '14'
+  name_en: MANIPUR
+  geography_vintage: '2011'
+- code: '15'
+  name_en: MIZORAM
+  geography_vintage: '2011'
+- code: '16'
+  name_en: TRIPURA
+  geography_vintage: '2011'
+- code: '17'
+  name_en: MEGHALAYA
+  geography_vintage: '2011'
+- code: '18'
+  name_en: ASSAM
+  geography_vintage: '2011'
+- code: '19'
+  name_en: WEST BENGAL
+  geography_vintage: '2011'
+- code: '20'
+  name_en: JHARKHAND
+  geography_vintage: '2011'
+- code: '21'
+  name_en: ODISHA
+  geography_vintage: '2011'
+- code: '22'
+  name_en: CHHATTISGARH
+  geography_vintage: '2011'
+- code: '23'
+  name_en: MADHYA PRADESH
+  geography_vintage: '2011'
+- code: '24'
+  name_en: GUJARAT
+  geography_vintage: '2011'
+- code: '25'
+  name_en: DAMAN & DIU
+  geography_vintage: '2011'
+- code: '26'
+  name_en: DADRA & NAGAR HAVELI
+  geography_vintage: '2011'
+- code: '27'
+  name_en: MAHARASHTRA
+  geography_vintage: '2011'
+- code: '28'
+  name_en: ANDHRA PRADESH
+  geography_vintage: '2011'
+- code: '29'
+  name_en: KARNATAKA
+  geography_vintage: '2011'
+- code: '30'
+  name_en: GOA
+  geography_vintage: '2011'
+- code: '31'
+  name_en: LAKSHADWEEP
+  geography_vintage: '2011'
+- code: '32'
+  name_en: KERALA
+  geography_vintage: '2011'
+- code: '33'
+  name_en: TAMIL NADU
+  geography_vintage: '2011'
+- code: '34'
+  name_en: PUDUCHERRY
+  geography_vintage: '2011'
+- code: '35'
+  name_en: ANDAMAN & NICOBAR ISLANDS
+  geography_vintage: '2011'
+units_missing:
+- Telangana as a STATE row (not on this file; 2014 split is after this vintage)
+- Ladakh as a UT row (not on this file)
+- districts and below (parked; do not pull, do not recode)
+- today’s merged UT Dadra and Nagar Haveli and Daman and Diu as one row
+breaks: '2011 Census map. Do not recode 01 / 28 / 25+26 onto Frame C or Frame E. Do
+  not spelling-merge Frame A names with Frame B. Crosswalk: none.'
+crosswalk: none

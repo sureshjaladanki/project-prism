@@ -1,0 +1,19 @@
+caveat_id: caveat-c3-budget-2026-27-liabilities
+concept: 'Outstanding liabilities of the Central Government as printed: Public Debt;
+  Other Liabilities; Total / Net Liabilities. Stock at year-end, not a year’s deficit.'
+unit: 'Rupees as labelled. External debt footnote: book value / historical rate as
+  printed.'
+population: Central Government / Government of India. Not state debt.
+reference_period: 'Outstanding at year-end as labelled: end of 1950-51; 2021-2022
+  through 2024-25; Revised 2025-26; Budget 2026-27.'
+producer_definition: 'Receipt Budget, 2026-2027 — Part B: 1 (i) Statement of Liabilities
+  (annex91.pdf). PDF word-to-column; ambiguous=0.'
+comparable_from: Columns on this statement. 1950-51 is a printed historical column,
+  not a continuous series to splice without the producer’s notes.
+breaks: 'Reconstructed from PDF. Two debt concepts: this Statement of Liabilities
+  vs FRBM-defined debt. Revised vs Budget vs year-end Actuals columns.'
+lags: Same Budget laying. next_release unknown.
+disagrees_with: FRBM-defined debt on BAG charts. Card 3 net debt receipts (flow, not
+  stock). Card 6 deficit.
+do_not: Do not hide PDF reconstruction. Do not merge FRBM-defined debt into this stock.
+  Do not present Union liabilities as general government including states.

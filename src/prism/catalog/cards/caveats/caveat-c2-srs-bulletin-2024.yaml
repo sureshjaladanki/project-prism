@@ -1,0 +1,18 @@
+caveat_id: caveat-c2-srs-bulletin-2024
+concept: SRS estimated Birth Rate, Death Rate, Natural Growth Rate, and Infant Mortality
+  Rate for calendar year 2024, India and States/UTs, Total / Rural / Urban. Survey
+  estimates, not a census. No TFR on this bulletin.
+unit: Rates as labelled on Table 1. Not persons. Not a stock.
+population: SRS sample for India, Bigger States/UTs, Smaller States, and Union Territories
+  as printed. Manipur* is one unit (130 SRS units footnote).
+reference_period: Calendar year 2024. Not the May 2026 cover.
+producer_definition: SRS Bulletin Volume 59 No. 1, May 2026, Table 1 (ORGI Vital Statistics
+  Division, NADA catalog 47150).
+comparable_from: This 2024 bulletin issue. Do not join a 2024 stub to a 2011 Census
+  code.
+breaks: '2024 map vs Frames A/B: Telangana and Andhra Pradesh distinct; Jammu & Kashmir
+  and Ladakh distinct; DNH and Daman & Diu merged.'
+lags: 2024 rates released May 2026. next_release unknown.
+disagrees_with: Cards 1–2 census stock. Card 4 (TFR; narrower geography). Card 5 projections.
+do_not: Do not add Card 1 population to these rates to invent a 2024 headcount. Do
+  not use this card for TFR. Do not drop the Manipur* footnote. Do not rank.

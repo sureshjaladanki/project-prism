@@ -11,8 +11,8 @@ from pathlib import Path
 import httpx
 import pytest
 
+from prism.catalog import default_catalog
 from prism.ingest import PARSER, ingest_c1
-from prism.ingest.c1 import ANNEX_URL, BACK_SERIES_URL, MONTHLY_URL
 from prism.ingest.parse import (
     parse_cpi_back_series,
     parse_cpi_cfpi,
@@ -35,6 +35,10 @@ from tests.cpi_xlsx_fixtures import (
     monthly_workbook_bytes,
 )
 
+_C1 = default_catalog()
+MONTHLY_URL = _C1.artifact("mospi-cpi-monthly-2026-08").url
+ANNEX_URL = _C1.artifact("mospi-cpi-monthly-2026-08").companions[0].url
+BACK_SERIES_URL = _C1.artifact("mospi-cpi-back-series").url
 XLSX_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 FIRST_AT = datetime(2026, 9, 16, 8, 0, 0, tzinfo=UTC)
 SECOND_AT = datetime(2026, 9, 16, 9, 0, 0, tzinfo=UTC)
@@ -112,7 +116,10 @@ def test_division_group_does_not_use_item_sheet() -> None:
     rows = _rows(parsed.csv_text)
     names = {row["Division Name"] for row in rows if row["Division Name"]}
     assert "Food and beverages" in names
-    assert {row["Group Name"] for row in rows if row["Group Name"]} == {"Food", "Beverages"}
+    assert {row["Group Name"] for row in rows if row["Group Name"]} == {
+        "Food",
+        "Beverages",
+    }
 
 
 def test_back_series_all_india_blank_inflation_null() -> None:
@@ -142,13 +149,17 @@ def test_second_retrieve_same_script_new_stamp_same_checksum(tmp_path: Path) -> 
         retrieved_at=SECOND_AT,
     )
     assert len(first) == 4
-    assert all(record.source_changed is SourceChanged.first_retrieve for record in first)
+    assert all(
+        record.source_changed is SourceChanged.first_retrieve for record in first
+    )
     assert all(record.lineage_ok is YesNo.yes for record in first)
     assert all(record.lineage_ok is YesNo.yes for record in second)
     assert all(record.source_changed is SourceChanged.no for record in second)
     assert {record.retrieved_at for record in first} == {"20260916T080000Z"}
     assert {record.retrieved_at for record in second} == {"20260916T090000Z"}
-    assert [record.checksum for record in first] == [record.checksum for record in second]
+    assert [record.checksum for record in first] == [
+        record.checksum for record in second
+    ]
     assert first[0].checksum == first[1].checksum == first[2].checksum
     assert first[3].checksum != first[0].checksum
     general_raw = (
@@ -171,7 +182,12 @@ def test_second_retrieve_same_script_new_stamp_same_checksum(tmp_path: Path) -> 
     )
     assert os.path.samefile(general_raw, cfpi_raw)
     lineage_path = (
-        tmp_path / "lineage" / "mospi" / SERIES_CPI_GENERAL_BASE_2024 / "2026-08" / "lineage.json"
+        tmp_path
+        / "lineage"
+        / "mospi"
+        / SERIES_CPI_GENERAL_BASE_2024
+        / "2026-08"
+        / "lineage.json"
     )
     on_disk = LineageRecord.model_validate_json(lineage_path.read_bytes())
     assert on_disk.source_changed is SourceChanged.no
@@ -217,7 +233,12 @@ def test_http_404_stops_without_substitution(tmp_path: Path) -> None:
     assert records[0].lineage_ok is YesNo.no
     assert "http_404" in records[0].flags
     table = (
-        tmp_path / "derived" / "mospi" / SERIES_CPI_GENERAL_BASE_2024 / "2026-08" / "table.csv"
+        tmp_path
+        / "derived"
+        / "mospi"
+        / SERIES_CPI_GENERAL_BASE_2024
+        / "2026-08"
+        / "table.csv"
     )
     assert not table.exists()
 

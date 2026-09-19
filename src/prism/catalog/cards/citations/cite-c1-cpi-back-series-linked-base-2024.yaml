@@ -1,0 +1,21 @@
+citation_id: cite-c1-cpi-back-series-linked-base-2024
+producer: National Statistics Office, Price Statistics Division, Ministry of Statistics
+  and Programme Implementation (MoSPI)
+series: CPI Back Series Index Inflation Based on Base Year 2024 (linked General only)
+id: Documents id 290; file CPI_2024-Back-Series-Index-Inflation.xlsx sheet Sheet1;
+  columns Base Year, State code, State name, Sector, Year, Month, Group, Index, Inflation
+  (%)
+reference_period: 2013-01 to 2024-12
+release_date: unknown
+url: https://www.mospi.gov.in/uploads/documents/CPI/CPI_2024-Back-Series-Index-Inflation.xlsx
+geography_as_published: All India only in the opened rows (State name = All India,
+  State code 00); Sector = Rural / Urban / Combined; Group = General
+frequency: monthly
+licence: 'Not stated on the workbook or press PDF. MoSPI Copyrights Policy: reproduce
+  accurately, not in a derogatory or misleading context, source acknowledged. GSDD
+  2026 Category A (open access) lists Consumer Price Index (CPI). Not stated as CC-BY.'
+next_release: unknown
+caveat_one_line: Linked / back-cast onto 2024=100 — not independently compiled 2024-basket
+  observations before the new series. Do not stitch this to the 2012=100 series as
+  if they were one. All India only in this file; no State/UT rows in the previewed
+  sheet. Inflation (%) is blank on early rows.

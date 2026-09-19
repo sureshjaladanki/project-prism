@@ -36,10 +36,34 @@ def monthly_workbook_bytes() -> bytes:
     group = workbook.create_sheet("Group")
     group.append(list(GROUP_COLUMNS))
     group.append(
-        ["2024", "00", "All India", "Rural", "Food", "01.1", 2026, "July", 108.35, 4.54, "F"]
+        [
+            "2024",
+            "00",
+            "All India",
+            "Rural",
+            "Food",
+            "01.1",
+            2026,
+            "July",
+            108.35,
+            4.54,
+            "F",
+        ]
     )
     group.append(
-        ["2024", "00", "All India", "Urban", "Food", "01.1", 2026, "July", 107.0, 4.0, "F"]
+        [
+            "2024",
+            "00",
+            "All India",
+            "Urban",
+            "Food",
+            "01.1",
+            2026,
+            "July",
+            107.0,
+            4.0,
+            "F",
+        ]
     )
     group.append(
         [
@@ -57,7 +81,19 @@ def monthly_workbook_bytes() -> bytes:
         ]
     )
     group.append(
-        ["2024", "04", "Chandigarh", "Urban", "Food", "01.1", 2026, "July", 111.11, 5.39, "F"]
+        [
+            "2024",
+            "04",
+            "Chandigarh",
+            "Urban",
+            "Food",
+            "01.1",
+            2026,
+            "July",
+            111.11,
+            5.39,
+            "F",
+        ]
     )
     group.append(
         [
@@ -110,12 +146,24 @@ def monthly_workbook_bytes() -> bytes:
 
     general = workbook.create_sheet("General")
     general.append(list(GENERAL_COLUMNS))
-    general.append(["2024", "00", "All India", "Rural", 2026, "July", 107.94, 3.74, "F"])
-    general.append(["2024", "00", "All India", "Urban", 2026, "July", 107.22, 4.23, "F"])
-    general.append(["2024", "00", "All India", "Combined", 2026, "July", 107.6, 3.96, "F"])
-    general.append(["2024", "04", "Chandigarh", "Urban", 2026, "July", 108.04, 4.3, "F"])
-    general.append(["2024", "04", "Chandigarh", "Combined", 2026, "July", 108.04, 4.3, "F"])
-    general.append(["2024", "01", "Jammu And Kashmir", "Rural", 2026, "July", 107.94, "-", "F"])
+    general.append(
+        ["2024", "00", "All India", "Rural", 2026, "July", 107.94, 3.74, "F"]
+    )
+    general.append(
+        ["2024", "00", "All India", "Urban", 2026, "July", 107.22, 4.23, "F"]
+    )
+    general.append(
+        ["2024", "00", "All India", "Combined", 2026, "July", 107.6, 3.96, "F"]
+    )
+    general.append(
+        ["2024", "04", "Chandigarh", "Urban", 2026, "July", 108.04, 4.3, "F"]
+    )
+    general.append(
+        ["2024", "04", "Chandigarh", "Combined", 2026, "July", 108.04, 4.3, "F"]
+    )
+    general.append(
+        ["2024", "01", "Jammu And Kashmir", "Rural", 2026, "July", 107.94, "-", "F"]
+    )
 
     return _xlsx(workbook)
 
@@ -138,10 +186,16 @@ def back_series_bytes() -> bytes:
     assert sheet is not None
     sheet.title = "Sheet1"
     sheet.append(list(BACK_COLUMNS))
-    sheet.append(["2024", "00", "All India", "Rural", 2013, "January", "General", 54.9, None])
-    sheet.append(["2024", "00", "All India", "Urban", 2013, "January", "General", 55.3, None])
+    sheet.append(
+        ["2024", "00", "All India", "Rural", 2013, "January", "General", 54.9, None]
+    )
+    sheet.append(
+        ["2024", "00", "All India", "Urban", 2013, "January", "General", 55.3, None]
+    )
     sheet.append(
         ["2024", "00", "All India", "Combined", 2013, "January", "General", 55.1, None]
     )
-    sheet.append(["2024", "00", "All India", "Rural", 2014, "January", "General", 60.0, 9.29])
+    sheet.append(
+        ["2024", "00", "All India", "Rural", 2014, "January", "General", 60.0, 9.29]
+    )
     return _xlsx(workbook)

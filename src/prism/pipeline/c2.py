@@ -3,39 +3,26 @@
 from __future__ import annotations
 
 import csv
-import json
 import re
-from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
-from prism.observation_parquet import observations_to_parquet
-from prism.paths import ingest_lineage_path, ingest_table_path, run_report_path
-from prism.pipeline.c1 import PipelineError, observation_count, trigger_for_records
-from prism.pipeline.c2_cards import C2_CAVEATS, C2_CITATIONS, C2_GEOGRAPHIES
+from prism.catalog.registry import MapperSpec, register_mapper
+from prism.pipeline.errors import PipelineError
 from prism.refresh import (
-    C2_SERIES,
-    C2_SERIES_IDS,
     SERIES_CENSUS_2011_A02_DECADAL,
     SERIES_CENSUS_2011_PCA_SD,
     SERIES_NCP_PROJECTIONS_2011_2036_TABLE8,
     SERIES_SRS_BULLETIN_2024,
     SERIES_SRS_STATISTICAL_REPORT_2024,
-    SeriesBinding,
-    ensure_utc,
-    lineage_blocks_completeness,
 )
 from prism.schema import (
-    Completeness,
     GeographyRef,
     GeographyVintage,
-    LineageRecord,
     Observation,
     ObservationLineage,
     ObservationStatus,
-    VintageManifest,
-    YesNo,
 )
-from prism.vintage_store import SeriesWrite, latest_manifest_with_series, write_vintage
 
 MAPPER_VERSION = "c2-observations-1.1.0"
 PCA_PERIOD = "2011-03-01"
@@ -397,13 +384,44 @@ def _map_table8(
     return tuple(out)
 
 
-_MAPPERS = {
-    SERIES_CENSUS_2011_PCA_SD: _map_pca,
-    SERIES_CENSUS_2011_A02_DECADAL: _map_a02,
-    SERIES_SRS_BULLETIN_2024: _map_bulletin,
-    SERIES_SRS_STATISTICAL_REPORT_2024: _map_table3,
-    SERIES_NCP_PROJECTIONS_2011_2036_TABLE8: _map_table8,
+_FAMILY = {
+    "census-pca-tru": _map_pca,
+    "census-a02-decadal": _map_a02,
+    "srs-bulletin-rates": _map_bulletin,
+    "srs-table3-indicators": _map_table3,
+    "ncp-table8-projections": _map_table8,
 }
+
+
+def _wrap(
+    mapper_id: str,
+    fn: Any,
+) -> None:
+    def map_rows(
+        rows: list[dict[str, str]],
+        series_id: str,
+        citation_id: str,
+        caveat_id: str,
+        geography: GeographyVintage,
+        lineage: ObservationLineage,
+    ) -> tuple[Observation, ...]:
+        observations = fn(
+            rows,
+            series_id=series_id,
+            citation_id=citation_id,
+            caveat_id=caveat_id,
+            frame=geography,
+            lineage=lineage,
+        )
+        if not observations:
+            raise PipelineError(f"{series_id} produced no observations")
+        return tuple(observations)
+
+    register_mapper(mapper_id, MapperSpec(map_rows=map_rows, version=MAPPER_VERSION))
+
+
+for _mapper_id, _fn in _FAMILY.items():
+    _wrap(_mapper_id, _fn)
 
 
 def map_c2_table(
@@ -415,156 +433,18 @@ def map_c2_table(
     geography: GeographyVintage,
     lineage: ObservationLineage,
 ) -> tuple[Observation, ...]:
-    mapper = _MAPPERS.get(series_id)
-    if mapper is None:
-        raise PipelineError(f"unknown C2 series_id: {series_id}")
-    observations = mapper(
-        rows,
-        series_id=series_id,
-        citation_id=citation_id,
-        caveat_id=caveat_id,
-        frame=geography,
-        lineage=lineage,
-    )
-    if not observations:
-        raise PipelineError(f"{series_id} produced no observations")
-    return observations
-
-
-def load_c2_lineage(data_root: Path, binding: SeriesBinding) -> LineageRecord:
-    path = ingest_lineage_path(
-        data_root, binding.producer_slug, binding.series_id, binding.source_vintage
-    )
-    if not path.exists():
-        raise PipelineError(f"missing lineage for {binding.series_id}")
-    return LineageRecord.model_validate_json(path.read_bytes())
-
-
-def map_c2_series(
-    data_root: Path, binding: SeriesBinding, lineage: LineageRecord
-) -> SeriesWrite:
-    citation = C2_CITATIONS[binding.series_id]
-    caveat = C2_CAVEATS[binding.series_id]
-    geography = C2_GEOGRAPHIES[binding.series_id]
-    if citation.citation_id != binding.citation_id:
-        raise PipelineError("citation_id does not match the locked card")
-    if caveat.caveat_id != binding.caveat_id:
-        raise PipelineError("caveat_id does not match the locked note")
-    if lineage.citation_id != binding.citation_id:
-        raise PipelineError(
-            f"{binding.series_id} lineage citation_id {lineage.citation_id} "
-            f"does not match {binding.citation_id}"
-        )
-    if lineage_blocks_completeness(binding.series_id, lineage.lineage_ok):
-        raise PipelineError(
-            f"{binding.series_id} lineage_ok={lineage.lineage_ok.value}; not building a vintage"
-        )
-    table_path = ingest_table_path(
-        data_root, binding.producer_slug, binding.series_id, binding.source_vintage
-    )
-    if not table_path.exists():
-        raise PipelineError(f"missing derived table for {binding.series_id}")
-    observations = map_c2_table(
-        series_id=binding.series_id,
-        rows=_read_rows(table_path),
-        citation_id=citation.citation_id,
-        caveat_id=caveat.caveat_id,
-        geography=geography,
-        lineage=ObservationLineage(
-            raw_path=lineage.raw_path,
-            derived_path=lineage.derived_path,
-            checksum=lineage.checksum,
-        ),
-    )
-    return SeriesWrite(
-        producer=binding.producer,
-        series_id=binding.series_id,
-        source_vintage=binding.source_vintage,
-        raw_checksum=lineage.checksum,
-        parser_version=lineage.parser,
-        lineage_ok=lineage.lineage_ok,
-        geography_vintage=geography.geography_vintage,
-        geography_frame_id=binding.geography_frame_id,
-        caveat_id=caveat.caveat_id,
-        mapper_version=MAPPER_VERSION,
-        observations_parquet=observations_to_parquet(observations),
-        citation=citation,
-        caveat=caveat,
-        geography=geography,
-    )
-
-
-def _write_report(logs_root: Path, run_id: str, payload: dict[str, object]) -> Path:
-    path = run_report_path(logs_root, run_id)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
-    return path
-
-
-def materialise_c2_vintage(
-    data_root: Path,
-    logs_root: Path,
-    *,
-    created_at: datetime | None = None,
-) -> tuple[VintageManifest, dict[str, object]]:
-    """Write a new C2 vintage. Does not move preview or citizen pointers."""
-
-    moment = ensure_utc(created_at if created_at is not None else datetime.now(UTC))
-    run_id = moment.strftime("%Y%m%dT%H%M%SZ")
-    series_rows: list[dict[str, object]] = []
-    report: dict[str, object] = {
-        "run_id": run_id,
-        "vintage_id": None,
-        "trigger": None,
-        "completeness": Completeness.failed.value,
-        "series": series_rows,
-        "flags": "none",
-        "pointers": "untouched",
+    by_series = {
+        SERIES_CENSUS_2011_PCA_SD: "census-pca-tru",
+        SERIES_CENSUS_2011_A02_DECADAL: "census-a02-decadal",
+        SERIES_SRS_BULLETIN_2024: "srs-bulletin-rates",
+        SERIES_SRS_STATISTICAL_REPORT_2024: "srs-table3-indicators",
+        SERIES_NCP_PROJECTIONS_2011_2036_TABLE8: "ncp-table8-projections",
     }
-    try:
-        records: list[LineageRecord] = []
-        writes: list[SeriesWrite] = []
-        for binding in C2_SERIES:
-            lineage = load_c2_lineage(data_root, binding)
-            records.append(lineage)
-            item = map_c2_series(data_root, binding, lineage)
-            writes.append(item)
-            series_rows.append(
-                {
-                    "series_id": item.series_id,
-                    "observation_count": observation_count(item),
-                    "lineage_ok": item.lineage_ok.value,
-                    "source_vintage": item.source_vintage,
-                    "reused": None,
-                    "rewritten": None,
-                }
-            )
-        trigger = trigger_for_records(tuple(records))
-        report["trigger"] = trigger.value
-        previous = latest_manifest_with_series(data_root, C2_SERIES_IDS)
-        manifest = write_vintage(
-            data_root,
-            created_at=moment,
-            trigger=trigger,
-            series=tuple(writes),
-            completeness=Completeness.complete,
-            previous=previous,
-            required_series_ids=C2_SERIES_IDS,
-        )
-        reused_by_id = {entry.series_id: entry.reused for entry in manifest.series}
-        for row in series_rows:
-            reused = reused_by_id[str(row["series_id"])]
-            row["reused"] = reused.value
-            row["rewritten"] = (
-                YesNo.no.value if reused is YesNo.yes else YesNo.yes.value
-            )
-        report["vintage_id"] = manifest.vintage_id
-        report["completeness"] = manifest.completeness.value
-        _write_report(logs_root, run_id, report)
-        return manifest, report
-    except Exception as exc:
-        report["flags"] = str(exc)
-        _write_report(logs_root, run_id, report)
-        raise
+    mapper_id = by_series.get(series_id)
+    if mapper_id is None:
+        raise PipelineError(f"unknown C2 series_id: {series_id}")
+    from prism.catalog.registry import MAPPERS
+
+    return MAPPERS[mapper_id].map_rows(
+        rows, series_id, citation_id, caveat_id, geography, lineage
+    )

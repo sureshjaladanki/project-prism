@@ -1,0 +1,22 @@
+citation_id: cite-c1-cpi-general-base-2024-2026-08
+producer: National Statistics Office, Price Statistics Division, Ministry of Statistics
+  and Programme Implementation (MoSPI)
+series: Consumer Price Index (CPI) General — Rural, Urban and Combined (Base 2024=100)
+id: 'MoSPI product_id 9; latestRelease id 170 Press release of CPI for the month of
+  August 2026; Documents id 315 CPI Data - August 2026 Based on Base Year 2024 file
+  Data_August_CPI_2026_14092026.xlsx sheet General; companion Annex.xlsx sheet Annexure-III
+  (State/UT wise general). Time series of record for Jan 2025–Dec 2025: CPI_2024-Jan2025-Dec2025.xlsx
+  sheet General; for Jan 2026: CPI_2024-Jan2026.xlsx sheet General.'
+reference_period: 2026-08
+release_date: '2026-09-14'
+url: https://www.mospi.gov.in/uploads/documents/productChartTable/1789491098345-Data_August_CPI_2026_14092026.xlsx
+geography_as_published: All India and States/UTs as labelled in State Name (37 labels
+  including All India); Sector = Rural / Urban / Combined as published. Not districts.
+frequency: monthly
+licence: 'Not stated on the workbook or press PDF. MoSPI Copyrights Policy: reproduce
+  accurately, not in a derogatory or misleading context, source acknowledged. GSDD
+  2026 Category A (open access) lists Consumer Price Index (CPI). Not stated as CC-BY.'
+next_release: '2026-10-12'
+caveat_one_line: Latest month is Provisional; Combined is a published sector, not
+  a user merge. Chandigarh Rural is withheld (dash) in Annexure-III. Base-year break
+  vs 2012=100. Districts are not in this file.

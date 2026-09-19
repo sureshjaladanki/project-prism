@@ -1,0 +1,105 @@
+slice_id: c2
+charter: C2
+template_id: c2-people-of-india
+artifacts:
+  - artifact_id: census-2011-pca-sd
+    url: https://censusindia.gov.in/nada/index.php/catalog/6191/download/9268/DDW_PCA0000_2011_Indiastatedist.xlsx
+    kind: xlsx
+    share_note: ""
+    companions: []
+  - artifact_id: census-2011-a02
+    url: https://censusindia.gov.in/nada/index.php/catalog/43333/download/47001/00%20A%202-India.xls
+    kind: xls
+    share_note: ""
+    companions: []
+  - artifact_id: srs-bulletin-2024
+    url: https://censusindia.gov.in/nada/index.php/catalog/47150/download/51394/SRS_Bulletin_2024_Vol_59_No_1.pdf
+    kind: pdf
+    share_note: ""
+    companions: []
+  - artifact_id: srs-stat-2024
+    url: https://censusindia.gov.in/nada/index.php/catalog/47152/download/51396/SRS_STAT_2024.pdf
+    kind: pdf
+    share_note: ""
+    companions: []
+  - artifact_id: ncp-table8
+    url: https://nhm.gov.in/New_Updates_2018/Report_Population_Projection_2019.pdf
+    kind: pdf
+    share_note: ""
+    companions: []
+series:
+  - series_id: census-2011-pca-sd
+    card: 1
+    name: "Census of India 2011 — Primary Census Abstract (PCA SD): population, households, and related PCA columns as published"
+    producer: Office of the Registrar General & Census Commissioner, India (ORGI), Ministry of Home Affairs
+    producer_slug: orgi
+    source_vintage: "2011"
+    next_release: unknown
+    geography_frame_id: c2-frame-a
+    geography_vintage: "2011"
+    citation_id: cite-c2-census-2011-pca-sd
+    caveat_id: caveat-c2-census-2011-pca-sd
+    artifact_id: census-2011-pca-sd
+    parser_id: census-2011-pca-xlsx
+    mapper_id: census-pca-tru
+    named_hole: false
+  - series_id: census-2011-a02-decadal
+    card: 2
+    name: "Census of India 2011 — Table A-02: Decadal variation in population since 1901"
+    producer: Office of the Registrar General & Census Commissioner, India (ORGI), Ministry of Home Affairs
+    producer_slug: orgi
+    source_vintage: "2011"
+    next_release: unknown
+    geography_frame_id: c2-frame-b
+    geography_vintage: "2011"
+    citation_id: cite-c2-census-2011-a02-decadal
+    caveat_id: caveat-c2-census-2011-a02-decadal
+    artifact_id: census-2011-a02
+    parser_id: census-2011-a02-xls
+    mapper_id: census-a02-decadal
+    named_hole: false
+  - series_id: srs-bulletin-2024
+    card: 3
+    name: Sample Registration System (SRS) Bulletin — estimated Birth Rate, Death Rate, Natural Growth Rate and Infant Mortality Rate
+    producer: Office of the Registrar General of India, Vital Statistics Division (ORGI)
+    producer_slug: orgi
+    source_vintage: "2024"
+    next_release: unknown
+    geography_frame_id: c2-frame-c
+    geography_vintage: "2024"
+    citation_id: cite-c2-srs-bulletin-2024
+    caveat_id: caveat-c2-srs-bulletin-2024
+    artifact_id: srs-bulletin-2024
+    parser_id: srs-bulletin-pdf
+    mapper_id: srs-bulletin-rates
+    named_hole: false
+  - series_id: srs-statistical-report-2024
+    card: 4
+    name: Sample Registration System (SRS) Statistical Report 2024 — fertility and mortality indicators as published (including Crude Birth Rate and Total Fertility Rate)
+    producer: Office of the Registrar General & Census Commissioner, India (ORGI), Ministry of Home Affairs
+    producer_slug: orgi
+    source_vintage: "2024"
+    next_release: unknown
+    geography_frame_id: c2-frame-d
+    geography_vintage: "2024"
+    citation_id: cite-c2-srs-statistical-report-2024
+    caveat_id: caveat-c2-srs-statistical-report-2024
+    artifact_id: srs-stat-2024
+    parser_id: srs-statistical-report-pdf
+    mapper_id: srs-table3-indicators
+    named_hole: false
+  - series_id: ncp-projections-2011-2036-table8
+    card: 5
+    name: Census of India 2011 — Population Projections for India and States 2011–2036 (projections, not a census)
+    producer: National Commission on Population, Ministry of Health & Family Welfare (Technical Group on Population Projections)
+    producer_slug: ncp-mohfw
+    source_vintage: 2011-2036-table8
+    next_release: unknown
+    geography_frame_id: c2-frame-e
+    geography_vintage: "2019"
+    citation_id: cite-c2-ncp-projections-2011-2036-table8
+    caveat_id: caveat-c2-ncp-projections-2011-2036-table8
+    artifact_id: ncp-table8
+    parser_id: ncp-projections-table8-pdf
+    mapper_id: ncp-table8-projections
+    named_hole: false

@@ -10,20 +10,7 @@ from pathlib import Path
 import httpx
 import pytest
 
-from prism.ingest.c3 import (
-    AFS_URL,
-    ANNEX1_URL,
-    BAG_URL,
-    CAPITAL_URL,
-    CGA_FA_URL,
-    CGA_MONTHLY_URL,
-    FRBM_URL,
-    LIABILITIES_URL,
-    NON_TAX_URL,
-    STAT1_URL,
-    TAX_URL,
-    ingest_c3,
-)
+from prism.catalog import default_catalog
 from prism.ingest.parse_c3 import (
     PARSER,
     parse_cga_monthly_html,
@@ -32,6 +19,7 @@ from prism.ingest.parse_c3 import (
     parse_frbm_statements_pdf,
     parse_receipt_xlsx,
 )
+from prism.ingest.run import ingest_c3
 from prism.refresh import (
     CITE_C3_CARD_1,
     CITE_C3_CARD_5,
@@ -52,6 +40,18 @@ from tests.c3_ingest_fixtures import (
     receipt_workbook_bytes,
 )
 
+_C3 = default_catalog()
+TAX_URL = _C3.artifact("receipt-budget-tr-xlsx").url
+NON_TAX_URL = _C3.artifact("receipt-budget-ntr-xlsx").url
+CAPITAL_URL = _C3.artifact("receipt-budget-ctr-xlsx").url
+ANNEX1_URL = _C3.artifact("receipt-budget-annex1-pdf").url
+STAT1_URL = _C3.artifact("expenditure-stat1-xlsx").url
+BAG_URL = _C3.artifact("budget-at-a-glance-xlsx").url
+LIABILITIES_URL = _C3.artifact("receipt-annex91-pdf").url
+FRBM_URL = _C3.artifact("frbm1-pdf").url
+AFS_URL = _C3.artifact("allafs-pdf").url
+CGA_MONTHLY_URL = _C3.artifact("cga-monthly-html").url
+CGA_FA_URL = _C3.artifact("cga-fa-stat1-pdf").url
 XLSX_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 FIRST_AT = datetime(2026, 9, 18, 8, 0, 0, tzinfo=UTC)
 PRODUCER_PROBE = Path("data/_c3_probe")
@@ -70,15 +70,23 @@ def _client() -> httpx.Client:
     def handler(request: httpx.Request) -> httpx.Response:
         url = str(request.url)
         if url in {TAX_URL, NON_TAX_URL, CAPITAL_URL}:
-            return httpx.Response(200, content=receipt, headers={"content-type": XLSX_TYPE})
+            return httpx.Response(
+                200, content=receipt, headers={"content-type": XLSX_TYPE}
+            )
         if url == STAT1_URL:
-            return httpx.Response(200, content=stat1, headers={"content-type": XLSX_TYPE})
+            return httpx.Response(
+                200, content=stat1, headers={"content-type": XLSX_TYPE}
+            )
         if url == BAG_URL:
             return httpx.Response(200, content=bag, headers={"content-type": XLSX_TYPE})
         if url == CGA_MONTHLY_URL:
-            return httpx.Response(200, content=html, headers={"content-type": "text/html"})
+            return httpx.Response(
+                200, content=html, headers={"content-type": "text/html"}
+            )
         if url in {ANNEX1_URL, LIABILITIES_URL, FRBM_URL, AFS_URL, CGA_FA_URL}:
-            return httpx.Response(200, content=STUB_PDF, headers={"content-type": "application/pdf"})
+            return httpx.Response(
+                200, content=STUB_PDF, headers={"content-type": "application/pdf"}
+            )
         return httpx.Response(404, content=b"unexpected-url")
 
     return httpx.Client(transport=httpx.MockTransport(handler))
@@ -144,7 +152,12 @@ def test_ingest_c3_lands_xlsx_and_html_card_8_stays_hole(tmp_path: Path) -> None
     assert tax.source_changed is SourceChanged.first_retrieve
     assert tax.parser == PARSER
     assert (
-        tmp_path / "derived" / "mof-budget" / SERIES_BUDGET_2026_27_TAX_REVENUE / "2026-27" / "table.csv"
+        tmp_path
+        / "derived"
+        / "mof-budget"
+        / SERIES_BUDGET_2026_27_TAX_REVENUE
+        / "2026-27"
+        / "table.csv"
     ).is_file()
     assert by_cite[CITE_C3_CARD_5].lineage_ok is YesNo.yes
     assert by_cite[CITE_C3_CARD_6].lineage_ok is YesNo.yes
@@ -152,11 +165,19 @@ def test_ingest_c3_lands_xlsx_and_html_card_8_stays_hole(tmp_path: Path) -> None
     hole = by_cite[CITE_C3_CARD_8]
     assert hole.lineage_ok is YesNo.no
     assert "not a reconstructable" in hole.flags
-    raw_tax = tmp_path / "raw" / "mof-budget" / SERIES_BUDGET_2026_27_TAX_REVENUE / "2026-27"
+    raw_tax = (
+        tmp_path / "raw" / "mof-budget" / SERIES_BUDGET_2026_27_TAX_REVENUE / "2026-27"
+    )
     assert any(raw_tax.rglob("tr.xlsx"))
     raw_html = tmp_path / "raw" / "cga" / SERIES_CGA_MONTHLY_GLANCE_2026_07 / "2026-07"
     assert any(raw_html.rglob("DATA2627.htm"))
-    raw_frbm = tmp_path / "raw" / "mof-budget" / SERIES_BUDGET_2026_27_FRBM_STATEMENTS / "2026-27"
+    raw_frbm = (
+        tmp_path
+        / "raw"
+        / "mof-budget"
+        / SERIES_BUDGET_2026_27_FRBM_STATEMENTS
+        / "2026-27"
+    )
     assert any(raw_frbm.rglob("frbm1.pdf"))
     assert not (
         tmp_path

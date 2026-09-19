@@ -1,0 +1,19 @@
+caveat_id: caveat-c3-budget-2026-27-non-tax-revenue
+concept: Union non-tax revenue as printed (II. Non-Tax Revenue), including receipts
+  of Union Territories as a Union head.
+unit: Rupees as labelled. Blank is not zero.
+population: Government of India / Union. Receipts of Union Territories here is a Union
+  budget head, not UT Finance Accounts (C5).
+reference_period: Actuals 2024-2025, BE 2025-2026, RE 2025-2026, BE 2026-2027 as column
+  labels. Not 1 February 2026.
+producer_definition: Receipt Budget, 2026-2027 — II. Non-Tax Revenue; fetch ntr.xlsx
+  sheet ReceiptReport123. openpyxl cells — not reconstructed from ntr.pdf.
+comparable_from: The four columns in this file. Card 4 Annex-1 has a Non-Tax Revenue
+  row in its own run — still a different table.
+breaks: BE vs RE vs Actuals. Do not add to Card 1 as one revenue unless the producer
+  prints that total. Spreadsheet cell map — not a PDF scrape.
+lags: Same Budget 2026-27 lag as Card 1. next_release unknown.
+disagrees_with: Card 1 (tax). Card 3 (capital/debt). Card 4 multi-year non-tax row.
+  Cards 9–11.
+do_not: Do not treat UT receipts on this statement as C5. Do not merge tax and non-tax.
+  Do not rank, forecast, or per-person.

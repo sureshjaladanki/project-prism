@@ -1,0 +1,20 @@
+caveat_id: caveat-c3-budget-2026-27-annex1-trends-receipts
+concept: Multi-year Union receipts table as printed in Receipt Budget Annex-1, including
+  printed deficit lines in the same annex.
+unit: Rupees as labelled. Deficit lines are the producer’s printed lines, not a Prism
+  blend.
+population: Government of India as published. Not states.
+reference_period: 'Financial-year column on the cell: Actual 2017-18 through 2024-25,
+  RE 2025-26, BE 2026-27 as labelled.'
+producer_definition: Receipt Budget, 2026-2027 — Annex-1 Trends in Receipts (annex1.pdf).
+  PDF word-to-column; ingest flag pdfplumber words; ambiguous=0. annex1.xlsx 404.
+comparable_from: Columns the producer prints. Do not extend with RBI or IMF. Last
+  two columns are RE and BE, not Actuals.
+breaks: 'Reconstructed from PDF, not a spreadsheet cell map. Tax revenue here is net
+  of States’ share — break vs Card 1. Actual vs RE vs BE in one row: never one continuous
+  Actuals line.'
+lags: Same Budget laying. next_release unknown. Reconstruction is not a later release.
+disagrees_with: Card 1 (gross tax heads). Card 6 BAG Deficit Statistics. Card 11 Actuals
+  2024-25.
+do_not: Do not hide PDF reconstruction. Do not guess an ambiguous amount into a year
+  column. Do not name years the file does not contain. Do not chart RE/BE as Actuals.

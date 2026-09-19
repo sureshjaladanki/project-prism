@@ -1,0 +1,77 @@
+slice_id: c1
+charter: C1
+template_id: c1-prices-people-pay
+artifacts:
+  - artifact_id: mospi-cpi-monthly-2026-08
+    url: https://www.mospi.gov.in/uploads/documents/productChartTable/1789491098345-Data_August_CPI_2026_14092026.xlsx
+    kind: xlsx
+    share_note: shared_monthly_xlsx
+    companions:
+      - url: https://www.mospi.gov.in/uploads/documents/productChartTable/1789491131821-Annex.xlsx
+        headers_name: annex_headers.json
+  - artifact_id: mospi-cpi-back-series
+    url: https://www.mospi.gov.in/uploads/documents/CPI/CPI_2024-Back-Series-Index-Inflation.xlsx
+    kind: xlsx
+    share_note: ""
+    companions: []
+series:
+  - series_id: cpi-general-base-2024
+    card: 1
+    name: Consumer Price Index (CPI) General — Rural, Urban and Combined (Base 2024=100)
+    producer: National Statistics Office, Price Statistics Division, Ministry of Statistics and Programme Implementation (MoSPI)
+    producer_slug: mospi
+    source_vintage: "2026-08"
+    next_release: "2026-10-12"
+    geography_frame_id: c1-frame-a
+    geography_vintage: "2024"
+    citation_id: cite-c1-cpi-general-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-general-base-2024
+    artifact_id: mospi-cpi-monthly-2026-08
+    parser_id: mospi-cpi-general
+    mapper_id: state-sector-period
+    named_hole: false
+  - series_id: cpi-cfpi-base-2024
+    card: 2
+    name: Consumer Food Price Index (CFPI) — Rural, Urban and Combined; same values as CPI Group name Food, Group code 01.1 (Base 2024=100)
+    producer: National Statistics Office, Price Statistics Division, Ministry of Statistics and Programme Implementation (MoSPI)
+    producer_slug: mospi
+    source_vintage: "2026-08"
+    next_release: "2026-10-12"
+    geography_frame_id: c1-frame-a
+    geography_vintage: "2024"
+    citation_id: cite-c1-cpi-cfpi-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-cfpi-base-2024
+    artifact_id: mospi-cpi-monthly-2026-08
+    parser_id: mospi-cpi-cfpi
+    mapper_id: state-sector-period
+    named_hole: false
+  - series_id: cpi-division-group-base-2024
+    card: 3
+    name: CPI Division indexes and CPI Group indexes, Rural / Urban / Combined (Base 2024=100), COICOP 2018 (12 Divisions, 43 Groups)
+    producer: National Statistics Office, Price Statistics Division, Ministry of Statistics and Programme Implementation (MoSPI)
+    producer_slug: mospi
+    source_vintage: "2026-08"
+    next_release: "2026-10-12"
+    geography_frame_id: c1-frame-a
+    geography_vintage: "2024"
+    citation_id: cite-c1-cpi-division-group-base-2024-2026-08
+    caveat_id: caveat-c1-cpi-division-group-base-2024
+    artifact_id: mospi-cpi-monthly-2026-08
+    parser_id: mospi-cpi-division-group
+    mapper_id: state-sector-period
+    named_hole: false
+  - series_id: cpi-back-series-linked-base-2024
+    card: 4
+    name: CPI Back Series Index Inflation Based on Base Year 2024 (linked General only)
+    producer: National Statistics Office, Price Statistics Division, Ministry of Statistics and Programme Implementation (MoSPI)
+    producer_slug: mospi
+    source_vintage: 2013-2024-linked
+    next_release: unknown
+    geography_frame_id: c1-frame-b
+    geography_vintage: "2024"
+    citation_id: cite-c1-cpi-back-series-linked-base-2024
+    caveat_id: caveat-c1-cpi-back-series-linked-base-2024
+    artifact_id: mospi-cpi-back-series
+    parser_id: mospi-cpi-back-series
+    mapper_id: state-sector-period
+    named_hole: false

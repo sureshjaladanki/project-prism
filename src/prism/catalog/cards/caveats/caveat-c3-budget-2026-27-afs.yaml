@@ -1,0 +1,19 @@
+caveat_id: caveat-c3-budget-2026-27-afs
+concept: 'Annual Financial Statement of the Central Government for 2026-2027 as laid:
+  Consolidated Fund, Contingency Fund, Public Account.'
+unit: Rupees as labelled. Estimates are net of refunds and recoveries (Key to Budget
+  Documents).
+population: Central Government / Consolidated Fund of India, Contingency Fund, Public
+  Account. UT-without-legislature AFS lines are still Union accounts, not C5.
+reference_period: Statement I columns Actuals 2024-2025, BE 2025-2026, RE 2025-2026,
+  BE 2026-2027.
+producer_definition: AFS allafs.pdf. PDF word-to-column; ambiguous=0. allafs.xlsx
+  headers are a different year — do not ingest as this vintage.
+comparable_from: Columns on Statement I of this PDF.
+breaks: Reconstructed from PDF, not a spreadsheet cell map. BE vs RE vs Actuals. Do
+  not ingest the stale companion xlsx.
+lags: Cover New Delhi, February 1, 2026. next_release unknown.
+disagrees_with: Cards 1–5 Receipt/Expenditure statements (same Budget family, different
+  books). Card 11 Finance Accounts Actuals.
+do_not: Do not hide PDF reconstruction. Do not ingest allafs.xlsx as 2026-27. Do not
+  treat UT-without-legislature AFS lines as C5.

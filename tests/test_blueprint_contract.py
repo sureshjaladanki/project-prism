@@ -520,9 +520,14 @@ def test_preview_resolves_slashless_paths_and_unknown_to_404(tmp_path: Path) -> 
     nested = tmp_path / "prices" / "retail-prices"
     nested.mkdir(parents=True)
     (nested / "index.html").write_text("slice", encoding="utf-8")
-    (tmp_path / "404.html").write_text("<title>Page not found · Prism</title>", encoding="utf-8")
+    (tmp_path / "404.html").write_text(
+        "<title>Page not found · Prism</title>", encoding="utf-8"
+    )
     assert resolve_tree_path(tmp_path, "/").name == "index.html"
-    assert resolve_tree_path(tmp_path, "/prices/retail-prices").parent.name == "retail-prices"
+    assert (
+        resolve_tree_path(tmp_path, "/prices/retail-prices").parent.name
+        == "retail-prices"
+    )
     assert resolve_tree_path(tmp_path, "/nope").name == "404.html"
 
     handler = partial(PreviewHandler, directory=str(tmp_path))

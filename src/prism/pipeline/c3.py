@@ -3,46 +3,20 @@
 from __future__ import annotations
 
 import csv
-import json
 import re
 from dataclasses import dataclass
-from datetime import UTC, datetime
 from pathlib import Path
 
-from prism.observation_parquet import observations_to_parquet
-from prism.paths import ingest_lineage_path, ingest_table_path, run_report_path
-from prism.pipeline.c1 import PipelineError, observation_count, trigger_for_records
-from prism.pipeline.c3_cards import C3_CAVEATS, C3_CITATIONS, C3_GEOGRAPHIES
-from prism.refresh import (
-    C3_SERIES,
-    C3_SERIES_IDS,
-    NAMED_HOLE_SERIES_IDS,
-    SERIES_BUDGET_2026_27_AFS,
-    SERIES_BUDGET_2026_27_ANNEX1_TRENDS_RECEIPTS,
-    SERIES_BUDGET_2026_27_CAPITAL_RECEIPTS,
-    SERIES_BUDGET_2026_27_DEFICIT_STATISTICS,
-    SERIES_BUDGET_2026_27_EXPENDITURE_STAT1,
-    SERIES_BUDGET_2026_27_LIABILITIES,
-    SERIES_BUDGET_2026_27_NON_TAX_REVENUE,
-    SERIES_BUDGET_2026_27_TAX_REVENUE,
-    SERIES_CGA_FINANCE_ACCOUNTS_2024_25_STAT1,
-    SERIES_CGA_MONTHLY_GLANCE_2026_07,
-    SeriesBinding,
-    ensure_utc,
-    lineage_blocks_completeness,
-)
+from prism.catalog.registry import MapperFn, MapperSpec, register_mapper
+from prism.pipeline.errors import PipelineError
 from prism.schema import (
     CodeSystem,
-    Completeness,
     GeographyRef,
-    LineageRecord,
+    GeographyVintage,
     Observation,
     ObservationLineage,
     ObservationStatus,
-    VintageManifest,
-    YesNo,
 )
-from prism.vintage_store import SeriesWrite, latest_manifest_with_series, write_vintage
 
 MAPPER_VERSION = "c3-observations-1.1.0"
 SECTOR_UNION = "Union"
@@ -106,17 +80,13 @@ _CGA_MONTHLY = (
     MeasureColumn("pct_coppy", "pct-of-be-coppy", "% of BE (COPPY)"),
 )
 
-MEASURES: dict[str, tuple[MeasureColumn, ...]] = {
-    SERIES_BUDGET_2026_27_TAX_REVENUE: _FOUR_BUDGET,
-    SERIES_BUDGET_2026_27_NON_TAX_REVENUE: _FOUR_BUDGET,
-    SERIES_BUDGET_2026_27_CAPITAL_RECEIPTS: _FOUR_BUDGET,
-    SERIES_BUDGET_2026_27_ANNEX1_TRENDS_RECEIPTS: _ANNEX1,
-    SERIES_BUDGET_2026_27_EXPENDITURE_STAT1: _STAT1,
-    SERIES_BUDGET_2026_27_DEFICIT_STATISTICS: _FOUR_BUDGET,
-    SERIES_BUDGET_2026_27_LIABILITIES: _LIABILITIES,
-    SERIES_BUDGET_2026_27_AFS: _FOUR_BUDGET,
-    SERIES_CGA_MONTHLY_GLANCE_2026_07: _CGA_MONTHLY,
-    SERIES_CGA_FINANCE_ACCOUNTS_2024_25_STAT1: _FA,
+MEASURE_SETS: dict[str, tuple[MeasureColumn, ...]] = {
+    "budget-four-year": _FOUR_BUDGET,
+    "annex1": _ANNEX1,
+    "stat1": _STAT1,
+    "liabilities": _LIABILITIES,
+    "cga-monthly": _CGA_MONTHLY,
+    "finance-accounts": _FA,
 }
 
 
@@ -159,15 +129,6 @@ def _read_rows(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
-def load_c3_lineage(data_root: Path, binding: SeriesBinding) -> LineageRecord:
-    path = ingest_lineage_path(
-        data_root, binding.producer_slug, binding.series_id, binding.source_vintage
-    )
-    if not path.exists():
-        raise PipelineError(f"missing lineage for {binding.series_id}")
-    return LineageRecord.model_validate_json(path.read_bytes())
-
-
 def map_c3_table(
     *,
     series_id: str,
@@ -178,8 +139,14 @@ def map_c3_table(
     geography_vintage: str,
     code_system: CodeSystem,
     lineage: ObservationLineage,
+    measures: tuple[MeasureColumn, ...] | None = None,
 ) -> tuple[Observation, ...]:
-    measures = MEASURES[series_id]
+    if measures is None:
+        from prism.catalog import default_catalog
+
+        mapper_id = default_catalog().series(series_id).mapper_id
+        _, key = mapper_id.split("/", 1)
+        measures = MEASURE_SETS[key]
     if not rows:
         raise PipelineError(f"{series_id} produced no observations")
     missing = [measure.column for measure in measures if measure.column not in rows[0]]
@@ -225,173 +192,79 @@ def map_c3_table(
     return tuple(observations)
 
 
-def _hole_observation(
-    binding: SeriesBinding, lineage: LineageRecord
+def map_named_hole_union(
+    rows: list[dict[str, str]],
+    series_id: str,
+    citation_id: str,
+    caveat_id: str,
+    geography: GeographyVintage,
+    lineage: ObservationLineage,
 ) -> tuple[Observation, ...]:
-    geography = C3_GEOGRAPHIES[binding.series_id]
-    citation = C3_CITATIONS[binding.series_id]
-    caveat = C3_CAVEATS[binding.series_id]
+    del rows
+    from prism.catalog import default_catalog
+
+    source_vintage = default_catalog().series(series_id).source_vintage
     unit = geography.units_included[0]
     return (
         Observation(
             observation_id=(
-                f"obs-{binding.series_id}-{unit.code}-union-"
-                f"{binding.source_vintage}-unknown"
+                f"obs-{series_id}-{unit.code}-union-{source_vintage}-unknown"
             ),
-            series_id=binding.series_id,
-            citation_id=citation.citation_id,
-            caveat_id=caveat.caveat_id,
+            series_id=series_id,
+            citation_id=citation_id,
+            caveat_id=caveat_id,
             geography=GeographyRef(
                 code=unit.code,
                 geography_vintage=geography.geography_vintage,
                 code_system=geography.code_system,
             ),
             sector=SECTOR_UNION,
-            reference_period=binding.source_vintage,
+            reference_period=source_vintage,
             value=None,
             unit="not a table",
             status=ObservationStatus.unknown,
-            lineage=ObservationLineage(
-                raw_path=lineage.raw_path,
-                derived_path=lineage.derived_path,
-                checksum=lineage.checksum,
-            ),
+            lineage=lineage,
         ),
     )
 
 
-def map_c3_series(
-    data_root: Path, binding: SeriesBinding, lineage: LineageRecord
-) -> SeriesWrite:
-    citation = C3_CITATIONS[binding.series_id]
-    caveat = C3_CAVEATS[binding.series_id]
-    geography = C3_GEOGRAPHIES[binding.series_id]
-    if citation.citation_id != binding.citation_id:
-        raise PipelineError("citation_id does not match the locked card")
-    if caveat.caveat_id != binding.caveat_id:
-        raise PipelineError("caveat_id does not match the locked note")
-    if lineage.citation_id != binding.citation_id:
-        raise PipelineError(
-            f"{binding.series_id} lineage citation_id {lineage.citation_id} "
-            f"does not match {binding.citation_id}"
-        )
-    obs_lineage = ObservationLineage(
-        raw_path=lineage.raw_path,
-        derived_path=lineage.derived_path,
-        checksum=lineage.checksum,
-    )
-    if binding.series_id in NAMED_HOLE_SERIES_IDS and lineage.lineage_ok is YesNo.no:
-        observations = _hole_observation(binding, lineage)
-    elif lineage_blocks_completeness(binding.series_id, lineage.lineage_ok):
-        raise PipelineError(
-            f"{binding.series_id} lineage_ok={lineage.lineage_ok.value}; not building a vintage"
-        )
-    else:
-        table_path = ingest_table_path(
-            data_root, binding.producer_slug, binding.series_id, binding.source_vintage
-        )
-        if not table_path.exists():
-            raise PipelineError(f"missing derived table for {binding.series_id}")
+def _wide_map(set_name: str) -> MapperFn:
+    columns = MEASURE_SETS[set_name]
+
+    def map_rows(
+        rows: list[dict[str, str]],
+        series_id: str,
+        citation_id: str,
+        caveat_id: str,
+        geography: GeographyVintage,
+        lineage: ObservationLineage,
+    ) -> tuple[Observation, ...]:
         unit = geography.units_included[0]
-        observations = map_c3_table(
-            series_id=binding.series_id,
-            rows=_read_rows(table_path),
-            citation_id=citation.citation_id,
-            caveat_id=caveat.caveat_id,
+        return map_c3_table(
+            series_id=series_id,
+            rows=rows,
+            citation_id=citation_id,
+            caveat_id=caveat_id,
             geography_code=unit.code,
             geography_vintage=geography.geography_vintage,
             code_system=geography.code_system,
-            lineage=obs_lineage,
+            lineage=lineage,
+            measures=columns,
         )
-    return SeriesWrite(
-        producer=binding.producer,
-        series_id=binding.series_id,
-        source_vintage=binding.source_vintage,
-        raw_checksum=lineage.checksum,
-        parser_version=lineage.parser,
-        lineage_ok=lineage.lineage_ok,
-        geography_vintage=geography.geography_vintage,
-        geography_frame_id=binding.geography_frame_id,
-        caveat_id=caveat.caveat_id,
-        mapper_version=MAPPER_VERSION,
-        observations_parquet=observations_to_parquet(observations),
-        citation=citation,
-        caveat=caveat,
-        geography=geography,
+
+    return map_rows
+
+
+def _register_c3_mappers() -> None:
+    for name in MEASURE_SETS:
+        register_mapper(
+            f"wide-measure-columns/{name}",
+            MapperSpec(map_rows=_wide_map(name), version=MAPPER_VERSION),
+        )
+    register_mapper(
+        "named-hole-union",
+        MapperSpec(map_rows=map_named_hole_union, version=MAPPER_VERSION),
     )
 
 
-def _write_report(logs_root: Path, run_id: str, payload: dict[str, object]) -> Path:
-    path = run_report_path(logs_root, run_id)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(
-        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
-    return path
-
-
-def materialise_c3_vintage(
-    data_root: Path,
-    logs_root: Path,
-    *,
-    created_at: datetime | None = None,
-) -> tuple[VintageManifest, dict[str, object]]:
-    """Write a new C3 vintage. Does not move preview or citizen pointers."""
-
-    moment = ensure_utc(created_at if created_at is not None else datetime.now(UTC))
-    run_id = moment.strftime("%Y%m%dT%H%M%SZ")
-    series_rows: list[dict[str, object]] = []
-    report: dict[str, object] = {
-        "run_id": run_id,
-        "vintage_id": None,
-        "trigger": None,
-        "completeness": Completeness.failed.value,
-        "series": series_rows,
-        "flags": "none",
-        "pointers": "untouched",
-    }
-    try:
-        records: list[LineageRecord] = []
-        writes: list[SeriesWrite] = []
-        for binding in C3_SERIES:
-            lineage = load_c3_lineage(data_root, binding)
-            records.append(lineage)
-            item = map_c3_series(data_root, binding, lineage)
-            writes.append(item)
-            series_rows.append(
-                {
-                    "series_id": item.series_id,
-                    "observation_count": observation_count(item),
-                    "lineage_ok": item.lineage_ok.value,
-                    "source_vintage": item.source_vintage,
-                    "reused": None,
-                    "rewritten": None,
-                }
-            )
-        trigger = trigger_for_records(tuple(records))
-        report["trigger"] = trigger.value
-        previous = latest_manifest_with_series(data_root, C3_SERIES_IDS)
-        manifest = write_vintage(
-            data_root,
-            created_at=moment,
-            trigger=trigger,
-            series=tuple(writes),
-            completeness=Completeness.complete,
-            previous=previous,
-            required_series_ids=C3_SERIES_IDS,
-        )
-        reused_by_id = {entry.series_id: entry.reused for entry in manifest.series}
-        for row in series_rows:
-            reused = reused_by_id[str(row["series_id"])]
-            row["reused"] = reused.value
-            row["rewritten"] = (
-                YesNo.no.value if reused is YesNo.yes else YesNo.yes.value
-            )
-        report["vintage_id"] = manifest.vintage_id
-        report["completeness"] = manifest.completeness.value
-        _write_report(logs_root, run_id, report)
-        return manifest, report
-    except Exception as exc:
-        report["flags"] = str(exc)
-        _write_report(logs_root, run_id, report)
-        raise
+_register_c3_mappers()

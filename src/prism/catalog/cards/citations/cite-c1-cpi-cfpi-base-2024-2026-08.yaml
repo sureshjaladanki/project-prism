@@ -1,0 +1,22 @@
+citation_id: cite-c1-cpi-cfpi-base-2024-2026-08
+producer: National Statistics Office, Price Statistics Division, Ministry of Statistics
+  and Programme Implementation (MoSPI)
+series: Consumer Food Price Index (CFPI) — Rural, Urban and Combined; same values
+  as CPI Group name Food, Group code 01.1 (Base 2024=100)
+id: 'Same monthly workbook as Card 1, sheet Group, Group Name = Food / Group code
+  01.1; press note Key Statistics table CFPI; Annex.xlsx sheet Annexure-II row 01.1
+  Food. Time series: CPI_2024-Jan2025-Dec2025.xlsx and CPI_2024-Jan2026.xlsx sheet
+  Group.'
+reference_period: 2026-08
+release_date: '2026-09-14'
+url: https://www.mospi.gov.in/uploads/documents/productChartTable/1789491098345-Data_August_CPI_2026_14092026.xlsx
+geography_as_published: All India and States/UTs as in State Name; Sector = Rural
+  / Urban / Combined. Not districts.
+frequency: monthly
+licence: 'Not stated on the workbook or press PDF. MoSPI Copyrights Policy: reproduce
+  accurately, not in a derogatory or misleading context, source acknowledged. GSDD
+  2026 Category A (open access) lists Consumer Price Index (CPI). Not stated as CC-BY.'
+next_release: '2026-10-12'
+caveat_one_line: CFPI is not the same as Division Food and beverages (01), which also
+  includes beverages and food-processing services. Use Group Food 01.1 / the press
+  CFPI table for the named food index. Latest month Provisional.

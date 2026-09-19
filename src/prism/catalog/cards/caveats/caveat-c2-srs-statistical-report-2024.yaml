@@ -1,0 +1,19 @@
+caveat_id: caveat-c2-srs-statistical-report-2024
+concept: SRS Statistical Report 2024 fertility indicators as published, including
+  Crude Birth Rate and Total Fertility Rate. Same SRS family as Card 3, not a substitute
+  census.
+unit: Indicators as labelled in Detailed Table 3. Not Census persons. Not Card 5 thousands.
+population: 'India and bigger States/UTs as printed on Table 3. Missing: most Frame
+  C Smaller States and all Frame C Union Territories. Districts and NSS Natural Divisions
+  parked.'
+reference_period: Calendar year 2024. Not PDF CreationDate / NADA 20 May 2026.
+producer_definition: SRS Statistical Report 2024 Detailed Table 3 Fertility Indicators,
+  2024 (ORGI, NADA catalog 47152).
+comparable_from: This 2024 report, Frame D units only. An India TFR must still name
+  missing smaller States, UTs, and districts.
+breaks: Narrower geography than Card 3. Do not fill holes from the Bulletin.
+lags: Same May 2026 vintage as Card 3. next_release unknown.
+disagrees_with: Card 3 Bulletin. Cards 1–2 census. Card 5 projections. NFHS (not on
+  these cards).
+do_not: Do not present TFR as a headcount or as India today. Do not paste Smaller
+  States / UT rates from the Bulletin into this report. Do not rank.

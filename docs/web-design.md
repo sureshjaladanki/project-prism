@@ -22,16 +22,18 @@ Content Editor writes the citizen question and the fact-lede. This file maps tho
 
 ## Now vs target
 
-| | Built today | Required (this file) |
+| | Built today (preview tree, 2026-09-19) | Required (this file) |
 |--|-----------------|----------------------|
-| CMS tree | One `pages/index.astro`; C1 is root `index.html` | One build → home, five hubs, bound slices, house, 404 |
-| Home | Occupied by C1 | `/` (`index.html`) is the **desk home** |
-| Slice URL | `/` (`index.html`) | `/{sleeve}/{slice}` — C1 is `/prices/retail-prices` |
-| Catalog | None (single bound page) | `site.json` in bound inputs; home/hubs/nav read it |
-| `<title>` | Hardcoded in `PortraitPage.astro` | Template `citizen_question` (or house formula) |
-| Head | charset + viewport only | titles, description, OG; absolute canonical / JSON-LD URLs at **serve** |
-| Nav | Text lockup only | Shared shell: skip link, lockup, sleeve links, footer |
-| Serve | Directory listing of the tree | Slashless path → `{path}/index.html`; no trailing-slash URL |
+| CMS tree | One build → desk home, five hubs, three bound slices, house, 404 | Met |
+| Home | `/` is the desk home; H1 is the Purpose sentence; `.fast-facts` from the catalog | Met |
+| Slice URL | `/prices/retail-prices`, `/people/population`, `/money/union` | Met |
+| Catalog | `site.json` in bound inputs; shell, home, hubs, and `/sources` read it | Met; must also feed the slice hottest-rail |
+| `<title>` | `citizen_question` on a slice; hub, house, and 404 formulas | Met |
+| Head | title, description, OG, `twitter:card`, JSON-LD; no canonical or `og:url` in shared HTML | Met; citizen serve injects the absolute URLs |
+| Nav | `SiteShell` on every page: skip link, lockup → `/`, five sleeves, breadcrumb, footer | Met |
+| Serve | Slashless path → `{path}/index.html`; `{path}/` 301 → `{path}`; preview sends `noindex, nofollow` and `private, no-store` | Met; `robots.txt` and sitemap still owed on the citizen prefix |
+| Hottest-rail | In-page hashes only | Hashes **plus** catalog sibling slices |
+| 404 body | H1 and a link to `/` | Quiet sentence, links to `/` and the five sleeves |
 
 `/` is the landing page. Do not serve a slice body at `/`. Each page type is its own route (`/prices/retail-prices`, `/people/population`, `/how-this-works`, …). The C1 question has one public URL: `/prices/retail-prices`. Do not keep a second copy of that article at `/`. Do not 301 `/` to C1.
 

@@ -9,7 +9,7 @@ from io import BytesIO, StringIO
 from typing import Any
 
 import pdfplumber
-from openpyxl import load_workbook
+from openpyxl import load_workbook  # type: ignore[import-untyped]
 from pdfplumber.utils.exceptions import PdfminerException
 
 from prism.ingest.parse import ParsedTable
@@ -754,3 +754,29 @@ def parse_ncp_projections_table8(payload: bytes) -> ParsedTable:
         TABLE8_VALUE_COLUMNS,
         f"pdfplumber words; assigned={assigned_n}; ambiguous=0; y_tol={PDF_Y_TOL}",
     )
+
+
+from prism.catalog.registry import ParserSpec, register_parser
+
+register_parser(
+    "census-2011-pca-xlsx",
+    ParserSpec(parse=parse_census_2011_pca_sd, lineage_name=PARSER, kind="xlsx"),
+)
+register_parser(
+    "census-2011-a02-xls",
+    ParserSpec(parse=parse_census_2011_a02_xls, lineage_name=PARSER, kind="xls"),
+)
+register_parser(
+    "srs-bulletin-pdf",
+    ParserSpec(parse=parse_srs_bulletin_2024, lineage_name=PARSER, kind="pdf"),
+)
+register_parser(
+    "srs-statistical-report-pdf",
+    ParserSpec(
+        parse=parse_srs_statistical_report_2024, lineage_name=PARSER, kind="pdf"
+    ),
+)
+register_parser(
+    "ncp-projections-table8-pdf",
+    ParserSpec(parse=parse_ncp_projections_table8, lineage_name=PARSER, kind="pdf"),
+)

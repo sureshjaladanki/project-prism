@@ -1,0 +1,17 @@
+caveat_id: caveat-c3-budget-2026-27-capital-receipts
+concept: 'Union capital receipts as printed: Non-Debt Receipts and Debt Receipts /
+  borrowings as labelled.'
+unit: Rupees as labelled. Many debt lines are printed net of repayments.
+population: Government of India / Union. Not state borrowings.
+reference_period: Actuals 2024-2025, BE 2025-2026, RE 2025-2026, BE 2026-2027. Not
+  1 February 2026.
+producer_definition: Receipt Budget, 2026-2027 — III. Capital Receipts; fetch ctr.xlsx
+  sheet ReceiptReport123. Workbook is ctr.xlsx, not cr.xlsx (404).
+comparable_from: The four columns in this file. Card 4 Annex-1 capital-receipt rows
+  are a different annex.
+breaks: BE vs RE vs Actuals. Market loans (net) is not gross market borrowings. Spreadsheet
+  cell map — not a PDF scrape.
+lags: Same Budget 2026-27 lag. next_release unknown.
+disagrees_with: Card 7 outstanding liabilities (stock). Card 6 deficit. Cards 10–11.
+do_not: Do not treat net debt receipts as gross borrowings. Do not use this card as
+  the debt stock (Card 7). Do not chart as C5 state debt.

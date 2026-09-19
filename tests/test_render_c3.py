@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from prism.paths import render_complete_path, render_dir
-from prism.pointer_store import read_citizen_pointer, read_preview_pointer
+from prism.pointer_store import read_citizen_pointer
 from prism.template_bind import RenderError, bind_c3_page
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -49,5 +49,7 @@ def test_c3_preview_tree_has_union_slice_and_leaves_citizen() -> None:
     )
     assert "unknown / not a table" in html
     assert ">undefined<" not in html
-    assert (dest / "money" / "union" / "charts" / "collect-beside-spend.vl.json").exists()
+    assert (
+        dest / "money" / "union" / "charts" / "collect-beside-spend.vl.json"
+    ).exists()
     assert read_citizen_pointer(DATA_ROOT) == C1_VINTAGE_ID

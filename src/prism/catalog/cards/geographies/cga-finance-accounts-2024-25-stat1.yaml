@@ -1,0 +1,23 @@
+frame_id: c3-frame-c
+geography_vintage: '2024'
+code_system: none
+frame: Union
+units_included:
+- code: union-government
+  name_en: Union Government
+  geography_vintage: '2024'
+units_missing:
+- 'all States as own governments (C5): Andhra Pradesh; Arunachal Pradesh; Assam; Bihar;
+  Chhattisgarh; Goa; Gujarat; Haryana; Himachal Pradesh; Jharkhand; Karnataka; Kerala;
+  Madhya Pradesh; Maharashtra; Manipur; Meghalaya; Mizoram; Nagaland; Odisha; Punjab;
+  Rajasthan; Sikkim; Tamil Nadu; Telangana; Tripura; Uttar Pradesh; Uttarakhand; West
+  Bengal'
+- 'all Union Territories as own governments (C5): Andaman and Nicobar Islands; Chandigarh;
+  Dadra and Nagar Haveli and Daman and Diu; NCT of Delhi (legislature); Jammu and
+  Kashmir (legislature); Ladakh; Lakshadweep; Puducherry (legislature)'
+- districts and below (parked)
+- local-body accounts
+breaks: Annual Actuals for FY 2024-25. Not Budget 2026-27 (Frame A) and not July 2026
+  monthly (Frame B). Do not recode proceeds assigned to States into a state finance
+  row.
+crosswalk: none

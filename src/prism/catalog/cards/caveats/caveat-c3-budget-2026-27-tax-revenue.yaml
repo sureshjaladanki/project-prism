@@ -1,0 +1,24 @@
+caveat_id: caveat-c3-budget-2026-27-tax-revenue
+concept: Union tax revenue by major heads as printed in Receipt Budget 2026-27 Part
+  A (I. Tax Revenue). Gross tax is not Centre’s net tax.
+unit: Rupees as labelled on the statement (typically crore). Blank / dotted cells
+  are not zero.
+population: Government of India / Union tax receipts as published. Not state tax.
+  Not districts. Not a per-person tax.
+reference_period: 'Column label on the cell: Actuals 2024-2025, BE 2025-2026, RE 2025-2026,
+  or BE 2026-2027. Not the 1 February 2026 laying date.'
+producer_definition: 'Receipt Budget, 2026-2027 — I. Tax Revenue; fetch tr.xlsx sheet
+  ReceiptReport123. Tidy table: openpyxl cells (ingest flag sheet=ReceiptReport123)
+  — not reconstructed from tr.pdf.'
+comparable_from: The four columns in this file. A longer run of receipts lives on
+  Card 4 (net of States’ share) — not this gross-head table.
+breaks: 'BE vs RE vs Actuals: four vintages, not one line. Spreadsheet cell map of
+  the same Budget statement — not a PDF scrape. Do not recode onto Frame B or C.'
+lags: Budget laid 1 February 2026. next_release unknown (Budget 2027-28 not dated
+  on these artifacts).
+disagrees_with: Card 4 tax revenue net of States’ share. Card 9 AFS revenue receipts.
+  Card 10 monthly actuals vs BE. Card 11 Finance Accounts Actuals 2024-25.
+do_not: Do not collapse BE/RE/Actuals. Do not treat gross tax as Centre’s net tax.
+  Do not add Cards 1–3 into a Prism collections total. Do not chart blank cess as
+  0. Do not present Union tax as all-India public receipts. Do not rank, forecast,
+  or per-person.

@@ -11,6 +11,7 @@ from pathlib import Path
 
 import pytest
 
+from prism.catalog import slice_caveats, slice_citations, slice_geographies
 from prism.ingest.parse_c2 import (
     PARSER,
     parse_census_2011_a02_xls,
@@ -28,14 +29,12 @@ from prism.paths import (
     preview_pointer_path,
     series_dir,
 )
-from prism.pipeline.c1 import materialise_c1_vintage
 from prism.pipeline.c2 import (
     MAPPER_VERSION,
     PipelineError,
     map_c2_table,
-    materialise_c2_vintage,
 )
-from prism.pipeline.c2_cards import C2_CAVEATS, C2_CITATIONS, C2_GEOGRAPHIES
+from prism.pipeline.run import materialise_vintage
 from prism.refresh import (
     C2_SERIES,
     C2_SERIES_IDS,
@@ -64,6 +63,10 @@ from tests.c2_ingest_fixtures import (
 )
 from tests.factories import CREATED_AT
 from tests.test_pipeline_c1 import _seed_c1
+
+C2_CAVEATS = slice_caveats("c2")
+C2_CITATIONS = slice_citations("c2")
+C2_GEOGRAPHIES = slice_geographies("c2")
 
 LATER = datetime(2026, 9, 19, 12, 0, tzinfo=UTC)
 
@@ -217,7 +220,7 @@ def test_lineage_ok_no_does_not_write_vintage(tmp_path: Path) -> None:
     logs_root = tmp_path / "logs"
     _seed_c2(data_root, lineage_ok=YesNo.no)
     with pytest.raises(PipelineError, match="lineage_ok"):
-        materialise_c2_vintage(data_root, logs_root, created_at=CREATED_AT)
+        materialise_vintage(data_root, logs_root, slice_id="c2", created_at=CREATED_AT)
     assert not (data_root / "vintages").exists() or not any(
         (data_root / "vintages").iterdir()
     )
@@ -227,8 +230,8 @@ def test_first_vintage_lists_five_series_and_leaves_pointers(tmp_path: Path) -> 
     data_root = tmp_path / "data"
     logs_root = tmp_path / "logs"
     _seed_c2(data_root)
-    manifest, report = materialise_c2_vintage(
-        data_root, logs_root, created_at=CREATED_AT
+    manifest, report = materialise_vintage(
+        data_root, logs_root, slice_id="c2", created_at=CREATED_AT
     )
     assert manifest.completeness is Completeness.complete
     assert manifest.trigger is RefreshTrigger.source_change
@@ -252,8 +255,10 @@ def test_c2_vintage_does_not_list_c1_series(tmp_path: Path) -> None:
     logs_root = tmp_path / "logs"
     _seed_c1(data_root)
     _seed_c2(data_root)
-    c1, _ = materialise_c1_vintage(data_root, logs_root, created_at=CREATED_AT)
-    c2, _ = materialise_c2_vintage(data_root, logs_root, created_at=LATER)
+    c1, _ = materialise_vintage(
+        data_root, logs_root, slice_id="c1", created_at=CREATED_AT
+    )
+    c2, _ = materialise_vintage(data_root, logs_root, slice_id="c2", created_at=LATER)
     assert {entry.series_id for entry in c1.series}.isdisjoint(C2_SERIES_IDS)
     assert {entry.series_id for entry in c2.series} == set(C2_SERIES_IDS)
     observations = observations_from_parquet(

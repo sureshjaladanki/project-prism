@@ -1,0 +1,19 @@
+caveat_id: caveat-c3-budget-2026-27-expenditure-stat1
+concept: 'Union expenditure summary as printed: Central Expenditure; Transfers; Total
+  Expenditure through Budget; Resources of Public Enterprises — each split Revenue
+  / Capital / Total where printed.'
+unit: Rupees as labelled.
+population: Union budget heads. Transfers to States/UTs are Union outgo as printed
+  — not state Finance Accounts.
+reference_period: Actuals 2024-2025, BE 2025-2026, RE 2025-2026, BE 2026-2027. Not
+  1 February 2026.
+producer_definition: Expenditure Profile 2026-2027 — Statement 1; fetch stat1.xlsx
+  sheet Statement1. openpyxl cells. BE 2026-27 Total sits one empty column after Capital.
+comparable_from: The four year-status columns in this statement.
+breaks: 'BE vs RE vs Actuals. Two printed totals (with / without public-enterprise
+  resources): do not swap labels. Spreadsheet cell map — not a PDF scrape.'
+lags: Same Budget 2026-27 lag. next_release unknown.
+disagrees_with: Card 9 AFS disbursements. Card 10 monthly expenditure vs BE. Card
+  11 Finance Accounts.
+do_not: Do not use scheme MIS as this series. Do not treat Transfers as C5. Do not
+  chart the two printed totals as one. Do not issue waste/welfare verdicts.

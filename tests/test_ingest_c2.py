@@ -11,14 +11,7 @@ from pathlib import Path
 import httpx
 import pytest
 
-from prism.ingest.c2 import (
-    A02_XLS_URL,
-    NCP_TABLE8_URL,
-    PCA_URL,
-    SRS_BULLETIN_URL,
-    SRS_STAT_URL,
-    ingest_c2,
-)
+from prism.catalog import default_catalog
 from prism.ingest.parse_c2 import (
     PARSER,
     parse_census_2011_a02_xls,
@@ -27,6 +20,7 @@ from prism.ingest.parse_c2 import (
     parse_srs_bulletin_2024,
     parse_srs_statistical_report_2024,
 )
+from prism.ingest.run import ingest_c2
 from prism.refresh import (
     CITE_C2_CARD_1,
     CITE_C2_CARD_2,
@@ -46,6 +40,12 @@ from tests.c2_ingest_fixtures import (
     table8_projection_pdf_bytes,
 )
 
+_C2 = default_catalog()
+PCA_URL = _C2.artifact("census-2011-pca-sd").url
+A02_XLS_URL = _C2.artifact("census-2011-a02").url
+SRS_BULLETIN_URL = _C2.artifact("srs-bulletin-2024").url
+SRS_STAT_URL = _C2.artifact("srs-stat-2024").url
+NCP_TABLE8_URL = _C2.artifact("ncp-table8").url
 XLSX_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 FIRST_AT = datetime(2026, 9, 18, 8, 0, 0, tzinfo=UTC)
 
@@ -64,7 +64,9 @@ def _client() -> httpx.Client:
                 200, content=xls, headers={"content-type": "application/vnd.ms-excel"}
             )
         if url in {SRS_BULLETIN_URL, SRS_STAT_URL, NCP_TABLE8_URL}:
-            return httpx.Response(200, content=pdf, headers={"content-type": "application/pdf"})
+            return httpx.Response(
+                200, content=pdf, headers={"content-type": "application/pdf"}
+            )
         return httpx.Response(404, content=b"unexpected-url")
 
     return httpx.Client(transport=httpx.MockTransport(handler))
@@ -88,7 +90,12 @@ def test_a02_reads_ole_cells_and_parks_district() -> None:
     parsed = parse_census_2011_a02_xls(a02_workbook_bytes())
     assert parsed.lineage_ok is YesNo.yes
     rows = list(csv.DictReader(io.StringIO(parsed.csv_text)))
-    assert [row["name"] for row in rows] == ["INDIA", "", "Arunachal Pradesh *", "Daman & Diu"]
+    assert [row["name"] for row in rows] == [
+        "INDIA",
+        "",
+        "Arunachal Pradesh *",
+        "Daman & Diu",
+    ]
     assert rows[0]["census_year"] == "1901 $"
     assert rows[0]["variation_absolute"] == ""
     assert rows[1]["census_year"] == "2011"
@@ -109,7 +116,11 @@ def test_unreadable_ole_xls_is_not_ok() -> None:
 
 
 def test_producer_a02_xls_if_present() -> None:
-    path = Path(os.environ.get("TEMP", "/tmp")) / "prism-c2-a02-2026-09-18" / "00 A 2-India.xls"
+    path = (
+        Path(os.environ.get("TEMP", "/tmp"))
+        / "prism-c2-a02-2026-09-18"
+        / "00 A 2-India.xls"
+    )
     if not path.is_file():
         pytest.skip("producer A-02 xls not in temp")
     parsed = parse_census_2011_a02_xls(path.read_bytes())
@@ -232,14 +243,21 @@ def test_ingest_c2_pca_and_a02_ok_pdfs_stop(tmp_path: Path) -> None:
     assert pca.lineage_ok is YesNo.yes
     assert pca.source_changed is SourceChanged.first_retrieve
     assert pca.row_count == 4
-    table = tmp_path / "derived" / "orgi" / SERIES_CENSUS_2011_PCA_SD / "2011" / "table.csv"
+    table = (
+        tmp_path / "derived" / "orgi" / SERIES_CENSUS_2011_PCA_SD / "2011" / "table.csv"
+    )
     assert table.is_file()
     a02 = by_cite[CITE_C2_CARD_2]
     assert a02.lineage_ok is YesNo.yes
     assert a02.row_count == 4
     assert a02.parser == PARSER
     a02_table = (
-        tmp_path / "derived" / "orgi" / SERIES_CENSUS_2011_A02_DECADAL / "2011" / "table.csv"
+        tmp_path
+        / "derived"
+        / "orgi"
+        / SERIES_CENSUS_2011_A02_DECADAL
+        / "2011"
+        / "table.csv"
     )
     assert a02_table.is_file()
     table8 = by_cite[CITE_C2_CARD_5]

@@ -1,0 +1,18 @@
+caveat_id: caveat-c3-cga-monthly-glance-2026-07
+concept: 'Union Government Accounts at a Glance as at the end of July 2026: intra-year
+  unaudited provisional actuals versus Budget Estimates 2026-2027.'
+unit: Rupees as labelled, and percent of BE where printed. @ marks unaudited provisional.
+population: Government of India / Union Government as printed. Not states, not districts.
+reference_period: April–July 2026 of FY 2026-2027 vs BE 2026-2027. Not a year-end
+  actual.
+producer_definition: DATA2627.htm. HTML table 0; colspan/rowspan expanded. Not a spreadsheet
+  export (xlsx 404).
+comparable_from: This month’s glance table. Prior months in the same FY are different
+  source_vintages.
+breaks: HTML reconstruction. Actuals are @ unaudited. Fiscal deficit here is not necessarily
+  the year-end deficit. Do not recode onto Frame A.
+lags: News dated 1 September 2026 for upto July 2026. next_release unknown.
+disagrees_with: Card 6 year-status deficit. Card 11 Finance Accounts Actuals. Budget
+  BE 2026-27 on Cards 1–9.
+do_not: Do not hide HTML reconstruction. Do not annualise April–July as a year-end
+  actual. Do not replace @ actuals with Budget Actuals. Do not use www.cga.gov.in.

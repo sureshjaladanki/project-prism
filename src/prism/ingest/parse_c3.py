@@ -5,11 +5,9 @@ from __future__ import annotations
 import csv
 from io import BytesIO, StringIO
 
-import pdfplumber  # type: ignore[import-untyped]
-from openpyxl import load_workbook
-from pdfplumber.utils.exceptions import (
-    PdfminerException,  # type: ignore[import-untyped]
-)
+import pdfplumber
+from openpyxl import load_workbook  # type: ignore[import-untyped]
+from pdfplumber.utils.exceptions import PdfminerException
 
 from prism.ingest.parse import ParsedTable
 from prism.ingest.parse_c3_layout import (
@@ -578,3 +576,43 @@ def parse_deficit_statistics_xlsx(payload: bytes) -> ParsedTable:
         DEFICIT_COLUMNS[1:],
         f"sheet={DEFICIT_SHEET}",
     )
+
+
+from prism.catalog.registry import ParserSpec, register_parser
+
+register_parser(
+    "budget-receipt-xlsx",
+    ParserSpec(parse=parse_receipt_xlsx, lineage_name=PARSER, kind="xlsx"),
+)
+register_parser(
+    "budget-annex1-pdf",
+    ParserSpec(parse=parse_annex1_pdf, lineage_name=PARSER, kind="pdf"),
+)
+register_parser(
+    "budget-expenditure-stat1-xlsx",
+    ParserSpec(parse=parse_expenditure_stat1_xlsx, lineage_name=PARSER, kind="xlsx"),
+)
+register_parser(
+    "budget-deficit-xlsx",
+    ParserSpec(parse=parse_deficit_statistics_xlsx, lineage_name=PARSER, kind="xlsx"),
+)
+register_parser(
+    "budget-liabilities-pdf",
+    ParserSpec(parse=parse_liabilities_pdf, lineage_name=PARSER, kind="pdf"),
+)
+register_parser(
+    "budget-frbm-pdf",
+    ParserSpec(parse=parse_frbm_statements_pdf, lineage_name=PARSER, kind="pdf"),
+)
+register_parser(
+    "budget-afs-pdf",
+    ParserSpec(parse=parse_afs_pdf, lineage_name=PARSER, kind="pdf"),
+)
+register_parser(
+    "cga-monthly-html",
+    ParserSpec(parse=parse_cga_monthly_html, lineage_name=PARSER, kind="html"),
+)
+register_parser(
+    "cga-finance-accounts-pdf",
+    ParserSpec(parse=parse_cga_finance_accounts_pdf, lineage_name=PARSER, kind="pdf"),
+)

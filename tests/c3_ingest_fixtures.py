@@ -41,7 +41,18 @@ def receipt_workbook_bytes() -> bytes:
         ]
     )
     sheet.append(
-        [None, "Corporation Tax", None, None, None, "0020", 911000, 1000000, 980000, 1100000]
+        [
+            None,
+            "Corporation Tax",
+            None,
+            None,
+            None,
+            "0020",
+            911000,
+            1000000,
+            980000,
+            1100000,
+        ]
     )
     sheet.append([None, "CGST", None, None, None, "0005", 800000, "", 810000, 900000])
     return _xlsx(workbook)

@@ -1,0 +1,23 @@
+frame_id: c3-frame-a
+geography_vintage: '2026'
+code_system: none
+frame: Union
+units_included:
+- code: union-budget-heads
+  name_en: Union budget heads
+  geography_vintage: '2026'
+units_missing:
+- 'all States as own governments (C5): Andhra Pradesh; Arunachal Pradesh; Assam; Bihar;
+  Chhattisgarh; Goa; Gujarat; Haryana; Himachal Pradesh; Jharkhand; Karnataka; Kerala;
+  Madhya Pradesh; Maharashtra; Manipur; Meghalaya; Mizoram; Nagaland; Odisha; Punjab;
+  Rajasthan; Sikkim; Tamil Nadu; Telangana; Tripura; Uttar Pradesh; Uttarakhand; West
+  Bengal'
+- 'all Union Territories as own governments (C5): Andaman and Nicobar Islands; Chandigarh;
+  Dadra and Nagar Haveli and Daman and Diu; NCT of Delhi (legislature); Jammu and
+  Kashmir (legislature); Ladakh; Lakshadweep; Puducherry (legislature)'
+- districts and below (parked)
+- local-body accounts
+breaks: Union accounts for Budget 2026-27 as laid 1 February 2026. Not a state Finance
+  Accounts vintage. Not CGA monthly (Frame B) and not Finance Accounts 2024-25 (Frame
+  C).
+crosswalk: none

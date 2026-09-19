@@ -183,9 +183,7 @@ def table8_projection_pdf_bytes() -> bytes:
     year_header = [("Year", 40.0, 90.0)]
     header = [
         (token, x, 110.0)
-        for token, x in zip(
-            ("Persons", "Male", "Females") * 3, xs, strict=True
-        )
+        for token, x in zip(("Persons", "Male", "Females") * 3, xs, strict=True)
     ]
     row_2011 = [("2011", 40.0, 140.0)] + [
         (value, x, 140.0)
@@ -212,7 +210,9 @@ def table8_projection_pdf_bytes() -> bytes:
 def a02_workbook_bytes() -> bytes:
     book = xlwt.Workbook()
     sheet = book.add_sheet("A-2")
-    sheet.write_merge(0, 0, 0, 8, "A - 2  DECADAL VARIATION  IN  POPULATION  SINCE  1901")
+    sheet.write_merge(
+        0, 0, 0, 8, "A - 2  DECADAL VARIATION  IN  POPULATION  SINCE  1901"
+    )
     sheet.write(1, 0, "State")
     sheet.write(1, 1, "District")
     sheet.write(1, 2, "India/State/")

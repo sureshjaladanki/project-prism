@@ -1,0 +1,82 @@
+frame_id: c2-frame-d
+geography_vintage: '2024'
+code_system: none
+frame: Union | state | UT
+units_included:
+- code: india
+  name_en: India
+  geography_vintage: '2024'
+- code: andhra-pradesh
+  name_en: Andhra Pradesh
+  geography_vintage: '2024'
+- code: assam
+  name_en: Assam
+  geography_vintage: '2024'
+- code: bihar
+  name_en: Bihar
+  geography_vintage: '2024'
+- code: chhattisgarh
+  name_en: Chhattisgarh
+  geography_vintage: '2024'
+- code: delhi
+  name_en: Delhi
+  geography_vintage: '2024'
+- code: gujarat
+  name_en: Gujarat
+  geography_vintage: '2024'
+- code: haryana
+  name_en: Haryana
+  geography_vintage: '2024'
+- code: himachal-pradesh
+  name_en: Himachal Pradesh
+  geography_vintage: '2024'
+- code: jammu-kashmir
+  name_en: Jammu & Kashmir
+  geography_vintage: '2024'
+- code: jharkhand
+  name_en: Jharkhand
+  geography_vintage: '2024'
+- code: karnataka
+  name_en: Karnataka
+  geography_vintage: '2024'
+- code: kerala
+  name_en: Kerala
+  geography_vintage: '2024'
+- code: madhya-pradesh
+  name_en: Madhya Pradesh
+  geography_vintage: '2024'
+- code: maharashtra
+  name_en: Maharashtra
+  geography_vintage: '2024'
+- code: odisha
+  name_en: Odisha
+  geography_vintage: '2024'
+- code: punjab
+  name_en: Punjab
+  geography_vintage: '2024'
+- code: rajasthan
+  name_en: Rajasthan
+  geography_vintage: '2024'
+- code: tamil-nadu
+  name_en: Tamil Nadu
+  geography_vintage: '2024'
+- code: telangana
+  name_en: Telangana
+  geography_vintage: '2024'
+- code: uttar-pradesh
+  name_en: Uttar Pradesh
+  geography_vintage: '2024'
+- code: uttarakhand
+  name_en: Uttarakhand
+  geography_vintage: '2024'
+- code: west-bengal
+  name_en: West Bengal
+  geography_vintage: '2024'
+units_missing:
+- Frame C Smaller States not printed on Table 3 (except Himachal Pradesh, which this
+  table does print)
+- Frame C Union Territories (including Ladakh and merged DNH–DD)
+- districts; NSS Natural Division rows (parked)
+breaks: 'Detailed Table 3 geography as printed (Delhi, not NCT of Delhi). Do not fill
+  missing UTs from the Bulletin. Crosswalk: none.'
+crosswalk: none

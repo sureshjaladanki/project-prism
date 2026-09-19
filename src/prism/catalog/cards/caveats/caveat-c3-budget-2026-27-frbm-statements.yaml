@@ -1,0 +1,21 @@
+caveat_id: caveat-c3-budget-2026-27-frbm-statements
+concept: 'Statements of Fiscal Policy required under the FRBM Act, 2003, as bound
+  for Budget 2026-27. Named hole: statutory packet, not a reconstructable receipts/expenditure/deficit/debt
+  grid.'
+unit: Not a table. Percent of GDP and other figures remain producer prose. Not a Prism
+  grade against 3% / 40% / 60% wording.
+population: Central Government as in the FRBM statements.
+reference_period: Budget 2026-27 / RE 2025-26 as discussed in the Preface. Not a reconstructable
+  year grid.
+producer_definition: 'Combined PDF frbm1.pdf. Ingest flag: statutory FRBM prose, not
+  a reconstructable grid; do not ingest page 9 Economic Performance at a Glance as
+  this card. lineage_ok: no.'
+comparable_from: Not comparable as a table. Deficit and debt figures of record remain
+  Cards 6–7.
+breaks: 'Not a reconstructable grid. Missing: Macro-Economic Framework; Medium-term
+  Fiscal Policy / Fiscal Policy Strategy; deviation statement; FRBM labels as printed.'
+lags: Presented with Budget 2026-27. next_release unknown.
+disagrees_with: Cards 6–7 remain the Budget tables of record for deficit and outstanding
+  liabilities. Do not merge.
+do_not: Do not print a fake FRBM table. Do not ingest page 9 Economic Performance
+  at a Glance as this card. Do not turn 3% / 40% / 60% into a Prism grade.

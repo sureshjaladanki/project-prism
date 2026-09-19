@@ -56,8 +56,14 @@ def _lineage(source_changed: SourceChanged) -> LineageRecord:
 
 
 def test_source_changed_yes_and_first_retrieve_are_source_change() -> None:
-    assert trigger_from_lineage(_lineage(SourceChanged.yes)) is RefreshTrigger.source_change
-    assert trigger_from_lineage(_lineage(SourceChanged.first_retrieve)) is RefreshTrigger.source_change
+    assert (
+        trigger_from_lineage(_lineage(SourceChanged.yes))
+        is RefreshTrigger.source_change
+    )
+    assert (
+        trigger_from_lineage(_lineage(SourceChanged.first_retrieve))
+        is RefreshTrigger.source_change
+    )
     assert trigger_from_lineage(_lineage(SourceChanged.no)) is None
 
 
@@ -78,7 +84,10 @@ def test_card_4_is_not_on_the_october_schedule() -> None:
     assert CARDS_1_3_NEXT_RELEASE == date(2026, 10, 12)
     assert CARDS_1_3_SOURCE_VINTAGE == "2026-08"
     assert CARD_4_SOURCE_VINTAGE == "2013-2024-linked"
-    assert C1_SERIES_BY_ID[SERIES_CPI_BACK_SERIES_LINKED_BASE_2024].next_release == "unknown"
+    assert (
+        C1_SERIES_BY_ID[SERIES_CPI_BACK_SERIES_LINKED_BASE_2024].next_release
+        == "unknown"
+    )
 
 
 def test_complete_c1_vintage_lists_all_four_series(tmp_path: Path) -> None:
