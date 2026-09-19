@@ -1,0 +1,78 @@
+License
+=======
+
+Prism is a civic data platform: a shared, checkable picture of India from
+official government statistics — and nothing else. That picture does not
+belong to a party, a ministry, or a news cycle. See docs/vision.md.
+
+This file licenses Prism’s original work only. It does not make Prism the
+statistical office, and it does not re-license the official record.
+
+Copyright (c) 2026 Suresh Jaladanki
+
+
+Official statistics
+-------------------
+
+Surveys, censuses, administrative series, budget figures, and other public
+official statistics remain the work of their producing offices. Prism does
+not own them and does not grant a licence in them.
+
+Each series keeps the terms recorded on its citation card (producer, series,
+date, fetch source, and that office’s licence). If a producer’s terms forbid
+a use, those terms win. Reproduce numbers accurately, with the producer cite.
+Do not present Prism as the source of the official figure.
+
+
+Software
+--------
+
+Prism software in this repository — including `src/prism/`, the Astro CMS
+under `src/cms/` (except citizen copy and chart specs in templates), `tests/`,
+and associated tooling — is licensed under the MIT License:
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+Original content
+----------------
+
+Prism’s original expression — citizen copy, methodology notes, documentation,
+templates as written, and named derived work on official series already in a
+vintage (“Analysis by Prism”) — is licensed under Creative Commons
+Attribution-ShareAlike 4.0 International (CC BY-SA 4.0):
+
+    https://creativecommons.org/licenses/by-sa/4.0/
+
+You may share and adapt that original expression if you give appropriate
+credit and license adaptations under CC BY-SA 4.0. Attribution does not imply
+that Prism or a producing office endorses your use.
+
+When you reuse a Prism derivation, keep the producer cite next to it. Name
+the derivation as Prism’s; do not replace the agency as producer. Highest,
+lowest, ranks, and comparable frames stay bound facts from the vintage — not
+a partisan report card.
+
+
+No extra restriction
+--------------------
+
+These licences are the grant. The vision and editorial rules describe how
+Prism itself is built and published. They are not additional legal terms on
+reuse of the Software or of Prism’s original expression.

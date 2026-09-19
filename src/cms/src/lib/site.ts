@@ -43,7 +43,7 @@ export type SliceBound = {
   body: string;
 };
 
-const boundDir = process.env.PRISM_BOUND_DIR;
+const boundDir = process.env.PRISM_BOUND_DIR ?? "";
 if (!boundDir) {
   throw new Error("PRISM_BOUND_DIR is required");
 }

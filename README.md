@@ -4,7 +4,7 @@ A civic CMS that turns official Indian statistics into a checkable portrait of t
 
 Templates hold copy and charts. A **data vintage** is an immutable snapshot of observations, citations, geography, and caveats after one pipeline run. Render is `template + vintage → page`. When a source updates, ingest lands the new file, the pipeline writes a **new** vintage, the CMS re-renders, then a pointer flip publishes. Citizen view moves only to a complete published vintage.
 
-Inspired by the *role* of [USAFacts](https://usafacts.org/): make government data usable, do not tell people what to think. Vision is in [`docs/vision.md`](docs/vision.md). Product and machine are in [`docs/architectural-blueprint.md`](docs/architectural-blueprint.md).
+Inspired by the *role* of [USAFacts](https://usafacts.org/): make government data usable, do not tell people what to think. Vision is in [`docs/vision.md`](docs/vision.md). Product and machine are in [`docs/architectural-blueprint.md`](docs/architectural-blueprint.md). Licence: [`LICENSE`](LICENSE).
 
 ## Layout
 
