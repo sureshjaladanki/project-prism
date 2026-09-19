@@ -122,7 +122,7 @@ def _keep_anchor(match: re.Match[str], allowed_paths: set[str]) -> str:
 
 
 def build_site_catalog(
-    vintage_id: str,
+    desk_id: str,
     pages: tuple[BoundPage, ...],
     *,
     cms_mode: str = "preview",
@@ -151,7 +151,8 @@ def build_site_catalog(
     slices.sort(key=lambda item: (CHARTER_ORDER.get(item["charter"], 99), item["path"]))
     return {
         "cms_mode": cms_mode,
-        "vintage_id": vintage_id,
+        "desk_id": desk_id,
+        "vintage_id": desk_id,
         "sleeves": [
             {
                 "token": sleeve.token,

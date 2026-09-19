@@ -10,6 +10,7 @@ from typing import Literal
 from zoneinfo import ZoneInfo
 
 from prism.schema import (
+    ContractModel,
     InputManifest,
     LineageRecord,
     RefreshTrigger,
@@ -22,6 +23,7 @@ STORE_TIMEZONE = UTC
 DISPLAY_TIMEZONE = ZoneInfo("Asia/Kolkata")
 
 VINTAGE_ID_PATTERN = re.compile(r"^dv-\d{8}-[0-9a-f]{12}$")
+DESK_ID_PATTERN = re.compile(r"^desk-\d{8}-[0-9a-f]{12}$")
 
 MOSPI_NSO_PSD = (
     "National Statistics Office, Price Statistics Division, "
@@ -212,6 +214,14 @@ def vintage_id_for(run_date_utc: date, input_manifest: InputManifest) -> str:
     if VINTAGE_ID_PATTERN.fullmatch(vintage_id) is None:
         raise ValueError(f"vintage_id_rule produced an invalid id: {vintage_id}")
     return vintage_id
+
+
+def desk_id_for(publish_date_utc: date, record: ContractModel) -> str:
+    digest = hashlib.sha256(canonical_json_bytes(record)).hexdigest()[:12]
+    desk_id = f"desk-{publish_date_utc.strftime('%Y%m%d')}-{digest}"
+    if DESK_ID_PATTERN.fullmatch(desk_id) is None:
+        raise ValueError(f"desk_id_rule produced an invalid id: {desk_id}")
+    return desk_id
 
 
 def trigger_from_lineage(record: LineageRecord) -> RefreshTrigger | None:

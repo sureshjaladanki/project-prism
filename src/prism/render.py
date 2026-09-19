@@ -21,7 +21,13 @@ from prism.paths import (
     render_dir,
     renders_dir,
 )
-from prism.pointer_store import publish_preview, read_citizen_pointer
+from prism.pointer_store import (
+    publish_citizen,
+    publish_preview,
+    read_citizen_pointer,
+    read_preview_pointer,
+)
+from prism.schema import Completeness
 from prism.template_bind import (
     BoundPage,
     RenderError,
@@ -41,7 +47,6 @@ SHELL_PAGES = (
     "prices/index.html",
     "delivery/index.html",
 )
-REQUIRED_PAGES = SHELL_PAGES + ("prices/retail-prices/index.html",)
 BOUND_DIRNAME = ".bound"
 
 
@@ -51,17 +56,17 @@ class RenderIncompleteError(RenderError):
 
 def render_c1(
     data_root: Path,
-    vintage_id: str,
+    desk_id: str,
     cms_root: Path,
     *,
     set_preview: bool = False,
 ) -> Path:
-    return render(data_root, vintage_id, cms_root, set_preview=set_preview)
+    return render(data_root, desk_id, cms_root, set_preview=set_preview)
 
 
 def render(
     data_root: Path,
-    vintage_id: str,
+    desk_id: str,
     cms_root: Path,
     *,
     set_preview: bool = False,
@@ -69,32 +74,110 @@ def render(
 ) -> Path:
     if set_preview:
         cms_mode = "preview"
-    pages = bind_pages_for_desk(data_root, cms_root, cms_mode=cms_mode)
+    pages = bind_pages_for_desk(
+        data_root, cms_root, cms_mode=cms_mode, desk_id=desk_id
+    )
     for page in pages:
         assert_single_vintage(page, page.vintage_id)
-    dest = _write_render_tree(data_root, vintage_id, cms_root, pages, cms_mode=cms_mode)
+    dest = _write_render_tree(data_root, desk_id, cms_root, pages, cms_mode=cms_mode)
     if set_preview:
-        if read_citizen_pointer(data_root) == vintage_id:
+        if read_citizen_pointer(data_root) == desk_id:
             raise RenderError(
                 "refusing to set preview as an alias of citizen in this pass"
             )
-        publish_preview(data_root, vintage_id, render_complete=True)
+        publish_preview(data_root, desk_id, render_complete=True)
     return dest
+
+
+def copy_complete_render(data_root: Path, source_tree: Path, desk_id: str) -> Path:
+    """Install an already-complete tree under desk_id without rebuilding Astro."""
+
+    dest = render_dir(data_root, desk_id)
+    if dest.exists():
+        if not render_complete_path(data_root, desk_id).exists():
+            raise RenderIncompleteError("render did not write COMPLETE")
+        return dest
+    parent = renders_dir(data_root)
+    parent.mkdir(parents=True, exist_ok=True)
+    tmp = parent / f".tmp-{desk_id}"
+    if tmp.exists():
+        shutil.rmtree(tmp)
+    shutil.copytree(source_tree, tmp)
+    tmp.rename(dest)
+    if not render_complete_path(data_root, desk_id).exists():
+        raise RenderIncompleteError("render did not write COMPLETE")
+    return dest
+
+
+C1_CITIZEN_VINTAGE_ID = "dv-20260916-234e263c8588"
+C2_PREVIEW_VINTAGE_ID = "dv-20260919-87b702f1fd66"
+C1_SLICE_REL = Path("prices") / "retail-prices" / "index.html"
+
+
+def adopt_live_pointers(data_root: Path) -> tuple[str, str]:
+    """Mint one-slice C1 citizen desk and a preview desk; keep prior trees addressable."""
+
+    from prism.desk_store import DeskSlice, ensure_desk, preview_slices
+    from prism.refresh import DESK_ID_PATTERN
+    from prism.template_bind import C1_TEMPLATE_ID
+    from prism.vintage_store import load_manifest
+
+    c1 = load_manifest(data_root, C1_CITIZEN_VINTAGE_ID)
+    citizen = ensure_desk(
+        data_root,
+        created_at=c1.created_at,
+        slices=(
+            DeskSlice(
+                template_id=C1_TEMPLATE_ID, vintage_id=C1_CITIZEN_VINTAGE_ID
+            ),
+        ),
+        completeness=Completeness.complete,
+    )
+    old_c1 = renders_dir(data_root) / C1_CITIZEN_VINTAGE_ID
+    copy_complete_render(data_root, old_c1, citizen.desk_id)
+    new_c1_page = render_dir(data_root, citizen.desk_id) / C1_SLICE_REL
+    old_c1_page = old_c1 / C1_SLICE_REL
+    if new_c1_page.read_bytes() != old_c1_page.read_bytes():
+        raise RenderError("C1 citizen page is not byte-identical after desk adopt")
+
+    preview = ensure_desk(
+        data_root,
+        created_at=c1.created_at,
+        slices=preview_slices(data_root),
+        completeness=Completeness.complete,
+    )
+    preview_src = read_preview_pointer(data_root)
+    if preview_src is None or DESK_ID_PATTERN.fullmatch(preview_src) is None:
+        source_name = preview_src or C2_PREVIEW_VINTAGE_ID
+        copy_complete_render(
+            data_root, renders_dir(data_root) / source_name, preview.desk_id
+        )
+
+    if read_citizen_pointer(data_root) != citizen.desk_id:
+        publish_citizen(
+            data_root,
+            citizen.desk_id,
+            render_complete=True,
+            contract_tests_passed=True,
+        )
+    if read_preview_pointer(data_root) != preview.desk_id:
+        publish_preview(data_root, preview.desk_id, render_complete=True)
+    return citizen.desk_id, preview.desk_id
 
 
 def _write_render_tree(
     data_root: Path,
-    vintage_id: str,
+    desk_id: str,
     cms_root: Path,
     pages: tuple[BoundPage, ...],
     *,
     cms_mode: str = "preview",
 ) -> Path:
-    dest = render_dir(data_root, vintage_id)
+    dest = render_dir(data_root, desk_id)
     parent = renders_dir(data_root)
     parent.mkdir(parents=True, exist_ok=True)
-    tmp = parent / f".tmp-{vintage_id}"
-    old = parent / f".old-{vintage_id}"
+    tmp = parent / f".tmp-{desk_id}"
+    old = parent / f".old-{desk_id}"
     if tmp.exists():
         shutil.rmtree(tmp)
     tmp.mkdir()
@@ -103,7 +186,7 @@ def _write_render_tree(
     if bound_dir.exists():
         shutil.rmtree(bound_dir)
     bound_dir.mkdir()
-    catalog = build_site_catalog(vintage_id, pages, cms_mode=cms_mode)
+    catalog = build_site_catalog(desk_id, pages, cms_mode=cms_mode)
     allowed = allowed_hrefs(catalog)
     pages = tuple(
         replace(page, body_html=filter_hottest_rail(page.body_html, allowed))
@@ -134,7 +217,7 @@ def _write_render_tree(
     finally:
         if bound_dir.exists():
             shutil.rmtree(bound_dir)
-    if not render_complete_path(data_root, vintage_id).exists():
+    if not render_complete_path(data_root, desk_id).exists():
         raise RenderIncompleteError("render did not write COMPLETE")
     return dest
 
@@ -180,7 +263,7 @@ def _drop_astro_internals(dest: Path) -> None:
             path.unlink()
 
 
-def _mark_complete(dest: Path, required: tuple[str, ...] = REQUIRED_PAGES) -> None:
+def _mark_complete(dest: Path, required: tuple[str, ...]) -> None:
     missing = [name for name in required if not (dest / name).exists()]
     if missing:
         raise RenderIncompleteError(

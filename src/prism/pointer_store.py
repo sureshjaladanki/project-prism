@@ -6,6 +6,7 @@ import os
 import tempfile
 from pathlib import Path
 
+from prism.desk_store import DeskRecord, DeskStoreError, load_desk
 from prism.paths import (
     citizen_pointer_path,
     pointers_dir,
@@ -13,8 +14,8 @@ from prism.paths import (
     render_complete_path,
     vintage_dir,
 )
-from prism.refresh import VINTAGE_ID_PATTERN
-from prism.schema import Completeness, VintageManifest
+from prism.refresh import DESK_ID_PATTERN
+from prism.schema import Completeness
 from prism.vintage_store import load_manifest
 
 
@@ -36,14 +37,14 @@ def _acquire_publish_lock(data_root: Path) -> Path:
     return lock
 
 
-def _write_pointer_atomic(path: Path, vintage_id: str) -> None:
+def _write_pointer_atomic(path: Path, desk_id: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp_name = tempfile.mkstemp(
         prefix=f".{path.name}.", suffix=".tmp", dir=path.parent
     )
     try:
         with os.fdopen(fd, "w", encoding="utf-8", newline="\n") as handle:
-            handle.write(vintage_id + "\n")
+            handle.write(desk_id + "\n")
         os.replace(tmp_name, path)
     except Exception:
         if os.path.exists(tmp_name):
@@ -78,25 +79,34 @@ def _assert_distinct_pointer_files(data_root: Path) -> None:
 
 
 def _require_publishable(
-    data_root: Path, vintage_id: str, *, render_complete: bool
-) -> VintageManifest:
-    if VINTAGE_ID_PATTERN.fullmatch(vintage_id) is None:
-        raise PublishError(f"invalid vintage_id: {vintage_id}")
-    if not vintage_dir(data_root, vintage_id).exists():
-        raise PublishError(f"vintage {vintage_id} does not exist")
-    manifest = load_manifest(data_root, vintage_id)
-    if manifest.completeness is Completeness.failed:
-        raise PublishError("a failed vintage is never the citizen or preview pointer")
-    if not render_complete or not render_complete_path(data_root, vintage_id).exists():
+    data_root: Path, desk_id: str, *, render_complete: bool
+) -> DeskRecord:
+    if DESK_ID_PATTERN.fullmatch(desk_id) is None:
+        raise PublishError(f"invalid desk_id: {desk_id}")
+    try:
+        record = load_desk(data_root, desk_id)
+    except (DeskStoreError, FileNotFoundError) as exc:
+        raise PublishError(f"desk {desk_id} does not exist") from exc
+    if record.completeness is Completeness.failed:
+        raise PublishError("a failed desk is never the citizen or preview pointer")
+    if not render_complete or not render_complete_path(data_root, desk_id).exists():
         raise PublishError("render is not complete; pointer will not move")
-    return manifest
+    for binding in record.slices:
+        if not vintage_dir(data_root, binding.vintage_id).exists():
+            raise PublishError(f"vintage {binding.vintage_id} does not exist")
+        manifest = load_manifest(data_root, binding.vintage_id)
+        if manifest.completeness is Completeness.failed:
+            raise PublishError(
+                "a failed vintage is never the citizen or preview pointer"
+            )
+    return record
 
 
-def publish_preview(data_root: Path, vintage_id: str, *, render_complete: bool) -> None:
+def publish_preview(data_root: Path, desk_id: str, *, render_complete: bool) -> None:
     lock = _acquire_publish_lock(data_root)
     try:
-        _require_publishable(data_root, vintage_id, render_complete=render_complete)
-        _write_pointer_atomic(preview_pointer_path(data_root), vintage_id)
+        _require_publishable(data_root, desk_id, render_complete=render_complete)
+        _write_pointer_atomic(preview_pointer_path(data_root), desk_id)
         _assert_distinct_pointer_files(data_root)
     finally:
         lock.rmdir()
@@ -104,7 +114,7 @@ def publish_preview(data_root: Path, vintage_id: str, *, render_complete: bool) 
 
 def publish_citizen(
     data_root: Path,
-    vintage_id: str,
+    desk_id: str,
     *,
     render_complete: bool,
     contract_tests_passed: bool,
@@ -116,8 +126,8 @@ def publish_citizen(
             raise PublishError(
                 "contract tests have not passed; citizen pointer will not move"
             )
-        _require_publishable(data_root, vintage_id, render_complete=render_complete)
-        _write_pointer_atomic(citizen_pointer_path(data_root), vintage_id)
+        _require_publishable(data_root, desk_id, render_complete=render_complete)
+        _write_pointer_atomic(citizen_pointer_path(data_root), desk_id)
         _assert_distinct_pointer_files(data_root)
     except Exception:
         current = read_citizen_pointer(data_root)

@@ -6,7 +6,6 @@
 
 template_id: c1-prices-people-pay
 charter: C1
-bound_vintage_id: dv-20260916-234e263c8588
 geography_vintage: "2024"
 code_system: producer-specific
 state_ut_axis_order: alphabetical_official_english_name

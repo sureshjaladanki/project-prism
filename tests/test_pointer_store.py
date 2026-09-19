@@ -1,4 +1,4 @@
-"""Pointer store: atomic write, preview is not citizen, failed vintage stays off citizen."""
+"""Pointer store: atomic write, preview is not citizen, failed desk stays off citizen."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 
+from prism.desk_store import DeskSlice, write_desk
 from prism.paths import (
     citizen_pointer_path,
     preview_pointer_path,
@@ -22,37 +23,22 @@ from prism.pointer_store import (
 )
 from prism.refresh import C1_SERIES_IDS, SERIES_CPI_GENERAL_BASE_2024
 from prism.schema import Completeness, RefreshTrigger
+from prism.template_bind import C1_TEMPLATE_ID
 from prism.vintage_store import write_vintage
+from tests.desk_fixtures import write_complete_c1_desk
 from tests.factories import CREATED_AT, make_series_write
 
 
-def _complete_vintage(data_root: Path, payload: bytes, created_at: datetime):
-    manifest = write_vintage(
-        data_root,
-        created_at=created_at,
-        trigger=RefreshTrigger.on_demand,
-        series=(make_series_write(SERIES_CPI_GENERAL_BASE_2024, payload),),
-        completeness=Completeness.complete,
-        previous=None,
-        required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
-    )
-    render_dir(data_root, manifest.vintage_id).mkdir(parents=True)
-    render_complete_path(data_root, manifest.vintage_id).write_text(
-        "ok\n", encoding="utf-8"
-    )
-    return manifest
-
-
 def test_preview_is_not_an_alias_of_citizen(tmp_path: Path) -> None:
-    manifest = _complete_vintage(tmp_path, b"PARQUET", CREATED_AT)
-    publish_preview(tmp_path, manifest.vintage_id, render_complete=True)
-    assert read_preview_pointer(tmp_path) == manifest.vintage_id
+    desk, _manifest = write_complete_c1_desk(tmp_path, b"PARQUET", CREATED_AT)
+    publish_preview(tmp_path, desk.desk_id, render_complete=True)
+    assert read_preview_pointer(tmp_path) == desk.desk_id
     assert read_citizen_pointer(tmp_path) is None
     assert citizen_pointer_path(tmp_path) != preview_pointer_path(tmp_path)
     assert not citizen_pointer_path(tmp_path).exists()
 
 
-def test_failed_vintage_cannot_become_citizen_pointer(tmp_path: Path) -> None:
+def test_failed_desk_cannot_become_citizen_pointer(tmp_path: Path) -> None:
     manifest = write_vintage(
         tmp_path,
         created_at=CREATED_AT,
@@ -62,14 +48,20 @@ def test_failed_vintage_cannot_become_citizen_pointer(tmp_path: Path) -> None:
         previous=None,
         required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
     )
-    render_dir(tmp_path, manifest.vintage_id).mkdir(parents=True)
-    render_complete_path(tmp_path, manifest.vintage_id).write_text(
-        "ok\n", encoding="utf-8"
+    desk = write_desk(
+        tmp_path,
+        created_at=CREATED_AT,
+        slices=(
+            DeskSlice(template_id=C1_TEMPLATE_ID, vintage_id=manifest.vintage_id),
+        ),
+        completeness=Completeness.failed,
     )
-    with pytest.raises(PublishError, match="failed vintage"):
+    render_dir(tmp_path, desk.desk_id).mkdir(parents=True)
+    render_complete_path(tmp_path, desk.desk_id).write_text("ok\n", encoding="utf-8")
+    with pytest.raises(PublishError, match="failed desk"):
         publish_citizen(
             tmp_path,
-            manifest.vintage_id,
+            desk.desk_id,
             render_complete=True,
             contract_tests_passed=True,
         )
@@ -77,11 +69,11 @@ def test_failed_vintage_cannot_become_citizen_pointer(tmp_path: Path) -> None:
 
 
 def test_citizen_requires_contract_tests_passed(tmp_path: Path) -> None:
-    manifest = _complete_vintage(tmp_path, b"PARQUET", CREATED_AT)
+    desk, _manifest = write_complete_c1_desk(tmp_path, b"PARQUET", CREATED_AT)
     with pytest.raises(PublishError, match="contract tests"):
         publish_citizen(
             tmp_path,
-            manifest.vintage_id,
+            desk.desk_id,
             render_complete=True,
             contract_tests_passed=False,
         )
@@ -127,18 +119,18 @@ def test_immutable_vintage_directory_not_overwritten(tmp_path: Path) -> None:
         )
 
 
-def test_preview_and_citizen_can_name_same_vintage_as_separate_files(
+def test_preview_and_citizen_can_name_same_desk_as_separate_files(
     tmp_path: Path,
 ) -> None:
     later = datetime(2026, 9, 16, 11, 0, tzinfo=UTC)
-    manifest = _complete_vintage(tmp_path, b"PARQUET", later)
-    publish_preview(tmp_path, manifest.vintage_id, render_complete=True)
+    desk, _manifest = write_complete_c1_desk(tmp_path, b"PARQUET", later)
+    publish_preview(tmp_path, desk.desk_id, render_complete=True)
     publish_citizen(
         tmp_path,
-        manifest.vintage_id,
+        desk.desk_id,
         render_complete=True,
         contract_tests_passed=True,
     )
-    assert read_preview_pointer(tmp_path) == manifest.vintage_id
-    assert read_citizen_pointer(tmp_path) == manifest.vintage_id
+    assert read_preview_pointer(tmp_path) == desk.desk_id
+    assert read_citizen_pointer(tmp_path) == desk.desk_id
     assert not citizen_pointer_path(tmp_path).samefile(preview_pointer_path(tmp_path))

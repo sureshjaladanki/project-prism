@@ -12,6 +12,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 
+from prism.desk_store import DeskSlice, load_desk, write_desk
 from prism.paths import (
     cas_path,
     citizen_pointer_path,
@@ -35,7 +36,7 @@ from prism.refresh import (
     SERIES_CPI_GENERAL_BASE_2024,
     scheduled_series_on,
 )
-from prism.render import RenderIncompleteError, _mark_complete
+from prism.render import SHELL_PAGES, RenderIncompleteError, _mark_complete
 from prism.schema import (
     Completeness,
     GeographyRef,
@@ -53,6 +54,7 @@ from prism.serving import (
     resolve_preview_render,
 )
 from prism.template_bind import (
+    C1_TEMPLATE_ID,
     RenderError,
     assert_cite_views_complete,
     bind_c1_page,
@@ -64,6 +66,7 @@ from prism.vega_lite_gates import (
     assert_generated_spec,
 )
 from prism.vintage_store import write_vintage
+from tests.desk_fixtures import write_complete_c1_desk
 from tests.factories import (
     CREATED_AT,
     make_caveat,
@@ -82,12 +85,8 @@ C1_SLICE_HTML = Path("prices") / "retail-prices" / "index.html"
 
 
 def _c1_render_dir() -> Path:
-    dest = render_dir(DATA_ROOT, C1_VINTAGE_ID)
-    if (
-        not render_complete_path(DATA_ROOT, C1_VINTAGE_ID).exists()
-        or not (dest / "index.html").exists()
-        or not (dest / C1_SLICE_HTML).exists()
-    ):
+    dest = resolve_citizen_render(DATA_ROOT)
+    if not (dest / C1_SLICE_HTML).exists():
         pytest.fail("C1 Astro render is not complete")
     return dest
 
@@ -127,23 +126,10 @@ def test_03_geography_without_vintage_cannot_be_written() -> None:
 def test_04_publish_does_not_move_citizen_pointer_if_required_template_failed(
     tmp_path: Path,
 ) -> None:
-    series = make_series_write(SERIES_CPI_GENERAL_BASE_2024, b"PARQUET-A")
-    first = write_vintage(
-        tmp_path,
-        created_at=CREATED_AT,
-        trigger=RefreshTrigger.on_demand,
-        series=(series,),
-        completeness=Completeness.complete,
-        previous=None,
-        required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
-    )
-    render_dir(tmp_path, first.vintage_id).mkdir(parents=True)
-    render_complete_path(tmp_path, first.vintage_id).write_text(
-        "ok\n", encoding="utf-8"
-    )
+    first_desk, first = write_complete_c1_desk(tmp_path, b"PARQUET-A", CREATED_AT)
     publish_citizen(
         tmp_path,
-        first.vintage_id,
+        first_desk.desk_id,
         render_complete=True,
         contract_tests_passed=True,
     )
@@ -157,19 +143,28 @@ def test_04_publish_does_not_move_citizen_pointer_if_required_template_failed(
         previous=first,
         required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
     )
-    dest = render_dir(tmp_path, second.vintage_id)
+    second_desk = write_desk(
+        tmp_path,
+        created_at=later,
+        slices=(
+            DeskSlice(template_id=C1_TEMPLATE_ID, vintage_id=second.vintage_id),
+        ),
+        completeness=Completeness.complete,
+    )
+    dest = render_dir(tmp_path, second_desk.desk_id)
     dest.mkdir(parents=True)
+    required = SHELL_PAGES + ("prices/retail-prices/index.html",)
     with pytest.raises(RenderIncompleteError, match="required template failed"):
-        _mark_complete(dest)
-    assert not render_complete_path(tmp_path, second.vintage_id).exists()
+        _mark_complete(dest, required)
+    assert not render_complete_path(tmp_path, second_desk.desk_id).exists()
     with pytest.raises(PublishError, match="render is not complete"):
         publish_citizen(
             tmp_path,
-            second.vintage_id,
+            second_desk.desk_id,
             render_complete=True,
             contract_tests_passed=True,
         )
-    assert read_citizen_pointer(tmp_path) == first.vintage_id
+    assert read_citizen_pointer(tmp_path) == first_desk.desk_id
     c1 = _c1_render_dir()
     assert (c1 / "index.html").exists()
     assert (c1 / C1_SLICE_HTML).exists()
@@ -193,15 +188,20 @@ def test_04_publish_does_not_move_citizen_pointer_if_required_template_failed(
 
 @pytest.mark.cms_render
 def test_05_citizen_route_cannot_read_non_published_vintage() -> None:
-    assert read_citizen_pointer(DATA_ROOT) == C1_VINTAGE_ID
+    citizen = read_citizen_pointer(DATA_ROOT)
+    assert citizen is not None
+    assert citizen.startswith("desk-")
+    desk = load_desk(DATA_ROOT, citizen)
+    assert any(binding.vintage_id == C1_VINTAGE_ID for binding in desk.slices)
     assert citizen_may_read(DATA_ROOT, C1_VINTAGE_ID) is True
     assert citizen_may_read(DATA_ROOT, "dv-19990101-aaaaaaaaaaaa") is False
-    assert resolve_citizen_render(DATA_ROOT) == render_dir(DATA_ROOT, C1_VINTAGE_ID)
+    assert resolve_citizen_render(DATA_ROOT) == render_dir(DATA_ROOT, citizen)
     headers = preview_response_headers()
     assert "noindex" in headers["X-Robots-Tag"]
     assert "private" in headers["Cache-Control"]
     preview = read_preview_pointer(DATA_ROOT)
     assert preview is not None
+    assert preview.startswith("desk-")
     preview_root = resolve_preview_render(DATA_ROOT)
     assert preview_root == render_dir(DATA_ROOT, preview)
     assert not citizen_pointer_path(DATA_ROOT).samefile(preview_pointer_path(DATA_ROOT))
@@ -565,23 +565,10 @@ def test_c1_series_ids_map_to_four_cards() -> None:
 
 
 def test_publish_keeps_previous_citizen_when_render_incomplete(tmp_path: Path) -> None:
-    series = make_series_write(SERIES_CPI_GENERAL_BASE_2024, b"PARQUET-A")
-    first = write_vintage(
-        tmp_path,
-        created_at=CREATED_AT,
-        trigger=RefreshTrigger.on_demand,
-        series=(series,),
-        completeness=Completeness.complete,
-        previous=None,
-        required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
-    )
-    render_dir(tmp_path, first.vintage_id).mkdir(parents=True)
-    render_complete_path(tmp_path, first.vintage_id).write_text(
-        "ok\n", encoding="utf-8"
-    )
+    first_desk, first = write_complete_c1_desk(tmp_path, b"PARQUET-A", CREATED_AT)
     publish_citizen(
         tmp_path,
-        first.vintage_id,
+        first_desk.desk_id,
         render_complete=True,
         contract_tests_passed=True,
     )
@@ -595,14 +582,22 @@ def test_publish_keeps_previous_citizen_when_render_incomplete(tmp_path: Path) -
         previous=first,
         required_series_ids=(SERIES_CPI_GENERAL_BASE_2024,),
     )
+    second_desk = write_desk(
+        tmp_path,
+        created_at=later,
+        slices=(
+            DeskSlice(template_id=C1_TEMPLATE_ID, vintage_id=second.vintage_id),
+        ),
+        completeness=Completeness.complete,
+    )
     with pytest.raises(PublishError, match="render is not complete"):
         publish_citizen(
             tmp_path,
-            second.vintage_id,
+            second_desk.desk_id,
             render_complete=False,
             contract_tests_passed=True,
         )
-    assert read_citizen_pointer(tmp_path) == first.vintage_id
+    assert read_citizen_pointer(tmp_path) == first_desk.desk_id
 
 
 def test_status_value_cannot_treat_blank_as_zero() -> None:

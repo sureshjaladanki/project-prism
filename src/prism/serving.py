@@ -7,6 +7,7 @@ import re
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
+from prism.desk_store import load_desk
 from prism.paths import render_complete_path, render_dir
 from prism.pointer_store import read_citizen_pointer, read_preview_pointer
 from prism.schema import (
@@ -87,38 +88,49 @@ def chart_payload(served: ServedObservation) -> dict[str, object]:
     }
 
 
-def _require_complete_render(
-    data_root: Path, vintage_id: str, *, require_c1_slice: bool = True
-) -> Path:
-    dest = render_dir(data_root, vintage_id)
-    if not render_complete_path(data_root, vintage_id).exists():
-        raise ServeError(f"render is not complete for {vintage_id}")
+SLICE_INDEX_HTML = {
+    "c1-prices-people-pay": Path("prices") / "retail-prices" / "index.html",
+    "c2-people-of-india": Path("people") / "population" / "index.html",
+    "c3-union-money": Path("money") / "union" / "index.html",
+}
+
+
+def _require_complete_render(data_root: Path, desk_id: str) -> Path:
+    dest = render_dir(data_root, desk_id)
+    if not render_complete_path(data_root, desk_id).exists():
+        raise ServeError(f"render is not complete for {desk_id}")
     if not (dest / "index.html").exists():
-        raise ServeError(f"required template failed to render for {vintage_id}")
-    if (
-        require_c1_slice
-        and not (dest / "prices" / "retail-prices" / "index.html").exists()
-    ):
-        raise ServeError(f"required template failed to render for {vintage_id}")
+        raise ServeError(f"required template failed to render for {desk_id}")
+    record = load_desk(data_root, desk_id)
+    for binding in record.slices:
+        rel = SLICE_INDEX_HTML.get(binding.template_id)
+        if rel is not None and not (dest / rel).exists():
+            raise ServeError(f"required template failed to render for {desk_id}")
     return dest
 
 
 def resolve_citizen_render(data_root: Path) -> Path:
-    vintage_id = read_citizen_pointer(data_root)
-    if vintage_id is None:
+    desk_id = read_citizen_pointer(data_root)
+    if desk_id is None:
         raise ServeError("citizen route cannot read a non-published vintage")
-    return _require_complete_render(data_root, vintage_id)
+    return _require_complete_render(data_root, desk_id)
 
 
 def resolve_preview_render(data_root: Path) -> Path:
-    vintage_id = read_preview_pointer(data_root)
-    if vintage_id is None:
+    desk_id = read_preview_pointer(data_root)
+    if desk_id is None:
         raise ServeError("no preview pointer")
-    return _require_complete_render(data_root, vintage_id)
+    return _require_complete_render(data_root, desk_id)
 
 
 def citizen_may_read(data_root: Path, vintage_id: str) -> bool:
-    return read_citizen_pointer(data_root) == vintage_id
+    desk_id = read_citizen_pointer(data_root)
+    if desk_id is None:
+        return False
+    if desk_id == vintage_id:
+        return True
+    record = load_desk(data_root, desk_id)
+    return any(binding.vintage_id == vintage_id for binding in record.slices)
 
 
 def preview_response_headers() -> dict[str, str]:

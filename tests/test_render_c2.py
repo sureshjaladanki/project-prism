@@ -7,7 +7,8 @@ from pathlib import Path
 
 import pytest
 
-from prism.paths import render_complete_path, render_dir
+from prism.desk_store import load_desk
+from prism.paths import render_complete_path, render_dir, renders_dir
 from prism.pointer_store import read_citizen_pointer, read_preview_pointer
 from prism.template_bind import RenderError, bind_c2_page
 
@@ -38,9 +39,11 @@ def test_bind_c2_page_is_one_vintage() -> None:
 
 @pytest.mark.cms_render
 def test_c2_preview_tree_has_population_slice_and_leaves_citizen() -> None:
-    dest = render_dir(DATA_ROOT, C2_VINTAGE_ID)
-    if not render_complete_path(DATA_ROOT, C2_VINTAGE_ID).exists():
-        pytest.fail("C2 Astro render is not complete")
+    preview = read_preview_pointer(DATA_ROOT)
+    assert preview is not None
+    dest = render_dir(DATA_ROOT, preview)
+    if not render_complete_path(DATA_ROOT, preview).exists():
+        pytest.fail("preview Astro render is not complete")
     html = (dest / C2_SLICE_HTML).read_text(encoding="utf-8")
     assert 'data-prism-page="slice"' in html
     assert 'data-prism-path="/people/population"' in html
@@ -59,5 +62,13 @@ def test_c2_preview_tree_has_population_slice_and_leaves_citizen() -> None:
     assert "/prices/retail-prices" in home
     assert "/people/population" in home
     assert "/money/union" in home
-    assert read_citizen_pointer(DATA_ROOT) == C1_VINTAGE_ID
-    assert read_preview_pointer(DATA_ROOT) == C2_VINTAGE_ID
+    citizen = read_citizen_pointer(DATA_ROOT)
+    assert citizen is not None
+    assert citizen != preview
+    citizen_desk = load_desk(DATA_ROOT, citizen)
+    assert all(
+        item.template_id != "c2-people-of-india" for item in citizen_desk.slices
+    )
+    preview_desk = load_desk(DATA_ROOT, preview)
+    assert any(item.vintage_id == C2_VINTAGE_ID for item in preview_desk.slices)
+    assert (renders_dir(DATA_ROOT) / C2_VINTAGE_ID / C2_SLICE_HTML).exists()

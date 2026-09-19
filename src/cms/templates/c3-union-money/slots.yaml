@@ -10,11 +10,10 @@
 #   monthly %:     unit = "% of BE; {line_label}" or "% of BE (COPPY); {line_label}"
 #   Card 8 hole:   unit = "not a table" (already)
 # Copy line_label from the derived table as printed. Do not recode. Do not
-# invent a head. After that vintage exists, fill bound_vintage_id.
+# invent a head. Binding lives on the desk record, not this file.
 
 template_id: c3-union-money
 charter: C3
-bound_vintage_id: dv-20260918-846e99d0ca57
 code_system: none
 display_timezone: Asia/Kolkata
 axis_order: producer_printed

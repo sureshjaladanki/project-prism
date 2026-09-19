@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from prism.desk_store import load_desk
+from prism.pointer_store import read_citizen_pointer, read_preview_pointer
 from prism.template_bind import bind_pages_for_desk, bind_pages_for_vintage
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -34,11 +36,21 @@ def test_citizen_desk_binds_only_the_published_c1_vintage() -> None:
     pages = bind_pages_for_desk(DATA_ROOT, CMS_ROOT, cms_mode="citizen")
     assert tuple(page.template_id for page in pages) == ("c1-prices-people-pay",)
     assert pages[0].vintage_id == C1_VINTAGE_ID
+    citizen = read_citizen_pointer(DATA_ROOT)
+    assert citizen is not None
+    desk = load_desk(DATA_ROOT, citizen)
+    assert tuple(item.template_id for item in desk.slices) == (
+        "c1-prices-people-pay",
+    )
 
 
 def test_one_vintage_bind_still_refuses_other_charters() -> None:
     c2_only = bind_pages_for_vintage(DATA_ROOT, C2_VINTAGE_ID, CMS_ROOT)
     assert tuple(page.template_id for page in c2_only) == ("c2-people-of-india",)
+
+
+def test_preview_pointer_is_not_an_alias_of_citizen() -> None:
+    assert read_preview_pointer(DATA_ROOT) != read_citizen_pointer(DATA_ROOT)
 
 
 def test_home_template_does_not_repeat_shell_nav() -> None:

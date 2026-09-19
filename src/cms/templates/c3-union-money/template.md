@@ -4,7 +4,6 @@ charter: C3
 sleeve: money
 slug: union
 citizen_question: What does the Union collect, and what does it spend it on?
-bound_vintage_id: dv-20260918-846e99d0ca57
 slots: ./slots.yaml
 ---
 

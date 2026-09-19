@@ -124,6 +124,12 @@ class Catalog(BaseModel):
                 return item
         raise CatalogError(f"unknown series_id: {series_id}")
 
+    def slice_for_template(self, template_id: str) -> CatalogSlice:
+        for item in self.slices:
+            if item.template_id == template_id:
+                return item
+        raise CatalogError(f"unknown template_id: {template_id}")
+
     def artifact(self, artifact_id: str) -> CatalogArtifact:
         for item in self.slices:
             for art in item.artifacts:

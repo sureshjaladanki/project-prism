@@ -6,6 +6,7 @@ from pathlib import Path
 
 CAS_DIRNAME = "cas"
 VINTAGES_DIRNAME = "vintages"
+DESKS_DIRNAME = "desks"
 RENDERS_DIRNAME = "renders"
 POINTERS_DIRNAME = "pointers"
 RAW_DIRNAME = "raw"
@@ -21,6 +22,7 @@ CITATION_FILENAME = "citation.json"
 CAVEAT_FILENAME = "caveat.json"
 GEOGRAPHY_FILENAME = "geography.json"
 MANIFEST_FILENAME = "manifest.json"
+DESK_FILENAME = "desk.json"
 TABLE_FILENAME = "table.csv"
 LINEAGE_FILENAME = "lineage.json"
 HEADERS_FILENAME = "headers.json"
@@ -57,12 +59,24 @@ def renders_dir(data_root: Path) -> Path:
     return data_root / RENDERS_DIRNAME
 
 
-def render_dir(data_root: Path, vintage_id: str) -> Path:
-    return renders_dir(data_root) / vintage_id
+def desks_dir(data_root: Path) -> Path:
+    return data_root / DESKS_DIRNAME
 
 
-def render_complete_path(data_root: Path, vintage_id: str) -> Path:
-    return render_dir(data_root, vintage_id) / RENDER_COMPLETE_MARKER
+def desk_dir(data_root: Path, desk_id: str) -> Path:
+    return desks_dir(data_root) / desk_id
+
+
+def desk_path(data_root: Path, desk_id: str) -> Path:
+    return desk_dir(data_root, desk_id) / DESK_FILENAME
+
+
+def render_dir(data_root: Path, desk_id: str) -> Path:
+    return renders_dir(data_root) / desk_id
+
+
+def render_complete_path(data_root: Path, desk_id: str) -> Path:
+    return render_dir(data_root, desk_id) / RENDER_COMPLETE_MARKER
 
 
 def pointers_dir(data_root: Path) -> Path:

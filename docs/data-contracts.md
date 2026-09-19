@@ -132,20 +132,21 @@ copy:
 chart_spec:         (breaks stay breaks; no default rank sort)
 ```
 
-If the vintage has no matching observation, the slot renders as unknown / not published — not as a remembered figure.
+Binding (`template_id`, `vintage_id`) is a desk field, not a template field. If the vintage has no matching observation, the slot renders as unknown / not published — not as a remembered figure.
 
 ## Pointers
 
 ```text
-citizen_pointer:    vintage_id of the last complete published desk
-preview_pointer:    vintage_id of the current preview desk (never an alias of citizen)
+citizen_pointer:    desk_id of the last complete published desk
+preview_pointer:    desk_id of the current preview desk (never an alias of citizen)
 cms_mode:           citizen | preview
 retained_vintages:  prior published vintage_ids stay addressable
+retained_desks:     prior published desk_ids stay addressable
 ```
 
 Two CMS modes, two pointers, same relative paths.
 
-- **citizen** — only slices whose template `bound_vintage_id` is the citizen pointer. Home, hubs, and hottest-rail list those slices only.
-- **preview** — every template that can bind. Unpublished slices are on this prefix only. Each page still binds one `vintage_id`; the desk may hold C1, C2, and C3 pages from different vintages.
+- **citizen** — only slices listed on the citizen desk. Home, hubs, and hottest-rail list those slices only. Each page binds one `vintage_id`.
+- **preview** — every slice listed on the preview desk (latest complete vintage per slice, including unpublished slices). Each page still binds one `vintage_id`; the desk may hold C1, C2, and C3 pages from different vintages.
 
 A citizen route reads only `citizen_pointer`. How the pointer is flipped atomically is serving, not schema: [architectural-blueprint.md](architectural-blueprint.md).

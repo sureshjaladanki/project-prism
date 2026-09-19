@@ -9,7 +9,7 @@ A civic **CMS** for the portrait in [vision.md](vision.md). Not a folder of hand
 - **Template** — Content Editor’s copy and chart spec, with slots that only accept cited observations.
 - **Data vintage** — an immutable snapshot of observations, citations, geography, and caveats after one pipeline run. That is **data-in-time**: the page is true as of that vintage.
 - **Render** — `template + vintage → page`. Same inputs, same page.
-- **Refresh** — when an official source updates, or an editor asks, Ingest lands the new artifact, Pipeline writes a **new** vintage, CMS re-renders, Platform publishes. Periodic or on-demand. Citizen-view moves only to a complete published vintage.
+- **Refresh** — when an official source updates, or an editor asks, Ingest lands the new artifact, Pipeline writes a **new** vintage, CMS re-renders, Platform publishes. Periodic or on-demand. Citizen-view moves only to a complete published desk.
 
 Do not hand-author a citizen page of numbers. Do not fetch a producer website at request time to fill a chart. Citizen-view is a pointer at a complete **published** desk. Preview is the same CMS in a second mode: the full desk, including slices that have not been published.
 
@@ -60,7 +60,8 @@ Python is the batch machine, not the citizen API. FastAPI is not Wave 1 serving.
 ```text
 src/prism/  ──writes──►  data/raw|derived|lineage
             ──writes──►  data/vintages/{vintage_id}
-            ──calls───►  src/cms/  ──writes──►  data/renders/{vintage_id}
+            ──writes──►  data/desks/{desk_id}
+            ──calls───►  src/cms/  ──writes──►  data/renders/{desk_id}
             ──writes──►  data/pointers/{citizen|preview}
 
 Citizen HTTP  ──reads──►  files at citizen_pointer
@@ -108,17 +109,17 @@ No Python, no DuckDB, no producer fetch.
 HTTP GET citizen route
         │
         ▼
-Read citizen_pointer → vintage_id
+Read citizen_pointer → desk_id
         │
         ▼
-Serve that vintage’s completed **citizen** tree
+Serve that desk’s completed **citizen** tree
 ```
 
 A citizen route cannot read a non-published vintage. Unpublished slice URLs 404 on this prefix.
 
 ### Preview
 
-Same bind and Astro build as citizen-view. `cms_mode=preview` includes every template that can bind (each **page** still one `vintage_id`). `cms_mode=citizen` includes only slices whose bound vintage is the citizen pointer. Isolation is a different prefix, `noindex`, signed URL (or later authenticated access). A different public URL is not isolation. Preview never aliases `citizen_pointer`.
+Same bind and Astro build as citizen-view. `cms_mode=preview` includes every template on the preview desk (each **page** still one `vintage_id`). `cms_mode=citizen` includes only slices listed on the citizen desk. Isolation is a different prefix, `noindex`, signed URL (or later authenticated access). A different public URL is not isolation. Preview never aliases `citizen_pointer`.
 
 ### Retained vintages
 
@@ -132,9 +133,9 @@ Logical stores Pipeline and CMS must use. Concrete paths: [repo-conventions.md](
 |-------|--------|--------|------|
 | **Artifact** | Ingest | Pipeline | Derived tables and lineage only. Pipeline does not fetch |
 | **Vintage** | Pipeline | CMS (exactly one id per **page**) | One directory per `vintage_id`, immutable. Per-series Parquet + JSON; unchanged series hard-linked into CAS |
-| **Render** | CMS | Serving, after pointer flip | One static tree per `vintage_id`. Unchanged pages hard-linked. Citizen-view does not read it until the pointer flips |
-| **Template** | Content Editor (git) | CMS | Slots bind to selectors, not typed numerals |
-| **Pointer** | Platform on publish | CMS on serve | `citizen_pointer` and `preview_pointer`, written atomically |
+| **Render** | CMS | Serving, after pointer flip | One static tree per `desk_id`. Unchanged pages hard-linked. Citizen-view does not read it until the pointer flips |
+| **Template** | Content Editor (git) | CMS | Slots bind to selectors, not typed numerals. Binding is not a template field |
+| **Pointer** | Platform on publish | CMS on serve | `citizen_pointer` and `preview_pointer` name a `desk_id`, written atomically |
 | **CAS** | Pipeline / CMS | Vintage and render directories | Write-once bytes. A second copy of an unchanged series or page is a bug |
 | **Run log** | Pipeline | Operators, tests | `logs/{run_id}/report.json` — what ran, changed, failed. Not ingest `lineage.json` |
 
@@ -143,11 +144,15 @@ Logical stores Pipeline and CMS must use. Concrete paths: [repo-conventions.md](
 ```text
 vintage_id_rule:    "dv-" + run_date_utc (YYYYMMDD) + "-" + 12-hex of
                     manifest.json. Directory with that id is never overwritten.
+desk_id_rule:       "desk-" + publish_date_utc (YYYYMMDD) + "-" + 12-hex of
+                    desk.json. Directory with that id is never overwritten.
+publish_unit:       a desk: one (template_id, vintage_id) per published slice.
+                    Each page still binds exactly one vintage_id.
 triggers:           schedule | source_change | on_demand
 sequence:           ingest → pipeline (data vintage) → cms render → publish pointer
-atomic_publish:     yes   (citizen-view moves only when render of the new vintage is complete)
-on_fail:            keep previous published vintage; do not serve a partial
-retain_prior:       yes   (prior vintages stay addressable)
+atomic_publish:     yes   (citizen-view moves only when render of the new desk is complete)
+on_fail:            keep previous published desk; do not serve a partial
+retain_prior:       yes   (prior desks and prior vintages stay addressable)
 ```
 
 - **schedule** — a named cadence once operations exist; per series it follows the librarian’s `next_release`, not a hidden global clock.
@@ -156,7 +161,7 @@ retain_prior:       yes   (prior vintages stay addressable)
 
 Refresh writes a new vintage, reuses unchanged series and pages (hard-link / CAS), re-renders only what changed, then moves the pointer.
 
-The pointer write itself is atomic: local disk uses write-to-temp then rename; object storage uses a conditional PUT (`If-Match` / ETag) on a single current key and a publish lock so two publishers cannot interleave. Order: complete render for that `vintage_id` → nine tests pass → flip `citizen_pointer` last. A bare overwrite of a JSON file is not atomic publish.
+The pointer write itself is atomic: local disk uses write-to-temp then rename; object storage uses a conditional PUT (`If-Match` / ETag) on a single current key and a publish lock so two publishers cannot interleave. Order: complete render for that `desk_id` → nine tests pass → flip `citizen_pointer` last. A bare overwrite of a JSON file is not atomic publish.
 
 ## Serving rules
 
@@ -185,7 +190,7 @@ These are the acceptance tests the first citizen publish must encode. Tests 4–
 1. An observation without `citation_id` cannot be written or rendered.
 2. An observation without `caveat_id` cannot be written or rendered.
 3. A geography code without `geography_vintage` cannot be written or rendered.
-4. Publish does not move `citizen_pointer` if any required template failed to render for that vintage. The pointer write is atomic (see Refresh contract). Unchanged pages may be hard-linked; missing required templates still fail.
+4. Publish does not move `citizen_pointer` if any slice in the desk failed to render. The pointer write is atomic (see Refresh contract). Unchanged pages may be hard-linked; missing required templates still fail.
 5. A citizen route cannot read a non-published vintage. Preview is not world-readable.
 6. One citizen page cannot bind slots from two `vintage_id`s.
 7. An API or chart payload cannot include a number without its citation card.

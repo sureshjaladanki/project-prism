@@ -7,8 +7,9 @@ from pathlib import Path
 
 import pytest
 
-from prism.paths import render_complete_path, render_dir
-from prism.pointer_store import read_citizen_pointer
+from prism.desk_store import load_desk
+from prism.paths import render_complete_path, render_dir, renders_dir
+from prism.pointer_store import read_citizen_pointer, read_preview_pointer
 from prism.template_bind import RenderError, bind_c3_page
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -37,9 +38,11 @@ def test_bind_c3_page_is_one_vintage() -> None:
 
 @pytest.mark.cms_render
 def test_c3_preview_tree_has_union_slice_and_leaves_citizen() -> None:
-    dest = render_dir(DATA_ROOT, C3_VINTAGE_ID)
-    if not render_complete_path(DATA_ROOT, C3_VINTAGE_ID).exists():
-        pytest.fail("C3 Astro render is not complete")
+    preview = read_preview_pointer(DATA_ROOT)
+    assert preview is not None
+    dest = render_dir(DATA_ROOT, preview)
+    if not render_complete_path(DATA_ROOT, preview).exists():
+        pytest.fail("preview Astro render is not complete")
     html = (dest / C3_SLICE_HTML).read_text(encoding="utf-8")
     assert 'data-prism-page="slice"' in html
     assert 'data-prism-path="/money/union"' in html
@@ -52,4 +55,8 @@ def test_c3_preview_tree_has_union_slice_and_leaves_citizen() -> None:
     assert (
         dest / "money" / "union" / "charts" / "collect-beside-spend.vl.json"
     ).exists()
-    assert read_citizen_pointer(DATA_ROOT) == C1_VINTAGE_ID
+    citizen = read_citizen_pointer(DATA_ROOT)
+    assert citizen is not None
+    citizen_desk = load_desk(DATA_ROOT, citizen)
+    assert all(item.template_id != "c3-union-money" for item in citizen_desk.slices)
+    assert (renders_dir(DATA_ROOT) / C3_VINTAGE_ID / C3_SLICE_HTML).exists()

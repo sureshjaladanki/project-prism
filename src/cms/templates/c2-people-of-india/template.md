@@ -4,7 +4,6 @@ charter: C2
 sleeve: people
 slug: population
 citizen_question: How many people live in India, where, and how is that changing?
-bound_vintage_id: dv-20260919-87b702f1fd66
 slots: ./slots.yaml
 ---
 

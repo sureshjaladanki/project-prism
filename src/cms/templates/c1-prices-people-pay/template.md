@@ -4,7 +4,6 @@ charter: C1
 sleeve: prices-and-production
 slug: retail-prices
 citizen_question: How fast are retail prices rising in India, including food?
-bound_vintage_id: dv-20260916-234e263c8588
 slots: ./slots.yaml
 ---
 

@@ -191,13 +191,44 @@ def _template_folders(cms_root: Path) -> tuple[Path, ...]:
     )
 
 
+def _slice_series_ids(template_id: str) -> set[str]:
+    from prism.catalog import CatalogError, default_catalog
+
+    try:
+        item = default_catalog().slice_for_template(template_id)
+    except CatalogError as exc:
+        raise RenderError(f"unknown template_id {template_id}") from exc
+    return {entry.series_id for entry in item.series}
+
+
+def _assert_vintage_matches_template(
+    data_root: Path, vintage_id: str, template_id: str
+) -> None:
+    if not vintage_dir(data_root, vintage_id).exists():
+        raise RenderError(
+            f"template is bound to {template_id}; refusing to mix vintage {vintage_id}"
+        )
+    manifest = load_manifest(data_root, vintage_id)
+    found = {entry.series_id for entry in manifest.series}
+    expected = _slice_series_ids(template_id)
+    if found != expected:
+        raise RenderError(
+            f"template is bound to {template_id}; refusing to mix vintage {vintage_id}"
+        )
+
+
 def bind_pages_for_vintage(
     data_root: Path, vintage_id: str, cms_root: Path
 ) -> tuple[BoundPage, ...]:
     pages: list[BoundPage] = []
+    if not vintage_dir(data_root, vintage_id).exists():
+        raise RenderError(f"no template bound at vintage {vintage_id}")
+    manifest = load_manifest(data_root, vintage_id)
+    found = {entry.series_id for entry in manifest.series}
     for folder in _template_folders(cms_root):
         spec = _load_yaml(folder / "slots.yaml")
-        if spec.get("bound_vintage_id") != vintage_id:
+        template_id = str(spec["template_id"])
+        if _slice_series_ids(template_id) != found:
             continue
         pages.append(bind_page(data_root, vintage_id, folder))
     if not pages:
@@ -206,25 +237,32 @@ def bind_pages_for_vintage(
 
 
 def bind_pages_for_desk(
-    data_root: Path, cms_root: Path, *, cms_mode: str
+    data_root: Path,
+    cms_root: Path,
+    *,
+    cms_mode: str,
+    desk_id: str | None = None,
 ) -> tuple[BoundPage, ...]:
-    """Bind every template this desk can complete. Citizen mode drops unpublished slices."""
+    """Bind each slice the desk lists. cms_mode selects the pointer when desk_id is omitted."""
     if cms_mode not in {"preview", "citizen"}:
         raise RenderError(f"unknown cms_mode {cms_mode}")
-    from prism.pointer_store import read_citizen_pointer
+    from prism.desk_store import load_desk
+    from prism.pointer_store import read_citizen_pointer, read_preview_pointer
 
-    citizen = read_citizen_pointer(data_root)
+    if desk_id is None:
+        desk_id = (
+            read_citizen_pointer(data_root)
+            if cms_mode == "citizen"
+            else read_preview_pointer(data_root)
+        )
+    if desk_id is None:
+        raise RenderError(f"no template bound for cms_mode {cms_mode}")
+    record = load_desk(data_root, desk_id)
     pages: list[BoundPage] = []
-    for folder in _template_folders(cms_root):
-        spec = _load_yaml(folder / "slots.yaml")
-        bound_id = spec.get("bound_vintage_id")
-        if not isinstance(bound_id, str) or bound_id == "":
-            continue
-        if not vintage_dir(data_root, bound_id).exists():
-            continue
-        if cms_mode == "citizen" and bound_id != citizen:
-            continue
-        pages.append(bind_page(data_root, bound_id, folder))
+    root = templates_dir(cms_root)
+    for binding in record.slices:
+        folder = root / binding.template_id
+        pages.append(bind_page(data_root, binding.vintage_id, folder))
     if not pages:
         raise RenderError(f"no template bound for cms_mode {cms_mode}")
     return tuple(pages)
@@ -235,11 +273,7 @@ def bind_page(data_root: Path, vintage_id: str, template_dir: Path) -> BoundPage
     copy_path = template_dir / "template.md"
     spec = _load_yaml(slots_path)
     template_id = str(spec["template_id"])
-    bound_id = spec["bound_vintage_id"]
-    if bound_id != vintage_id:
-        raise RenderError(
-            f"template is bound to {bound_id}; refusing to mix vintage {vintage_id}"
-        )
+    _assert_vintage_matches_template(data_root, vintage_id, template_id)
     manifest = load_manifest(data_root, vintage_id)
     if manifest.vintage_id != vintage_id:
         raise RenderError("one page cannot bind slots from two vintage_ids")

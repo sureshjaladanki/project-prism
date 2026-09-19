@@ -25,10 +25,12 @@ Do not invent extra top-level folders (`apps/`, `packages/`, `web/`). Generated 
 data/cas/{sha256}                   write-once bytes (observations, JSON, rendered pages)
 data/vintages/{vintage_id}/         immutable directory: manifest.json plus
                                     series/{series_id}/ files hard-linked into cas
-data/renders/{vintage_id}/          complete Astro tree; unchanged pages hard-linked
+data/desks/{desk_id}/               immutable directory: desk.json
+                                    (one (template_id, vintage_id) per slice)
+data/renders/{desk_id}/             complete Astro tree; unchanged pages hard-linked
                                     into cas; not citizen-view until the pointer flips
-data/pointers/citizen               vintage_id of the last complete published vintage
-data/pointers/preview               vintage_id for unpublished preview (never an alias of citizen)
+data/pointers/citizen               desk_id of the last complete published desk
+data/pointers/preview               desk_id for unpublished preview (never an alias of citizen)
 data/raw|derived|lineage/           ingest (see data pipeline)
 logs/{run_id}/report.json           what ran, changed, failed — not lineage.json
 ```
@@ -70,7 +72,7 @@ Types for the page layer are generated from Pydantic (`model_json_schema()` → 
 
 Templates in git under `src/cms/`: Markdown copy + YAML slots (selector → series / geography / period). Content Editor never types a numeral into the page.
 
-**Astro SSG:** templates bind per page to one vintage; the desk catalog depends on CMS mode. `cms_mode=preview` lists every bound slice. `cms_mode=citizen` lists published slices only. Publish points the citizen prefix at a finished `data/renders/{vintage_id}/`. Preview is a **different, non-public** prefix: private bucket (or equivalent), `noindex`, signed URL. A second public URL is not isolation. Routes, titles, SEO, preview headers: [web-design.md](web-design.md) (Front-end Architect owns the contract; UI/UX Developer implements).
+**Astro SSG:** templates bind per page to one vintage; the desk catalog depends on CMS mode. `cms_mode=preview` lists every slice on the preview desk. `cms_mode=citizen` lists slices on the citizen desk only. Publish points the citizen prefix at a finished `data/renders/{desk_id}/`. Preview is a **different, non-public** prefix: private bucket (or equivalent), `noindex`, signed URL. A second public URL is not isolation. Routes, titles, SEO, preview headers: [web-design.md](web-design.md) (Front-end Architect owns the contract; UI/UX Developer implements).
 
 Unchanged pages (every bound slot’s series payload checksum unchanged) are hard-linked from cas / the prior render. Re-render only templates whose inputs changed. Do not rebuild and recopy the whole tree because one series moved.
 

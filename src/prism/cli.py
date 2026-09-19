@@ -2,16 +2,28 @@
 
 from __future__ import annotations
 
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
 
 import typer
 
 from prism.citizen_server import serve_citizen
+from prism.desk_store import (
+    DeskStoreError,
+    preview_slices,
+    slices_from_cli,
+    write_desk,
+)
 from prism.ingest import ingest as run_ingest
 from prism.ingest.retrieve import IngestError
 from prism.pipeline import PipelineError, materialise_vintage
-from prism.pointer_store import PublishError, publish_preview, read_preview_pointer
+from prism.pointer_store import (
+    PublishError,
+    publish_citizen,
+    publish_preview,
+    read_preview_pointer,
+)
 from prism.preview_server import serve_preview
 from prism.refresh import lineage_record_blocks_completeness
 from prism.render import render
@@ -128,26 +140,96 @@ def vintage(
         raise typer.Exit(code=1)
 
 
+@app.command("desk")
+def desk_cmd(
+    data_root: Annotated[Path, typer.Option("--data-root")] = Path("data"),
+    slice_spec: Annotated[list[str] | None, typer.Option("--slice")] = None,
+    preview: Annotated[bool, typer.Option("--preview/--no-preview")] = False,
+) -> None:
+    """Write an immutable desk record. Does not render or flip a pointer."""
+
+    try:
+        if preview:
+            specs = preview_slices(data_root)
+        elif slice_spec:
+            specs = slices_from_cli(tuple(slice_spec))
+        else:
+            typer.echo("desk requires --slice slice_id=vintage_id or --preview", err=True)
+            raise typer.Exit(code=1)
+        record = write_desk(
+            data_root,
+            created_at=datetime.now(tz=UTC),
+            slices=specs,
+            completeness=Completeness.complete,
+        )
+    except typer.Exit:
+        raise
+    except (DeskStoreError, VintageStoreError) as exc:
+        typer.echo(f"desk failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(f"desk_id={record.desk_id}")
+    for binding in record.slices:
+        typer.echo(f"{binding.template_id} vintage_id={binding.vintage_id}")
+
+
 @app.command("render")
 def render_cmd(
-    vintage_id: Annotated[str, typer.Option("--vintage-id")],
+    desk_id: Annotated[str, typer.Option("--desk-id")],
     data_root: Annotated[Path, typer.Option("--data-root")] = Path("data"),
     cms_root: Annotated[Path, typer.Option("--cms-root")] = Path("src/cms"),
     set_preview: Annotated[
         bool, typer.Option("--set-preview/--no-set-preview")
     ] = False,
+    cms_mode: Annotated[str, typer.Option("--cms-mode")] = "preview",
 ) -> None:
-    """Bind the desk and write data/renders/{vintage_id}/. Preview includes unpublished slices. Does not flip citizen."""
+    """Bind the desk and write data/renders/{desk_id}/. Does not flip citizen."""
 
     try:
-        dest = render(data_root, vintage_id, cms_root, set_preview=set_preview)
-    except (RenderError, PublishError, VintageStoreError) as exc:
+        dest = render(
+            data_root,
+            desk_id,
+            cms_root,
+            set_preview=set_preview,
+            cms_mode=cms_mode,
+        )
+    except (RenderError, PublishError, VintageStoreError, DeskStoreError) as exc:
         typer.echo(f"render failed: {exc}", err=True)
         raise typer.Exit(code=1) from exc
     typer.echo(f"render={dest.as_posix()}")
-    typer.echo(f"vintage_id={vintage_id}")
-    preview = read_preview_pointer(data_root)
-    typer.echo(f"preview={preview or 'unset'}")
+    typer.echo(f"desk_id={desk_id}")
+    preview_id = read_preview_pointer(data_root)
+    typer.echo(f"preview={preview_id or 'unset'}")
+
+
+@app.command("publish")
+def publish_cmd(
+    desk_id: Annotated[str, typer.Option("--desk-id")],
+    data_root: Annotated[Path, typer.Option("--data-root")] = Path("data"),
+    citizen: Annotated[bool, typer.Option("--citizen/--no-citizen")] = False,
+    contract_tests_passed: Annotated[
+        bool, typer.Option("--contract-tests-passed/--no-contract-tests-passed")
+    ] = False,
+) -> None:
+    """Flip a pointer. Citizen requires --contract-tests-passed."""
+
+    try:
+        if citizen:
+            publish_citizen(
+                data_root,
+                desk_id,
+                render_complete=True,
+                contract_tests_passed=contract_tests_passed,
+            )
+        else:
+            publish_preview(data_root, desk_id, render_complete=True)
+    except PublishError as exc:
+        typer.echo(f"publish failed: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(f"desk_id={desk_id}")
+    if citizen:
+        typer.echo("pointer=citizen")
+    else:
+        typer.echo("pointer=preview")
 
 
 @app.command("preview")
@@ -158,20 +240,20 @@ def preview_cmd(
     bind_pointer: Annotated[
         bool, typer.Option("--bind-pointer/--no-bind-pointer")
     ] = False,
-    vintage_id: Annotated[str | None, typer.Option("--vintage-id")] = None,
+    desk_id: Annotated[str | None, typer.Option("--desk-id")] = None,
 ) -> None:
     """Serve the preview desk (published and unpublished slices) with noindex. Does not flip citizen."""
 
     if bind_pointer:
-        if vintage_id is None:
-            typer.echo("preview --bind-pointer requires --vintage-id", err=True)
+        if desk_id is None:
+            typer.echo("preview --bind-pointer requires --desk-id", err=True)
             raise typer.Exit(code=1)
         try:
-            publish_preview(data_root, vintage_id, render_complete=True)
+            publish_preview(data_root, desk_id, render_complete=True)
         except PublishError as exc:
             typer.echo(f"preview pointer failed: {exc}", err=True)
             raise typer.Exit(code=1) from exc
-        typer.echo(f"preview={vintage_id}")
+        typer.echo(f"preview={desk_id}")
         return
     try:
         serve_preview(data_root, host, port)
