@@ -20,6 +20,7 @@ from prism.paths import (
     CITATION_FILENAME,
     GEOGRAPHY_FILENAME,
     series_dir,
+    vintage_dir,
 )
 from prism.schema import (
     CaveatNote,
@@ -181,23 +182,53 @@ def bind_c3_page(data_root: Path, vintage_id: str, cms_root: Path) -> BoundPage:
     return bind_page(data_root, vintage_id, c3_template_dir(cms_root))
 
 
+def _template_folders(cms_root: Path) -> tuple[Path, ...]:
+    root = templates_dir(cms_root)
+    if not root.is_dir():
+        raise RenderError("CMS templates directory is missing")
+    return tuple(
+        folder
+        for folder in sorted(root.iterdir())
+        if folder.is_dir() and (folder / "slots.yaml").exists()
+    )
+
+
 def bind_pages_for_vintage(
     data_root: Path, vintage_id: str, cms_root: Path
 ) -> tuple[BoundPage, ...]:
     pages: list[BoundPage] = []
-    root = templates_dir(cms_root)
-    if not root.is_dir():
-        raise RenderError("CMS templates directory is missing")
-    for folder in sorted(root.iterdir()):
-        slots_path = folder / "slots.yaml"
-        if not folder.is_dir() or not slots_path.exists():
-            continue
-        spec = _load_yaml(slots_path)
+    for folder in _template_folders(cms_root):
+        spec = _load_yaml(folder / "slots.yaml")
         if spec.get("bound_vintage_id") != vintage_id:
             continue
         pages.append(bind_page(data_root, vintage_id, folder))
     if not pages:
         raise RenderError(f"no template bound at vintage {vintage_id}")
+    return tuple(pages)
+
+
+def bind_pages_for_desk(
+    data_root: Path, cms_root: Path, *, cms_mode: str
+) -> tuple[BoundPage, ...]:
+    """Bind every template this desk can complete. Citizen mode drops unpublished slices."""
+    if cms_mode not in {"preview", "citizen"}:
+        raise RenderError(f"unknown cms_mode {cms_mode}")
+    from prism.pointer_store import read_citizen_pointer
+
+    citizen = read_citizen_pointer(data_root)
+    pages: list[BoundPage] = []
+    for folder in _template_folders(cms_root):
+        spec = _load_yaml(folder / "slots.yaml")
+        bound_id = spec.get("bound_vintage_id")
+        if not isinstance(bound_id, str) or bound_id == "":
+            continue
+        if not vintage_dir(data_root, bound_id).exists():
+            continue
+        if cms_mode == "citizen" and bound_id != citizen:
+            continue
+        pages.append(bind_page(data_root, bound_id, folder))
+    if not pages:
+        raise RenderError(f"no template bound for cms_mode {cms_mode}")
     return tuple(pages)
 
 
@@ -1098,6 +1129,7 @@ __all__ = [
     "bind_c2_page",
     "bind_c3_page",
     "bind_page",
+    "bind_pages_for_desk",
     "bind_pages_for_vintage",
     "c1_template_dir",
     "c2_template_dir",

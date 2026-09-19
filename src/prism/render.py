@@ -1,4 +1,4 @@
-"""Render template + one vintage to a complete static tree. Preview is not citizen."""
+"""Render a CMS desk. Preview includes unpublished slices; citizen does not."""
 
 from __future__ import annotations
 
@@ -26,7 +26,7 @@ from prism.template_bind import (
     BoundPage,
     RenderError,
     assert_single_vintage,
-    bind_pages_for_vintage,
+    bind_pages_for_desk,
     write_contract_schema,
 )
 
@@ -65,11 +65,16 @@ def render(
     cms_root: Path,
     *,
     set_preview: bool = False,
+    cms_mode: str = "preview",
 ) -> Path:
-    pages = bind_pages_for_vintage(data_root, vintage_id, cms_root)
+    if set_preview:
+        cms_mode = "preview"
+    pages = bind_pages_for_desk(data_root, cms_root, cms_mode=cms_mode)
     for page in pages:
-        assert_single_vintage(page, vintage_id)
-    dest = _write_render_tree(data_root, vintage_id, cms_root, pages)
+        assert_single_vintage(page, page.vintage_id)
+    dest = _write_render_tree(
+        data_root, vintage_id, cms_root, pages, cms_mode=cms_mode
+    )
     if set_preview:
         if read_citizen_pointer(data_root) == vintage_id:
             raise RenderError(
@@ -80,7 +85,12 @@ def render(
 
 
 def _write_render_tree(
-    data_root: Path, vintage_id: str, cms_root: Path, pages: tuple[BoundPage, ...]
+    data_root: Path,
+    vintage_id: str,
+    cms_root: Path,
+    pages: tuple[BoundPage, ...],
+    *,
+    cms_mode: str = "preview",
 ) -> Path:
     dest = render_dir(data_root, vintage_id)
     parent = renders_dir(data_root)
@@ -95,7 +105,7 @@ def _write_render_tree(
     if bound_dir.exists():
         shutil.rmtree(bound_dir)
     bound_dir.mkdir()
-    catalog = build_site_catalog(vintage_id, pages)
+    catalog = build_site_catalog(vintage_id, pages, cms_mode=cms_mode)
     allowed = allowed_hrefs(catalog)
     pages = tuple(
         replace(page, body_html=filter_hottest_rail(page.body_html, allowed))

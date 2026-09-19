@@ -24,23 +24,10 @@ const jsonLd = {
     <ul class="fast-facts">
       {facts.map((slice) => (
         <li>
-          <a href={slice.path}>{slice.fact_lede}</a>
+          <a href={slice.path}>{slice.citizen_question}</a>
+          <p class="byline">{slice.fact_lede}</p>
         </li>
       ))}
     </ul>
   )}
-  {site.slices.length > 0 && (
-    <nav class="hottest-rail" aria-label="Featured questions">
-      {site.slices.map((slice) => (
-        <a href={slice.path}>{slice.citizen_question}</a>
-      ))}
-    </nav>
-  )}
-  <ul class="sleeve-index">
-    {site.sleeves.map((sleeve) => (
-      <li>
-        <a href={sleeve.path}>{sleeve.hub_label}</a>
-      </li>
-    ))}
-  </ul>
 </SiteShell>

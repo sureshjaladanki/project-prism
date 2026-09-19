@@ -11,7 +11,7 @@ A civic **CMS** for the portrait in [vision.md](vision.md). Not a folder of hand
 - **Render** — `template + vintage → page`. Same inputs, same page.
 - **Refresh** — when an official source updates, or an editor asks, Ingest lands the new artifact, Pipeline writes a **new** vintage, CMS re-renders, Platform publishes. Periodic or on-demand. Citizen-view moves only to a complete published vintage.
 
-Do not hand-author a citizen page of numbers. Do not fetch a producer website at request time to fill a chart. Citizen-view is a pointer at one complete published vintage.
+Do not hand-author a citizen page of numbers. Do not fetch a producer website at request time to fill a chart. Citizen-view is a pointer at a complete **published** desk. Preview is the same CMS in a second mode: the full desk, including slices that have not been published.
 
 ## System context
 
@@ -30,7 +30,8 @@ Official statistical offices
                 │                            │
                 ▼                            ▼
          Citizen-view                  Preview
-         (published pointer,           (unpublished pointer,
+         (cms_mode=citizen,            (cms_mode=preview,
+          published slices only,        every bound slice,
           world-readable)               not world-readable)
                 ▲                            ▲
                 └──────── editors ───────────┘
@@ -110,14 +111,14 @@ HTTP GET citizen route
 Read citizen_pointer → vintage_id
         │
         ▼
-Serve that vintage’s completed render tree
+Serve that vintage’s completed **citizen** tree
 ```
 
-A citizen route cannot read a non-published vintage.
+A citizen route cannot read a non-published vintage. Unpublished slice URLs 404 on this prefix.
 
 ### Preview
 
-Same render function as citizen-view. Only the pointer differs. Unpublished: private prefix (or equivalent), `noindex`, signed URL (or later authenticated access). A different public URL is not isolation. Preview never aliases `citizen_pointer`.
+Same bind and Astro build as citizen-view. `cms_mode=preview` includes every template that can bind (each **page** still one `vintage_id`). `cms_mode=citizen` includes only slices whose bound vintage is the citizen pointer. Isolation is a different prefix, `noindex`, signed URL (or later authenticated access). A different public URL is not isolation. Preview never aliases `citizen_pointer`.
 
 ### Retained vintages
 
@@ -130,7 +131,7 @@ Logical stores Pipeline and CMS must use. Concrete paths: [repo-conventions.md](
 | Store | Writer | Reader | Rule |
 |-------|--------|--------|------|
 | **Artifact** | Ingest | Pipeline | Derived tables and lineage only. Pipeline does not fetch |
-| **Vintage** | Pipeline | CMS (exactly one id per render) | One directory per `vintage_id`, immutable. Per-series Parquet + JSON; unchanged series hard-linked into CAS |
+| **Vintage** | Pipeline | CMS (exactly one id per **page**) | One directory per `vintage_id`, immutable. Per-series Parquet + JSON; unchanged series hard-linked into CAS |
 | **Render** | CMS | Serving, after pointer flip | One static tree per `vintage_id`. Unchanged pages hard-linked. Citizen-view does not read it until the pointer flips |
 | **Template** | Content Editor (git) | CMS | Slots bind to selectors, not typed numerals |
 | **Pointer** | Platform on publish | CMS on serve | `citizen_pointer` and `preview_pointer`, written atomically |
@@ -174,7 +175,7 @@ Each box is a write boundary, not a repo folder beyond `src/`.
 |-----------|--------|-------|----------|
 | Ingest | raw artifact, derived table, lineage, `source_changed` | citation card | portrait schema, citizen pages |
 | Pipeline | a **new** data vintage | derived table, lineage, caveat notes, geography vintage | fetch PDFs, edit an old vintage, publish |
-| CMS | rendered pages, preview | template store, **one** vintage | paste numbers, scrape at request time |
+| CMS | rendered preview and citizen desks | template store; one `vintage_id` per page | paste numbers, scrape at request time |
 | Platform | schema, pointers, serving | vintages, renders | parsers, citizen copy |
 
 ## Tests that must fail

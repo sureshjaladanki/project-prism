@@ -35,7 +35,7 @@ uv run prism preview
 uv run pytest tests
 ```
 
-`prism preview` serves the preview pointer with `noindex`. It does not flip the citizen pointer. Citizen publish waits for a Trust Auditor pass.
+`prism preview` serves the **preview** desk (`noindex`): every bound slice, including unpublished ones. `prism serve` is **citizen** mode: published slices only. Neither command flips the other pointer. Citizen publish waits for a Trust Auditor pass.
 
 ## Docs
 

@@ -49,9 +49,15 @@ def test_c2_preview_tree_has_population_slice_and_leaves_citizen() -> None:
         in html
     )
     assert ">undefined<" not in html
+    assert 'data-cms-mode="preview"' in html
     assert (
         dest / "people" / "population" / "charts" / "india-residence-2011.vl.json"
     ).exists()
-    assert not (dest / "prices" / "retail-prices" / "index.html").exists()
+    assert (dest / "prices" / "retail-prices" / "index.html").exists()
+    assert (dest / "money" / "union" / "index.html").exists()
+    home = (dest / "index.html").read_text(encoding="utf-8")
+    assert "/prices/retail-prices" in home
+    assert "/people/population" in home
+    assert "/money/union" in home
     assert read_citizen_pointer(DATA_ROOT) == C1_VINTAGE_ID
     assert read_preview_pointer(DATA_ROOT) == C2_VINTAGE_ID

@@ -70,7 +70,7 @@ Types for the page layer are generated from Pydantic (`model_json_schema()` → 
 
 Templates in git under `src/cms/`: Markdown copy + YAML slots (selector → series / geography / period). Content Editor never types a numeral into the page.
 
-**Astro SSG:** `template + one vintage → static HTML`. Same inputs, same page. Publish points the citizen prefix at a finished `data/renders/{vintage_id}/`. Preview is a **different, non-public** prefix: private bucket (or equivalent), `noindex`, signed URL. A second public URL is not isolation. Routes, titles, SEO, preview headers: [web-design.md](web-design.md) (Front-end Architect owns the contract; UI/UX Developer implements).
+**Astro SSG:** templates bind per page to one vintage; the desk catalog depends on CMS mode. `cms_mode=preview` lists every bound slice. `cms_mode=citizen` lists published slices only. Publish points the citizen prefix at a finished `data/renders/{vintage_id}/`. Preview is a **different, non-public** prefix: private bucket (or equivalent), `noindex`, signed URL. A second public URL is not isolation. Routes, titles, SEO, preview headers: [web-design.md](web-design.md) (Front-end Architect owns the contract; UI/UX Developer implements).
 
 Unchanged pages (every bound slot’s series payload checksum unchanged) are hard-linked from cas / the prior render. Re-render only templates whose inputs changed. Do not rebuild and recopy the whole tree because one series moved.
 

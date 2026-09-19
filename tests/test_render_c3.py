@@ -50,6 +50,4 @@ def test_c3_preview_tree_has_union_slice_and_leaves_citizen() -> None:
     assert "unknown / not a table" in html
     assert ">undefined<" not in html
     assert (dest / "money" / "union" / "charts" / "collect-beside-spend.vl.json").exists()
-    assert not (dest / "prices" / "retail-prices" / "index.html").exists()
     assert read_citizen_pointer(DATA_ROOT) == C1_VINTAGE_ID
-    assert read_preview_pointer(DATA_ROOT) == C3_VINTAGE_ID

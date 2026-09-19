@@ -18,6 +18,7 @@ export type SiteSlice = {
   path: string;
   citizen_question: string;
   fact_lede: string;
+  vintage_id: string;
 };
 
 export type SiteHouse = {
@@ -28,6 +29,7 @@ export type SiteHouse = {
 };
 
 export type SiteCatalog = {
+  cms_mode: "preview" | "citizen";
   vintage_id: string;
   sleeves: SiteSleeve[];
   slices: SiteSlice[];

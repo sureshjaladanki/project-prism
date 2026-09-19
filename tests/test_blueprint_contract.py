@@ -184,6 +184,10 @@ def test_04_publish_does_not_move_citizen_pointer_if_required_template_failed(
         "How fast are retail prices rising in India, including food?"
         not in home.split("<title>")[1].split("</title>")[0]
     )
+    assert "/people/population" not in home
+    assert "/money/union" not in home
+    assert not (c1 / "people" / "population" / "index.html").exists()
+    assert not (c1 / "money" / "union" / "index.html").exists()
     assert render_complete_path(DATA_ROOT, C1_VINTAGE_ID).exists()
 
 

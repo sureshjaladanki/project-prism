@@ -43,13 +43,13 @@ Do not wait for a second published slice to move C1 off `/`. Do not retune the p
 
 | Type | Job | Observations |
 |------|-----|----------------|
-| **Desk home** | Featured published questions; sleeve index | Fast-facts slots from **this vintage’s catalog** only |
+| **Desk home** | Bound facts from **this desk’s catalog** | Fast-facts slots from that catalog only |
 | **Sleeve hub** | List of catalog slices in that sleeve | Optional one-line bound fact per slice; not a second explainer |
 | **Slice** | Answer page: question → fact-lede → evidence → method | Required. Scan path in the editorial guidelines |
 | **Geography slice** | Same template, one bound unit | Later, named. Pre-render from **this** vintage. Districts parked |
 | **House** | How this works; sources | No invented figures. Cites if a number appears |
 | **Retained vintage** | What the page said then | Same tree under `/archive/{vintage_id}`; not in the sitemap |
-| **Preview** | Unpublished render of a vintage | Same relative paths; different host; not a page type in the tree |
+| **Preview** | Full desk including unpublished slices | Same relative paths; different host; not a page type in the tree |
 
 Do not add: search, subscribe, social row, press kit, newsletter, chat, “get notified”, download hub, most-viewed, live AQI pin-map, how-to filing pages.
 
@@ -122,32 +122,32 @@ C9–C20 get a `slug` when Charter opens them. Do not mint `/answers/` or a 10-K
 
 ---
 
-## CMS tree (one vintage → one site)
+## CMS tree (desk → site)
 
 Not a hand-built page per charter. Not one Astro route that *is* C1.
 
 ```text
-templates in git  +  one vintage
-        → bind each template this vintage can complete
-        → site.json (route catalog for this vintage only)
+templates in git  +  each template’s bound vintage
+        → bind every template this desk can complete
+        → filter by cms_mode (preview: all; citizen: published only)
+        → site.json (route catalog for this desk)
         → one Astro SSG
         → data/renders/{vintage_id}/
 ```
 
-A template in git that cannot bind (C3 `pending-pipeline` today) is omitted from the catalog. It does not fail the whole tree unless it is a **required** template. It is not listed on home, hubs, or hottest-rail. It is not a citizen URL.
+A template in git that cannot bind (missing vintage) is omitted from the catalog. It does not fail the whole tree unless it is a **required** template. It is not listed on home, hubs, or hottest-rail.
 
 ### Inclusion
 
-| In this vintage’s tree | Rule |
-|------------------------|------|
-| Desk home | Always |
-| Five sleeve hubs | Always, even if the catalog has no slice in that sleeve |
-| House `/how-this-works`, `/sources` | Always |
-| 404 | Always (`404.html` at the tree root) |
-| Slice | Front matter has `slug`, `sleeve`, `citizen_question`, and bind succeeded for **this** `vintage_id` |
-| Geography slice | Later. Not this wave |
-| `/archive/{vintage_id}` | Later. Not this wave |
-| `robots.txt` / `sitemap.xml` | Citizen **serve** only. Not in the shared render tree |
+| In this desk | Preview | Citizen (publish) |
+|--|---------|-------------------|
+| Desk home, five hubs, house, 404 | Always | Always |
+| Slice | Bind succeeded | Bind succeeded **and** `bound_vintage_id` is the citizen pointer |
+| Geography slice | Later | Later |
+| `/archive/{vintage_id}` | Later | Later |
+| `robots.txt` / `sitemap.xml` | Not in the tree | Citizen **serve** only |
+
+C2 and C3 on preview while citizen is still C1 is expected. Do not 301 preview. Do not list unpublished slices on the citizen home.
 
 ### On-disk tree
 
@@ -192,7 +192,7 @@ All `href` and asset URLs in the HTML are root-relative from that origin (`/pric
 
 ### Route catalog (`site.json`)
 
-Bound inputs, not a citizen URL. Do not serve `/site.json`. Home, hubs, header/footer, home `.hottest-rail`, and head tags read this object. They do not glob `src/cms/templates/` to decide what is live.
+Bound inputs, not a citizen URL. Do not serve `/site.json`. Home, hubs, header/footer, home `.fast-facts`, and head tags read this object. They do not glob `src/cms/templates/` to decide what is live.
 
 ```text
 vintage_id
@@ -246,9 +246,9 @@ Site chrome is UI/UX Developer, not Content Editor copy. Tokens and first-screen
 
 1. Skip link + lockup + sleeve nav (the shell)
 2. H1 = desk line: the Purpose sentence in [vision.md](vision.md) (“A shared, checkable picture of India that does not belong to a party, a ministry, or a news cycle.”). Not a slogan box; not a second citizen question
-3. `.fast-facts` — one bound one-liner per catalog slice, Wave order (C1, C2, C3, …), at most four. Do not pad with unpublished templates. Each line links to that slice path
-4. `.hottest-rail` — catalog slices as their `citizen_question`, same Wave order
-5. Sleeve list: five hubs, each with its Hub H1; a hub with no catalog slice stays a link with no figure
+3. `.fast-facts` — one card per catalog slice, Wave order (C1, C2, C3, …), at most four. Do not pad with unpublished templates. The `citizen_question` is the only link, to that slice path. The bound one-liner sits under it and is not a link. This is the only slice list on home. Do not also emit a home `.hottest-rail`
+
+Do not repeat the five sleeve hubs in `main`. Header and footer already list them. A hub with no catalog slice still stays in that chrome (quiet empty, no invented figures). `.hottest-rail` stays a **slice** region (in-page hashes and catalog siblings), not a second home index. `.sleeve-index` stays a **hub** (and house) list of slices, not a third copy of the sleeve nav.
 
 **Sleeve hub.** Hub H1, then each catalog slice in that sleeve as its citizen question. Optional one-line bound fact from that slice. Canonical of every number remains the slice URL.
 
@@ -385,18 +385,19 @@ A citizen route cannot read a non-published vintage. Preview never aliases `data
 
 ## Published vs preview
 
-Same render function: `templates + one vintage → tree`. Same relative paths. Different pointer, different prefix.
+Two CMS modes. Same relative paths. Different pointer, different prefix, different catalog.
 
 ```text
-data/renders/{vintage_id}/          complete tree; not public by itself
-data/pointers/preview               unpublished vintage_id (never an alias of citizen)
-data/pointers/citizen               last complete published vintage_id
+data/renders/{vintage_id}/          complete tree for that pointer; not public by itself
+data/pointers/preview               preview desk (cms_mode=preview)
+data/pointers/citizen               published desk (cms_mode=citizen)
 ```
 
 ```text
 Citizen GET  /prices/retail-prices
         → read citizen pointer → serve that tree’s matching file
         → inject canonical / og:url / JSON-LD origin
+        → unpublished slice paths 404
 
 Preview GET  {private prefix}/prices/retail-prices
         → read preview pointer → serve that tree’s matching file
@@ -407,18 +408,19 @@ Preview GET  {private prefix}/prices/retail-prices
 | | Preview | Published (citizen-view) |
 |--|---------|---------------------------|
 | Pointer | `data/pointers/preview` | `data/pointers/citizen` |
+| Catalog | Every bound slice (C1–C3 when each can bind) | Slices on the citizen vintage only |
 | Who | Editors, Trust, Charter | Citizens |
 | Host | Private bucket / signed URL / local preview server | Public origin |
 | Isolation | Different prefix + auth/`noindex`. A second *public* URL is not isolation | World-readable |
 | Indexing | Disallow all; no sitemap | `Allow: /`; sitemap of live routes (when generated) |
 | Banner | Serving chrome only | None |
-| Flip | After a complete render; must not equal citizen in the same pass | Last step; nine tests pass; `COMPLETE` marker |
+| Flip | After a complete preview render; must not equal citizen in the same pass | Last step; nine tests pass; `COMPLETE` marker |
 | On fail | Keep previous preview or none | Keep previous citizen vintage |
 | Retained | Not preview | Prior citizen vintages at `/archive/{vintage_id}` |
 
 Local preview today: `prism.preview_server` serves the preview tree with `PREVIEW_HEADERS` in `src/prism/serving.py`. Do not weaken those headers. Teach it the slashless → `index.html` map when the tree is nested.
 
-**Tests this surface must keep.** Blueprint test 5: a citizen route cannot read a non-published vintage; preview is not world-readable. Test 4: do not move `citizen_pointer` if a required template failed. Test 6: one page, one `vintage_id`. After this tree ships, the required C1 file is `prices/retail-prices/index.html`, not root `index.html`.
+**Tests this surface must keep.** Blueprint test 5: a citizen route cannot read a non-published vintage; preview is not world-readable. Test 4: do not move `citizen_pointer` if a required template failed. Test 6: one **page**, one `vintage_id` (the preview desk may hold several pages). After this tree ships, the required C1 file is `prices/retail-prices/index.html`, not root `index.html`.
 
 ---
 

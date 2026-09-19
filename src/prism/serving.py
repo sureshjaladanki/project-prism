@@ -113,7 +113,7 @@ def resolve_preview_render(data_root: Path) -> Path:
     vintage_id = read_preview_pointer(data_root)
     if vintage_id is None:
         raise ServeError("no preview pointer")
-    return _require_complete_render(data_root, vintage_id, require_c1_slice=False)
+    return _require_complete_render(data_root, vintage_id)
 
 
 def citizen_may_read(data_root: Path, vintage_id: str) -> bool:

@@ -121,7 +121,14 @@ def _keep_anchor(match: re.Match[str], allowed_paths: set[str]) -> str:
     return ""
 
 
-def build_site_catalog(vintage_id: str, pages: tuple[BoundPage, ...]) -> dict[str, Any]:
+def build_site_catalog(
+    vintage_id: str,
+    pages: tuple[BoundPage, ...],
+    *,
+    cms_mode: str = "preview",
+) -> dict[str, Any]:
+    if cms_mode not in {"preview", "citizen"}:
+        _fail(f"unknown cms_mode {cms_mode}")
     seen: set[tuple[str, str]] = set()
     slices: list[dict[str, str]] = []
     for page in pages:
@@ -138,10 +145,12 @@ def build_site_catalog(vintage_id: str, pages: tuple[BoundPage, ...]) -> dict[st
                 "path": page.path,
                 "citizen_question": page.citizen_question,
                 "fact_lede": page.fact_lede,
+                "vintage_id": page.vintage_id,
             }
         )
     slices.sort(key=lambda item: (CHARTER_ORDER.get(item["charter"], 99), item["path"]))
     return {
+        "cms_mode": cms_mode,
         "vintage_id": vintage_id,
         "sleeves": [
             {

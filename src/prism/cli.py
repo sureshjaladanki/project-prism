@@ -120,7 +120,7 @@ def render_cmd(
         bool, typer.Option("--set-preview/--no-set-preview")
     ] = False,
 ) -> None:
-    """Bind templates at one vintage and write data/renders/{vintage_id}/. Does not flip citizen."""
+    """Bind the desk and write data/renders/{vintage_id}/. Preview includes unpublished slices. Does not flip citizen."""
 
     try:
         dest = render(data_root, vintage_id, cms_root, set_preview=set_preview)
@@ -143,7 +143,7 @@ def preview_cmd(
     ] = False,
     vintage_id: Annotated[str | None, typer.Option("--vintage-id")] = None,
 ) -> None:
-    """Serve the preview pointer with noindex. Does not flip citizen."""
+    """Serve the preview desk (published and unpublished slices) with noindex. Does not flip citizen."""
 
     if bind_pointer:
         if vintage_id is None:

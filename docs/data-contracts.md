@@ -137,9 +137,15 @@ If the vintage has no matching observation, the slot renders as unknown / not pu
 ## Pointers
 
 ```text
-citizen_pointer:    vintage_id of the last complete published vintage
-preview_pointer:    vintage_id for unpublished preview (never an alias of citizen)
+citizen_pointer:    vintage_id of the last complete published desk
+preview_pointer:    vintage_id of the current preview desk (never an alias of citizen)
+cms_mode:           citizen | preview
 retained_vintages:  prior published vintage_ids stay addressable
 ```
 
-Preview and citizen-view are different pointers. A citizen route reads only `citizen_pointer`. How the pointer is flipped atomically is serving, not schema: [architectural-blueprint.md](architectural-blueprint.md).
+Two CMS modes, two pointers, same relative paths.
+
+- **citizen** — only slices whose template `bound_vintage_id` is the citizen pointer. Home, hubs, and hottest-rail list those slices only.
+- **preview** — every template that can bind. Unpublished slices are on this prefix only. Each page still binds one `vintage_id`; the desk may hold C1, C2, and C3 pages from different vintages.
+
+A citizen route reads only `citizen_pointer`. How the pointer is flipped atomically is serving, not schema: [architectural-blueprint.md](architectural-blueprint.md).

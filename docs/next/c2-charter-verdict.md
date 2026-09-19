@@ -21,4 +21,4 @@ Citizen HTTP still reads only `dv-20260916-234e263c8588`. Render for C2 is `data
 
 ## Next
 
-Platform Architect: a published tree that can hold C1 and C2 without mixing vintages on one page, or an explicit rule that C2 waits until a later combined vintage. Do not start C4–C20 in this close. Do not recode geography frames. Do not pull district files.
+Platform Architect: two CMS modes are named. Preview binds every complete slice; citizen-view lists only slices on `citizen_pointer` (C1 today). Do not start C4–C20 in this close. Do not recode geography frames. Do not pull district files.

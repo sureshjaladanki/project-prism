@@ -165,12 +165,19 @@ body {
   list-style: none;
 }
 
-.fast-facts a {
-  display: block;
+.fast-facts li {
   background: var(--card);
   border: var(--hair) solid var(--rule);
   padding: var(--space-4);
-  color: var(--ink);
+}
+
+.fast-facts a {
+  display: block;
+  min-height: 44px;
+}
+
+.fast-facts .byline {
+  margin: var(--space-2) 0 0;
 }
 
 .sleeve-index {
