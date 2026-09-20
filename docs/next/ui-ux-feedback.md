@@ -1,6 +1,6 @@
 # UI/UX feedback
 
-Principal. Recorded 2026-09-20 against the 2026-09-19 pass: [ui-ux-change-plan.md](ui-ux-change-plan.md) and the rewritten [design-system.md](../design-system.md). This file is the direction note. It does not amend those contracts until UI/UX Developer acts.
+Principal. Recorded 2026-09-20 against the 2026-09-19 pass: [ui-ux-change-plan.md](ui-ux-change-plan.md) and the then-current contract, now [design-system-v1.md](../archive/design-system-v1.md). This file is the direction note. The ruling now lives in [design-system.md](../design-system.md) (**v2**).
 
 ```text
 about:          preview desk look vs the 2026-09-19 change plan
@@ -9,8 +9,8 @@ got:            quiet, measurable, austere — reads boring and non-intuitive
 layout:         prose at --measure 40rem, charts at --desk 68rem — looks misaligned
 keeps:          Phase A fit and contrast (3.2px labels, bleeding stats, hole AA)
 forbids:        USAFacts costume (magenta, cream plot, Aeonik, wordmark, search, chat)
-status:         feedback only; design-system.md not reopened in this file
-next_persona:   ui-ux-developer
+status:         folded into design-system.md v2; v1 archived
+next_persona:   ui-ux-developer (Phase E on the change plan)
 ```
 
 ## What was wanted
@@ -54,4 +54,4 @@ Out of scope here: routes, slugs, citizen copy, pointer flips, USAFacts costume,
 
 ## Done when
 
-UI/UX Developer has either folded this ruling into `design-system.md` and the change plan, or recorded a named refuse. Until then, do not treat the 2026-09-19 plan as the last word on first-screen width or on whether the desk may look welcoming.
+Folded into [design-system.md](../design-system.md) (**v2**). Previous contract: [design-system-v1.md](../archive/design-system-v1.md). Implementation is [ui-ux-change-plan.md](ui-ux-change-plan.md) Phase E. This file stays the direction note; do not treat the 2026-09-19 plan as the last word on first-screen width or tone.

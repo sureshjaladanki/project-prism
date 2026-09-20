@@ -1,6 +1,6 @@
 # Team
 
-Agent personas that can ship [vision.md](vision.md). They are roles, not people. The Cursor parent picks one persona per pass. Source Librarian and Trust Auditor run as stand-alone Cursor agents (isolated context). Every other persona is read and done in the parent. Billed models run only as packed sub-agents of that persona.
+Agent personas that can ship [vision.md](vision.md). They are roles, not people. The Cursor parent picks one persona per pass. Source Librarian and Trust Auditor run as stand-alone Cursor agents (isolated context). Every other persona is read and done in the parent. Billed models run only as packed sub-agents of that persona, and only for the slice a Cursor model cannot finish ([agent-guidelines.md](agent-guidelines.md)).
 
 House rules every persona follows: official sources only; identify the data requirement, then the producing office, then fetch from official government agencies that can source that dependency (producing office first preference); cite producer, series, date, and fetch source; show, don’t spin; India as it is governed (Union, states, Union Territories, districts); when series break, lag, or disagree, say so. Not a newsroom, think tank, forecast, or partisan report card. Bound ranks of a published series are facts when the vintage supports them; they are not a government scorecard. Prism may name derived work on official series (“Analysis by Prism”) next to the producer cite; the agency remains the producer.
 
@@ -110,5 +110,5 @@ Not extra members. Methodologist and Content Editor wear one sleeve per task:
 1. Match the job to one row in the roster. Tokens, type, colour, chart chrome, render, and the **presentation pass** are UI/UX Developer against [design-system.md](design-system.md). Routes, titles, SEO, nav, and preview HTTP are Front-end Architect against [web-design.md](web-design.md). Citizen copy is Content Editor against [editorial-guidelines.md](editorial-guidelines.md).
 2. **Source Librarian** and **Trust Auditor**: launch that Cursor agent. Do not play the role in the parent. Pack one job, constraints, paths, and what to return. They start with a clean context — no chat history.
 3. Every other persona: read that file and do the job in the parent. Do not blend two personas in one pass. **Content Editor** also reads [editorial-guidelines.md](editorial-guidelines.md) (Cursor rule `content-editor-editorial`). **Front-end Architect** also reads [web-design.md](web-design.md). **UI/UX Developer** also reads [design-system.md](design-system.md). Other personas do not.
-4. If a billed model is needed, pack the same way. Do not paste chat history or whole files.
+4. If a billed model is needed, pack the same way. Do not paste chat history or whole files. Keep billed quota on the judgment slice; Cursor models do the rest ([agent-guidelines.md](agent-guidelines.md)).
 5. Hand off with the output the next persona lists as input.

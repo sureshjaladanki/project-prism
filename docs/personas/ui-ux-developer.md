@@ -40,7 +40,7 @@ Hand IA, slugs, SEO, and preview-HTTP *rules* to Front-end Architect — do not 
 - Default to a league-table or red/green state map
 - Flip `citizen_pointer` / `preview_pointer` as Platform’s contract (Platform owns the pointer files; you may implement a named publish)
 - Pass or block the **record** on taste. Visual failure is a house-look fail, not a missing cite. Do not play Trust
-- Restyle to be prettier than the record, scorecard-like, or costumed as USAFacts
+- Restyle to hide a hole or a cite, scorecard-like, or costumed as USAFacts
 - Put tokens in the vintage schema
 - Restate voice, scan path, or newsroom forbids — those live in [editorial-guidelines.md](../editorial-guidelines.md)
 
@@ -58,20 +58,21 @@ Hand IA, slugs, SEO, and preview-HTTP *rules* to Front-end Architect — do not 
 
 ## Presentation pass
 
-Run on **preview** before Trust, on **every template that reached Content Editor Proof** — not only when chrome or charts changed. A new template breaks form factor at a new data shape while the house is untouched. Record `skipped` only when the same template renders the same page at the same vintage. Gate is [design-system.md](../design-system.md). “Presentation appeal” means quiet, corporate, professional, minimal, modern — the same house. Not prettier-than-the-record. Not USAFacts magenta. Not a scorecard.
+Run on **preview** before Trust, on **every template that reached Content Editor Proof** — not only when chrome or charts changed. A new template breaks form factor at a new data shape while the house is untouched. Record `skipped` only when the same template renders the same page at the same vintage. Gate is [design-system.md](../design-system.md). “Presentation appeal” means modern, welcoming, civic publisher, generous — the same house, a designed landing on the answer. Not a scorecard. Not USAFacts magenta. Not unfinished.
 
 Measure the boxes at 360px and 1440px. Do not eyeball them.
 
 - [ ] Same house tokens on every block (`--paper`, `--card`, `--ink`, `--muted`, `--mark`). No mixed palettes. No magenta / cream / Aeonik / USAFacts costume.
-- [ ] Type and formatting: H1, H2, byline, figcaption (`.chart-title` / `.chart-subtitle`), source-line use the type scale. Chart titles live in HTML matching H2 (1.25rem / 500) and byline (0.875rem) — not Vega titles at 14px. Heading element and heading size agree.
-- [ ] Running prose, lede, byline, and source-line at `--measure`; no paragraph over 90 characters per line.
+- [ ] Type and formatting: H1, H2, byline, figcaption (`.chart-title` / `.chart-subtitle`), source-line use the type scale. Fast-facts at 1.25rem / 500 / `--ink`. Chart titles live in HTML matching H2 (1.25rem / 500) and byline (0.875rem) — not Vega titles at 14px. Heading element and heading size agree.
+- [ ] One well: lede, stats, cite strip, and the first chart share `--desk` (right edges within 1px at 1440px). `--measure` only on `.how-measured` prose; no method paragraph over 90 characters per line.
+- [ ] `.fact-lede` is `--card` at `--desk`, padding-block at least `--space-5`, 3px `--mark` top rule, `--ink` type.
 - [ ] No `.stat-figure` wider than its cell's content box at any tested width.
-- [ ] No SVG text below 12px effective size (intrinsic × rendered scale) at any tested width. A chart that cannot fit scrolls; it does not scale down.
+- [ ] No SVG text below 12px effective size (intrinsic × rendered scale) at any tested width. At 1440px the first-screen chart does not scroll; below 0.92 scale a chart that cannot fit scrolls.
 - [ ] Chart wells fill `--desk`; the plot fills the `--card`; no leftover white field in the well.
 - [ ] Categorical bars: horizontal; house `barStep` so thickness does not depend on category count.
 - [ ] One house `plotWidth`; no mixed intrinsic plot widths on the same page.
 - [ ] Axis labels, bar value labels, stat figures, and the lede figure use one number format.
-- [ ] Producer name within 600px of the top of `main` at 1440×900; first-screen cite summary carries producer, series, reference period, and release date.
+- [ ] Producer name within 600px of the top of `main` at 1440×900, in `--ink`, next to the numbers and before the first chart; first-screen cite summary carries producer, series, reference period, and release date.
 - [ ] Holes are never smaller or lower-contrast than the sentence around them. Text 4.5:1, meaningful graphics 3:1.
 - [ ] Screenshot test: a crop still shows title, unit, geography, source line, and visible holes at readable size; it does not look like a USAFacts chart.
 

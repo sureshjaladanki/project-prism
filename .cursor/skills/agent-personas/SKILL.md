@@ -20,6 +20,6 @@ description: >-
 5. **Content Editor:** also read `docs/editorial-guidelines.md` and follow `.cursor/rules/content-editor-editorial.mdc`. Do not apply that editorial rule under any other persona.
 6. **Front-end Architect:** also read `docs/web-design.md`. Do not apply that file as a presentation pass.
 7. **UI/UX Developer:** also read `docs/design-system.md`. Do not apply that file as site IA or as citizen copy.
-8. If a billed model is needed, pack the same way.
+8. If a billed model is needed, pack the same way. Maximise Cursor vs billed quota (`docs/agent-guidelines.md`).
 
 Do not mix two personas in one pass. Do not skip Trust Auditor on citizen-facing work. The visual contract and civic CMS are UI/UX Developer against `docs/design-system.md`. The presentation pass (visual consistency, type/formatting, chart form factor) is UI/UX Developer against that file — not Front-end Architect, not Trust, not a fifth Content Editor writing pass. Site IA, URLs, SEO, and preview HTTP are Front-end Architect against `docs/web-design.md`.

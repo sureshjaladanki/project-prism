@@ -1,6 +1,6 @@
 # UI/UX change plan
 
-UI/UX Developer. Visual review of the preview desk at `localhost:4321` on 2026-09-19, and the plan to fix what it found. Standing contract: [design-system.md](../design-system.md) — rewritten in this pass, and this plan implements it. Routes and slugs are [web-design.md](../web-design.md) (Front-end Architect) and are not reopened here. Copy is [editorial-guidelines.md](../editorial-guidelines.md) (Content Editor). Front-end's remaining-work list is [web-app-execution-plan.md](web-app-execution-plan.md); this plan reorders its phases and says why.
+UI/UX Developer. Visual review of the preview desk at `localhost:4321` on 2026-09-19, and the plan to fix what it found. Standing contract: [design-system.md](../design-system.md) (**v2**) — replaced 2026-09-20 for the welcome ruling ([ui-ux-feedback.md](ui-ux-feedback.md)). v1 is [design-system-v1.md](../archive/design-system-v1.md). This plan’s Phases A–D implemented v1. **Phase E** implements v2. Do not implement Phase A harder. Routes and slugs are [web-design.md](../web-design.md) (Front-end Architect) and are not reopened here. Copy is [editorial-guidelines.md](../editorial-guidelines.md) (Content Editor). Front-end's remaining-work list is [web-app-execution-plan.md](web-app-execution-plan.md); this plan reorders its phases and says why.
 
 Three words, once. A **sleeve** is one of the five topic families and the first segment of a URL. A **slice** is one citizen question on one stable URL. A **vintage** is one dated snapshot of observations, citations and caveats; a page binds to exactly one.
 
@@ -101,14 +101,14 @@ Blocking. Nothing else is worth checking until these pass.
 | A1 | `--hole` → `#6B6B6B`; `--hole-band` → `#E3DFD8`; add `--rule-strong` `#8C857A`; add `--break` to `cssVars` (it exists in `color` but never reaches `:root`) | `theme.ts` |
 | A2 | `.observation-missing` inherits its sentence's size; keep italic and `--hole`. Drop the 0.8125rem override | `desk.css` |
 | A3 | `.stat { container-type: inline-size; min-width: 0 }`; `.stat-figure { font-size: clamp(1.75rem, 14.5cqi, 2.75rem) }`; `.stat-row` → `repeat(auto-fit, minmax(min(100%, 16rem), 1fr))` | `desk.css` |
-| A4 | Apply `--measure` to running prose, `.fact-lede p`, `.byline`, `.source-line`, `.fast-facts` one-liners and the current breadcrumb crumb. Keep `--desk` on `.stat-row`, `figure.chart`, `.citation-card`, header and footer | `desk.css` |
+| A4 | Apply `--measure` to running prose, `.fact-lede p`, `.byline`, `.source-line`, `.fast-facts` one-liners and the current breadcrumb crumb. Keep `--desk` on `.stat-row`, `figure.chart`, `.citation-card`, header and footer. **Superseded 2026-09-20:** `--measure` is method prose only; hero is one `--desk` well (Phase E). Do not re-apply A4. | `desk.css` |
 | A5 | `chart.fitWidth` 1056 → **1008**; iterate the fit pass until every chart on a page converges on one intrinsic width | `theme.ts`, `render-chart.ts` |
 | A6 | Chart legibility floor: SVG keeps its intrinsic width down to a 0.92 scale, then `figure.chart` scrolls. `overflow-x: auto` is already there and is dead today because `max-width: 100%` never lets the SVG exceed the box | `desk.css`, `render-chart.ts` |
 | A7 | One number format for axis labels and bar value labels, read from a single token — replace the hardcoded `format: ".2~f"` in `addBarValueLabels` | `theme.ts`, `render-chart.ts` |
 | A8 | Derive `valueLabelPad` from the longest formatted label instead of a flat 96px, which leaves 99–125px of dead white on every bar well today | `render-chart.ts` |
 | A9 | Axis domain and any meaningful line move from `--rule` to `--rule-strong`; grid stays `--rule` and stays decorative | `theme.ts` |
 
-Acceptance: at 360, 480, 768, 1024 and 1440px — no `.stat-figure` wider than its cell's content box; no SVG text under 12px effective size; no paragraph over 90 characters; every chart on a page at one intrinsic width; `--hole` at 4.8:1.
+Acceptance: at 360, 480, 768, 1024 and 1440px — no `.stat-figure` wider than its cell's content box; no SVG text under 12px effective size; method paragraphs over 90 characters (hero is `--desk`, not this box); every chart on a page at one intrinsic width; `--hole` at 4.8:1.
 
 ### Phase B — Make the first screen checkable (UI/UX Developer, R7)
 
@@ -116,7 +116,7 @@ Acceptance: at 360, 480, 768, 1024 and 1440px — no `.stat-figure` wider than i
 |---|--------|-------|
 | B1 | Emit the first-screen cite as a `<details class="citation-card source-byline cite-strip">` inside `hero`, after the stat row and before the first chart. The templates already carry the `cite-view: first-screen` contract as a comment; this makes it a rendered element | `template_bind.py`, templates |
 | B2 | Summary is always producer · series · reference period · released {date}. A missing field fails the render — C2's line omits the release date today | `template_bind.py` |
-| B3 | `.cite-strip` styling: same card language, hero margins, 44px summary hit, `--muted` summary, `--ink` on open. Not a fifth panel style | `desk.css` |
+| B3 | `.cite-strip` styling: same well as the numbers, hero margins, 44px summary hit, producer `--ink`, rest `--muted`. Not a fifth panel style. **Amended 2026-09-20:** not an all-`--muted` codebook strip (Phase E). | `desk.css` |
 | B4 | Section headings `<h3>` → `<h2>`; delete the `article.portrait > .cite-view h3` size override that was papering over it | `template_bind.py`, `desk.css` |
 
 Acceptance: the producer name is within 600px of the top of `main` at 1440×900 on all three slices; the full cards are still in the bottom `.source-stack`; no new route, fragment or `/sources` per-slice page (R7).
@@ -142,6 +142,21 @@ Acceptance: as in the Front-end plan, plus the home fast-fact reads as a fact an
 | D4 | C2's hero chart plots exactly the three figures in the stat row above it, with the same labels. Either it earns a dimension the stat row does not have, or the stat row is the chart | Content Editor (chart meaning), UI/UX (form factor) |
 | D5 | Fold R1, R3, R4 into `web-design.md` as contract text | Front-end Architect |
 | D6 | Preview banner (R5). Tokens specified in `design-system.md`: `.preview-banner`, `--card` on `--paper`, hairline `--rule`, `Preview · not published` plus the tree `vintage_id` in IBM Plex Mono 0.75rem, no link and no control inside it so the skip link stays the first focusable element, injected at serve and never in the citizen tree | Platform Architect |
+
+### Phase E — Welcome ruling (UI/UX Developer)
+
+Blocking on first-screen width and tone. Do not reopen A1–A3, A5–A9, or hole contrast. Direction: [ui-ux-feedback.md](ui-ux-feedback.md). Contract: [design-system.md](../design-system.md).
+
+| # | Change | Files |
+|---|--------|-------|
+| E1 | First screen is one `--desk` well. Remove `--measure` from `.fact-lede`, `.byline`, `.source-line`, `.cite-strip`, `.fast-facts .fact`, and the current breadcrumb crumb. Shared left **and** right edge with `.stat-row` and `figure.chart`. | `desk.css` |
+| E2 | `--measure` only on `.how-measured` running prose (and other method-only copy). A `.portrait-section` that contains a chart stays `--desk`. | `desk.css` |
+| E3 | `.fact-lede` is the landing: `--card` at `--desk`, padding-block at least `--space-5`, 3px `--mark` **top** rule (not a narrow left-rule column), `--ink` type. | `desk.css` |
+| E4 | `.cite-strip` sits after lede and stats, before the first chart, same width. Summary: producer `--ink`, rest `--muted`. Not a muted dump. | `desk.css`, `template_bind.py` if order differs |
+| E5 | `.fast-facts .fact` is 1.25rem / 500 / `--ink`. Home’s designed moment is the fact grid, not a display-size H1. | `desk.css` |
+| E6 | At 1440px the first-screen `figure.chart` must not show a horizontal scrollbar. Scroll remains the fallback below 0.92 scale. | `desk.css`, `render-chart.ts` if the well still shrinks type at desk width |
+
+Acceptance: at 1440px, computed content widths of `.fact-lede`, `.stat-row`, `.cite-strip`, and the first `figure.chart` match within 1px; `.how-measured` paragraphs ≤ 90 characters; producer in `--ink` within 600px of `main`; no 12px-floor or stat-bleed regressions at 360 / 768 / 1440px.
 
 ## 5. Editorial visual-review gate
 
@@ -182,6 +197,5 @@ refresh:             no
 presentation_pass:   fail  (live desk: chart text at 3.2px on 360px; stat figure 58px
                             outside its cell at 768px; producer below the fold;
                             --hole at 3.09:1; prose at 124 characters)
-next_persona:        ui-ux-developer (Phase A), then content-editor (404 sentence, R8
-                     grouping), then trust-auditor on preview
+next_persona:        ui-ux-developer (Phase E), then trust-auditor on preview
 ```

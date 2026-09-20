@@ -30,3 +30,5 @@ When Front-end Architect is the active persona, also read `docs/web-design.md`. 
 When UI/UX Developer is the active persona, also read `docs/design-system.md`. Do not treat that file as site IA or as citizen copy.
 
 First crew: Charter Editor, Source Librarian, Methodologist. When a slice becomes a product, Platform Architect sets the CMS and refresh contract before anyone builds a page. Front-end Architect holds `docs/web-design.md` before UI/UX invents a route. UI/UX Developer holds `docs/design-system.md` before inventing chrome. Trust Auditor before anything a citizen sees. Do not play Source Librarian or Trust Auditor in the parent.
+
+If a billed model is needed, follow `docs/agent-guidelines.md`: maximise Cursor vs billed quota; pack only the slice a Cursor model cannot finish.

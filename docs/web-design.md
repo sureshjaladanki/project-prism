@@ -1,6 +1,6 @@
 # Web design
 
-Front-end Architect. Information architecture, SEO, navigation, and HTTP surface of the civic CMS. Persona: [front-end-architect.md](personas/front-end-architect.md). How a slice **looks** is [design-system.md](design-system.md) (UI/UX Developer). How it **reads** is [editorial-guidelines.md](editorial-guidelines.md) (Content Editor). Serving pointers: [architectural-blueprint.md](architectural-blueprint.md) (Platform). Topic menu: [topic-charters.md](next/topic-charters.md).
+Front-end Architect. Information architecture, SEO, navigation, and HTTP surface of the civic CMS. Persona: [front-end-architect.md](personas/front-end-architect.md). Tone: [design-philosophy.md](design-philosophy.md). How a slice **looks** is [design-system.md](design-system.md) (UI/UX Developer). How it **reads** is [editorial-guidelines.md](editorial-guidelines.md) (Content Editor). Serving pointers: [architectural-blueprint.md](architectural-blueprint.md) (Platform). Topic menu: [topic-charters.md](next/topic-charters.md).
 
 ```text
 role:           civic fact desk — findable official numbers, no verdict
@@ -458,7 +458,7 @@ C2, when Content Editor adds the template: `sleeve: people`, `slug: population`,
 
 ## Out of scope
 
-Visual tokens, chart form factor, presentation pass ([design-system.md](design-system.md), UI/UX Developer). Voice and scan path ([editorial-guidelines.md](editorial-guidelines.md)). Pointer atomicity and `CITIZEN_ORIGIN` as infrastructure ([architectural-blueprint.md](architectural-blueprint.md)). Dark mode, a mobile app, ISR, request-time fetch, engagement SDK.
+Visual tokens, chart form factor, presentation pass ([design-system.md](design-system.md), UI/UX Developer). Tone ([design-philosophy.md](design-philosophy.md)). Voice and scan path ([editorial-guidelines.md](editorial-guidelines.md)). Pointer atomicity and `CITIZEN_ORIGIN` as infrastructure ([architectural-blueprint.md](architectural-blueprint.md)). Dark mode, a mobile app, ISR, request-time fetch, engagement SDK.
 
 ---
 
