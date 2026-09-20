@@ -1,6 +1,6 @@
 # C2 charter
 
-Charter Editor. Opens Wave 1 slice **C2** for first crew. C1 in/out/source_class unchanged. C1 ship is a separate track ([c1-charter-verdict.md](c1-charter-verdict.md)). This note does not unpublish C1 and does not ship C2.
+Charter Editor. Opens Wave 1 slice **C2** for first crew. C1 in/out/source_class unchanged. C1 ship is a separate track ([c1-charter-verdict.md](../archive/c1-charter-verdict.md)). This note does not unpublish C1 and does not ship C2.
 
 Catalogue: [topic-charters.md](topic-charters.md). C1 cards (the gate): [c1-citation-cards.md](c1-citation-cards.md).
 

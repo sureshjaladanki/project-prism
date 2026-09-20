@@ -11,9 +11,9 @@ from pathlib import Path
 
 from prism.cms_site import (
     allowed_hrefs,
+    apply_hottest_rail,
     build_site_catalog,
     dump_site_catalog,
-    filter_hottest_rail,
 )
 from prism.paths import (
     RENDER_COMPLETE_MARKER,
@@ -189,7 +189,15 @@ def _write_render_tree(
     catalog = build_site_catalog(desk_id, pages, cms_mode=cms_mode)
     allowed = allowed_hrefs(catalog)
     pages = tuple(
-        replace(page, body_html=filter_hottest_rail(page.body_html, allowed))
+        replace(
+            page,
+            body_html=apply_hottest_rail(
+                page.body_html,
+                allowed_paths=allowed,
+                current_path=page.path,
+                slices=catalog["slices"],
+            ),
+        )
         for page in pages
     )
     _write_bound_inputs(bound_dir, catalog, pages)

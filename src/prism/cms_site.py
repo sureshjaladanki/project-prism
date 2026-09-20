@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import html
 import json
 import re
 from dataclasses import dataclass
@@ -21,7 +22,7 @@ SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 FACT_LEDE_RE = re.compile(r'<div class="fact-lede">(.*?)</div>', re.DOTALL)
 TAG_RE = re.compile(r"<[^>]+>")
 HOTTEST_RAIL_RE = re.compile(
-    r'(<nav class="hottest-rail"[^>]*>)(.*?)(</nav>)',
+    r'(<nav\b[^>]*class="hottest-rail"[^>]*>)(.*?)(</nav>)',
     re.DOTALL | re.IGNORECASE,
 )
 ANCHOR_RE = re.compile(
@@ -104,12 +105,49 @@ def plain_fact_lede(body_html: str) -> str:
     return text
 
 
+def fact_lede_one_line(text: str) -> str:
+    match = re.match(r"(.+?\.)(?:\s+|$)", text)
+    line = (match.group(1) if match is not None else text).strip()
+    if line == "":
+        _fail("derived fact-lede one-liner is empty while the card shows")
+    return line
+
+
 def filter_hottest_rail(body_html: str, allowed_paths: set[str]) -> str:
     def replace_nav(match: re.Match[str]) -> str:
         inner = ANCHOR_RE.sub(
             lambda anchor: _keep_anchor(anchor, allowed_paths), match.group(2)
         )
         return f"{match.group(1)}{inner}{match.group(3)}"
+
+    return HOTTEST_RAIL_RE.sub(replace_nav, body_html)
+
+
+def apply_hottest_rail(
+    body_html: str,
+    *,
+    allowed_paths: set[str],
+    current_path: str,
+    slices: list[dict[str, str]],
+) -> str:
+    injected = _inject_hottest_rail_siblings(body_html, current_path, slices)
+    return filter_hottest_rail(injected, allowed_paths)
+
+
+def _inject_hottest_rail_siblings(
+    body_html: str, current_path: str, slices: list[dict[str, str]]
+) -> str:
+    siblings = [item for item in slices if item["path"] != current_path][:3]
+    if not siblings:
+        return body_html
+    extra = "".join(
+        f'<a href="{html.escape(item["path"], quote=True)}">'
+        f"{html.escape(item['citizen_question'])}</a>"
+        for item in siblings
+    )
+
+    def replace_nav(match: re.Match[str]) -> str:
+        return f"{match.group(1)}{match.group(2)}{extra}{match.group(3)}"
 
     return HOTTEST_RAIL_RE.sub(replace_nav, body_html)
 
@@ -145,6 +183,7 @@ def build_site_catalog(
                 "path": page.path,
                 "citizen_question": page.citizen_question,
                 "fact_lede": page.fact_lede,
+                "fact_lede_one_line": fact_lede_one_line(page.fact_lede),
                 "vintage_id": page.vintage_id,
             }
         )
@@ -189,8 +228,10 @@ __all__ = [
     "SLEEVES",
     "SLEEVE_BY_TOKEN",
     "allowed_hrefs",
+    "apply_hottest_rail",
     "build_site_catalog",
     "dump_site_catalog",
+    "fact_lede_one_line",
     "filter_hottest_rail",
     "plain_fact_lede",
     "sleeve_path",

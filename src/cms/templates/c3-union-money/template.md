@@ -42,7 +42,7 @@ slots: ./slots.yaml
 {{/hero}}
 
 {{section}}
-<h3 id="collect">What does the Union collect?</h3>
+<h2 id="collect">What does the Union collect?</h2>
 
 Tax, non-tax, and capital receipts are three statements in the same Budget book. They are not one collections total made on this page.
 
@@ -64,7 +64,7 @@ In {{period.budget_estimates_2026_27.label}}, tax is printed by major head. Thes
 {{/section}}
 
 {{section}}
-<h3 id="spend">What does it spend it on?</h3>
+<h2 id="spend">What does it spend it on?</h2>
 
 The Budget’s own summary splits spending into central expenditure and transfers. Transfers to States and Union Territories here are Union outgo, not those governments’ own accounts.
 
@@ -80,7 +80,7 @@ In {{period.budget_estimates_2026_27.label}}, central expenditure was {{slot:sta
 {{/section}}
 
 {{section}}
-<h3 id="deficit">What deficits does the Budget print?</h3>
+<h2 id="deficit">What deficits does the Budget print?</h2>
 
 In {{period.budget_estimates_2026_27.label}}, the Budget at a Glance prints fiscal deficit, revenue deficit, effective revenue deficit, and primary deficit as labelled. These are the producer’s lines, not a grade.
 
@@ -94,7 +94,7 @@ In {{period.budget_estimates_2026_27.label}}, the Budget at a Glance prints fisc
 {{/section}}
 
 {{section}}
-<h3 id="liabilities">What liabilities are outstanding?</h3>
+<h2 id="liabilities">What liabilities are outstanding?</h2>
 
 Outstanding liabilities are a stock at year-end, not the year’s deficit and not the year’s net debt receipts.
 
@@ -114,7 +114,7 @@ At end of {{period.actuals_2024_25.year_label}}, Central Government public debt 
 {{/section}}
 
 {{section}}
-<h3 id="receipts-over-time">How have receipts moved in this Budget book?</h3>
+<h2 id="receipts-over-time">How have receipts moved in this Budget book?</h2>
 
 The Budget’s multi-year receipts table prints revenue receipts for the years in that file. Tax revenue in this table is net of States’ share — not the gross tax heads above.
 
@@ -128,7 +128,7 @@ Filled Actuals run from {{period.annex1_actuals_from.label}} through {{period.an
 {{/section}}
 
 {{section}}
-<h3 id="three-records">How do the monthly accounts and Finance Accounts sit beside the Budget?</h3>
+<h2 id="three-records">How do the monthly accounts and Finance Accounts sit beside the Budget?</h2>
 
 The Budget book, the monthly accounts, and the Finance Accounts are three records. They are not one Union-money figure.
 
@@ -163,6 +163,7 @@ The Budget book, the monthly accounts, and the Finance Accounts are three record
 {{caveat-block:caveat-c3-budget-2026-27-frbm-statements}}
 </div>
 
+{{how-this-is-measured}}
 ## Methodology
 
 <!-- cite-view: how-this-is-measured. Prose only. Do not bind an observation here — a number in this view would require a second copy of the citation cards. -->
@@ -188,3 +189,4 @@ Release dates are the laying or news dates. They are not the financial year on t
 {{slot:caveat-annex1-population}}
 
 This page does not include state or Union Territory finances; local-body accounts; district tables; scheme report cards; waste or welfare verdicts; per-person figures; forecasts; a government 10-K or listing-disclosure frame; Economic Survey narrative; or RBI, IMF, or credit-rating tables as the source of record.
+{{/how-this-is-measured}}

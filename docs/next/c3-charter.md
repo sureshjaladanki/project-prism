@@ -1,6 +1,6 @@
 # C3 charter
 
-Charter Editor. Wave 1 slice **C3**. C1 ship is a separate track ([c1-charter-verdict.md](c1-charter-verdict.md)). C2 product stop remains ingest ([c2-refresh-contract.md](c2-refresh-contract.md)); this note does not unblock C2 and does not ship C3.
+Charter Editor. Wave 1 slice **C3**. C1 ship is a separate track ([c1-charter-verdict.md](../archive/c1-charter-verdict.md)). C2 product stop remains ingest ([c2-refresh-contract.md](c2-refresh-contract.md)); this note does not unblock C2 and does not ship C3.
 
 Catalogue: [topic-charters.md](topic-charters.md). Cards: [c3-citation-cards.md](c3-citation-cards.md). Method: [c3-method-notes.md](c3-method-notes.md).
 

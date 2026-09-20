@@ -47,13 +47,13 @@ const jsonLd = {
 >
   <h1>{sleeve.hub_label}</h1>
   {slices.length > 0 && (
-    <ul class="sleeve-index">
-      {slices.map((slice) => (
-        <li>
-          <a href={slice.path}>{slice.citizen_question}</a>
-          <p class="byline">{slice.fact_lede}</p>
-        </li>
-      ))}
-    </ul>
+        <ul class="sleeve-index">
+          {slices.map((slice) => (
+            <li data-vintage-id={slice.vintage_id}>
+              <a href={slice.path}>{slice.citizen_question}</a>
+              <p class="fact">{slice.fact_lede_one_line}</p>
+            </li>
+          ))}
+        </ul>
   )}
 </SiteShell>

@@ -7,5 +7,11 @@ const site = loadSite();
 
 <SiteShell page="notfound" title="Page not found · Prism" vintageId={site.vintage_id}>
   <h1>Page not found</h1>
+  <p>This path is not a page on this desk.</p>
   <p><a href="/">Prism</a></p>
+  <nav aria-label="Sleeves">
+    {site.sleeves.map((sleeve) => (
+      <a href={sleeve.path}>{sleeve.header_label}</a>
+    ))}
+  </nav>
 </SiteShell>

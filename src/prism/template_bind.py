@@ -112,8 +112,19 @@ CITE_VIEW_COMMENT_RE = re.compile(
     r"<!--\s*cite-view:\s*([A-Za-z0-9_-]+)", re.IGNORECASE
 )
 CITE_VIEW_OPEN_RE = re.compile(
-    r'<section class="cite-view(?:\s[^"]*)?"(?:\s+data-cite-view="([^"]+)")?\s*>',
+    r'<section class="(?:cite-view|how-measured)(?:\s[^"]*)?"(?:\s+data-cite-view="([^"]+)")?\s*>',
     re.IGNORECASE,
+)
+HOW_MEASURED_RE = re.compile(
+    r'<section class="how-measured"[^>]*>.*?</section>',
+    re.DOTALL | re.IGNORECASE,
+)
+STAT_ROW_OPEN = '<div class="stat-row">'
+SLOT_VALUE_PUNCT_RE = re.compile(
+    r'(<span class="observation-value">[^<]*</span></span>)\s+([.,;:])'
+)
+SLOT_MISSING_PUNCT_RE = re.compile(
+    r'(<span class="observation observation-missing"[^>]*>[^<]*</span>)\s+([.,;:])'
 )
 BOUND_NUMBER_RE = re.compile(r'class="observation"[^>]*data-observation-id="[^"]+"')
 REQUIRED_CARD_MARKERS: tuple[tuple[str, str], ...] = (
@@ -311,6 +322,8 @@ def bind_page(data_root: Path, vintage_id: str, template_dir: Path) -> BoundPage
     leftover = LEFTOVER_MUSTACHE_RE.search(body_html)
     if leftover is not None:
         raise RenderError(f"unbound template token: {leftover.group(0)}")
+    body_html = _tidy_slot_punctuation(body_html)
+    body_html = _inject_cite_strip(body_html)
     assert_cite_views_complete(body_html)
     fact_lede = plain_fact_lede(body_html)
     return BoundPage(
@@ -337,22 +350,58 @@ def write_contract_schema(dest: Path) -> None:
 
 
 def wrap_cite_views(html_text: str) -> str:
+    rest, measured = _peel_how_measured(html_text)
+    wrapped = _wrap_h2_cite_views(rest)
+    if measured is None:
+        return wrapped
+    return wrapped + _ensure_how_measured_named(measured)
+
+
+def _peel_how_measured(html_text: str) -> tuple[str, str | None]:
+    match = HOW_MEASURED_RE.search(html_text)
+    if match is None:
+        return html_text, None
+    rest = html_text[: match.start()] + html_text[match.end() :]
+    return rest, match.group(0)
+
+
+def _ensure_how_measured_named(html_text: str) -> str:
+    if "data-cite-view=" in html_text:
+        return html_text
+    return html_text.replace(
+        '<section class="how-measured"',
+        '<section class="how-measured" data-cite-view="how-this-is-measured"',
+        1,
+    )
+
+
+def _wrap_h2_cite_views(html_text: str) -> str:
     parts = re.split(r"(<h2[^>]*>)", html_text, flags=re.IGNORECASE)
     if len(parts) == 1:
         return _cite_view_section(html_text, _cite_view_name(html_text))
-    preamble = parts[0]
-    pending_name = _cite_view_name(preamble)
-    if BOUND_NUMBER_RE.search(preamble) is not None:
-        rebuilt = [_cite_view_section(preamble, pending_name)]
-        pending_name = None
-    else:
-        rebuilt = [preamble]
+    groups: list[tuple[str | None, str]] = []
+    current_html = parts[0]
+    current_name = _cite_view_name(parts[0])
     for index in range(1, len(parts), 2):
         heading = parts[index]
         body = parts[index + 1] if index + 1 < len(parts) else ""
-        name = _cite_view_name(heading + body) or pending_name
-        pending_name = None
-        rebuilt.append(_cite_view_section(f"{heading}{body}", name))
+        chunk = f"{heading}{body}"
+        name = _cite_view_name(chunk)
+        if name is None:
+            current_html += chunk
+            continue
+        if current_html:
+            groups.append((current_name, current_html))
+        current_html = chunk
+        current_name = name
+    if current_html:
+        groups.append((current_name, current_html))
+    rebuilt: list[str] = []
+    for index, (name, inner) in enumerate(groups):
+        if index == 0 and name is None and BOUND_NUMBER_RE.search(inner) is None:
+            rebuilt.append(inner)
+            continue
+        rebuilt.append(_cite_view_section(inner, name))
     return "".join(rebuilt)
 
 
@@ -364,6 +413,11 @@ def _cite_view_name(html_text: str) -> str | None:
 
 
 def _cite_view_section(inner: str, name: str | None) -> str:
+    if name == "how-this-is-measured":
+        return (
+            f'<section class="how-measured" data-cite-view="{html.escape(name)}">'
+            f"{inner}</section>"
+        )
     if name is None:
         return f'<section class="cite-view">{inner}</section>'
     return f'<section class="cite-view" data-cite-view="{html.escape(name)}">{inner}</section>'
@@ -979,13 +1033,40 @@ def _slot_html(
         f'<span class="observation" data-slot-id="{html.escape(slot_id)}" '
         f'data-observation-id="{html.escape(observation.observation_id)}" '
         f'data-vintage-id="{html.escape(vintage_id)}">'
-        f'<span class="observation-value">{html.escape(_format_number(observation.value))}</span>'
+        f'<span class="observation-value">{html.escape(format_bound_number(observation.value))}</span>'
         f"</span>"
     )
 
 
-def _format_number(value: float) -> str:
-    return format(value, ".12g")
+def format_bound_number(value: float) -> str:
+    text = format(value, ".12g")
+    if "e" in text.lower():
+        text = format(value, ".12f").rstrip("0").rstrip(".")
+    sign = ""
+    if text.startswith("-"):
+        sign = "-"
+        text = text[1:]
+    if "." in text:
+        integer, fraction = text.split(".", 1)
+        return f"{sign}{_indian_group_integer(integer)}.{fraction}"
+    return f"{sign}{_indian_group_integer(text)}"
+
+
+def _indian_group_integer(digits: str) -> str:
+    if len(digits) <= 3:
+        return digits
+    last_three = digits[-3:]
+    rest = digits[:-3]
+    groups: list[str] = []
+    while rest:
+        groups.append(rest[-2:])
+        rest = rest[:-2]
+    return ",".join(reversed(groups)) + "," + last_three
+
+
+def _tidy_slot_punctuation(html_text: str) -> str:
+    html_text = SLOT_VALUE_PUNCT_RE.sub(r"\1\2", html_text)
+    return SLOT_MISSING_PUNCT_RE.sub(r"\1\2", html_text)
 
 
 def _stat_html(
@@ -1003,11 +1084,89 @@ def _stat_html(
 
 def _expand_layout_tokens(text: str) -> str:
     for name, (tag, class_name) in LAYOUT_BLOCKS.items():
-        text = text.replace(
-            f"{{{{{name}}}}}", f'<{tag} class="{class_name}" markdown="1">'
-        )
+        open_tag = f'<{tag} class="{class_name}" markdown="1">'
+        if name == "how-this-is-measured":
+            open_tag = (
+                f'<{tag} class="{class_name}" '
+                'data-cite-view="how-this-is-measured" markdown="1">'
+            )
+        text = text.replace(f"{{{{{name}}}}}", open_tag)
         text = text.replace(f"{{{{/{name}}}}}", f"</{tag}>")
     return text
+
+
+def _inject_cite_strip(html_text: str) -> str:
+    if "cite-strip" in html_text:
+        return html_text
+    card = re.search(
+        r'<details class="citation-card source-byline">.*?</details>',
+        html_text,
+        flags=re.DOTALL,
+    )
+    if card is None:
+        raise RenderError("first-screen cite strip is missing a citation card")
+    insert_at = _element_end(html_text, STAT_ROW_OPEN)
+    return html_text[:insert_at] + _cite_strip_from_card(card.group(0)) + html_text[insert_at:]
+
+
+def _element_end(html_text: str, open_tag: str) -> int:
+    start = html_text.find(open_tag)
+    if start == -1:
+        raise RenderError("first-screen cite strip needs a stat row")
+    name_end = open_tag.find(" ")
+    tag = open_tag[1:name_end] if name_end != -1 else open_tag[1:-1]
+    open_needle = f"<{tag}"
+    close_needle = f"</{tag}>"
+    depth = 0
+    pos = start
+    while pos < len(html_text):
+        next_open = html_text.find(open_needle, pos)
+        next_close = html_text.find(close_needle, pos)
+        if next_close == -1:
+            raise RenderError("first-screen cite strip needs a stat row")
+        if next_open != -1 and next_open < next_close:
+            depth += 1
+            pos = next_open + len(open_needle)
+            continue
+        depth -= 1
+        pos = next_close + len(close_needle)
+        if depth == 0:
+            return pos
+    raise RenderError("first-screen cite strip needs a stat row")
+
+
+def _cite_strip_from_card(card_html: str) -> str:
+    fields = _card_fields(card_html)
+    required = ("Producer", "Series", "Reference period", "Release date")
+    missing = [label for label in required if not fields.get(label, "").strip()]
+    if missing:
+        raise RenderError(
+            "cite strip missing " + " and ".join(item.lower() for item in missing)
+        )
+    release = re.sub(r"\s*\(Asia/Kolkata\)\s*$", "", fields["Release date"]).strip()
+    summary = (
+        f"{fields['Producer']} · {fields['Series']} · "
+        f"{fields['Reference period']} · released {release}"
+    )
+    dl = re.search(r"<dl>.*?</dl>", card_html, flags=re.DOTALL)
+    if dl is None:
+        raise RenderError("cite strip missing a citation card")
+    return (
+        '<details class="citation-card source-byline cite-strip">'
+        f"<summary>{html.escape(summary)}</summary>"
+        f"{dl.group(0)}</details>"
+    )
+
+
+def _card_fields(card_html: str) -> dict[str, str]:
+    fields: dict[str, str] = {}
+    for match in re.finditer(
+        r"<dt>(.*?)</dt>\s*<dd>(.*?)</dd>", card_html, flags=re.DOTALL
+    ):
+        label = re.sub(r"<[^>]+>", "", match.group(1)).strip()
+        value = html.unescape(re.sub(r"<[^>]+>", "", match.group(2))).strip()
+        fields[label] = value
+    return fields
 
 
 def _producer_status_from_id(observation_id: str) -> str:
@@ -1167,6 +1326,7 @@ __all__ = [
     "c1_template_dir",
     "c2_template_dir",
     "c3_template_dir",
+    "format_bound_number",
     "iter_cite_views",
     "wrap_cite_views",
     "write_contract_schema",

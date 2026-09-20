@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+from html import escape as html_escape
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
@@ -31,6 +32,9 @@ PREVIEW_HEADERS = {
     "X-Robots-Tag": "noindex, nofollow",
     "Cache-Control": "private, no-store",
 }
+
+PREVIEW_BANNER_MARK = 'class="preview-banner"'
+_BODY_OPEN_RE = re.compile(r"<body[^>]*>", re.IGNORECASE)
 
 
 DEFAULT_STATE_ORDER = "alphabetical_official_english_name"
@@ -193,6 +197,23 @@ def slashless_redirect(url_path: str) -> str | None:
     if parsed.query:
         return f"{location}?{parsed.query}"
     return location
+
+
+def inject_preview_banner(html: bytes, vintage_id: str) -> bytes:
+    text = html.decode("utf-8")
+    if PREVIEW_BANNER_MARK in text:
+        return html
+    if vintage_id == "":
+        raise ServeError("preview banner requires the tree vintage_id")
+    banner = (
+        f"<p {PREVIEW_BANNER_MARK}>Preview · not published · "
+        f"{html_escape(vintage_id)}</p>"
+    )
+    body = _BODY_OPEN_RE.search(text)
+    if body is None:
+        raise ServeError("HTML is missing <body>; cannot inject preview banner")
+    inserted = text[: body.end()] + banner + text[body.end() :]
+    return inserted.encode("utf-8")
 
 
 def inject_citizen_origin(html: bytes, origin: str) -> bytes:

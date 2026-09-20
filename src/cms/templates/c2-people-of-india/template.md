@@ -14,7 +14,7 @@ slots: ./slots.yaml
 
 # How many people live in India, where, and how is that changing?
 
-<p class="byline">Updated {{cite:cite-c2-census-2011-pca-sd.release_date}} (Asia/Kolkata). Next named census total {{cite:cite-c2-census-2011-pca-sd.next_release}}.</p>
+<p class="byline">Census day {{period.census_2011.label}} (Asia/Kolkata). A later census total has not been published.</p>
 
 <div class="fact-lede">
 <p>On {{period.census_2011.label}}, Census 2011 counted {{slot:india-total-persons-2011}} people in India, Total. That is the latest census headcount on this page. A later census total has not been published. Census day is 1 March 2011, not today.</p>
@@ -25,8 +25,6 @@ slots: ./slots.yaml
 {{stat:india-rural-persons-2011|India, Rural}}
 {{stat:india-urban-persons-2011|India, Urban}}
 {{/stat-row}}
-
-{{chart:india-residence-2011}}
 
 <p class="source-line">Office of the Registrar General &amp; Census Commissioner, India · Census 2011 · {{period.census_2011.label}}</p>
 
@@ -42,7 +40,7 @@ slots: ./slots.yaml
 {{/hero}}
 
 {{section}}
-<h3 id="where">Where were people counted in 2011?</h3>
+<h2 id="where">Where were people counted in 2011?</h2>
 
 Census 2011 prints a Total count for each State and Union Territory on that map. They are listed alphabetically. This is not a ranking.
 
@@ -54,7 +52,7 @@ Census 2011 prints a Total count for each State and Union Territory on that map.
 {{/section}}
 
 {{section}}
-<h3 id="change">How did census counts change through 2011?</h3>
+<h2 id="change">How did census counts change through 2011?</h2>
 
 India Total census counts are printed for census years from 1901 through 2011. That run stops at 2011. It is not joined to the projection below.
 
@@ -66,11 +64,11 @@ India Total census counts are printed for census years from 1901 through 2011. T
 {{/section}}
 
 {{section}}
-<h3 id="births-deaths">What do 2024 birth and death rates say?</h3>
+<h2 id="births-deaths">What do 2024 birth and death rates say?</h2>
 
 These are Sample Registration System rates for {{period.srs_2024.label}}, not a census count. They are not multiplied by the 2011 headcount on this page.
 
-In that year, India’s Total birth rate was {{slot:india-birth-rate-2024}}. The death rate was {{slot:india-death-rate-2024}}. The infant mortality rate was {{slot:india-imr-2024}}.
+<p>In that year, India’s Total birth rate was {{slot:india-birth-rate-2024}}. The death rate was {{slot:india-death-rate-2024}}. The infant mortality rate was {{slot:india-imr-2024}}.</p>
 
 {{stat-row}}
 {{stat:india-birth-rate-2024|Birth rate, Total}}
@@ -86,9 +84,9 @@ In that year, India’s Total birth rate was {{slot:india-birth-rate-2024}}. The
 {{/section}}
 
 {{section}}
-<h3 id="fertility">What does the 2024 fertility report say?</h3>
+<h2 id="fertility">What does the 2024 fertility report say?</h2>
 
-In {{period.srs_2024.label}}, India’s Total fertility rate was {{slot:india-tfr-2024}}. Rural was {{slot:india-tfr-rural-2024}}; urban was {{slot:india-tfr-urban-2024}}.
+<p>In {{period.srs_2024.label}}, India’s Total fertility rate was {{slot:india-tfr-2024}}. Rural was {{slot:india-tfr-rural-2024}}; urban was {{slot:india-tfr-urban-2024}}.</p>
 
 {{stat-row}}
 {{stat:india-tfr-2024|Total fertility rate, India}}
@@ -102,7 +100,7 @@ In {{period.srs_2024.label}}, India’s Total fertility rate was {{slot:india-tf
 {{/section}}
 
 {{section}}
-<h3 id="projection">What does the official projection print?</h3>
+<h2 id="projection">What does the official projection print?</h2>
 
 A 2019 technical-group report prints projected population in thousands as on 1 March, 2011 to 2036. That is a projection, not a census. The 2011 column is not the Census 2011 count above.
 
@@ -125,6 +123,7 @@ On {{period.projection_2026.label}}, Table 8 prints {{slot:india-projected-perso
 {{caveat-block:caveat-c2-census-2011-pca-sd}}
 </div>
 
+{{how-this-is-measured}}
 ## Methodology
 
 <!-- cite-view: how-this-is-measured. Prose only. Do not bind an observation here — a number in this view would require a second copy of the citation cards. -->
@@ -142,3 +141,4 @@ Birth, death, and infant mortality rates on this page are 2024 survey estimates.
 Table 8 is in thousands, as on 1 March, labelled projected. Its 2011 column is a smoothed projected base, not the Census 2011 count. A later year on that table is not an enumeration.
 
 This page does not include NPR or citizenship registers; electoral rolls; caste politics; district maps; ranks; forecasts; or international modelled stocks as the source of record.
+{{/how-this-is-measured}}

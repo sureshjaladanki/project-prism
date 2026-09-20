@@ -379,6 +379,10 @@ def test_july_final_cite_binds_observation_month() -> None:
         assert "Latest month is Provisional" not in card
     assert 'class="stat-row"' in page.body_html
     assert 'class="hero"' in page.body_html
+    assert 'cite-strip' in page.body_html
+    assert 'class="how-measured"' in page.body_html
+    assert '<h2 id="food">' in page.body_html
+    assert "<h3 " not in page.body_html
     assert page.slug == "retail-prices"
     assert page.path == "/prices/retail-prices"
     assert page.sleeve == "prices-and-production"
@@ -420,15 +424,15 @@ def _july_final_cards(html: str) -> list[str]:
 
 def _named_cite_view(html: str, name: str) -> str:
     match = re.search(
-        rf'<section class="cite-view(?:\s[^"]*)?" data-cite-view="{re.escape(name)}">',
+        rf'<section class="(?:cite-view|how-measured)(?:\s[^"]*)?" data-cite-view="{re.escape(name)}">',
         html,
     )
     assert match is not None, f"missing cite-view {name}"
     rest = html[match.end() :]
-    next_view = rest.find('<section class="cite-view"')
-    if next_view == -1:
+    next_view = re.search(r'<section class="(?:cite-view|how-measured)"', rest)
+    if next_view is None:
         return rest
-    return rest[:next_view]
+    return rest[: next_view.start()]
 
 
 def test_09_unchanged_series_are_not_byte_copied(tmp_path: Path) -> None:
@@ -498,7 +502,7 @@ def test_hottest_rail_drops_paths_missing_from_the_catalog() -> None:
     from prism.cms_site import filter_hottest_rail
 
     html = (
-        '<nav class="hottest-rail" aria-label="Further questions">'
+        '<nav aria-label="Further questions" class="hottest-rail">'
         '<a href="#food">How fast is food rising?</a>'
         '<a href="/people/population">How many people live in India?</a>'
         "</nav>"
@@ -506,6 +510,78 @@ def test_hottest_rail_drops_paths_missing_from_the_catalog() -> None:
     out = filter_hottest_rail(html, {"/prices/retail-prices"})
     assert 'href="#food"' in out
     assert "/people/population" not in out
+
+
+def test_hottest_rail_injects_catalog_siblings() -> None:
+    from prism.cms_site import apply_hottest_rail
+
+    html = (
+        '<nav class="hottest-rail" aria-label="Further questions">'
+        '<a href="#food">How fast is food rising?</a>'
+        "</nav>"
+    )
+    slices = [
+        {
+            "path": "/prices/retail-prices",
+            "citizen_question": "How fast are retail prices rising in India, including food?",
+        },
+        {
+            "path": "/people/population",
+            "citizen_question": "How many people live in India, where, and how is that changing?",
+        },
+        {
+            "path": "/money/union",
+            "citizen_question": "What does the Union collect, and what does it spend it on?",
+        },
+    ]
+    out = apply_hottest_rail(
+        html,
+        allowed_paths={item["path"] for item in slices},
+        current_path="/prices/retail-prices",
+        slices=slices,
+    )
+    assert 'href="#food"' in out
+    assert 'href="/people/population"' in out
+    assert 'href="/money/union"' in out
+    assert out.index("#food") < out.index("/people/population")
+    assert "/prices/retail-prices" not in out
+
+
+def test_hottest_rail_omits_empty_sibling_group() -> None:
+    from prism.cms_site import apply_hottest_rail
+
+    html = (
+        '<nav class="hottest-rail" aria-label="Further questions">'
+        '<a href="#food">How fast is food rising?</a>'
+        "</nav>"
+    )
+    slices = [
+        {
+            "path": "/prices/retail-prices",
+            "citizen_question": "How fast are retail prices rising in India, including food?",
+        }
+    ]
+    out = apply_hottest_rail(
+        html,
+        allowed_paths={"/prices/retail-prices"},
+        current_path="/prices/retail-prices",
+        slices=slices,
+    )
+    assert 'href="#food"' in out
+    assert out.count("<a ") == 1
+
+
+def test_fact_lede_one_line_keeps_decimal_in_first_sentence() -> None:
+    from prism.cms_site import fact_lede_one_line
+
+    text = (
+        "Year-on-year inflation was 4.82 percent as of August 2026, "
+        "All India Combined. Food was 2.15 percent."
+    )
+    assert fact_lede_one_line(text) == (
+        "Year-on-year inflation was 4.82 percent as of August 2026, "
+        "All India Combined."
+    )
 
 
 def test_preview_resolves_slashless_paths_and_unknown_to_404(tmp_path: Path) -> None:

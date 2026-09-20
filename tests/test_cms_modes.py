@@ -60,4 +60,15 @@ def test_home_template_does_not_repeat_shell_nav() -> None:
     assert "sleeve-index" not in source
     assert "{slice.citizen_question}" in source
     assert "<a href={slice.path}>{slice.fact_lede}</a>" not in source
-    assert '<p class="byline">{slice.fact_lede}</p>' in source
+    assert '<p class="fact">{slice.fact_lede_one_line}</p>' in source
+    assert "data-vintage-id={slice.vintage_id}" in source
+
+
+def test_notfound_template_lists_sleeves_and_stays_noindex() -> None:
+    source = (CMS_ROOT / "src" / "pages" / "404.astro").read_text(encoding="utf-8")
+    assert 'page="notfound"' in source
+    assert "data-prism-path" not in source
+    assert "This path is not a page on this desk." in source
+    assert 'href="/"' in source
+    assert "site.sleeves.map" in source
+    assert "hottest-rail" not in source

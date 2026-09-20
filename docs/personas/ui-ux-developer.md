@@ -58,16 +58,24 @@ Hand IA, slugs, SEO, and preview-HTTP *rules* to Front-end Architect — do not 
 
 ## Presentation pass
 
-Run on **preview** when chrome or charts changed, before Trust. Gate is [design-system.md](../design-system.md). “Presentation appeal” means quiet, corporate, professional, minimal, modern — the same house. Not prettier-than-the-record. Not USAFacts magenta. Not a scorecard.
+Run on **preview** before Trust, on **every template that reached Content Editor Proof** — not only when chrome or charts changed. A new template breaks form factor at a new data shape while the house is untouched. Record `skipped` only when the same template renders the same page at the same vintage. Gate is [design-system.md](../design-system.md). “Presentation appeal” means quiet, corporate, professional, minimal, modern — the same house. Not prettier-than-the-record. Not USAFacts magenta. Not a scorecard.
+
+Measure the boxes at 360px and 1440px. Do not eyeball them.
 
 - [ ] Same house tokens on every block (`--paper`, `--card`, `--ink`, `--muted`, `--mark`). No mixed palettes. No magenta / cream / Aeonik / USAFacts costume.
-- [ ] Type and formatting: H1, H2, byline, figcaption (`.chart-title` / `.chart-subtitle`), source-line use the type scale. Chart titles live in HTML matching H2 (1.25rem / 500) and byline (0.875rem) — not Vega titles at 14px.
+- [ ] Type and formatting: H1, H2, byline, figcaption (`.chart-title` / `.chart-subtitle`), source-line use the type scale. Chart titles live in HTML matching H2 (1.25rem / 500) and byline (0.875rem) — not Vega titles at 14px. Heading element and heading size agree.
+- [ ] Running prose, lede, byline, and source-line at `--measure`; no paragraph over 90 characters per line.
+- [ ] No `.stat-figure` wider than its cell's content box at any tested width.
+- [ ] No SVG text below 12px effective size (intrinsic × rendered scale) at any tested width. A chart that cannot fit scrolls; it does not scale down.
 - [ ] Chart wells fill `--desk`; the plot fills the `--card`; no leftover white field in the well.
 - [ ] Categorical bars: horizontal; house `barStep` so thickness does not depend on category count.
-- [ ] One house `plotWidth`; no mixed plot widths on the same page.
-- [ ] Screenshot test: a crop still shows title, unit, geography, source line, and visible holes; it does not look like a USAFacts chart.
+- [ ] One house `plotWidth`; no mixed intrinsic plot widths on the same page.
+- [ ] Axis labels, bar value labels, stat figures, and the lede figure use one number format.
+- [ ] Producer name within 600px of the top of `main` at 1440×900; first-screen cite summary carries producer, series, reference period, and release date.
+- [ ] Holes are never smaller or lower-contrast than the sentence around them. Text 4.5:1, meaningful graphics 3:1.
+- [ ] Screenshot test: a crop still shows title, unit, geography, source line, and visible holes at readable size; it does not look like a USAFacts chart.
 
-Fail the pass if any box is open. Fix here. Content Editor Proof may hand a form-factor break; it does not restyle. Hand to Trust only for cites, dates, holes, spin — not for taste.
+Fail the pass if any box is open. Fix here. Content Editor Proof hands a named form-factor list; it does not restyle. Hand to Trust only for cites, dates, holes, spin — not for taste.
 
 ## Inputs
 
@@ -85,7 +93,7 @@ preview:             (path or route, unpublished)
 published:           yes | no
 cite_bound:          yes | no
 refresh:             (re-rendered after pipeline | first publish | no)
-presentation_pass:   pass | fail | skipped (chrome/charts unchanged)
+presentation_pass:   pass | fail | skipped (same template, same page, same vintage)
 next_persona:        content-editor | front-end-architect | trust-auditor | platform-architect
 ```
 

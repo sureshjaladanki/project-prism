@@ -32,7 +32,7 @@ Content Editor writes the citizen question and the fact-lede. This file maps tho
 | Head | title, description, OG, `twitter:card`, JSON-LD; no canonical or `og:url` in shared HTML | Met; citizen serve injects the absolute URLs |
 | Nav | `SiteShell` on every page: skip link, lockup → `/`, five sleeves, breadcrumb, footer | Met |
 | Serve | Slashless path → `{path}/index.html`; `{path}/` 301 → `{path}`; preview sends `noindex, nofollow` and `private, no-store` | Met; `robots.txt` and sitemap still owed on the citizen prefix |
-| Hottest-rail | In-page hashes only | Hashes **plus** catalog sibling slices |
+| Hottest-rail | Hashes plus catalog siblings from `site.json` | Met |
 | 404 body | H1 and a link to `/` | Quiet sentence, links to `/` and the five sleeves |
 
 `/` is the landing page. Do not serve a slice body at `/`. Each page type is its own route (`/prices/retail-prices`, `/people/population`, `/how-this-works`, …). The C1 question has one public URL: `/prices/retail-prices`. Do not keep a second copy of that article at `/`. Do not 301 `/` to C1.
@@ -201,11 +201,13 @@ vintage_id
 sleeves[]     locked five: token, path, header_label, hub_label
 slices[]      only bound-in-this-vintage:
                 template_id, sleeve, slug, path,
-                citizen_question, fact_lede (plain text after bind)
+                citizen_question, fact_lede (plain text after bind),
+                fact_lede_one_line (first sentence of fact_lede),
+                vintage_id (that slice's bound vintage, not the tree's)
 house[]       /how-this-works, /sources
 ```
 
-Fail the render if: two catalog slices share sleeve+slug; `slug` or `citizen_question` is missing; `sleeve` is not in the token table; a slice path collides with a hub or house path; the bound fact-lede is empty while the slice H1 shows.
+Fail the render if: two catalog slices share sleeve+slug; `slug` or `citizen_question` is missing; `sleeve` is not in the token table; a slice path collides with a hub or house path; the bound fact-lede is empty while the slice H1 shows; `fact_lede_one_line` is empty while a home or hub card for that slice shows.
 
 ### Astro files (UI/UX implements; do not invent others)
 
@@ -242,17 +244,17 @@ Site chrome is UI/UX Developer, not Content Editor copy. Tokens and first-screen
 
 **Breadcrumb** (hub and slice, not home, not house): `Prism / {Hub H1} / {citizen question}`. Links: home, sleeve hub, current page is text. The question in the crumb is the H1, not the slug. House pages have no breadcrumb.
 
-**Slice body.** Layout primitives Content Editor may name (`hero`, `stat-row`, `section`, `how-this-is-measured`, compact source byline). `.hottest-rail` is further questions on **this** page (hashes) plus links to **catalog** sibling slices — featured citizen questions, not scoops. Render must not emit an `href` whose path is missing from this vintage’s catalog.
+**Slice body.** Layout primitives Content Editor may name (`hero`, `stat-row`, `section`, `how-this-is-measured`, compact source byline). `.hottest-rail` is further questions on **this** page (hashes) plus links to **catalog** sibling slices — featured citizen questions, not scoops. Author-written in-page hashes render first, in template order. Then up to three sibling links taken from `site.json`, in catalog order (charter order), the current slice excluded, link text the sibling's `citizen_question` verbatim. If the catalog has no sibling, the rail is hashes alone — no empty group, heading, or placeholder. Templates do not type sibling questions. Render must not emit an `href` whose path is missing from this vintage’s catalog.
 
 **Desk home.** Not a news homepage and not GDP as the hero ([topic-charters.md](next/topic-charters.md) C16). Order:
 
 1. Skip link + lockup + sleeve nav (the shell)
 2. H1 = desk line: the Purpose sentence in [vision.md](vision.md) (“A shared, checkable picture of India that does not belong to a party, a ministry, or a news cycle.”). Not a slogan box; not a second citizen question
-3. `.fast-facts` — one card per catalog slice, Wave order (C1, C2, C3, …), at most four. Do not pad with unpublished templates. The `citizen_question` is the only link, to that slice path. The bound one-liner sits under it and is not a link. This is the only slice list on home. Do not also emit a home `.hottest-rail`
+3. `.fast-facts` — one card per catalog slice, Wave order (C1, C2, C3, …), at most four. Do not pad with unpublished templates. The `citizen_question` is the only link, to that slice path. The bound one-liner is `fact_lede_one_line` — the first sentence of that slice's plain-text fact-lede — and is not a link. Each card carries `data-vintage-id` from **that slice's** catalog entry; `<html data-vintage-id>` stays the tree vintage. The slice `<title>`, `meta description`, and `QAPage` `acceptedAnswer` keep the full `fact_lede`. This is the only slice list on home. Do not also emit a home `.hottest-rail`
 
 Do not repeat the five sleeve hubs in `main`. Header and footer already list them. A hub with no catalog slice still stays in that chrome (quiet empty, no invented figures). `.hottest-rail` stays a **slice** region (in-page hashes and catalog siblings), not a second home index. `.sleeve-index` stays a **hub** (and house) list of slices, not a third copy of the sleeve nav.
 
-**Sleeve hub.** Hub H1, then each catalog slice in that sleeve as its citizen question. Optional one-line bound fact from that slice. Canonical of every number remains the slice URL.
+**Sleeve hub.** Hub H1, then each catalog slice in that sleeve as its citizen question. The optional one-line bound fact is `fact_lede_one_line`. Each `.sleeve-index` card carries `data-vintage-id` from that slice's catalog entry. Canonical of every number remains the slice URL.
 
 **Footer.** Five header sleeve links, `/how-this-works`, `/sources`. No engagement SDK. No party or ministry campaign strip.
 

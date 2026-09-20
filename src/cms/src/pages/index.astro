@@ -23,9 +23,9 @@ const jsonLd = {
   {facts.length > 0 && (
     <ul class="fast-facts">
       {facts.map((slice) => (
-        <li>
+        <li data-vintage-id={slice.vintage_id}>
           <a href={slice.path}>{slice.citizen_question}</a>
-          <p class="byline">{slice.fact_lede}</p>
+          <p class="fact">{slice.fact_lede_one_line}</p>
         </li>
       ))}
     </ul>

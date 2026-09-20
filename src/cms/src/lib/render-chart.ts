@@ -4,6 +4,20 @@ import { chart, color, inheritChartPaint, vegaConfig } from "./theme";
 
 type Json = Record<string, unknown>;
 
+type VegaRuntime = typeof vega & {
+  expressionFunction: (
+    name: string,
+    fn: (value: unknown) => string,
+  ) => void;
+};
+
+(vega as VegaRuntime).expressionFunction("indianFormat", (value: unknown) => {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    return "";
+  }
+  return formatChartNumber(value);
+});
+
 type ChartCaption = {
   title: string;
   subtitle?: string;
@@ -220,6 +234,11 @@ function addBarValueLabels(spec: Json): void {
   }
   const xEnc = asRecord(encoding.x);
   const field = typeof xEnc?.field === "string" ? xEnc.field : "plotValue";
+  const transforms = Array.isArray(spec.transform) ? spec.transform : [];
+  spec.transform = [
+    ...transforms,
+    { calculate: `indianFormat(datum.${field})`, as: "indianLabel" },
+  ];
   const barLayer: Json = {
     mark: spec.mark,
     encoding,
@@ -237,9 +256,8 @@ function addBarValueLabels(spec: Json): void {
       y: encoding.y,
       x: encoding.x,
       text: {
-        field,
-        type: "quantitative",
-        format: ".2~f",
+        field: "indianLabel",
+        type: "nominal",
       },
     },
   };
@@ -294,13 +312,91 @@ function applyHouseConfig(spec: Json): void {
   };
 }
 
+function formatChartNumber(value: number): string {
+  let text = pythonG12(value);
+  if (/e/i.test(text)) {
+    text = value.toFixed(12).replace(/0+$/, "").replace(/\.$/, "");
+  }
+  let sign = "";
+  if (text.startsWith("-")) {
+    sign = "-";
+    text = text.slice(1);
+  }
+  if (text.includes(".")) {
+    const [integer, fraction] = text.split(".", 2);
+    return `${sign}${indianGroupInteger(integer)}.${fraction}`;
+  }
+  return `${sign}${indianGroupInteger(text)}`;
+}
+
+function pythonG12(value: number): string {
+  const text = value.toPrecision(12);
+  if (/e/i.test(text)) {
+    return text;
+  }
+  if (!text.includes(".")) {
+    return text;
+  }
+  return text.replace(/0+$/, "").replace(/\.$/, "");
+}
+
+function indianGroupInteger(digits: string): string {
+  if (digits.length <= 3) {
+    return digits;
+  }
+  const lastThree = digits.slice(-3);
+  let rest = digits.slice(0, -3);
+  const groups: string[] = [];
+  while (rest.length > 0) {
+    groups.push(rest.slice(-2));
+    rest = rest.slice(0, -2);
+  }
+  return `${groups.reverse().join(",")},${lastThree}`;
+}
+
+function plotNumbers(node: unknown): number[] {
+  if (Array.isArray(node)) {
+    return node.flatMap((item) => plotNumbers(item));
+  }
+  const record = asRecord(node);
+  if (record === undefined) {
+    return [];
+  }
+  const found: number[] = [];
+  const data = asRecord(record.data);
+  const values = data?.values;
+  if (Array.isArray(values)) {
+    for (const row of values) {
+      const item = asRecord(row);
+      const raw = item?.plotValue ?? item?.value;
+      if (typeof raw === "number" && Number.isFinite(raw)) {
+        found.push(raw);
+      }
+    }
+  }
+  for (const value of Object.values(record)) {
+    if (value === record.data) {
+      continue;
+    }
+    found.push(...plotNumbers(value));
+  }
+  return found;
+}
+
+function valueLabelPad(spec: Json): number {
+  const labels = plotNumbers(spec).map((value) => formatChartNumber(value));
+  const longest = labels.reduce((max, label) => Math.max(max, label.length), 0);
+  const glyph = chart.labelSize * 0.65;
+  return Math.max(24, Math.ceil(longest * glyph) + 12);
+}
+
 function applyBarPadding(spec: Json): void {
   if (!hasBarLayer(spec) && !isStepHeight(spec.height)) {
     return;
   }
   spec.padding = {
     left: 4,
-    right: chart.valueLabelPad,
+    right: valueLabelPad(spec),
     top: 4,
     bottom: 8,
   };
@@ -337,11 +433,30 @@ function svgWidth(svg: string): number {
   return Number(match[1]);
 }
 
-function fitPlotWidth(spec: Json, svg: string): void {
+function fitPlotWidth(spec: Json, svg: string): boolean {
   if (typeof spec.width !== "number") {
-    return;
+    return false;
   }
-  spec.width = Math.max(240, spec.width + (chart.fitWidth - svgWidth(svg)));
+  const next = Math.max(240, spec.width + (chart.fitWidth - svgWidth(svg)));
+  if (next === spec.width) {
+    return false;
+  }
+  spec.width = next;
+  return true;
+}
+
+async function compileFittedSvg(spec: Json): Promise<string> {
+  let svg = await compileSvg(spec);
+  for (let pass = 0; pass < 8; pass += 1) {
+    if (Math.abs(svgWidth(svg) - chart.fitWidth) < 0.5) {
+      return svg;
+    }
+    if (!fitPlotWidth(spec, svg)) {
+      return svg;
+    }
+    svg = await compileSvg(spec);
+  }
+  return svg;
 }
 
 function figureHtml(
@@ -368,8 +483,6 @@ export async function specToFigure(
   const caption = pullCaption(clone);
   stripUnsupportedInvalid(clone);
   applyPortraitFrame(clone);
-  const firstSvg = await compileSvg(clone);
-  fitPlotWidth(clone, firstSvg);
-  const svg = await compileSvg(clone);
+  const svg = await compileFittedSvg(clone);
   return figureHtml(chartId, caption, svg);
 }

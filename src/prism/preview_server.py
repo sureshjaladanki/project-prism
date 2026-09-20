@@ -8,9 +8,11 @@ from io import BytesIO
 from pathlib import Path
 from typing import BinaryIO
 
+from prism.pointer_store import read_preview_pointer
 from prism.serving import (
     PREVIEW_HEADERS,
     ServeError,
+    inject_preview_banner,
     resolve_preview_render,
     resolve_tree_path,
     served_tree_file,
@@ -21,6 +23,8 @@ __all__ = ["PreviewHandler", "resolve_tree_path", "serve_preview"]
 
 
 class PreviewHandler(SimpleHTTPRequestHandler):
+    preview_tree_id: str = ""
+
     def end_headers(self) -> None:
         for name, value in PREVIEW_HEADERS.items():
             self.send_header(name, value)
@@ -45,6 +49,8 @@ class PreviewHandler(SimpleHTTPRequestHandler):
             self.send_error(404, "File not found")
             return None
         status, path, body = served
+        if path.suffix.lower() == ".html":
+            body = inject_preview_banner(body, self.preview_tree_id)
         self.send_response(status)
         self.send_header("Content-Type", self.guess_type(str(path)))
         self.send_header("Content-Length", str(len(body)))
@@ -56,6 +62,14 @@ def serve_preview(data_root: Path, host: str, port: int) -> None:
     root = resolve_preview_render(data_root)
     if not root.exists():
         raise ServeError("preview render tree is missing")
-    handler = partial(PreviewHandler, directory=str(root))
+    desk_id = read_preview_pointer(data_root)
+    if desk_id is None:
+        raise ServeError("no preview pointer")
+    handler_cls = type(
+        "BoundPreviewHandler",
+        (PreviewHandler,),
+        {"preview_tree_id": desk_id},
+    )
+    handler = partial(handler_cls, directory=str(root))
     server = ThreadingHTTPServer((host, port), handler)
     server.serve_forever()

@@ -229,7 +229,7 @@ Do not start these until Wave 1–2 are shipping:
 
 ## Next
 
-C1 has cards ([c1-citation-cards.md](c1-citation-cards.md)). C1 Trust passed; Charter ships the preview vintage — see [c1-charter-verdict.md](c1-charter-verdict.md).
+C1 has cards ([c1-citation-cards.md](c1-citation-cards.md)). C1 Trust passed; Charter ships the preview vintage — see [c1-charter-verdict.md](../archive/c1-charter-verdict.md).
 
 C2 cards exist ([c2-citation-cards.md](c2-citation-cards.md)); C2 product stop is ingest (see [c2-refresh-contract.md](c2-refresh-contract.md)). Do not unblock C2 from this file.
 

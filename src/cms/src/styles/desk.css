@@ -135,6 +135,7 @@ body {
 
 .breadcrumb [aria-current="page"] {
   color: var(--ink);
+  max-width: var(--measure);
 }
 
 .site-footer {
@@ -159,6 +160,7 @@ body {
 
 .fast-facts {
   display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
   gap: var(--space-4);
   margin: 0 0 var(--space-6);
   padding: 0;
@@ -176,8 +178,12 @@ body {
   min-height: 44px;
 }
 
-.fast-facts .byline {
+.fast-facts .fact {
   margin: var(--space-2) 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--ink);
+  max-width: var(--measure);
 }
 
 .sleeve-index {
@@ -196,6 +202,14 @@ body {
   align-items: center;
 }
 
+.sleeve-index .fact {
+  margin: var(--space-2) 0 0;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--ink);
+  max-width: var(--measure);
+}
+
 article.portrait {
   max-width: var(--desk);
   margin: 0 auto;
@@ -203,8 +217,18 @@ article.portrait {
 
 article.portrait > .cite-view > p,
 article.portrait > .cite-view > header.hero > p,
+article.portrait .portrait-section > p,
+article.portrait > .how-measured > p,
 article.portrait > .cite-view li,
 .byline,
+.source-line,
+.fact-lede,
+.fact-lede p {
+  max-width: var(--measure);
+}
+
+.stat-row,
+figure.chart,
 .citation-card,
 .caveat-note,
 .how-measured {
@@ -219,16 +243,10 @@ h3 {
 }
 
 h1 {
-  font-size: 2rem;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
   line-height: 1.2;
   letter-spacing: -0.02em;
   margin: var(--space-2) 0 var(--space-4);
-}
-
-@media (min-width: 48rem) {
-  h1 {
-    font-size: 2.25rem;
-  }
 }
 
 h2 {
@@ -299,12 +317,6 @@ p {
   color: var(--mark);
 }
 
-article.portrait > .cite-view h3 {
-  font-size: 1.25rem;
-  line-height: 1.3;
-  margin: 0 0 var(--space-4);
-}
-
 .source-stack {
   margin: var(--space-7) 0 0;
   padding-top: var(--space-6);
@@ -348,13 +360,15 @@ code {
 
 .stat-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
   gap: var(--space-4);
   margin: var(--space-5) 0 var(--space-5);
   max-width: none;
 }
 
 .stat {
+  container-type: inline-size;
+  min-width: 0;
   background: var(--card);
   border: var(--hair) solid var(--rule);
   border-radius: var(--radius);
@@ -373,7 +387,7 @@ code {
 
 .stat-figure {
   margin: 0;
-  font-size: 2.75rem;
+  font-size: clamp(1.75rem, 14.5cqi, 2.75rem);
   line-height: 1.05;
   letter-spacing: -0.03em;
   font-weight: 600;
@@ -392,7 +406,6 @@ code {
 .observation-missing {
   font-style: italic;
   color: var(--hole);
-  font-size: 0.8125rem;
   font-weight: 400;
 }
 
@@ -403,6 +416,25 @@ code {
   border-radius: var(--radius);
   padding: 0 var(--space-4);
   margin: var(--space-3) 0;
+}
+
+.cite-strip {
+  margin: 0 0 var(--space-5);
+}
+
+.cite-strip[open],
+.cite-strip[open] summary {
+  color: var(--ink);
+}
+
+.preview-banner {
+  background: var(--card);
+  border-bottom: var(--hair) solid var(--rule);
+  padding: var(--space-2) var(--space-5);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--muted);
 }
 
 .source-byline summary,
@@ -508,7 +540,20 @@ figure.chart .chart-plot {
 figure.chart .chart-plot svg {
   display: block;
   width: 100%;
-  max-width: 100%;
+  min-width: calc(var(--chart-fit-width) * var(--chart-min-scale));
+  max-width: none;
   height: auto;
   font-variant-numeric: tabular-nums;
+}
+
+html[data-prism-page="notfound"] main nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+html[data-prism-page="notfound"] main nav a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }

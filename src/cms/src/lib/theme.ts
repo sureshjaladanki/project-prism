@@ -10,10 +10,11 @@ export const color = {
   mark2: "#7A542E",
   mark3: "#4A6670",
   mark4: "#5C5C5C",
-  hole: "#8A8A8A",
+  hole: "#6B6B6B",
   focus: "#1F4E79",
   break: "#333333",
-  holeBand: "#D9D9D9",
+  holeBand: "#E3DFD8",
+  ruleStrong: "#8C857A",
 } as const;
 
 export const type = {
@@ -51,7 +52,8 @@ export const chart = {
   labelSize: 12,
   lineStrokeWidth: 2,
   valueLabelPad: 96,
-  fitWidth: 1056,
+  fitWidth: 1008,
+  minScale: 0.92,
   series: [color.mark, color.mark2, color.mark3, color.mark4] as const,
   gridOpacity: 0.5,
   titleSize: 14,
@@ -70,7 +72,10 @@ export const cssVars: Record<string, string> = {
   "mark-3": color.mark3,
   "mark-4": color.mark4,
   hole: color.hole,
+  "hole-band": color.holeBand,
   focus: color.focus,
+  break: color.break,
+  "rule-strong": color.ruleStrong,
   "space-1": space[1],
   "space-2": space[2],
   "space-3": space[3],
@@ -86,6 +91,8 @@ export const cssVars: Record<string, string> = {
   "header-rule": measure.headerRule,
   "font-sans": type.sansStack,
   "font-mono": type.monoStack,
+  "chart-fit-width": `${chart.fitWidth}px`,
+  "chart-min-scale": String(chart.minScale),
 };
 
 export const rootStyle = Object.entries(cssVars)
@@ -108,16 +115,17 @@ export function vegaConfig(): Record<string, unknown> {
       grid: false,
       gridColor: color.rule,
       gridOpacity: chart.gridOpacity,
-      domainColor: color.rule,
-      tickColor: color.rule,
+      domainColor: color.ruleStrong,
+      tickColor: color.ruleStrong,
     },
     axisQuantitative: {
       grid: true,
       gridColor: color.rule,
       gridOpacity: chart.gridOpacity,
-      domainColor: color.ink,
+      domainColor: color.ruleStrong,
       domainWidth: 1,
-      tickColor: color.rule,
+      tickColor: color.ruleStrong,
+      labelExpr: "indianFormat(datum.value)",
     },
     axisBand: {
       grid: false,

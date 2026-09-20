@@ -41,7 +41,7 @@ slots: ./slots.yaml
 {{/hero}}
 
 {{section}}
-<h3 id="food">How fast is food rising?</h3>
+<h2 id="food">How fast is food rising?</h2>
 
 In {{period.latest_provisional.label}}, All India Combined food was {{slot:all-india-combined-cfpi-inflation-latest-p}} percent on the Consumer Food Price Index. Food and beverages, a wider basket that also includes drinks and food-processing services, was {{slot:all-india-combined-div01-inflation-latest-p}} percent in the same place and month. Both numbers are official.
 
@@ -53,7 +53,7 @@ Rural food was {{slot:all-india-rural-cfpi-inflation-latest-p}} percent; urban f
 {{/section}}
 
 {{section}}
-<h3 id="basket">What else in the basket is rising?</h3>
+<h2 id="basket">What else in the basket is rising?</h2>
 
 All India Combined, {{period.latest_provisional.label}}. These are the published groups of the retail basket, in the order the producer prints them.
 
@@ -65,7 +65,7 @@ Food and beverages on this chart is not the Consumer Food Price Index above.
 {{/section}}
 
 {{section}}
-<h3 id="rural-urban">How fast are rural and urban prices rising?</h3>
+<h2 id="rural-urban">How fast are rural and urban prices rising?</h2>
 
 In {{period.latest_provisional.label}}, All India rural year-on-year inflation was {{slot:all-india-rural-general-inflation-latest-p}} percent; urban was {{slot:all-india-urban-general-inflation-latest-p}} percent.
 
@@ -82,7 +82,7 @@ Combined is a published sector, not an average made here. All India Combined is 
 {{/section}}
 
 {{section}}
-<h3 id="states">How fast are prices rising in the States and Union Territories?</h3>
+<h2 id="states">How fast are prices rising in the States and Union Territories?</h2>
 
 In {{period.latest_provisional.label}}, CPI (General) Combined is printed for each State and Union Territory. They are listed alphabetically by official English name.
 
@@ -94,7 +94,7 @@ All India is the national unit above, not a bar here. Chandigarh Rural this mont
 {{/section}}
 
 {{section}}
-<h3 id="rate-over-time">How has this rate moved?</h3>
+<h2 id="rate-over-time">How has this rate moved?</h2>
 
 A longer All India Combined run of year-on-year inflation goes through December 2024. It does not include the compiled months in the figures above.
 
@@ -115,6 +115,7 @@ Year-on-year inflation on this run is not published for 2013. That hole is not z
 {{caveat-block:caveat-c1-cpi-general-base-2024}}
 </div>
 
+{{how-this-is-measured}}
 ## Methodology
 
 <!-- cite-view: how-this-is-measured. Prose only. Do not bind an observation here — a number in this view would require a second copy of the citation cards. -->
@@ -138,3 +139,4 @@ Live grouping is COICOP 2018. A National Metadata Structure PDF on the MoSPI sit
 Districts are parked. Chandigarh Rural is not published (no rural market in Chandigarh). On the printed Chandigarh row, Combined equals Urban.
 
 This page does not include forecasts; cheap or expensive verdicts; city rankings; press “top five States” or “top five items” tables as a ranking; petrol, diesel or LPG pump prices; district figures; item or subclass indexes; WPI; Labour Bureau CPI-IW, CPI-AL or CPI-RL; or CPI 2012=100 drawn as one line with Base 2024=100.
+{{/how-this-is-measured}}

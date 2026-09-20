@@ -18,6 +18,7 @@ export type SiteSlice = {
   path: string;
   citizen_question: string;
   fact_lede: string;
+  fact_lede_one_line: string;
   vintage_id: string;
 };
 

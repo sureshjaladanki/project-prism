@@ -110,7 +110,6 @@ serve:
   never_serve_bare_float: true
 
 charts:
-  india-residence-2011: ./charts/india-residence-2011.vl.json
   state-ut-total-2011: ./charts/state-ut-total-2011.vl.json
   india-census-years-1901-2011: ./charts/india-census-years-1901-2011.vl.json
   india-srs-rates-2024: ./charts/india-srs-rates-2024.vl.json
@@ -277,21 +276,6 @@ slots:
     kind: caveat_field
     caveat_id: caveat-c2-census-2011-pca-sd
     field: population
-
-  - slot_id: chart-india-residence-2011
-    kind: collection
-    chart: india-residence-2011
-    members:
-      - slot_id: india-rural-persons-2011
-        label: Rural
-      - slot_id: india-urban-persons-2011
-        label: Urban
-      - slot_id: india-total-persons-2011
-        label: Total
-    sort:
-      field: label
-      order: [Rural, Urban, Total]
-      never: measure
 
   - slot_id: chart-state-ut-total-2011
     kind: collection
