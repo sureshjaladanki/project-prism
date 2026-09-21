@@ -1144,16 +1144,17 @@ def _cite_strip_from_card(card_html: str) -> str:
             "cite strip missing " + " and ".join(item.lower() for item in missing)
         )
     release = re.sub(r"\s*\(Asia/Kolkata\)\s*$", "", fields["Release date"]).strip()
-    summary = (
-        f"{fields['Producer']} · {fields['Series']} · "
-        f"{fields['Reference period']} · released {release}"
+    producer = html.escape(fields["Producer"])
+    rest = html.escape(
+        f"{fields['Series']} · {fields['Reference period']} · released {release}"
     )
     dl = re.search(r"<dl>.*?</dl>", card_html, flags=re.DOTALL)
     if dl is None:
         raise RenderError("cite strip missing a citation card")
     return (
         '<details class="citation-card source-byline cite-strip">'
-        f"<summary>{html.escape(summary)}</summary>"
+        f'<summary><span class="cite-producer">{producer}</span>'
+        f'<span class="cite-rest"> · {rest}</span></summary>'
         f"{dl.group(0)}</details>"
     )
 

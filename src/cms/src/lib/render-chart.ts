@@ -5,10 +5,7 @@ import { chart, color, inheritChartPaint, vegaConfig } from "./theme";
 type Json = Record<string, unknown>;
 
 type VegaRuntime = typeof vega & {
-  expressionFunction: (
-    name: string,
-    fn: (value: unknown) => string,
-  ) => void;
+  expressionFunction: (name: string, fn: (value: unknown) => string) => void;
 };
 
 (vega as VegaRuntime).expressionFunction("indianFormat", (value: unknown) => {
@@ -224,6 +221,43 @@ function zeroRule(channel: "x" | "y"): Json {
   };
 }
 
+function withBarEndRadius(mark: unknown): Json | unknown {
+  const radius = chart.barCornerRadius;
+  const rounded = {
+    cornerRadiusEnd: radius,
+    cornerRadiusTopRight: radius,
+    cornerRadiusBottomRight: radius,
+    orient: "horizontal",
+  };
+  if (typeof mark === "string") {
+    if (mark !== "bar") {
+      return mark;
+    }
+    return { type: "bar", ...rounded };
+  }
+  const record = asRecord(mark);
+  if (record === undefined || record.type !== "bar") {
+    return mark;
+  }
+  return { ...record, ...rounded };
+}
+
+function applyBarEndRadius(spec: Json): void {
+  if (isBarMark(spec)) {
+    spec.mark = withBarEndRadius(spec.mark);
+  }
+  if (!Array.isArray(spec.layer)) {
+    return;
+  }
+  spec.layer = spec.layer.map((layer) => {
+    const record = asRecord(layer);
+    if (record === undefined || !isBarMark(record)) {
+      return layer;
+    }
+    return { ...record, mark: withBarEndRadius(record.mark) };
+  });
+}
+
 function addBarValueLabels(spec: Json): void {
   if (!isBarMark(spec)) {
     return;
@@ -240,7 +274,7 @@ function addBarValueLabels(spec: Json): void {
     { calculate: `indianFormat(datum.${field})`, as: "indianLabel" },
   ];
   const barLayer: Json = {
-    mark: spec.mark,
+    mark: withBarEndRadius(spec.mark),
     encoding,
   };
   const labelLayer: Json = {
@@ -411,6 +445,7 @@ function applyPortraitFrame(spec: Json): void {
   stripLinePoints(spec);
   orientBarsHorizontal(spec);
   applyHouseSize(spec);
+  applyBarEndRadius(spec);
   addBarValueLabels(spec);
   addZeroRule(spec);
   applyHouseConfig(spec);

@@ -12,7 +12,7 @@ Tone is aligned with [USAFacts](https://usafacts.org/): **modern, welcoming, civ
 
 **Idea.** Public data belongs to the public; it was not built for the public. The page does the decoder-ring work and hands back a fact a person can land on. Answer first, archive on request. Trust is an unmissable bound answer with the producer next to it.
 
-**Language.** A civic product. Generous scale, one well, stone paper, navy `--mark`, IBM Plex. The fact is in `--ink` and large enough to be the landing. Method is later and quieter. Not a filing cabinet, not a ministry PDF, not a magazine, not a passionate-nerd costume.
+**Language.** A civic product with two voices, not one. Serif — IBM Plex Serif — states the record: the citizen question and every bound figure. Sans runs the desk around it: labels, byline, nav, chart type. Three grounds carry the page, not one flat card colour: warm stone paper underfoot, white for evidence, and a cool, iso-luminant **well** for the answer — once per screen, felt as a change of place rather than a jump in brightness. Navy stays the institutional accent; clay and slate keep it company as chart colour, never as costume. The well is the one generous, elevated thing on the page — its own radius, its own lift, one continuous band for the sentence, the figures, and the cite. Everything else stays quiet: evidence is flat and equal-weight, method is later. Not a filing cabinet, not a ministry PDF, not a magazine, not a passionate-nerd costume.
 
 **Guidelines**
 

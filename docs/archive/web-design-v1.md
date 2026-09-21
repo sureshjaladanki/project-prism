@@ -1,11 +1,11 @@
-# Web design
+# Web design v1
 
-Front-end Architect. Information architecture, SEO, navigation, and HTTP surface of the civic CMS. Persona: [front-end-architect.md](personas/front-end-architect.md). Tone and idea: [design-philosophy.md](design-philosophy.md). How a slice **looks** is [design-system.md](design-system.md) (UI/UX Developer). How it **reads** is [editorial-guidelines.md](editorial-guidelines.md) (Content Editor). Serving pointers: [architectural-blueprint.md](architectural-blueprint.md) (Platform). Topic menu: [topic-charters.md](next/topic-charters.md).
+Superseded 2026-09-21 by [web-design.md](../web-design.md). v1 is the civic-fact-desk IA: sleeve → slice, catalog as site, preview as a different prefix. It predated the design-philosophy rewrite (modern, welcoming, civic publisher, generous). Do not implement from this file.
 
-v1 (civic fact desk, pre-publisher framing): [web-design-v1.md](archive/web-design-v1.md). This file (2026-09-21) is the standing contract — role and chrome framing realigned to [design-philosophy.md](design-philosophy.md); every IA, URL, SEO, and HTTP rule from v1 carries forward unchanged unless a ruling below says otherwise.
+Front-end Architect. Information architecture, SEO, navigation, and HTTP surface of the civic CMS. Persona: [front-end-architect.md](../personas/front-end-architect.md). Tone: [design-philosophy.md](../design-philosophy.md). How a slice **looks** is [design-system.md](../design-system.md) (UI/UX Developer). How it **reads** is [editorial-guidelines.md](../editorial-guidelines.md) (Content Editor). Serving pointers: [architectural-blueprint.md](../architectural-blueprint.md) (Platform). Topic menu: [topic-charters.md](../next/topic-charters.md).
 
 ```text
-role:           civic publisher — findable, checkable official numbers, no verdict
+role:           civic fact desk — findable official numbers, no verdict
 shape:          sleeve → slice (citizen question) → optional geography
 stack:          Astro SSG; one vintage per render tree; two prefixes
 cms:            templates + one vintage → one tree (home, hubs, slices, house, 404)
@@ -18,9 +18,7 @@ A citizen reaches one **question**, on one **stable URL**, bound to one **publis
 
 The CMS is that tree, not a folder of hand-built pages. One Astro build per vintage emits every page type below. A template in git is not a public URL until it **binds in this vintage**.
 
-Tone is aligned with USAFacts — modern, welcoming, civic publisher, generous ([design-philosophy.md](design-philosophy.md)). The kit is not: no magenta, cream, Aeonik, or wordmark ([design-system.md](design-system.md)). This file is neither: it is the *machine* — paths, catalog, serve, SEO — that carries that tone without becoming that costume. USAFacts is the *answer-page role* (question, fact-lede, evidence, method), not a kit to copy. Do not copy `/answers/…/country/united-states/`, a search box, newsletter, or media desk.
-
-The philosophy's first two guidelines are IA, not just look: **the answer is the product** (question → fact-lede → figures → evidence → method, as an order this file names so nobody invents a second page type for it — see [Scan path as IA](#scan-path-as-ia-not-as-type)), and **invitation, then depth** (home is the glance; the slice is the product; method and full cards sit on request, not first — see [CMS tree](#cms-tree-desk--site) and [Navigation and UI/UX architecture](#navigation-and-uiux-architecture)). Tokens, well composition, and serif/sans stay in [design-system.md](design-system.md). Citizen questions and fact-ledes stay in [editorial-guidelines.md](editorial-guidelines.md). This file does not invent a second tone, run a presentation pass, or add a geography route this wave.
+USAFacts is the *answer-page role* (question, fact-lede, evidence, method). Do not copy `/answers/…/country/united-states/`, a search box, newsletter, or media desk.
 
 Content Editor writes the citizen question and the fact-lede. This file maps those words onto routes, `<title>`, meta, and chrome. It does not invent a second question.
 
@@ -36,8 +34,8 @@ Content Editor writes the citizen question and the fact-lede. This file maps tho
 | Head | title, description, OG, `twitter:card`, JSON-LD; no canonical or `og:url` in shared HTML | Met; citizen serve injects the absolute URLs |
 | Nav | `SiteShell` on every page: skip link, lockup → `/`, five sleeves, breadcrumb, footer | Met |
 | Serve | Slashless path → `{path}/index.html`; `{path}/` 301 → `{path}`; preview sends `noindex, nofollow` and `private, no-store` | Met; `robots.txt` and sitemap still owed on the citizen prefix |
-| Hottest-rail | Hashes plus catalog siblings from `site.json` | Met (in-page hashes first, then up to three catalog siblings) |
-| 404 body | H1 and a link to `/` | Quiet sentence, links to `/` and the five sleeves, no figure, no search, no catalog dump |
+| Hottest-rail | Hashes plus catalog siblings from `site.json` | Met |
+| 404 body | H1 and a link to `/` | Quiet sentence, links to `/` and the five sleeves |
 
 `/` is the landing page. Do not serve a slice body at `/`. Each page type is its own route (`/prices/retail-prices`, `/people/population`, `/how-this-works`, …). The C1 question has one public URL: `/prices/retail-prices`. Do not keep a second copy of that article at `/`. Do not 301 `/` to C1.
 
@@ -47,19 +45,17 @@ Do not wait for a second published slice to move C1 off `/`. Do not retune the p
 
 ## Page types
 
-A civic **publisher** is findable and checkable, still with no verdict: it does the decoder-ring work on an official number and hands back a fact a person can land on, with the producer next to it. That idea is carried by page type, not by a new page type.
-
 | Type | Job | Observations |
 |------|-----|----------------|
-| **Desk home** | Bound facts from **this desk’s catalog** — the glance, not the depth | Fast-facts slots from that catalog only |
+| **Desk home** | Bound facts from **this desk’s catalog** | Fast-facts slots from that catalog only |
 | **Sleeve hub** | List of catalog slices in that sleeve | Optional one-line bound fact per slice; not a second explainer |
-| **Slice** | The product: one question → fact-lede → evidence → method | Required. Scan path in the editorial guidelines |
+| **Slice** | Answer page: question → fact-lede → evidence → method | Required. Scan path in the editorial guidelines |
 | **Geography slice** | Same template, one bound unit | Later, named. Pre-render from **this** vintage. Districts parked |
-| **House** | How this works; sources — depth on request, not the front door | No invented figures. Cites if a number appears |
+| **House** | How this works; sources | No invented figures. Cites if a number appears |
 | **Retained vintage** | What the page said then | Same tree under `/archive/{vintage_id}`; not in the sitemap |
 | **Preview** | Full desk including unpublished slices | Same relative paths; different host; not a page type in the tree |
 
-Do not add: search, subscribe, social row, press kit, newsletter, chat, “get notified”, download hub, most-viewed, live AQI pin-map, how-to filing pages, or a `/how-it-is-measured` page separate from the slice's own method section.
+Do not add: search, subscribe, social row, press kit, newsletter, chat, “get notified”, download hub, most-viewed, live AQI pin-map, how-to filing pages.
 
 ---
 
@@ -75,7 +71,7 @@ main      desk home | sleeve hub | slice | house | 404
 footer    sleeves · how this works · sources
 ```
 
-`index.html` at the tree root is the desk home. A slice’s `index.html` lives under that slice’s path (`prices/retail-prices/index.html`), never at `/`. Slice interior (hero, stat-row, chart wells) is [design-system.md](design-system.md) — not this shell.
+`index.html` at the tree root is the desk home. A slice’s `index.html` lives under that slice’s path (`prices/retail-prices/index.html`), never at `/`. Slice interior (hero, stat-row, chart wells) is [design-system.md](../design-system.md) — not this shell.
 
 Skip link is the first focusable control (`Skip to content`, `href="#main"`). `<main id="main">` wraps the page type. Tokens for the link are UI/UX Developer.
 
@@ -95,7 +91,7 @@ Skip link is the first focusable control (`Skip to content`, `href="#main"`). `<
 /archive/{vintage_id}/…            retained published tree (same paths under the prefix)
 ```
 
-**Sleeves.** Same five as [team.md](team.md). Front matter `sleeve` is the token. First URL segment and chrome labels are this table. Unknown token fails the render. Not topic-family nicknames, not USAFacts chapters.
+**Sleeves.** Same five as [team.md](../team.md). Front matter `sleeve` is the token. First URL segment and chrome labels are this table. Unknown token fails the render. Not topic-family nicknames, not USAFacts chapters.
 
 | `sleeve` (front matter) | Path | Header link | Hub H1 / breadcrumb |
 |-------------------------|------|-------------|---------------------|
@@ -107,7 +103,7 @@ Skip link is the first focusable control (`Skip to content`, `href="#main"`). `<
 
 Header uses the short **Header link** column so the row wraps. Hub title, breadcrumb, and hub `<title>` use **Hub H1**. Footer sleeve names match the header links.
 
-**Wave 1–2 slices.** `slug` is declared on the template. `template_id` stays internal. `sleeve` in this table is the **path** first segment (see token map above). A **slice** is one citizen question bound to one URL; a **vintage** is one dated snapshot of the observations behind it.
+**Wave 1–2 slices.** `slug` is declared on the template. `template_id` stays internal. `sleeve` in this table is the **path** first segment (see token map above).
 
 | Charter | Path sleeve | `slug` | Citizen path | Citizen question |
 |---------|-------------|--------|--------------|------------------|
@@ -126,8 +122,6 @@ C9–C20 get a `slug` when Charter opens them. Do not mint `/answers/` or a 10-K
 
 **Geography (later).** `{geo}` is the official English name, kebab-case, from the geography frame — not an LGD code in the path. National slice has no `{geo}` segment. Do not ship thin doorway pages (a number and no evidence). A geography URL is the same slice template bound to that unit. Client filter over observations already in **this** vintage is allowed; a dropdown that fetches another vintage is not.
 
-Front-end Architect row S3 (Charter Editor routing file [citizen-page-feedback.md](next/citizen-page-feedback.md)): vintages with Union and state rows should also generate state-specific pages — USAFacts *role*, not costume. That is exactly the geography slice above, already reserved. **This rewrite does not reopen the now-tree.** Do not generate state folders this wave. Charter names which slices before this file reopens `/{sleeve}/{slice}/{geo}`. Front-end row S3 and Charter ruling 7 both land here: same reservation, stated once so the next Charter slice has a contract to build against.
-
 **Aliases.** One public slug per slice. If a path must move, 301 the old path to the new one on the **citizen** prefix only. Do not 301 preview. Moving C1 off `/` is not an alias: `/` stays the desk home.
 
 ---
@@ -145,7 +139,7 @@ templates in git  +  each template’s bound vintage
         → data/renders/{vintage_id}/
 ```
 
-A template in git that cannot bind (missing vintage) is omitted from the catalog. It does not fail the whole tree unless it is a **required** template. It is not listed on home, hubs, or hottest-rail. This is the IA form of "do not hide a hole or a cite to look finished" (design-philosophy guideline): a template is omitted because it did not bind, never because the page would otherwise look sparse, and a bound slice is never hidden or 404'd to look tidier.
+A template in git that cannot bind (missing vintage) is omitted from the catalog. It does not fail the whole tree unless it is a **required** template. It is not listed on home, hubs, or hottest-rail.
 
 ### Inclusion
 
@@ -229,7 +223,7 @@ src/cms/src/pages/[sleeve]/index.astro           hub; params = five path segment
 src/cms/src/pages/[sleeve]/[slice]/index.astro   slice; params = catalog only
 ```
 
-Unknown sleeve or slug is a 404, not an empty invented page. Empty **hubs** are 200 (quiet empty) — see [Navigation and UI/UX architecture](#navigation-and-uiux-architecture) for what "quiet" means as an IA rule, not a visual one. `trailingSlash: "never"` stays. `build.format` must produce the on-disk tree above (directory `index.html`, not a parallel `{path}.html`).
+Unknown sleeve or slug is a 404, not an empty invented page. Empty **hubs** are 200 (quiet empty). `trailingSlash: "never"` stays. `build.format` must produce the on-disk tree above (directory `index.html`, not a parallel `{path}.html`).
 
 Do not add `/answers/`, geography folders, or `archive/` this wave.
 
@@ -237,7 +231,7 @@ Do not add `/answers/`, geography folders, or `archive/` this wave.
 
 ## Navigation and UI/UX architecture
 
-Site chrome is UI/UX Developer, not Content Editor copy. Look (tokens, well composition, serif/sans) is [design-system.md](design-system.md). Tone (modern, welcoming, civic publisher, generous) is [design-philosophy.md](design-philosophy.md). Scan path prose and voice are [editorial-guidelines.md](editorial-guidelines.md). This section names **regions** and **catalog lists** only — no hex, no type scale, no radius.
+Site chrome is UI/UX Developer, not Content Editor copy. Tokens and first-screen scan path stay in [design-system.md](../design-system.md). The regions below are the shared shell in [Site shell](#site-shell-shared-layout). Lists of slices are **catalog** lists, not the git templates folder.
 
 ```text
 [ skip → #main ]
@@ -252,19 +246,13 @@ Site chrome is UI/UX Developer, not Content Editor copy. Look (tokens, well comp
 
 **Breadcrumb** (hub and slice, not home, not house): `Prism / {Hub H1} / {citizen question}`. Links: home, sleeve hub, current page is text. The question in the crumb is the H1, not the slug. House pages have no breadcrumb.
 
-### Scan path as IA, not as type
+**Slice body.** Layout primitives Content Editor may name (`hero`, `stat-row`, `section`, `how-this-is-measured`, compact source byline). `.hottest-rail` is further questions on **this** page (hashes) plus links to **catalog** sibling slices — featured citizen questions, not scoops. Author-written in-page hashes render first, in template order. Then up to three sibling links taken from `site.json`, in catalog order (charter order), the current slice excluded, link text the sibling's `citizen_question` verbatim. If the catalog has no sibling, the rail is hashes alone — no empty group, heading, or placeholder. Templates do not type sibling questions. Render must not emit an `href` whose path is missing from this vintage’s catalog.
 
-The slice's region order — sleeve → citizen question → byline → answer well → first chart → hottest-rail → method — is named here so UI/UX Developer does not invent a second page type or a second route for "the answer" versus "the depth". It stays one URL (`/{sleeve}/{slice}`); the order is what makes it "invitation, then depth" on a single page. Type, well composition, and elevation for that order are [design-system.md](design-system.md) "First screen (slice)". This file only guarantees the order is the page, not a `/how-it-is-measured` split-off.
-
-**Slice body regions.** `.hottest-rail` is further questions on **this** page (hashes) plus links to **catalog** sibling slices — featured citizen questions, not scoops. Author-written in-page hashes render first, in template order. Then up to three sibling links taken from `site.json`, in catalog order (charter order), the current slice excluded, link text the sibling's `citizen_question` verbatim. If the catalog has no sibling, the rail is hashes alone — no empty group, heading, or placeholder. Templates do not type sibling questions. Render must not emit an `href` whose path is missing from this vintage’s catalog. Method (`how-this-is-measured`) sits on this same URL, after the record, quieter than the answer — never split to a separate house page.
-
-**Desk home — the glance, not the depth.** Not a news homepage and not GDP as the hero ([topic-charters.md](next/topic-charters.md) C16). Order:
+**Desk home.** Not a news homepage and not GDP as the hero ([topic-charters.md](../next/topic-charters.md) C16). Order:
 
 1. Skip link + lockup + sleeve nav (the shell)
-2. H1 = desk line: the Purpose sentence in [vision.md](vision.md) (“A shared, checkable picture of India that does not belong to a party, a ministry, or a news cycle.”). Not a slogan box; not a second citizen question
+2. H1 = desk line: the Purpose sentence in [vision.md](../vision.md) (“A shared, checkable picture of India that does not belong to a party, a ministry, or a news cycle.”). Not a slogan box; not a second citizen question
 3. `.fast-facts` — one card per catalog slice, Wave order (C1, C2, C3, …), at most four. Do not pad with unpublished templates. The `citizen_question` is the only link, to that slice path. The bound one-liner is `fact_lede_one_line` — the first sentence of that slice's plain-text fact-lede — and is not a link. Each card carries `data-vintage-id` from **that slice's** catalog entry; `<html data-vintage-id>` stays the tree vintage. The slice `<title>`, `meta description`, and `QAPage` `acceptedAnswer` keep the full `fact_lede`. This is the only slice list on home. Do not also emit a home `.hottest-rail`
-
-**Ruling: home does not emit `.hottest-rail`.** [design-system.md](design-system.md) "Publisher front" names "then the featured-question rail" after the fact grid on home. This file's standing forbid overrides that for home: `.hottest-rail` stays a **slice** region only (in-page hashes, then catalog siblings). Home invitation is `.fast-facts` alone. Header and footer already list the five sleeves; a rail on home would be a third index of the same catalog. If a UI/UX pass proposes a home rail again, the answer stays no — cite this line, not a fresh discussion.
 
 Do not repeat the five sleeve hubs in `main`. Header and footer already list them. A hub with no catalog slice still stays in that chrome (quiet empty, no invented figures). `.hottest-rail` stays a **slice** region (in-page hashes and catalog siblings), not a second home index. `.sleeve-index` stays a **hub** (and house) list of slices, not a third copy of the sleeve nav.
 
@@ -272,21 +260,19 @@ Do not repeat the five sleeve hubs in `main`. Header and footer already list the
 
 **Footer.** Five header sleeve links, `/how-this-works`, `/sources`. No engagement SDK. No party or ministry campaign strip.
 
-**Cite chrome is not a route.** The producer sits with the number on the slice URL — that is [design-system.md](design-system.md) chrome, not this file's business to restyle. This file's business is that it stays **there**: no per-slice `/sources` route, and `/sources` itself stays a house index of producers, never a per-slice dump. Charter ruling 3 ([citizen-page-feedback.md](next/citizen-page-feedback.md)): the open cite card shows producer (linked), series, reference period, released, one caveat; `geography_vintage` and `vintage_id` are not citizen labels. An in-text cite may open a closable panel that *mirrors* that on-page card (UI/UX row P3) — that panel is Interaction, named in [design-system.md](design-system.md), and it is **not** a new page type. Refuse any pass that would give citations `/cite`, turn `/sources` into a field dump, or leave the panel as the only place the cite lives (it must not replace the on-page card or leave the view). A tooltip is not enough; a fly-out that leaves the view is not enough — both are design-system Interaction failures, not IA gaps this file can patch with a new URL.
-
 **House body.** Content Editor. Until that copy exists, UI/UX ships the route with the house H1 from the title formula, links to `/` and sleeves, and **no figures**. Do not invent a producer bibliography.
 
 **Interaction.** Static HTML. Allowed: skip link to `main`, in-page `<details>`, hash links, Vega-Lite hover/download from already-bound specs. Forbidden: request-time producer fetch, live vintage switch, A/B, heatmap, client search.
 
 **Preview chrome** is **serving**, not in the render tree. The preview host may inject a banner (`Preview · not published` plus `vintage_id` in IBM Plex Mono). Citizen HTML must not contain that banner. A leaked preview URL still sends `X-Robots-Tag: noindex, nofollow`.
 
-**404.** Not a dead end and not a catalog dump. One quiet sentence, links to `/` and the five sleeves in `main`, `noindex`. No figure, no search box, no list of every slice. Do not invent a number to fill the page.
+**404.** Quiet sentence, links to `/` and sleeves, `noindex`. Do not invent a number to fill the page.
 
 ---
 
 ## Web layout design
 
-Slice layout (hero, stat row, `--desk` column, chart wells) is [design-system.md](design-system.md). This file only adds **site** frame — which regions exist and at what width, not a second palette or a second type scale:
+Slice layout (hero, stat row, `--desk` column, chart wells) is [design-system.md](../design-system.md). This file only adds **site** frame:
 
 | Region | Width | Notes |
 |--------|-------|--------|
@@ -303,7 +289,7 @@ Do not add a mega-menu, tabbed dashboard, or map that ranks states by default.
 
 ## SEO strategy and content
 
-**Intent.** Kitchen-table questions official statistics can answer: prices, jobs, tax, school, hospital, ration — [topic-charters.md](next/topic-charters.md) “How a topic got on this list” and the search-spike table. We do not chase news, bills of the week, exam portals, or filing how-tos.
+**Intent.** Kitchen-table questions official statistics can answer: prices, jobs, tax, school, hospital, ration — [topic-charters.md](../next/topic-charters.md) “How a topic got on this list” and the search-spike table. We do not chase news, bills of the week, exam portals, or filing how-tos.
 
 **One question, one indexable URL.** The slice is the unit of search. Sub-questions stay on that URL. Sleeve hubs are indexes, not duplicates of the explainer. Fast facts on home quote published slots and link to the slice — they do not become a second canonical.
 
@@ -311,7 +297,7 @@ Do not add a mega-menu, tabbed dashboard, or map that ranks states by default.
 
 **Stable title, bound snippet.** The citizen question (H1 / `<title>`) stays put across vintages. The meta description is the rendered fact-lede (number, unit, place, year, then definition). Refresh updates the snippet; it does not require a new slug.
 
-**Cites are the trust signal.** Producer, series, date, geography vintage, caveat stay in the same view as the number. Do not write meta that a slot cannot support. Do not put `vintage_id`, annex codes, or `2024=100` in titles or descriptions ([editorial-guidelines.md](editorial-guidelines.md)).
+**Cites are the trust signal.** Producer, series, date, geography vintage, caveat stay in the same view as the number. Do not write meta that a slot cannot support. Do not put `vintage_id`, annex codes, or `2024=100` in titles or descriptions ([editorial-guidelines.md](../editorial-guidelines.md)).
 
 **Do not** keyword-stuff (“latest India inflation rate 2026 CPI food”); use judging words in titles; ship doorway state pages; `rel=canonical` from preview to live when the vintage differs; mark Prism as the statistical office in JSON-LD.
 
@@ -345,7 +331,7 @@ Do not emit `FAQPage` that repeats every section heading as a fake Q&A. Do not e
 
 | Page | `<title>` | `meta name="description"` |
 |------|-----------|---------------------------|
-| Home | `Prism — official numbers on India` | First sentence of [vision.md](vision.md), truncated to ~160 characters |
+| Home | `Prism — official numbers on India` | First sentence of [vision.md](../vision.md), truncated to ~160 characters |
 | Sleeve hub | `{Hub H1} — official record · Prism` | “Official statistics on {Hub H1}, from the producing agencies.” No figures unless slotted |
 | Slice | `{citizen_question}` | Plain-text fact-lede after bind. Fail render if the lede is empty while the H1 shows |
 | Geography slice | `{citizen_question}` with the unit already in the words | Same rule; geography is in the question, not a suffix `\| Kerala` |
@@ -384,7 +370,7 @@ Shared HTML includes `<title>`, description, `og:title`, `og:description`, `og:t
 <meta name="twitter:card" content="summary" />
 ```
 
-- `lang="en"` until a template ships another language ([design-system.md](design-system.md)).
+- `lang="en"` until a template ships another language ([design-system.md](../design-system.md)).
 - No `og:image` until a named render of a bound chart PNG exists. Do not invent a marketing card.
 - Visited links stay `--mark` (this is a record, not lore).
 - Do not put `vintage_id` in `<title>`, description, or OG. Data vintage stays on the collapsed citation card.
@@ -474,7 +460,7 @@ C2, when Content Editor adds the template: `sleeve: people`, `slug: population`,
 
 ## Out of scope
 
-Visual tokens, chart form factor, presentation pass ([design-system.md](design-system.md), UI/UX Developer). Tone and idea ([design-philosophy.md](design-philosophy.md)). Voice and scan-path prose ([editorial-guidelines.md](editorial-guidelines.md)). Pointer atomicity and `CITIZEN_ORIGIN` as infrastructure ([architectural-blueprint.md](architectural-blueprint.md)). Dark mode, a mobile app, ISR, request-time fetch, engagement SDK, a USAFacts `/answers/…` tree.
+Visual tokens, chart form factor, presentation pass ([design-system.md](../design-system.md), UI/UX Developer). Tone ([design-philosophy.md](../design-philosophy.md)). Voice and scan path ([editorial-guidelines.md](../editorial-guidelines.md)). Pointer atomicity and `CITIZEN_ORIGIN` as infrastructure ([architectural-blueprint.md](../architectural-blueprint.md)). Dark mode, a mobile app, ISR, request-time fetch, engagement SDK.
 
 ---
 
@@ -493,15 +479,12 @@ web_design:      docs/web-design.md
 **UI/UX Developer** implements, without inventing a slug or a second public URL:
 
 1. `SiteShell` on every page (skip link, lockup → `/`, five sleeve links, footer).
-2. Astro files in [CMS tree](#cms-tree-desk--site): `/` is desk home; C1 at `/prices/retail-prices`; five hubs; house routes; 404.
+2. Astro files in [CMS tree](#cms-tree-one-vintage--one-site): `/` is desk home; C1 at `/prices/retail-prices`; five hubs; house routes; 404.
 3. Bound `site.json`; `<title>` / description from this file; `data-prism-path` / `data-prism-page` on `<html>`.
 4. On-disk directory `index.html` as specified. Do not leave C1 at `/`.
-5. Cite chrome and in-text panels per [Navigation and UI/UX architecture](#navigation-and-uiux-architecture) "Cite chrome is not a route" — mirror the on-page card, do not add `/cite` or a per-slice `/sources`.
 
-Do not implement geography routes, sitemap, `robots.txt` in the tree, or archive paths until a second slice is ready to publish. Do not paint the desk to resemble USAFacts. Do not add a home `.hottest-rail`.
+Do not implement geography routes, sitemap, `robots.txt` in the tree, or archive paths until a second slice is ready to publish. Do not paint the desk to resemble USAFacts.
 
 **Platform Architect:** slashless URL → `{path}/index.html`; citizen-serve injection of canonical / `og:url` / JSON-LD origin from `data-prism-path`; COMPLETE required files include `prices/retail-prices/index.html` for C1; preview server must not weaken `PREVIEW_HEADERS`.
 
 **Content Editor:** house body for `/how-this-works` and `/sources` (no figures unless slotted). Do not change C1/C3 citizen questions. C2 uses `slug: population` when that template is written.
-
-**Charter Editor:** names which slices reopen `/{sleeve}/{slice}/{geo}` (Charter ruling 7; Front-end row S3). This file keeps the reservation; it does not schedule the work.

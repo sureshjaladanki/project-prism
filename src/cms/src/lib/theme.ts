@@ -1,27 +1,30 @@
 /** Civic desk tokens. Pages and charts inherit; they do not restyle. */
 
 export const color = {
-  paper: "#F4F2EE",
+  paper: "#F3EEE6",
   card: "#FFFFFF",
-  ink: "#1A1A1A",
-  muted: "#5A5A5A",
-  rule: "#D6D2CA",
+  well: "#EAF0F5",
+  ink: "#1C1A17",
+  muted: "#5B5548",
+  rule: "#DDD6C9",
   mark: "#1F4E79",
-  mark2: "#7A542E",
+  mark2: "#9C5233",
   mark3: "#4A6670",
   mark4: "#5C5C5C",
-  hole: "#6B6B6B",
+  hole: "#6E6656",
   focus: "#1F4E79",
-  break: "#333333",
-  holeBand: "#E3DFD8",
-  ruleStrong: "#8C857A",
+  break: "#332E27",
+  holeBand: "#E7E0D2",
+  ruleStrong: "#8C8370",
 } as const;
 
 export const type = {
   sans: "IBM Plex Sans",
+  serif: "IBM Plex Serif",
   mono: "IBM Plex Mono",
   sansStack:
     '"IBM Plex Sans", "Source Sans 3", "Segoe UI", system-ui, sans-serif',
+  serifStack: '"IBM Plex Serif", Georgia, "Times New Roman", serif',
   monoStack: '"IBM Plex Mono", ui-monospace, monospace',
 } as const;
 
@@ -39,21 +42,26 @@ export const space = {
 export const measure = {
   prose: "40rem",
   desk: "68rem",
-  radius: "0",
+  radius: "12px",
+  radiusLg: "20px",
   hair: "1px",
-  headerRule: "3px",
+  headerRule: "4px",
+  lift: "0 1px 3px rgb(28 26 23 / 0.08)",
+  liftAnswer:
+    "0 10px 24px rgb(28 26 23 / 0.10), 0 2px 6px rgb(28 26 23 / 0.06)",
 } as const;
 
 export const chart = {
   plotWidth: 720,
   plotHeight: 280,
-  barStep: 22,
+  barStep: 26,
   barPaddingInner: 0.3,
+  barCornerRadius: 2,
   labelSize: 12,
   lineStrokeWidth: 2,
   valueLabelPad: 96,
-  fitWidth: 1008,
-  minScale: 0.92,
+  fitWidth: 974,
+  minScale: 1,
   series: [color.mark, color.mark2, color.mark3, color.mark4] as const,
   gridOpacity: 0.5,
   titleSize: 14,
@@ -64,6 +72,7 @@ export const chart = {
 export const cssVars: Record<string, string> = {
   paper: color.paper,
   card: color.card,
+  well: color.well,
   ink: color.ink,
   muted: color.muted,
   rule: color.rule,
@@ -87,9 +96,13 @@ export const cssVars: Record<string, string> = {
   measure: measure.prose,
   desk: measure.desk,
   radius: measure.radius,
+  "radius-lg": measure.radiusLg,
+  lift: measure.lift,
+  "lift-answer": measure.liftAnswer,
   hair: measure.hair,
   "header-rule": measure.headerRule,
   "font-sans": type.sansStack,
+  "font-serif": type.serifStack,
   "font-mono": type.monoStack,
   "chart-fit-width": `${chart.fitWidth}px`,
   "chart-min-scale": String(chart.minScale),
@@ -152,6 +165,9 @@ export function vegaConfig(): Record<string, unknown> {
     },
     bar: {
       fill: color.mark,
+      cornerRadiusEnd: chart.barCornerRadius,
+      cornerRadiusTopRight: chart.barCornerRadius,
+      cornerRadiusBottomRight: chart.barCornerRadius,
     },
     line: {
       strokeWidth: chart.lineStrokeWidth,
@@ -175,10 +191,14 @@ export function vegaConfig(): Record<string, unknown> {
 const SERIES_BY_LEGACY: Record<string, string> = {
   "#1f4e79": color.mark,
   "#7a542e": color.mark2,
+  "#9c5233": color.mark2,
   "#4a6670": color.mark3,
   "#5c5c5c": color.mark4,
   "#333333": color.break,
+  "#332e27": color.break,
   "#d9d9d9": color.holeBand,
+  "#e3dfd8": color.holeBand,
+  "#e7e0d2": color.holeBand,
 };
 
 function inheritPaint(value: string): string {

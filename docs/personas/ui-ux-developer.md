@@ -62,19 +62,19 @@ Run on **preview** before Trust, on **every template that reached Content Editor
 
 Measure the boxes at 360px and 1440px. Do not eyeball them.
 
-- [ ] Same house tokens on every block (`--paper`, `--card`, `--ink`, `--muted`, `--mark`). No mixed palettes. No magenta / cream / Aeonik / USAFacts costume.
-- [ ] Type and formatting: H1, H2, byline, figcaption (`.chart-title` / `.chart-subtitle`), source-line use the type scale. Fast-facts at 1.25rem / 500 / `--ink`. Chart titles live in HTML matching H2 (1.25rem / 500) and byline (0.875rem) — not Vega titles at 14px. Heading element and heading size agree.
+- [ ] Same house tokens on every block (`--paper`, `--card`, `--well`, `--ink`, `--muted`, `--mark`). Three grounds. No mixed palettes. No magenta / cream / Aeonik / USAFacts costume.
+- [ ] Two voices: IBM Plex Serif on H1, H2, and every bound figure; IBM Plex Sans everywhere else, including all chart SVG text. Fast-facts at 1.375rem / 500 / `--ink` Sans. Chart titles in HTML matching H2 (1.5rem Serif) and byline (0.875rem Sans) — not Vega titles at 14px. Heading element and heading size agree.
 - [ ] One well: lede, stats, cite strip, and the first chart share `--desk` (right edges within 1px at 1440px). `--measure` only on `.how-measured` prose; no method paragraph over 90 characters per line.
-- [ ] `.fact-lede` is `--card` at `--desk`, padding-block at least `--space-5`, 3px `--mark` top rule, `--ink` type.
+- [ ] Answer well: `.fact-lede` + `.stat-row` + `.cite-strip` read as one band — shared `--well` ground, `--radius-lg` exterior, `--lift-answer`, 4px `--mark` top rule, hairline joins, no visible gap.
 - [ ] No `.stat-figure` wider than its cell's content box at any tested width.
-- [ ] No SVG text below 12px effective size (intrinsic × rendered scale) at any tested width. At 1440px the first-screen chart does not scroll; below 0.92 scale a chart that cannot fit scrolls.
-- [ ] Chart wells fill `--desk`; the plot fills the `--card`; no leftover white field in the well.
-- [ ] Categorical bars: horizontal; house `barStep` so thickness does not depend on category count.
+- [ ] No SVG text below 12px effective size (intrinsic × rendered scale) at any tested width. At 1440px the first-screen chart does not scroll; narrower viewports scroll.
+- [ ] Chart wells fill `--desk`; the plot fills the `--card`; no leftover white field in the well; bar ends carry the 2px corner radius.
+- [ ] Categorical bars: horizontal; house `barStep` (26px) so thickness does not depend on category count.
 - [ ] One house `plotWidth`; no mixed intrinsic plot widths on the same page.
 - [ ] Axis labels, bar value labels, stat figures, and the lede figure use one number format.
 - [ ] Producer name within 600px of the top of `main` at 1440×900, in `--ink`, next to the numbers and before the first chart; first-screen cite summary carries producer, series, reference period, and release date.
-- [ ] Holes are never smaller or lower-contrast than the sentence around them. Text 4.5:1, meaningful graphics 3:1.
-- [ ] Screenshot test: a crop still shows title, unit, geography, source line, and visible holes at readable size; it does not look like a USAFacts chart.
+- [ ] Holes are never smaller, lower-contrast, or demoted to Sans inside a Serif context. Text 4.5:1, meaningful graphics 3:1 on paper, card, or well.
+- [ ] Screenshot test: a crop still shows title, unit, geography, source line, and visible holes at readable size; it does not look like a USAFacts chart; it reads as Prism without the header rule (well, clay-and-navy series, Serif figure).
 
 Fail the pass if any box is open. Fix here. Content Editor Proof hands a named form-factor list; it does not restyle. Hand to Trust only for cites, dates, holes, spin — not for taste.
 
