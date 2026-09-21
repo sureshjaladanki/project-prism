@@ -40,3 +40,6 @@ do_not: Do not present these indexes as independently compiled 2024-basket price
   or Group food. Do not hide the January 2025 compiled-series start as a smooth continuation.
   Do not rank, forecast, overlay pumps, or call All India the whole country (States,
   UTs, and districts are missing here).
+citizen_note: This is a producer-linked CPI General series expressed on Base 2024=100 for
+  All India only — not independently compiled 2024-basket prices before the new series. Blank
+  inflation cells are not zero. State and UT rows are not in this file.

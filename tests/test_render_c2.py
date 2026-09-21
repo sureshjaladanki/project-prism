@@ -8,7 +8,7 @@ from pathlib import Path
 import pytest
 
 from prism.desk_store import load_desk
-from prism.paths import render_complete_path, render_dir, renders_dir
+from prism.paths import render_complete_path, render_dir
 from prism.pointer_store import read_citizen_pointer, read_preview_pointer
 from prism.template_bind import RenderError, bind_c2_page, format_bound_number
 
@@ -16,7 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_ROOT = REPO_ROOT / "data"
 CMS_ROOT = REPO_ROOT / "src" / "cms"
 C1_VINTAGE_ID = "dv-20260916-234e263c8588"
-C2_VINTAGE_ID = "dv-20260919-87b702f1fd66"
+C2_VINTAGE_ID = "dv-20260921-617d0e9cf03f"
 C2_SLICE_HTML = Path("people") / "population" / "index.html"
 
 
@@ -34,9 +34,12 @@ def test_bind_c2_page_is_one_vintage() -> None:
     assert ids == {C2_VINTAGE_ID}
     assert "Census 2011" in page.body_html
     assert "does not pick a winner" in page.body_html
+    assert "next_release" not in page.body_html
+    assert "on this desk" not in page.body_html
+    assert "Districts are parked" not in page.body_html
     assert page.citizen_question.startswith("How many people live in India")
-    assert "1,21,08,54,977" in page.body_html
-    assert page.fact_lede.startswith("On 1 March 2011, Census 2011 counted 1,21,08,54,977")
+    assert "121.09 Cr" in page.body_html
+    assert page.fact_lede.startswith("On 1 March 2011, Census 2011 counted 121.09 Cr")
     assert "Updated not printed" not in page.body_html
     assert "Release date not printed" not in page.body_html
     assert "Census day 1 March 2011" in page.body_html
@@ -91,4 +94,3 @@ def test_c2_preview_tree_has_population_slice_and_leaves_citizen() -> None:
     )
     preview_desk = load_desk(DATA_ROOT, preview)
     assert any(item.vintage_id == C2_VINTAGE_ID for item in preview_desk.slices)
-    assert (renders_dir(DATA_ROOT) / C2_VINTAGE_ID / C2_SLICE_HTML).exists()

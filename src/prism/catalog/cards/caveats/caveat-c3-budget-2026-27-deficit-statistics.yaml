@@ -17,3 +17,6 @@ disagrees_with: Card 4 printed deficit lines. Card 8 FRBM prose percentages. Car
   10 monthly fiscal deficit. Card 11 year-end Actuals.
 do_not: Do not grade FRBM targets from this table. Do not blend monthly Card 10 into
   this year-status table. Do not invent one Union money number.
+citizen_note: Union deficit statistics as printed — fiscal deficit, revenue deficit, and related
+  lines — in rupees and, where printed, percent of GDP. These year-status columns are not
+  the monthly accounts and not an FRBM grade.

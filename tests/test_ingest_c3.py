@@ -104,6 +104,8 @@ def test_receipt_xlsx_maps_year_columns() -> None:
     assert rows[0]["major_head"] == "0020"
     assert rows[0]["actuals_2024_2025"] == "911000"
     assert rows[1]["budget_2025_2026"] == ""
+    assert rows[2]["line_label"] == "GST Compensation Cess"
+    assert rows[2]["budget_2026_2027"] == ""
     assert "sheet=ReceiptReport123" in parsed.flags
 
 

@@ -132,11 +132,11 @@ Rural, Urban, and Combined are three published sectors. Combined is not a Rural�
 
 The press date is the release, not the month the prices refer to.
 
-Independently compiled indexes on this base run from January 2025. **This vintage’s compiled series files contain {{period.latest_final.label}} and {{period.latest_provisional.label}} only.** Do not fill 2025 inflation blanks from the longer All India run, and do not join that run to the compiled months as one line.
+Independently compiled indexes on this base run from January 2025. This page binds the latest Final month and the latest Provisional month only. Months in between that the compiled files do not carry stay not published. Those months are not filled from a longer All India run, and that run is not joined to these two months as one line.
 
-Live grouping is COICOP 2018. A National Metadata Structure PDF on the MoSPI site still describes older six-group weights; that PDF is not the grouping of record for these numbers.
+Prices are grouped as the producer groups them on this base. An older six-group description on the MoSPI site is not the grouping of record for these numbers.
 
-Districts are parked. Chandigarh Rural is not published (no rural market in Chandigarh). On the printed Chandigarh row, Combined equals Urban.
+Chandigarh Rural is not published (no rural market in Chandigarh). On the printed Chandigarh row, Combined equals Urban. Districts are not on this page.
 
 This page does not include forecasts; cheap or expensive verdicts; city rankings; press “top five States” or “top five items” tables as a ranking; petrol, diesel or LPG pump prices; district figures; item or subclass indexes; WPI; Labour Bureau CPI-IW, CPI-AL or CPI-RL; or CPI 2012=100 drawn as one line with Base 2024=100.
 {{/how-this-is-measured}}

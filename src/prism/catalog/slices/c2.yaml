@@ -103,3 +103,15 @@ series:
     parser_id: ncp-projections-table8-pdf
     mapper_id: ncp-table8-projections
     named_hole: false
+cite_blocks:
+  - block_id: census-pca
+    citation_ids: [cite-c2-census-2011-pca-sd]
+  - block_id: census-a02
+    citation_ids: [cite-c2-census-2011-a02-decadal]
+  - block_id: srs-bulletin
+    citation_ids: [cite-c2-srs-bulletin-2024]
+  - block_id: srs-stat
+    citation_ids: [cite-c2-srs-statistical-report-2024]
+  - block_id: ncp-table8
+    citation_ids: [cite-c2-ncp-projections-2011-2036-table8]
+

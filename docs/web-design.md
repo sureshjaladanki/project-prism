@@ -7,16 +7,16 @@ v1 (civic fact desk, pre-publisher framing): [web-design-v1.md](archive/web-desi
 ```text
 role:           civic publisher — findable, checkable official numbers, no verdict
 shape:          sleeve → slice (citizen question) → optional geography
-stack:          Astro SSG; one vintage per render tree; two prefixes
-cms:            templates + one vintage → one tree (home, hubs, slices, house, 404)
+stack:          Astro SSG; one desk per render tree; one vintage per page; two prefixes
+cms:            templates + one desk → one tree (home, hubs, slices, house, 404)
 now:            `/` is the desk home (`index.html`); slices at `/{sleeve}/{slice}`
 ```
 
 ## Decision
 
-A citizen reaches one **question**, on one **stable URL**, bound to one **published** vintage. Preview uses the same templates and the same relative paths. Isolation is a different, non-public prefix plus `noindex` — not a `/preview` path on the citizen host.
+A citizen reaches one **question**, on one **stable URL**, bound to one **published** vintage on the published desk. Preview uses the same templates and the same relative paths. Isolation is a different, non-public prefix plus `noindex` — not a `/preview` path on the citizen host.
 
-The CMS is that tree, not a folder of hand-built pages. One Astro build per vintage emits every page type below. A template in git is not a public URL until it **binds in this vintage**.
+The CMS is that tree, not a folder of hand-built pages. One Astro build per **desk** emits every page type below. Each page in that tree still binds exactly one `vintage_id`. A template in git is not a public URL until it **binds on this desk**.
 
 Tone is aligned with USAFacts — modern, welcoming, civic publisher, generous ([design-philosophy.md](design-philosophy.md)). The kit is not: no magenta, cream, Aeonik, or wordmark ([design-system.md](design-system.md)). This file is neither: it is the *machine* — paths, catalog, serve, SEO — that carries that tone without becoming that costume. USAFacts is the *answer-page role* (question, fact-lede, evidence, method), not a kit to copy. Do not copy `/answers/…/country/united-states/`, a search box, newsletter, or media desk.
 
@@ -54,7 +54,7 @@ A civic **publisher** is findable and checkable, still with no verdict: it does 
 | **Desk home** | Bound facts from **this desk’s catalog** — the glance, not the depth | Fast-facts slots from that catalog only |
 | **Sleeve hub** | List of catalog slices in that sleeve | Optional one-line bound fact per slice; not a second explainer |
 | **Slice** | The product: one question → fact-lede → evidence → method | Required. Scan path in the editorial guidelines |
-| **Geography slice** | Same template, one bound unit | Later, named. Pre-render from **this** vintage. Districts parked |
+| **Geography slice** | Full slice for one bound unit: own question, fact-lede, cite — never a doorway | Reserved. `{geo}` is `geography_slug`. Pre-render from **this page's** vintage when Charter names slices. Districts parked. No folders this wave |
 | **House** | How this works; sources — depth on request, not the front door | No invented figures. Cites if a number appears |
 | **Retained vintage** | What the page said then | Same tree under `/archive/{vintage_id}`; not in the sitemap |
 | **Preview** | Full desk including unpublished slices | Same relative paths; different host; not a page type in the tree |
@@ -89,7 +89,7 @@ Skip link is the first focusable control (`Skip to content`, `href="#main"`). `<
 /                                  desk home
 /{sleeve}                          sleeve hub
 /{sleeve}/{slice}                  national (or Union-only) slice
-/{sleeve}/{slice}/{geo}            later: one state / UT
+/{sleeve}/{slice}/{geo}            reserved: one state / UT; full slice, never a doorway
 /how-this-works                    house: official sources, no verdict
 /sources                           house: producers as cited
 /archive/{vintage_id}/…            retained published tree (same paths under the prefix)
@@ -124,9 +124,9 @@ C9–C20 get a `slug` when Charter opens them. Do not mint `/answers/` or a 10-K
 
 **In-page questions** (C1 `#food`, `#states`, …) stay hashes on the slice until Charter splits them. A hash is not a second canonical.
 
-**Geography (later).** `{geo}` is the official English name, kebab-case, from the geography frame — not an LGD code in the path. National slice has no `{geo}` segment. Do not ship thin doorway pages (a number and no evidence). A geography URL is the same slice template bound to that unit. Client filter over observations already in **this** vintage is allowed; a dropdown that fetches another vintage is not.
+**Geography (reserved, not built).** `/{sleeve}/{slice}/{geo}` is a **full slice** — own citizen question, fact-lede, and cite — never a doorway (a number and no evidence). `{geo}` is `CitizenGeography.geography_slug`: official English name, kebab-case, from the geography frame Geography Steward signs — not an LGD code in the path, not today’s map pasted onto an old table. National slice has no `{geo}` segment. Client filter over observations already in **this page's** vintage is allowed; a dropdown that fetches another vintage is not.
 
-Front-end Architect row S3 (Charter Editor routing file [citizen-page-feedback.md](next/citizen-page-feedback.md)): vintages with Union and state rows should also generate state-specific pages — USAFacts *role*, not costume. That is exactly the geography slice above, already reserved. **This rewrite does not reopen the now-tree.** Do not generate state folders this wave. Charter names which slices before this file reopens `/{sleeve}/{slice}/{geo}`. Front-end row S3 and Charter ruling 7 both land here: same reservation, stated once so the next Charter slice has a contract to build against.
+Do not generate state folders this wave. Charter names which slices before this file reopens the path. Front-end row S3 and Charter ruling 7 ([citizen-page-feedback.md](next/citizen-page-feedback.md)): same reservation, stated once so the next Charter slice has a contract to build against.
 
 **Aliases.** One public slug per slice. If a path must move, 301 the old path to the new one on the **citizen** prefix only. Do not 301 preview. Moving C1 off `/` is not an alias: `/` stays the desk home.
 
@@ -142,8 +142,10 @@ templates in git  +  each template’s bound vintage
         → filter by cms_mode (preview: all; citizen: published only)
         → site.json (route catalog for this desk)
         → one Astro SSG
-        → data/renders/{vintage_id}/
+        → data/renders/{desk_id}/
 ```
+
+**Ruling: the render tree is keyed by `desk_id`.** [architectural-blueprint.md](architectural-blueprint.md) wins. Pointers name a `desk_id`. Binding (`template_id`, `vintage_id`) is a desk field, not a template field and not the citizen pointer. Do not treat `bound_vintage_id` as the pointer. DuckDB may alias a query column `bound_vintage_id` as **this page's** vintage — that is a query alias, not a template field.
 
 A template in git that cannot bind (missing vintage) is omitted from the catalog. It does not fail the whole tree unless it is a **required** template. It is not listed on home, hubs, or hottest-rail. This is the IA form of "do not hide a hole or a cite to look finished" (design-philosophy guideline): a template is omitted because it did not bind, never because the page would otherwise look sparse, and a bound slice is never hidden or 404'd to look tidier.
 
@@ -152,7 +154,7 @@ A template in git that cannot bind (missing vintage) is omitted from the catalog
 | In this desk | Preview | Citizen (publish) |
 |--|---------|-------------------|
 | Desk home, five hubs, house, 404 | Always | Always |
-| Slice | Bind succeeded | Bind succeeded **and** `bound_vintage_id` is the citizen pointer |
+| Slice | Bind succeeded | Bind succeeded **and** the slice is listed on the desk named by `citizen_pointer` (`desk_id`) |
 | Geography slice | Later | Later |
 | `/archive/{vintage_id}` | Later | Later |
 | `robots.txt` / `sitemap.xml` | Not in the tree | Citizen **serve** only |
@@ -164,7 +166,7 @@ C2 and C3 on preview while citizen is still C1 is expected. Do not 301 preview. 
 Citizen path has no trailing slash and no `.html`. Every page except 404 is `index.html` in that folder. Do not also emit `{path}.html` (a second URL). Root `index.html` is the desk home, never the C1 article.
 
 ```text
-data/renders/{vintage_id}/
+data/renders/{desk_id}/
   index.html                              /
   404.html                                HTTP 404
   how-this-works/index.html               /how-this-works
@@ -205,13 +207,13 @@ All `href` and asset URLs in the HTML are root-relative from that origin (`/pric
 Bound inputs, not a citizen URL. Do not serve `/site.json`. Home, hubs, header/footer, home `.fast-facts`, and head tags read this object. They do not glob `src/cms/templates/` to decide what is live.
 
 ```text
-vintage_id
+desk_id       this render tree (not a citizen label)
 sleeves[]     locked five: token, path, header_label, hub_label
-slices[]      only bound-in-this-vintage:
+slices[]      only bound-on-this-desk:
                 template_id, sleeve, slug, path,
                 citizen_question, fact_lede (plain text after bind),
                 fact_lede_one_line (first sentence of fact_lede),
-                vintage_id (that slice's bound vintage, not the tree's)
+                vintage_id (that slice's bound vintage; not the pointer)
 house[]       /how-this-works, /sources
 ```
 
@@ -256,13 +258,13 @@ Site chrome is UI/UX Developer, not Content Editor copy. Look (tokens, well comp
 
 The slice's region order — sleeve → citizen question → byline → answer well → first chart → hottest-rail → method — is named here so UI/UX Developer does not invent a second page type or a second route for "the answer" versus "the depth". It stays one URL (`/{sleeve}/{slice}`); the order is what makes it "invitation, then depth" on a single page. Type, well composition, and elevation for that order are [design-system.md](design-system.md) "First screen (slice)". This file only guarantees the order is the page, not a `/how-it-is-measured` split-off.
 
-**Slice body regions.** `.hottest-rail` is further questions on **this** page (hashes) plus links to **catalog** sibling slices — featured citizen questions, not scoops. Author-written in-page hashes render first, in template order. Then up to three sibling links taken from `site.json`, in catalog order (charter order), the current slice excluded, link text the sibling's `citizen_question` verbatim. If the catalog has no sibling, the rail is hashes alone — no empty group, heading, or placeholder. Templates do not type sibling questions. Render must not emit an `href` whose path is missing from this vintage’s catalog. Method (`how-this-is-measured`) sits on this same URL, after the record, quieter than the answer — never split to a separate house page.
+**Slice body regions.** `.hottest-rail` is further questions on **this** page (hashes) plus links to **catalog** sibling slices — featured citizen questions, not scoops. Author-written in-page hashes render first, in template order. Then up to three sibling links taken from `site.json`, in catalog order (charter order), the current slice excluded, link text the sibling's `citizen_question` verbatim. If the catalog has no sibling, the rail is hashes alone — no empty group, heading, or placeholder. Templates do not type sibling questions. Render must not emit an `href` whose path is missing from this desk’s catalog. Method (`how-this-is-measured`) sits on this same URL, after the record, quieter than the answer — never split to a separate house page.
 
 **Desk home — the glance, not the depth.** Not a news homepage and not GDP as the hero ([topic-charters.md](next/topic-charters.md) C16). Order:
 
 1. Skip link + lockup + sleeve nav (the shell)
 2. H1 = desk line: the Purpose sentence in [vision.md](vision.md) (“A shared, checkable picture of India that does not belong to a party, a ministry, or a news cycle.”). Not a slogan box; not a second citizen question
-3. `.fast-facts` — one card per catalog slice, Wave order (C1, C2, C3, …), at most four. Do not pad with unpublished templates. The `citizen_question` is the only link, to that slice path. The bound one-liner is `fact_lede_one_line` — the first sentence of that slice's plain-text fact-lede — and is not a link. Each card carries `data-vintage-id` from **that slice's** catalog entry; `<html data-vintage-id>` stays the tree vintage. The slice `<title>`, `meta description`, and `QAPage` `acceptedAnswer` keep the full `fact_lede`. This is the only slice list on home. Do not also emit a home `.hottest-rail`
+3. `.fast-facts` — one card per catalog slice, Wave order (C1, C2, C3, …), at most four. Do not pad with unpublished templates. The `citizen_question` is the only link, to that slice path. The bound one-liner is `fact_lede_one_line` — the first sentence of that slice's plain-text fact-lede — and is not a link. Each card carries `data-vintage-id` from **that slice's** catalog entry. Home `<html>` does not carry one `data-vintage-id` for the whole desk — the desk is not one vintage. Slice pages keep `data-vintage-id` as that slice's bound vintage, not as a citizen label. The slice `<title>`, `meta description`, and `QAPage` `acceptedAnswer` keep the full `fact_lede`. This is the only slice list on home. Do not also emit a home `.hottest-rail`
 
 **Ruling: home does not emit `.hottest-rail`.** [design-system.md](design-system.md) "Publisher front" names "then the featured-question rail" after the fact grid on home. This file's standing forbid overrides that for home: `.hottest-rail` stays a **slice** region only (in-page hashes, then catalog siblings). Home invitation is `.fast-facts` alone. Header and footer already list the five sleeves; a rail on home would be a third index of the same catalog. If a UI/UX pass proposes a home rail again, the answer stays no — cite this line, not a fresh discussion.
 
@@ -408,9 +410,9 @@ A citizen route cannot read a non-published vintage. Preview never aliases `data
 Two CMS modes. Same relative paths. Different pointer, different prefix, different catalog.
 
 ```text
-data/renders/{vintage_id}/          complete tree for that pointer; not public by itself
-data/pointers/preview               preview desk (cms_mode=preview)
-data/pointers/citizen               published desk (cms_mode=citizen)
+data/renders/{desk_id}/             complete tree for that pointer; not public by itself
+data/pointers/preview               preview desk_id (cms_mode=preview)
+data/pointers/citizen               published desk_id (cms_mode=citizen)
 ```
 
 ```text
@@ -428,19 +430,19 @@ Preview GET  {private prefix}/prices/retail-prices
 | | Preview | Published (citizen-view) |
 |--|---------|---------------------------|
 | Pointer | `data/pointers/preview` | `data/pointers/citizen` |
-| Catalog | Every bound slice (C1–C3 when each can bind) | Slices on the citizen vintage only |
+| Catalog | Every bound slice (C1–C3 when each can bind) | Slices listed on the citizen desk only |
 | Who | Editors, Trust, Charter | Citizens |
 | Host | Private bucket / signed URL / local preview server | Public origin |
 | Isolation | Different prefix + auth/`noindex`. A second *public* URL is not isolation | World-readable |
 | Indexing | Disallow all; no sitemap | `Allow: /`; sitemap of live routes (when generated) |
 | Banner | Serving chrome only | None |
 | Flip | After a complete preview render; must not equal citizen in the same pass | Last step; nine tests pass; `COMPLETE` marker |
-| On fail | Keep previous preview or none | Keep previous citizen vintage |
+| On fail | Keep previous preview or none | Keep previous citizen desk |
 | Retained | Not preview | Prior citizen vintages at `/archive/{vintage_id}` |
 
 Local preview today: `prism.preview_server` serves the preview tree with `PREVIEW_HEADERS` in `src/prism/serving.py`. Do not weaken those headers. Teach it the slashless → `index.html` map when the tree is nested.
 
-**Tests this surface must keep.** Blueprint test 5: a citizen route cannot read a non-published vintage; preview is not world-readable. Test 4: do not move `citizen_pointer` if a required template failed. Test 6: one **page**, one `vintage_id` (the preview desk may hold several pages). After this tree ships, the required C1 file is `prices/retail-prices/index.html`, not root `index.html`.
+**Tests this surface must keep.** Blueprint test 5: a citizen route cannot read a non-published vintage; preview is not world-readable. Test 4: do not move `citizen_pointer` if a required template failed. Test 6: one **page**, one `vintage_id` (the preview desk may hold several pages from different vintages). After this tree ships, the required C1 file is `prices/retail-prices/index.html`, not root `index.html`.
 
 ---
 
@@ -481,13 +483,14 @@ Visual tokens, chart form factor, presentation pass ([design-system.md](design-s
 ## Next
 
 ```text
-page_type:       home | sleeve | slice | house | notfound
+page_type:       home | sleeve | slice | house | notfound | geography (reserved, not built)
 path:            / · /{sleeve} · /{sleeve}/{slice} · /how-this-works · /sources
 slug:            C1 retail-prices; C3 union; C2 population when the template exists
 indexable:       citizen (home, hubs, catalog slices, house) · noindex-preview · 404 noindex
 title_source:    vision purpose (home) · Hub H1 formula · citizen_question · house formula
 next_persona:    ui-ux-developer
 web_design:      docs/web-design.md
+phase:           D1 done; D2 is design-system v3.1 (do not re-specify home-rail forbid or 404)
 ```
 
 **UI/UX Developer** implements, without inventing a slug or a second public URL:
@@ -500,8 +503,10 @@ web_design:      docs/web-design.md
 
 Do not implement geography routes, sitemap, `robots.txt` in the tree, or archive paths until a second slice is ready to publish. Do not paint the desk to resemble USAFacts. Do not add a home `.hottest-rail`.
 
-**Platform Architect:** slashless URL → `{path}/index.html`; citizen-serve injection of canonical / `og:url` / JSON-LD origin from `data-prism-path`; COMPLETE required files include `prices/retail-prices/index.html` for C1; preview server must not weaken `PREVIEW_HEADERS`.
+**Platform Architect:** slashless URL → `{path}/index.html`; citizen-serve injection of canonical / `og:url` / JSON-LD origin from `data-prism-path`; COMPLETE required files include `prices/retail-prices/index.html` for C1; render trees live at `data/renders/{desk_id}/`; preview server must not weaken `PREVIEW_HEADERS`. Sign this D1 pass.
 
 **Content Editor:** house body for `/how-this-works` and `/sources` (no figures unless slotted). Do not change C1/C3 citizen questions. C2 uses `slug: population` when that template is written.
 
-**Charter Editor:** names which slices reopen `/{sleeve}/{slice}/{geo}` (Charter ruling 7; Front-end row S3). This file keeps the reservation; it does not schedule the work.
+**Geography Steward:** `{geo}` is `CitizenGeography.geography_slug` from the frame (English kebab). Sign this reservation. No folders this wave.
+
+**Charter Editor:** names which slices reopen `/{sleeve}/{slice}/{geo}` (Charter ruling 7; Front-end row S3). This file keeps the reservation; it does not schedule the work. Sign this D1 pass.

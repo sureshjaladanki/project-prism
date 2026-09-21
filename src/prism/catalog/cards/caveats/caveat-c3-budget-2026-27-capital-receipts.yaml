@@ -15,3 +15,5 @@ lags: Same Budget 2026-27 lag. next_release unknown.
 disagrees_with: Card 7 outstanding liabilities (stock). Card 6 deficit. Cards 10–11.
 do_not: Do not treat net debt receipts as gross borrowings. Do not use this card as
   the debt stock (Card 7). Do not chart as C5 state debt.
+citizen_note: Union capital receipts as printed, split into non-debt and debt receipts. Many
+  debt lines are net of repayments. This is a flow of receipts, not the outstanding debt stock.

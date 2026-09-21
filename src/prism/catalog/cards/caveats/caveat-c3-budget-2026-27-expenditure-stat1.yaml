@@ -17,3 +17,6 @@ disagrees_with: Card 9 AFS disbursements. Card 10 monthly expenditure vs BE. Car
   11 Finance Accounts.
 do_not: Do not use scheme MIS as this series. Do not treat Transfers as C5. Do not
   chart the two printed totals as one. Do not issue waste/welfare verdicts.
+citizen_note: 'Union expenditure summary as printed: Central Expenditure, Transfers, and Total.
+  Transfers to States and UTs are Union outgo on this statement. Budget Estimates, Revised
+  Estimates, and Actuals are different columns.'

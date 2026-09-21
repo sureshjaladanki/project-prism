@@ -15,7 +15,6 @@ licence: 'Not stated on the workbook or press PDF. MoSPI Copyrights Policy: repr
   accurately, not in a derogatory or misleading context, source acknowledged. GSDD
   2026 Category A (open access) lists Consumer Price Index (CPI). Not stated as CC-BY.'
 next_release: unknown
-caveat_one_line: Linked / back-cast onto 2024=100 — not independently compiled 2024-basket
-  observations before the new series. Do not stitch this to the 2012=100 series as
-  if they were one. All India only in this file; no State/UT rows in the previewed
-  sheet. Inflation (%) is blank on early rows.
+caveat_one_line: Linked and back-cast onto 2024=100, not independently compiled 2024-basket
+  observations before the new series, and not the same as the 2012=100 index. All
+  India only; no State or UT rows. Inflation (%) is blank on early rows.

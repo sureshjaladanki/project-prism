@@ -482,11 +482,6 @@ slots:
     caveat_id: caveat-c1-cpi-general-base-2024
     field: population
 
-  - slot_id: caveat-general-do-not
-    kind: caveat_field
-    caveat_id: caveat-c1-cpi-general-base-2024
-    field: do_not
-
 do_not:
   - type an observation numeral into template.md or a Vega-Lite values[] of CPI
   - average Rural and Urban

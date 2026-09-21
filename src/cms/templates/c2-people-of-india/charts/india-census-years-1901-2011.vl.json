@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "India Total census persons, Table A-02, 1901–2011. Stops at 2011. Do not stitch to Table 8. Unknown is a hole, not zero.",
+  "description": "India Total census persons, 1901–2011. Stops at 2011. Do not stitch to the later projection. Unknown is a hole, not zero.",
   "title": {
     "text": "India Total, census years 1901 to 2011",
     "subtitle": "Census counts as printed. The line stops at 2011."

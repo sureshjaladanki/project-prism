@@ -60,3 +60,8 @@ do_not: Do not average Rural and Urban to invent Combined. Do not present `00` A
   not a series. Do not overlay petrol pump prices. Do not issue cheap/expensive or
   forecast copy. Do not recompute higher-level indexes from rounded published figures
   and treat the difference as a revision.
+citizen_note: CPI General is NSO’s headline retail price index (Base 2024=100) for All India
+  and States/UTs, in Rural, Urban, and Combined as the producer prints them. Combined is a
+  published sector, not a merge of Rural and Urban. Independently compiled index from January
+  2025; year-on-year inflation on this base from January 2026. The latest month is often Provisional
+  until the producer prints Final.

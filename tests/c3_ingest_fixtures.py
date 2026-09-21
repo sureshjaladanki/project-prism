@@ -55,6 +55,9 @@ def receipt_workbook_bytes() -> bytes:
         ]
     )
     sheet.append([None, "CGST", None, None, None, "0005", 800000, "", 810000, 900000])
+    sheet.append(
+        [None, "GST Compensation Cess", None, None, None, "0009", 12000, 13000, 12500, "..."]
+    )
     return _xlsx(workbook)
 
 

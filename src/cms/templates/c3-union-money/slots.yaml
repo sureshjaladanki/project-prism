@@ -106,7 +106,7 @@ liabilities_actuals_order:
 serve:
   observation: prism.schema.ServedObservation
   never_serve_bare_float: true
-  unknown_copy: unknown / not a table
+  unknown_copy: not published
 
 charts:
   collect-beside-spend: ./charts/collect-beside-spend.vl.json
@@ -398,7 +398,7 @@ slots:
     kind: observation
     required: true
     on_unknown: hole_not_zero
-    miss_copy: unknown / not a table
+    miss_copy: not published
     citation_id: cite-c3-budget-2026-27-frbm-statements
     caveat_id: caveat-c3-budget-2026-27-frbm-statements
     selector:

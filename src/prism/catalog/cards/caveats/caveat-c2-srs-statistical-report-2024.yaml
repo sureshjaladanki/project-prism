@@ -17,3 +17,6 @@ disagrees_with: Card 3 Bulletin. Cards 1–2 census. Card 5 projections. NFHS (n
   these cards).
 do_not: Do not present TFR as a headcount or as India today. Do not paste Smaller
   States / UT rates from the Bulletin into this report. Do not rank.
+citizen_note: The SRS Statistical Report 2024 publishes fertility indicators, including total
+  fertility rate, for India and the bigger States/UTs printed on Table 3. They are rates,
+  not Census persons, and they do not cover every smaller State or UT.

@@ -194,15 +194,15 @@ Every phase, without exception: blueprint tests 1–9 (`tests/test_blueprint_con
 
 #### A1 — catalog spine (Platform)
 
-**Goal.** Series identity becomes typed data. No behaviour change.
+**Landed (D4, 2026-09-21).** Catalog package under `src/prism/catalog/`; `slices/{c1,c2,c3}.yaml`; `C1_SERIES` / C2 / C3 are views over the catalog in `refresh.py`. `NAMED_HOLE_SERIES_IDS` is derived from catalog `named_hole`.
 
-- [ ] Add `src/prism/catalog/__init__.py`: `CatalogSeries`, `CatalogArtifact`, `CatalogSlice`, `load_catalog()`, `PARSERS`, `MAPPERS`. Pydantic v2, fail fast on an unknown `parser_id` / `mapper_id` / `artifact_id`.
-- [ ] Add `src/prism/catalog/slices/{c1,c2,c3}.yaml` transcribed from `C1_SERIES` / `C2_SERIES` / `C3_SERIES`, field for field, plus `artifact_id`, `parser_id`, `mapper_id`, `named_hole`.
-- [ ] `refresh.py` keeps `SeriesBinding`, `vintage_id_for`, triggers, timezones; `C1_SERIES` / `C2_SERIES` / `C3_SERIES` become views over the catalog so no caller changes yet.
-- [ ] `lineage_blocks_completeness` and `lineage_record_blocks_completeness` read `named_hole` per slice. Delete `NAMED_HOLE_SERIES_IDS` / `NAMED_HOLE_CITATION_IDS` as globals (CC-3).
-- [ ] `write_vintage`: `required_series_ids` becomes a required keyword (CC-4). `latest_manifest_with_series` compares sets (CC-5).
-- [ ] `prism catalog list` / `prism catalog validate`; wire validate into CI.
-- [ ] Ship the YAML as package data in `pyproject.toml`.
+- [x] Add `src/prism/catalog/__init__.py`: `CatalogSeries`, `CatalogArtifact`, `CatalogSlice`, `load_catalog()`, `PARSERS`, `MAPPERS`. Pydantic v2, fail fast on an unknown `parser_id` / `mapper_id` / `artifact_id`.
+- [x] Add `src/prism/catalog/slices/{c1,c2,c3}.yaml` transcribed from `C1_SERIES` / `C2_SERIES` / `C3_SERIES`, field for field, plus `artifact_id`, `parser_id`, `mapper_id`, `named_hole`.
+- [x] `refresh.py` keeps `SeriesBinding`, `vintage_id_for`, triggers, timezones; `C1_SERIES` / `C2_SERIES` / `C3_SERIES` become views over the catalog so no caller changes yet.
+- [x] `lineage_blocks_completeness` and `lineage_record_blocks_completeness` read `named_hole` per slice. `NAMED_HOLE_SERIES_IDS` is now derived from the catalog (CC-3), not a C3-seeded frozenset.
+- [x] `write_vintage`: `required_series_ids` becomes a required keyword (CC-4). `latest_manifest_with_series` compares sets (CC-5).
+- [x] `prism catalog list` / `prism catalog validate`; wire validate into CI.
+- [x] Ship the YAML as package data in `pyproject.toml`.
 
 **Out of scope.** Touching parsers, mappers, cards, the CLI's `--slice-id` runners, or anything under `src/cms/`.
 
@@ -237,11 +237,11 @@ Every phase, without exception: blueprint tests 1–9 (`tests/test_blueprint_con
 
 #### A4 — cards as data (Platform contract, Pipeline Engineer executes)
 
-**Goal.** Citations, caveats, and geography frames stop being Python.
+**Landed (D4, 2026-09-21).** Cards live under `src/prism/catalog/cards/{citations,caveats,geographies}/`. `pipeline/c*_cards.py` are gone.
 
-- [ ] Move `C1_CITATIONS` / `C1_CAVEATS` / `C1_GEOGRAPHIES` and the C2 and C3 equivalents to `src/prism/catalog/cards/**.yaml`, one file per card, validated into the locked Pydantic types at load.
-- [ ] Delete `pipeline/c1_cards.py`, `c2_cards.py`, `c3_cards.py`. Name lookup tables that mappers use (`FRAME_A_NAME_BY_CODE`) derive from the geography card, not a second literal.
-- [ ] Loader asserts the card ids match the series entry's `citation_id` / `caveat_id` — the check `map_c3_series` does by hand today.
+- [x] Move `C1_CITATIONS` / `C1_CAVEATS` / `C1_GEOGRAPHIES` and the C2 and C3 equivalents to `src/prism/catalog/cards/**.yaml`, one file per card, validated into the locked Pydantic types at load.
+- [x] Delete `pipeline/c1_cards.py`, `c2_cards.py`, `c3_cards.py`. Name lookup tables that mappers use (`FRAME_A_NAME_BY_CODE`) derive from the geography card, not a second literal.
+- [x] Loader asserts the card ids match the series entry's `citation_id` / `caveat_id` — the check `map_c3_series` does by hand today.
 
 **Out of scope.** Editing any card's content. This phase is a move; a changed value is a Source Librarian or Methodologist decision, not a refactor.
 
@@ -259,15 +259,15 @@ Every phase, without exception: blueprint tests 1–9 (`tests/test_blueprint_con
 
 #### B1 — desk record and desk pointer (Platform)
 
-**Goal.** Make the published unit a desk (CC-1). Single-slice behaviour is preserved exactly.
+**Landed (D4, 2026-09-21).** `desk_store.py`, pointers name a `desk_id`, render trees at `data/renders/{desk_id}/`. Locked-doc amendments: [published-desk-contract.md](../archive/published-desk-contract.md).
 
-- [ ] `src/prism/desk_store.py`: `DeskRecord` (desk_id, created_at, slices `[(template_id, vintage_id)]`, completeness), `write_desk`, `load_desk`, `latest_desk`. Immutable directory, same temp+rename discipline as `write_vintage`.
-- [ ] `paths.py`: `desks_dir`, `desk_dir`, `desk_path`; `render_dir` and `render_complete_path` key on `desk_id`.
-- [ ] `refresh.py`: `DESK_ID_PATTERN`, `desk_id_for(publish_date_utc, record)`.
-- [ ] `pointer_store.py`: pointers hold a `desk_id`; `_require_publishable` checks the desk exists, is `complete`, has a `COMPLETE` render, and that every listed vintage exists and is complete. Atomic write, publish lock, and the citizen rollback path are unchanged.
-- [ ] `render.py`: `render(data_root, desk_id, cms_root, *, cms_mode)`; required-pages set for `_mark_complete` comes from the desk's slice list, not a Python constant.
-- [ ] `prism desk` and `prism publish` commands; `prism render --vintage-id` becomes `--desk-id`.
-- [ ] Migration: mint a one-slice desk for the live C1 citizen vintage `dv-20260916-234e263c8588`, render it, flip the pointer. The C1 page must be byte-identical.
+- [x] `src/prism/desk_store.py`: `DeskRecord` (desk_id, created_at, slices `[(template_id, vintage_id)]`, completeness), `write_desk`, `load_desk`, `latest_desk`. Immutable directory, same temp+rename discipline as `write_vintage`.
+- [x] `paths.py`: `desks_dir`, `desk_dir`, `desk_path`; `render_dir` and `render_complete_path` key on `desk_id`.
+- [x] `refresh.py`: `DESK_ID_PATTERN`, `desk_id_for(publish_date_utc, record)`.
+- [x] `pointer_store.py`: pointers hold a `desk_id`; `_require_publishable` checks the desk exists, is `complete`, has a `COMPLETE` render, and that every listed vintage exists and is complete. Atomic write, publish lock, and the citizen rollback path are unchanged.
+- [x] `render.py`: `render(data_root, desk_id, cms_root, *, cms_mode)`; required-pages set for `_mark_complete` comes from the desk's slice list, not a Python constant.
+- [x] `prism desk` and `prism publish` commands; `prism render --vintage-id` becomes `--desk-id`.
+- [x] Migration: mint a one-slice desk for the live C1 citizen vintage `dv-20260916-234e263c8588`, render it, flip the pointer. The C1 page must be byte-identical.
 
 **Out of scope.** Publishing C2 or C3. Any route, slug, nav, or copy change. Any change to what a vintage is.
 
@@ -275,14 +275,14 @@ Every phase, without exception: blueprint tests 1–9 (`tests/test_blueprint_con
 
 #### B2 — the desk owns the binding (Platform contract, Pipeline Engineer executes)
 
-**Goal.** Close CC-2 and remove a git commit per refresh.
+**Landed (D4, 2026-09-21).** `bind_pages_for_desk` reads the desk; `bound_vintage_id` is gone from template `slots.yaml`.
 
-- [ ] `bind_page` takes the vintage from the desk record; `bind_pages_for_desk(cms_mode)` reads the citizen or preview desk instead of comparing against a pointer string.
-- [ ] Drop `bound_vintage_id` from `src/cms/templates/*/slots.yaml`. Coordinate with UI/UX Developer and Content Editor: this removes one machine field, nothing else in those files.
-- [ ] Preview desk is built, not hand-bound: latest complete vintage per slice, including unpublished slices. Preview still may hold slices from different vintages and is never an alias of citizen.
-- [ ] `bind_c1_page` / `bind_c2_page` / `bind_c3_page` stay test-only wrappers or go; production stays `bind_pages_for_desk` → `bind_page`.
+- [x] `bind_page` takes the vintage from the desk record; `bind_pages_for_desk(cms_mode)` reads the citizen or preview desk instead of comparing against a pointer string.
+- [x] Drop `bound_vintage_id` from `src/cms/templates/*/slots.yaml`. Coordinate with UI/UX Developer and Content Editor: this removes one machine field, nothing else in those files.
+- [x] Preview desk is built, not hand-bound: latest complete vintage per slice, including unpublished slices. Preview still may hold slices from different vintages and is never an alias of citizen.
+- [x] `bind_c1_page` / `bind_c2_page` / `bind_c3_page` stay test-only wrappers or go; production stays `bind_pages_for_desk` → `bind_page`.
 
-**Out of scope.** Selectors, chart specs, copy, `CITE_BLOCKS`. (`CITE_BLOCKS` in `template_bind.py` is per-template data living in Python and will not scale to twenty charters — record it, do not fix it here.)
+**Cite-identity (C4, 2026-09-21).** `cite_blocks` live on `src/prism/catalog/slices/{c1,c2,c3}.yaml`. Bind projects catalog id → vintage citation → `CitizenCite`. `CITE_BLOCKS` is gone from Python.
 
 **Done when.** A refresh of one slice requires no edit under `src/cms/templates/`; `test_cms_modes.py` still shows preview binding three slices at three vintages.
 

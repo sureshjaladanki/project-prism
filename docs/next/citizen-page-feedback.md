@@ -2,15 +2,15 @@
 
 Charter Editor. Principal notes recorded 2026-09-20 against preview (`localhost:4321`) on `/money/union`, `/people/population`, and `/prices/retail-prices`. This file routes the notes to personas. It does not amend [editorial-guidelines.md](../editorial-guidelines.md), [design-system.md](../design-system.md), or [web-design.md](../web-design.md) until the named owner acts.
 
-Related: first-screen look and column width stay in [ui-ux-feedback.md](ui-ux-feedback.md). Catalog-scale ingest/vintage already has an execution plan: [catalog-ingest-pipeline-plan.md](catalog-ingest-pipeline-plan.md). This file is copy, cite chrome, chart encoding, method, pipeline jargon, geography pages, ingest accuracy, and generic parsers.
+Related: first-screen look and column width stay in [ui-ux-feedback.md](../archive/ui-ux-feedback.md). Catalog-scale ingest/vintage already has an execution plan: [catalog-ingest-pipeline-plan.md](catalog-ingest-pipeline-plan.md). Standing programme for the gaps in this file: [citizen-system-change-plan.md](citizen-system-change-plan.md). This file is copy, cite chrome, chart encoding, method, pipeline jargon, geography pages, ingest accuracy, and generic parsers. It does not schedule the work.
 
 ```text
 about:          preview answer pages vs a citizen who should not need the codebook
 wanted:         a story-shaped explainer; cites that lead to the producer; charts that fit; method without desk notes; one ingest/vintage machine
 got:            restated .stat-figure numbers; citation field dumps; ingest/desk jargon on the page; holes plotted as zero; per-charter Python parsers
 forbids:        newsroom plot; “what this means” as a ministry verdict; hiding a hole or a cite; doorway state pages; a twelfth persona; YAML as a second programming language
-status:         routing only; standing contracts not reopened here
-next_persona:   content-editor (lead on story and jargon); then methodologist, ui-ux-developer, platform-architect as named below
+status:         routing only; standing contracts not reopened here; work order is citizen-system-change-plan.md
+next_persona:   front-end-architect (plan D1)
 ```
 
 ## Charter rulings
@@ -82,14 +82,14 @@ Standing files: slice method notes ([c1-method-notes.md](../archive/c1-method-no
 
 ### UI/UX Developer
 
-Standing file: [design-system.md](../design-system.md). Presentation pass on every template that reached Proof. First-screen width and welcome tone: [ui-ux-feedback.md](ui-ux-feedback.md) — do not duplicate that work here.
+Standing file: [design-system.md](../design-system.md). Presentation pass on every template that reached Proof. First-screen width and welcome tone: [ui-ux-feedback.md](../archive/ui-ux-feedback.md) — do not duplicate that work here.
 
 | Id | Feedback | Also |
 |----|----------|------|
 | P2-chrome | `.citation-card` is a field dump: summary repeats the `<dl>`; Geography vintage and Data vintage shown as citizen rows. Open state: producer (link), series, period, released, caveat. No duplicate fields. No vintage ids as labels. | Platform Architect (which citation fields bind to chrome); Content Editor (caveat prose) |
 | P3 | In-text cites open that observation’s card in a closable panel, same bound fields. The on-page card / `.source-stack` stays. No request-time fetch. Amend Interaction in the design system if a panel is added; do not replace `<details>` with a fly-out that leaves the view. | Front-end Architect only if this becomes a new page type (it must not) |
 | P4 | Chart wells waste width: vertical tick labels, uncompacted large numbers, leftover field. Axis ticks horizontal where they fit; compact K / L / Cr per ruling 6; plot fills the card. Standing boxes: well filled, 12px floor, one `plotWidth`, number agreement. | Content Editor (format convention at bind) |
-| S1 | `.fact-lede` and body `<p>` do not share an edge with graphs and `.stat-row`. Same item as [ui-ux-feedback.md](ui-ux-feedback.md) “one width on the first screen.” Fix there. | — |
+| S1 | `.fact-lede` and body `<p>` do not share an edge with graphs and `.stat-row`. Same item as [ui-ux-feedback.md](../archive/ui-ux-feedback.md) “one width on the first screen.” Fix there. | — |
 | S2-type | Methodology type is quieter than answer H2 / fact-lede. Not a second house. | Content Editor (scan path) |
 | E-cess-zero | `/money/union` — GST Compensation Cess is a gap, plotted as zero. **Never plot `unknown` as zero** (already in the design system). Fail the presentation pass. | Pipeline Engineer (observation `status`); Trust Auditor |
 | E-compact | Population and Budget figures: compact display in lede, stat, and axes. Stat cells must still fit. | Content Editor (convention); Platform Architect if bind format is unspecified |
@@ -186,7 +186,7 @@ A form-factor fail (whitespace, alignment, method type size) is **not** Trust. A
 | Gap language = “not published”; never plot as zero | Methodologist | Content Editor, Platform Architect, UI/UX Developer, Pipeline Engineer, Trust Auditor |
 | Same concept, same display unit (C2 population charts) | Content Editor | Methodologist, UI/UX Developer |
 | Method quieter than the answer | Content Editor (placement) | UI/UX Developer (type) |
-| Lede/prose vs chart/stat alignment | UI/UX Developer | see [ui-ux-feedback.md](ui-ux-feedback.md) |
+| Lede/prose vs chart/stat alignment | UI/UX Developer | see [ui-ux-feedback.md](../archive/ui-ux-feedback.md) |
 | Union + state pages | Front-end Architect | Charter Editor, Geography Steward, Platform Architect, Content Editor, UI/UX Developer, Pipeline Engineer |
 | Ingest accuracy (raw → derived) without a new persona | Ingest Engineer | Methodologist (first-layout sign-off), Trust Auditor (spot-check on ship), Charter Editor (ruling 8) |
 | One ingest + one vintage runner; shape parsers (YAML / HTML / PDF / XLS) | Platform Architect | Ingest Engineer, Pipeline Engineer, Charter Editor (ruling 9) |
@@ -213,7 +213,7 @@ A form-factor fail (whitespace, alignment, method type size) is **not** Trust. A
 
 | # | Ask | Route |
 |---|----------------|--------|
-| 1 | Fact-lede and `<p>` alignment vs graphs and `.stat-row` | **UI/UX Developer** ([ui-ux-feedback.md](ui-ux-feedback.md)) |
+| 1 | Fact-lede and `<p>` alignment vs graphs and `.stat-row` | **UI/UX Developer** ([ui-ux-feedback.md](../archive/ui-ux-feedback.md)) |
 | 2 | Methodology less prominent than answer paragraphs | **Content Editor** + **UI/UX Developer** |
 | 3 | Union pages plus state-specific pages | **Front-end Architect** + **Charter Editor** + **Geography Steward** + **Platform Architect** + **Content Editor** + **UI/UX Developer** |
 
@@ -239,16 +239,11 @@ Principal listed some C2 items under `/money/union`. They are routed by what the
 
 ## Order of work
 
-One persona per parent pass.
+Superseded as a schedule by [citizen-system-change-plan.md](citizen-system-change-plan.md). That programme keeps these rulings and row owners; it changes sequence so Platform’s empty citizen projection lands before Methodologist writes, and UI/UX runs twice (primitives, then presentation pass after copy).
 
-1. **Methodologist** — citizen caveat vs `do_not`; C2 units; FRBM as not published; C1/C3 leaked notes pulled off the citizen surface.
-2. **Platform Architect** — citizen citation surface; optional split caveat fields; compact format at bind (if not already a theme token). Parallel track: one ingest/vintage runner and shape parsers ([catalog-ingest-pipeline-plan.md](catalog-ingest-pipeline-plan.md)); do not start a third plan.
-3. **Ingest Engineer** then **Pipeline Engineer** — parser talk in lineage/flags only; `status` not zero for gaps; house fields on the vintage; ingest accuracy gate (fixtures, not a new agent).
-4. **Content Editor** — four passes on C1–C3 (P1, P5, P5.b, examples).
-5. **UI/UX Developer** — cite chrome, in-text panel, charts, method type; plus [ui-ux-feedback.md](ui-ux-feedback.md) alignment. Presentation pass.
-6. **Trust Auditor** — then Charter Editor ship or block.
+One persona per parent pass. First phase: **Front-end Architect D1**.
 
-**S3 geography pages** wait for a separate Charter slice after Front-end Architect amends [web-design.md](../web-design.md). They are not a gate on the rows above.
+**S3 geography pages** wait for a separate Charter slice after Front-end Architect amends [web-design.md](../web-design.md) (plan D1 is that amendment: reservation only). They are not a gate on Track C.
 
 ## Out of this file
 
@@ -259,4 +254,4 @@ One persona per parent pass.
 - One guess-all PDF/HTML parser; YAML as parser instruction.
 - Shipping thin state URLs.
 - Flipping `citizen_pointer`.
-- Rewriting [design-system.md](../design-system.md) for welcome/alignment — done 2026-09-20; implementation is [ui-ux-change-plan.md](ui-ux-change-plan.md) Phase E.
+- Rewriting [design-system.md](../design-system.md) for welcome/alignment — done 2026-09-20; implementation is [ui-ux-change-plan.md](../archive/ui-ux-change-plan.md) Phase E.

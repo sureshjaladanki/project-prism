@@ -17,3 +17,6 @@ disagrees_with: Cards 1–5 Receipt/Expenditure statements (same Budget family, 
   books). Card 11 Finance Accounts Actuals.
 do_not: Do not hide PDF reconstruction. Do not ingest allafs.xlsx as 2026-27. Do not
   treat UT-without-legislature AFS lines as C5.
+citizen_note: The Annual Financial Statement for 2026-27 is the Central Government’s laid
+  accounts for the Consolidated Fund, Contingency Fund, and Public Account as printed. Estimates
+  are net of refunds and recoveries as the Key to Budget Documents states.

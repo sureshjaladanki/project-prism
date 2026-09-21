@@ -16,3 +16,6 @@ lags: 'Same Census hole as Card 1: no published census year after 2011 on these 
 disagrees_with: Card 1 PCA. Cards 3–4 SRS 2024. Card 5 projections. CRS (rejected).
 do_not: Do not extend the line past 2011 with Table 8 or SRS. Do not chart N.A. as
   0. Do not spelling-merge Frame B names with Frame A. Do not call 2011 current.
+citizen_note: Census 2011 Table A-02 is enumerated population by census year 1901–2011, with
+  the producer’s printed decadal change. Years printed N.A. are not zero. The line ends at
+  2011.

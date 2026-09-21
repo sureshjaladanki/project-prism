@@ -159,8 +159,6 @@ The Budget book, the monthly accounts, and the Finance Accounts are three record
 {{cite-block:cga-monthly}}
 {{cite-block:finance-accounts}}
 {{caveat-block:caveat-c3-budget-2026-27-annex1-trends-receipts}}
-{{caveat-block:caveat-c3-budget-2026-27-expenditure-stat1}}
-{{caveat-block:caveat-c3-budget-2026-27-frbm-statements}}
 </div>
 
 {{how-this-is-measured}}
@@ -174,19 +172,13 @@ Budget Estimates, Revised Estimates, and Actuals in the same Budget table are di
 
 Gross tax heads and tax net of States’ share are two concepts. Two printed expenditure totals stay two totals. Outstanding liabilities and debt as defined in the FRBM Act stay two concepts.
 
-Cards for tax, non-tax, capital receipts, the expenditure summary, and deficit statistics are spreadsheet cells of the producing-office workbooks.
+Tax, non-tax, capital receipts, the expenditure summary, and deficit statistics are taken from the producing-office workbooks. Multi-year receipts, outstanding liabilities, the Annual Financial Statement, and Finance Accounts were read from the printed tables. Line labels can wrap or truncate; a truncated label is not a different series.
 
-Annex-1, the statement of liabilities, the Annual Financial Statement, and Finance Accounts Statement No. 1 were reconstructed from PDF by assigning each amount word to one year column (pdfplumber). Ingest stopped rather than guessed if an amount could sit in two columns. Line labels on those PDFs can wrap or truncate; a truncated label is not a different series. Finance Accounts column-number header rows are not crore amounts.
+Monthly accounts are unaudited figures for the months in that snapshot. A later month is not this snapshot.
 
-Monthly accounts were reconstructed from HTML by expanding merged cells (table 0). They are unaudited provisional figures. August 2026 is not this snapshot.
-
-The FRBM statutory packet is not a table on this page. Macro-economic framework, medium-term fiscal policy, the deviation statement, and the Act’s printed 3 percent, 40 percent, and 60 percent labels are missing as a grid — not the collect, spend, deficit, or liabilities figures above. Page 9 “Economic Performance at a Glance” is not that packet.
-
-The Annual Financial Statement companion spreadsheet on the Budget site is a different year. It is not this vintage.
+The FRBM statutory packet is not published as a grid. Macro-economic framework, medium-term fiscal policy, the deviation statement, and the Act’s printed 3 percent, 40 percent, and 60 percent labels are missing as a table — not the collect, spend, deficit, or liabilities figures above.
 
 Release dates are the laying or news dates. They are not the financial year on the row. Next named release is not printed on these artifacts.
-
-{{slot:caveat-annex1-population}}
 
 This page does not include state or Union Territory finances; local-body accounts; district tables; scheme report cards; waste or welfare verdicts; per-person figures; forecasts; a government 10-K or listing-disclosure frame; Economic Survey narrative; or RBI, IMF, or credit-rating tables as the source of record.
 {{/how-this-is-measured}}

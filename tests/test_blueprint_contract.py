@@ -358,17 +358,71 @@ def test_cite_in_same_view_as_the_number() -> None:
     assert 'data-slot-id="all-india-combined-cfpi-inflation-latest-f"' in first
     assert re.search(r'class="observation-value">4\.45<', first)
     assert re.search(r'class="observation-value">5\.52<', first)
+    targets = re.findall(r'class="in-text-cite"[^>]*popovertarget="([^"]+)"', html)
+    assert targets
+    for target in targets:
+        opening = re.search(
+            rf'<details class="citation-card[^"]*" id="{re.escape(target)}"[^>]*>',
+            html,
+        )
+        assert opening is not None
+        cite_id = re.search(r'data-citation-id="([^"]+)"', opening.group(0))
+        period = re.search(r'data-reference-period="([^"]+)"', opening.group(0))
+        assert cite_id is not None
+        assert period is not None
+        if cite_id.group(1).startswith("cite-c1-cpi-general"):
+            assert period.group(1) == "2026-08"
+    assert "How to read this series" not in html
+    assert "<dt>Do not</dt>" not in html
+    assert "<summary>Method</summary>" in html
     july_cards = _july_final_cards(first)
     assert len(july_cards) >= 2
     for card in july_cards:
         assert "National Statistics Office" in card
         assert "14 September 2026" in card
-        assert "Latest month is Provisional" not in card
+        assert "<dt>Reference period</dt><dd>2026-08</dd>" not in card
     measured = _named_cite_view(html, "how-this-is-measured")
     assert "<h2>Methodology</h2>" in html
     assert 'data-slot-id="all-india-combined-general-index-latest-p"' not in measured
     assert 'class="citation-card' not in measured
     assert 'class="caveat-note' not in measured
+
+
+def test_c1_chart_rows_carry_display_scale() -> None:
+    page = bind_c1_page(DATA_ROOT, C1_VINTAGE_ID, CMS_ROOT)
+    blob = json.dumps(page.charts)
+    assert '"display_scale": "none"' in blob
+    assert "121.09 Cr" not in page.body_html
+
+
+def test_c1_cite_period_is_one_card_per_month() -> None:
+    html = bind_c1_page(DATA_ROOT, C1_VINTAGE_ID, CMS_ROOT).body_html
+    cards = re.findall(
+        r'<details class="citation-card source-byline"(?! cite-strip)([^>]*)>(.*?)</details>',
+        html,
+        flags=re.DOTALL,
+    )
+    ids = [re.search(r'\bid="([^"]+)"', attrs).group(1) for attrs, _ in cards]
+    assert len(ids) == len(set(ids))
+    by_cite: dict[str, set[str]] = {}
+    for attrs, body in cards:
+        cite_id = re.search(r'data-citation-id="([^"]+)"', attrs)
+        period = re.search(r"<dt>Reference period</dt><dd>([^<]+)</dd>", body)
+        assert cite_id is not None
+        assert period is not None
+        by_cite.setdefault(cite_id.group(1), set()).add(period.group(1))
+    general = "cite-c1-cpi-general-base-2024-2026-08"
+    food = "cite-c1-cpi-cfpi-base-2024-2026-08"
+    assert by_cite[general] == {"2026-07", "2026-08"}
+    assert by_cite[food] == {"2026-07", "2026-08"}
+    strip = re.search(
+        r'<details class="citation-card source-byline cite-strip".*?</details>',
+        html,
+        flags=re.DOTALL,
+    )
+    assert strip is not None
+    assert "<dt>Reference period</dt><dd>2026-08</dd>" in strip.group(0)
+    assert "<dt>Reference period</dt><dd>2026-07</dd>" not in strip.group(0)
 
 
 def test_july_final_cite_binds_observation_month() -> None:
@@ -380,7 +434,6 @@ def test_july_final_cite_binds_observation_month() -> None:
     assert len(july_cards) >= 2
     for card in july_cards:
         assert "<dt>Reference period</dt><dd>2026-08</dd>" not in card
-        assert "Latest month is Provisional" not in card
     assert 'class="stat-row"' in page.body_html
     assert 'class="hero"' in page.body_html
     assert 'cite-strip' in page.body_html

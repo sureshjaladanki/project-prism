@@ -22,3 +22,6 @@ do_not: Do not collapse BE/RE/Actuals. Do not treat gross tax as Centre’s net 
   Do not add Cards 1–3 into a Prism collections total. Do not chart blank cess as
   0. Do not present Union tax as all-India public receipts. Do not rank, forecast,
   or per-person.
+citizen_note: Union tax revenue by major heads as printed in Receipt Budget 2026-27, in rupees
+  as labelled. Blank or dotted cells are not zero. This is Union tax, not state tax, and Budget
+  Estimates, Revised Estimates, and Actuals are different columns.

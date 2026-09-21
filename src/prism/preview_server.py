@@ -49,7 +49,7 @@ class PreviewHandler(SimpleHTTPRequestHandler):
             self.send_error(404, "File not found")
             return None
         status, path, body = served
-        if path.suffix.lower() == ".html":
+        if path.suffix.lower() == ".html" and self.preview_tree_id:
             body = inject_preview_banner(body, self.preview_tree_id)
         self.send_response(status)
         self.send_header("Content-Type", self.guess_type(str(path)))

@@ -64,8 +64,6 @@ export const chart = {
   minScale: 1,
   series: [color.mark, color.mark2, color.mark3, color.mark4] as const,
   gridOpacity: 0.5,
-  titleSize: 14,
-  subtitleSize: 11,
   axisSize: 12,
 } as const;
 
@@ -125,6 +123,7 @@ export function vegaConfig(): Record<string, unknown> {
       titleColor: color.muted,
       labelFontSize: chart.axisSize,
       titleFontSize: chart.axisSize,
+      labelAngle: 0,
       grid: false,
       gridColor: color.rule,
       gridOpacity: chart.gridOpacity,
@@ -152,16 +151,6 @@ export function vegaConfig(): Record<string, unknown> {
       titleColor: color.muted,
       labelFontSize: chart.axisSize,
       titleFontSize: chart.axisSize,
-    },
-    title: {
-      font: face,
-      fontWeight: 500,
-      color: color.ink,
-      fontSize: chart.titleSize,
-      subtitleFont: face,
-      subtitleFontSize: chart.subtitleSize,
-      subtitleColor: color.muted,
-      subtitleLineHeight: 16,
     },
     bar: {
       fill: color.mark,

@@ -19,3 +19,6 @@ disagrees_with: Cards 6–7 remain the Budget tables of record for deficit and o
   liabilities. Do not merge.
 do_not: Do not print a fake FRBM table. Do not ingest page 9 Economic Performance
   at a Glance as this card. Do not turn 3% / 40% / 60% into a Prism grade.
+citizen_note: The FRBM statements bound with Budget 2026-27 are statutory prose, not a reconstructable
+  receipts, expenditure, deficit, or debt table. Deficit and debt figures of record remain
+  the Budget tables on those series.

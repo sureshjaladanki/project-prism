@@ -74,8 +74,11 @@ comparable_from:
 breaks:
 lags:
 disagrees_with:     (other official series, or none)
-do_not:             (joins, ranks, or charts that would lie)
+do_not:             (joins, ranks, or charts that would lie — desk only)
+citizen_note:       (what the number is, for the citizen method block)
 ```
+
+`do_not` never projects. `citizen_note` is Methodologist copy; bind reads it into `CitizenMethod`. Prior vintages may omit `citizen_note`; a new catalog card must set it.
 
 ## Observation
 
@@ -132,7 +135,46 @@ copy:
 chart_spec:         (breaks stay breaks; no default rank sort)
 ```
 
-Binding (`template_id`, `vintage_id`) is a desk field, not a template field. If the vintage has no matching observation, the slot renders as unknown / not published — not as a remembered figure.
+Binding (`template_id`, `vintage_id`) is a desk field, not a template field. If the vintage has no matching observation, the slot renders **not published** — not as a remembered figure.
+
+## Citizen projection (bind-time)
+
+Built at bind from a vintage. Not stored as a second vintage. Projector: `src/prism/citizen_projection.py`. Bind calls `project_*`. The renderer must not receive a desk field.
+
+```text
+CitizenCite          projection of Citation
+  producer           office, linked via url
+  url
+  series             as the producer names it
+  reference_period   observation period on this card; one catalog citation
+                     used for two months is two CitizenCite records
+  released           human date (Asia/Kolkata)
+  caveat             one readable paragraph
+  absent:            citation id, geography_as_published, geography_vintage,
+                     vintage_id, next_release, parser name, table/frame label
+
+CitizenMethod        projection of CaveatNote; one block per page
+  what_it_counts
+  coverage
+  break_note         optional
+  lag_note           optional
+  absent:            do_not and every other desk field
+
+DisplayValue         bind-time, ruling 6
+  raw_value          as published
+  unit               producer-printed, unchanged
+  display_scale      none | K | L | Cr — once per (page, concept)
+  display_string     or the one gap phrase "not published"
+  status             Observation.status
+  chart_value        null when status is not value; never a plotted zero for a hole
+
+CitizenGeography     reserved for /{sleeve}/{slice}/{geo}
+  geography_label    "India", "Kerala"
+  geography_slug     kebab English name
+  absent:            geography_vintage (desk / vintage GeographyRef only)
+```
+
+Observation `status` is the only source of a hole.
 
 ## Pointers
 

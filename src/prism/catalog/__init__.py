@@ -68,6 +68,20 @@ class CatalogSeries(BaseModel):
     named_hole: bool = False
 
 
+class CatalogCiteBlock(BaseModel):
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    block_id: str
+    citation_ids: tuple[str, ...]
+    observation_slots: tuple[str, ...] = ()
+
+    @model_validator(mode="after")
+    def citation_ids_present(self) -> CatalogCiteBlock:
+        if not self.citation_ids:
+            raise ValueError(f"{self.block_id} has no citation_ids")
+        return self
+
+
 class CatalogSlice(BaseModel):
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -76,6 +90,7 @@ class CatalogSlice(BaseModel):
     template_id: str
     artifacts: tuple[CatalogArtifact, ...]
     series: tuple[CatalogSeries, ...]
+    cite_blocks: tuple[CatalogCiteBlock, ...] = ()
 
     @model_validator(mode="after")
     def artifacts_cover_series(self) -> CatalogSlice:
@@ -95,6 +110,9 @@ class CatalogSlice(BaseModel):
 
     def series_by_id(self) -> dict[str, CatalogSeries]:
         return {entry.series_id: entry for entry in self.series}
+
+    def cite_block_by_id(self) -> dict[str, CatalogCiteBlock]:
+        return {block.block_id: block for block in self.cite_blocks}
 
 
 class Catalog(BaseModel):
@@ -320,6 +338,25 @@ def validate_catalog(catalog: Catalog, *, require_registries: bool = True) -> No
                 raise CatalogError(f"{entry.series_id} citation file id mismatch")
             if caveat.caveat_id != entry.caveat_id:
                 raise CatalogError(f"{entry.series_id} caveat file id mismatch")
+        slice_citations = {entry.citation_id for entry in item.series}
+        block_ids = [block.block_id for block in item.cite_blocks]
+        block_dupes = [key for key, count in Counter(block_ids).items() if count > 1]
+        if block_dupes:
+            raise CatalogError(
+                f"duplicate cite block_id on {item.slice_id}: "
+                + ", ".join(sorted(block_dupes))
+            )
+        for block in item.cite_blocks:
+            for citation_id in block.citation_ids:
+                if citation_id not in catalog.citations:
+                    raise CatalogError(
+                        f"cite-block {block.block_id} missing citation_id: {citation_id}"
+                    )
+                if citation_id not in slice_citations:
+                    raise CatalogError(
+                        f"cite-block {block.block_id} citation_id {citation_id} "
+                        f"is not on {item.slice_id}"
+                    )
 
 
 @lru_cache(maxsize=1)

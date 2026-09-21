@@ -1,6 +1,6 @@
 # UI/UX feedback
 
-Principal. Recorded 2026-09-20 against the 2026-09-19 pass: [ui-ux-change-plan.md](ui-ux-change-plan.md) and the then-current contract, now [design-system-v1.md](../archive/design-system-v1.md). This file is the direction note. The ruling now lives in [design-system.md](../design-system.md) (**v2**).
+Principal. Recorded 2026-09-20 against the 2026-09-19 pass: [ui-ux-change-plan.md](ui-ux-change-plan.md) and the then-current contract, now [design-system-v1.md](design-system-v1.md). This file is the direction note. The ruling now lives in [design-system.md](../design-system.md) (**v2**).
 
 ```text
 about:          preview desk look vs the 2026-09-19 change plan
@@ -54,4 +54,4 @@ Out of scope here: routes, slugs, citizen copy, pointer flips, USAFacts costume,
 
 ## Done when
 
-Folded into [design-system.md](../design-system.md) (**v2**). Previous contract: [design-system-v1.md](../archive/design-system-v1.md). Implementation is [ui-ux-change-plan.md](ui-ux-change-plan.md) Phase E. This file stays the direction note; do not treat the 2026-09-19 plan as the last word on first-screen width or tone.
+Folded into [design-system.md](../design-system.md) (**v2**). Previous contract: [design-system-v1.md](design-system-v1.md). Implementation is [ui-ux-change-plan.md](ui-ux-change-plan.md) Phase E. This file stays the direction note; do not treat the 2026-09-19 plan as the last word on first-screen width or tone.

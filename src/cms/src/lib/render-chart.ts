@@ -271,7 +271,7 @@ function addBarValueLabels(spec: Json): void {
   const transforms = Array.isArray(spec.transform) ? spec.transform : [];
   spec.transform = [
     ...transforms,
-    { calculate: `indianFormat(datum.${field})`, as: "indianLabel" },
+    { calculate: `datum.display_string || indianFormat(datum.${field})`, as: "indianLabel" },
   ];
   const barLayer: Json = {
     mark: withBarEndRadius(spec.mark),
@@ -322,22 +322,58 @@ function mergeHouse(house: Json, specPart: unknown): Json {
   return { ...fromSpec, ...house };
 }
 
+function firstDisplayScale(spec: Json): string {
+  const found = displayScales(spec);
+  return found[0] ?? "none";
+}
+
+function displayScales(node: unknown): string[] {
+  if (Array.isArray(node)) {
+    return node.flatMap((item) => displayScales(item));
+  }
+  const record = asRecord(node);
+  if (record === undefined) {
+    return [];
+  }
+  const data = asRecord(record.data);
+  const values = data?.values;
+  const fromRows: string[] = [];
+  if (Array.isArray(values)) {
+    for (const row of values) {
+      const item = asRecord(row);
+      if (typeof item?.display_scale === "string") {
+        fromRows.push(item.display_scale);
+      }
+    }
+  }
+  return [
+    ...fromRows,
+    ...Object.values(record).flatMap((value) =>
+      value === record.data ? [] : displayScales(value),
+    ),
+  ];
+}
+
 function applyHouseConfig(spec: Json): void {
   const config = asRecord(spec.config) ?? {};
   const house = vegaConfig();
+  const scale = firstDisplayScale(spec);
+  const axisQuantitative = {
+    ...(asRecord(house.axisQuantitative) ?? {}),
+    labelAngle: 0,
+    ...(scale === "none"
+      ? {}
+      : { labelExpr: `indianFormat(datum.value) + ' ${scale}'` }),
+  };
   spec.config = {
     ...config,
     font: house.font,
     padding: house.padding,
     view: mergeHouse(asRecord(house.view) ?? {}, config.view),
     axis: mergeHouse(asRecord(house.axis) ?? {}, config.axis),
-    axisQuantitative: mergeHouse(
-      asRecord(house.axisQuantitative) ?? {},
-      config.axisQuantitative,
-    ),
+    axisQuantitative: mergeHouse(axisQuantitative, config.axisQuantitative),
     axisBand: mergeHouse(asRecord(house.axisBand) ?? {}, config.axisBand),
     legend: mergeHouse(asRecord(house.legend) ?? {}, config.legend),
-    title: mergeHouse(asRecord(house.title) ?? {}, config.title),
     bar: mergeHouse(asRecord(house.bar) ?? {}, config.bar),
     line: mergeHouse(asRecord(house.line) ?? {}, config.line),
     point: mergeHouse(asRecord(house.point) ?? {}, config.point),
@@ -347,7 +383,8 @@ function applyHouseConfig(spec: Json): void {
 }
 
 function formatChartNumber(value: number): string {
-  let text = pythonG12(value);
+  const shown = Math.round(value * 100) / 100;
+  let text = pythonG12(shown);
   if (/e/i.test(text)) {
     text = value.toFixed(12).replace(/0+$/, "").replace(/\.$/, "");
   }

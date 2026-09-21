@@ -75,3 +75,28 @@ series:
     parser_id: mospi-cpi-back-series
     mapper_id: state-sector-period
     named_hole: false
+cite_blocks:
+  - block_id: general-latest
+    citation_ids: [cite-c1-cpi-general-base-2024-2026-08]
+    observation_slots: [all-india-combined-general-inflation-latest-p]
+  - block_id: food-latest
+    citation_ids:
+      - cite-c1-cpi-cfpi-base-2024-2026-08
+      - cite-c1-cpi-division-group-base-2024-2026-08
+    observation_slots:
+      - all-india-combined-cfpi-inflation-latest-p
+      - all-india-combined-div01-inflation-latest-p
+  - block_id: state-ut-latest
+    citation_ids: [cite-c1-cpi-general-base-2024-2026-08]
+    observation_slots: [all-india-combined-general-inflation-latest-p]
+  - block_id: linked-back-series
+    citation_ids: [cite-c1-cpi-back-series-linked-base-2024]
+  - block_id: divisions-latest
+    citation_ids: [cite-c1-cpi-division-group-base-2024-2026-08]
+    observation_slots: [all-india-combined-div01-inflation-latest-p]
+  - block_id: general-final
+    citation_ids: [cite-c1-cpi-general-base-2024-2026-08]
+    observation_slots: [all-india-combined-general-inflation-latest-f]
+  - block_id: food-final
+    citation_ids: [cite-c1-cpi-cfpi-base-2024-2026-08]
+    observation_slots: [all-india-combined-cfpi-inflation-latest-f]

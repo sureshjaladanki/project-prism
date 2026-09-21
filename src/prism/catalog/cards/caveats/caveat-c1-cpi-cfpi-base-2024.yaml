@@ -36,3 +36,6 @@ do_not: 'Do not chart Division 01 as food or as CFPI. Do not mix 01.1 with 01.2 
   thin samples). Same geography and status do-nots as Card 1: no All-India-as-whole-country,
   no Rural/Urban merge, no blank-as-zero, no Provisional/Final blend, no pump prices,
   no cheap/expensive, no forecast.'
+citizen_note: CFPI is NSO’s food price index (Base 2024=100), the same figures as CPI Group
+  Food (code 01.1). It is not Division 01 Food and beverages, which also includes drinks and
+  food-processing services.

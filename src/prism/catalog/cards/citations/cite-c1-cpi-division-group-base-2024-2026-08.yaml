@@ -16,7 +16,6 @@ licence: 'Not stated on the workbook or press PDF. MoSPI Copyrights Policy: repr
   accurately, not in a derogatory or misleading context, source acknowledged. GSDD
   2026 Category A (open access) lists Consumer Price Index (CPI). Not stated as CC-BY.'
 next_release: '2026-10-12'
-caveat_one_line: Division 01 is Food and beverages; food-only is Card 2. Item and
-  Subclass sheets exist in the same workbook — do not use them to rank cities. Some
-  item indices on eSankhyiki are thin-sample (press note warning); this slice uses
-  Division/Group/General as published.
+caveat_one_line: Division 01 is food and beverages, not the food-only CFPI. Latest
+  month is Provisional. These are published Division, Group and General indices; the
+  press note warns that some item indices are thin-sample.

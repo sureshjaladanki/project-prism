@@ -18,11 +18,16 @@ from prism.schema import (
     ObservationStatus,
 )
 
-MAPPER_VERSION = "c3-observations-1.1.0"
+MAPPER_VERSION = "c3-observations-1.2.0"
 SECTOR_UNION = "Union"
 UNIT_CRORE = "₹ crore"
+GST_COMPENSATION_CESS = "GST Compensation Cess"
+GST_CESS_BE_HOLE_COLUMN = "budget_2026_2027"
 _SLUG = re.compile(r"[^a-z0-9]+")
 _MINUS_PREFIXES = frozenset({"\ufffd", "\u2212", "\u2013", "\u2014"})
+_WITHHELD_NUMBERS = frozenset(
+    {"-", "–", "—", "..", "...", "…", ".", "n.a.", "na", "n/a"}
+)
 
 
 @dataclass(frozen=True)
@@ -97,9 +102,21 @@ def _cell(row: dict[str, str], name: str) -> str:
     return value.strip()
 
 
+def _gst_cess_be_stored_zero(label: str, column: str, value: float | None) -> bool:
+    """tr.xlsx stores GST Compensation Cess BE 2026-27 as 0.0; BAG prints a blank."""
+
+    return (
+        GST_COMPENSATION_CESS in label
+        and column == GST_CESS_BE_HOLE_COLUMN
+        and value == 0.0
+    )
+
+
 def _number(text: str, *, label: str) -> float | None:
     stripped = text.strip().replace(",", "").replace("*", "")
-    if stripped == "":
+    if stripped == "" or stripped.lower() in _WITHHELD_NUMBERS:
+        return None
+    if set(stripped) <= {".", " "}:
         return None
     if stripped.endswith("%"):
         stripped = stripped[:-1].strip()
@@ -166,6 +183,8 @@ def map_c3_table(
         )
         for measure in measures:
             value = _number(_cell(row, measure.column), label=measure.column)
+            if _gst_cess_be_stored_zero(label, measure.column, value):
+                value = None
             obs_id = f"obs-{series_id}-{geo.code}-{measure.reference_period}-{slug}"
             if obs_id in seen:
                 obs_id = f"{obs_id}-{index}"

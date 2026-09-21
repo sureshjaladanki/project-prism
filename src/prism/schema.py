@@ -113,6 +113,16 @@ class GeographyVintage(ContractModel):
         return self
 
 
+NOT_PUBLISHED = "not published"
+
+
+class DisplayScale(StrEnum):
+    none = "none"
+    K = "K"
+    L = "L"
+    Cr = "Cr"
+
+
 class CaveatNote(ContractModel):
     caveat_id: NonEmptyStr
     concept: NonEmptyStr
@@ -125,6 +135,7 @@ class CaveatNote(ContractModel):
     lags: NonEmptyStr
     disagrees_with: NonEmptyStr
     do_not: NonEmptyStr
+    citizen_note: NonEmptyStr | None = None
 
 
 class ObservationLineage(ContractModel):
@@ -174,6 +185,59 @@ class TemplateSlot(ContractModel):
 class Template(ContractModel):
     template_id: NonEmptyStr
     slots: tuple[TemplateSlot, ...]
+
+
+class CitizenCite(ContractModel):
+    """Page-facing citation. Built at bind; not stored as a vintage record."""
+
+    producer: NonEmptyStr
+    url: NonEmptyStr
+    series: NonEmptyStr
+    reference_period: NonEmptyStr
+    released: NonEmptyStr
+    caveat: NonEmptyStr
+
+
+class CitizenMethod(ContractModel):
+    """One method block per page. Desk fields including do_not never appear."""
+
+    what_it_counts: NonEmptyStr
+    coverage: NonEmptyStr
+    break_note: NonEmptyStr | None = None
+    lag_note: NonEmptyStr | None = None
+
+
+class DisplayValue(ContractModel):
+    """Bind-time compact number. Vintage unit is unchanged."""
+
+    raw_value: float | None
+    unit: NonEmptyStr
+    display_scale: DisplayScale
+    display_string: NonEmptyStr
+    status: ObservationStatus
+    chart_value: float | None
+
+    @model_validator(mode="after")
+    def status_owns_the_hole(self) -> Self:
+        published = self.status is ObservationStatus.value
+        if published:
+            if self.raw_value is None:
+                raise ValueError("status value requires raw_value")
+            if self.chart_value is None:
+                raise ValueError("status value requires chart_value")
+            return self
+        if self.chart_value is not None:
+            raise ValueError("non-published status requires chart_value null")
+        if self.display_string != NOT_PUBLISHED:
+            raise ValueError('gap display_string must be "not published"')
+        return self
+
+
+class CitizenGeography(ContractModel):
+    """Reserved for /{sleeve}/{slice}/{geo}. geography_vintage stays on the vintage."""
+
+    geography_label: NonEmptyStr
+    geography_slug: NonEmptyStr
 
 
 class ServedObservation(ContractModel):
@@ -280,6 +344,10 @@ def contract_json_schema() -> dict[str, object]:
         "SlotSelector": SlotSelector.model_json_schema(),
         "Template": Template.model_json_schema(),
         "ServedObservation": ServedObservation.model_json_schema(),
+        "CitizenCite": CitizenCite.model_json_schema(),
+        "CitizenMethod": CitizenMethod.model_json_schema(),
+        "DisplayValue": DisplayValue.model_json_schema(),
+        "CitizenGeography": CitizenGeography.model_json_schema(),
         "LineageRecord": LineageRecord.model_json_schema(),
         "VintageManifest": VintageManifest.model_json_schema(),
         "InputManifest": InputManifest.model_json_schema(),

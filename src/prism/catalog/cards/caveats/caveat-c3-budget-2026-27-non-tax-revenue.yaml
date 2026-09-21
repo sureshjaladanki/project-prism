@@ -17,3 +17,5 @@ disagrees_with: Card 1 (tax). Card 3 (capital/debt). Card 4 multi-year non-tax r
   Cards 9–11.
 do_not: Do not treat UT receipts on this statement as C5. Do not merge tax and non-tax.
   Do not rank, forecast, or per-person.
+citizen_note: Union non-tax revenue as printed, in rupees as labelled. Blank cells are not
+  zero. Receipts of Union Territories on this statement are a Union head, not state receipts.

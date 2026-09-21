@@ -1,9 +1,9 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Table 8 projected India Persons, thousands, 1 March 2011–2036. A projection, not a census. Do not stitch to A-02.",
+  "description": "Projected India Persons, thousands, 1 March 2011–2036. A projection, not a census. Do not stitch to the census-year line.",
   "title": {
     "text": "Projected India population, 1 March, thousands",
-    "subtitle": "Table 8, 2011 to 2036. Not a census count."
+    "subtitle": "Official projection, 2011 to 2036. Not a census count."
   },
   "usermeta": {
     "slot_id": "chart-india-projected-2011-2036",

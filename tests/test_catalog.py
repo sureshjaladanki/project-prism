@@ -13,7 +13,13 @@ import pytest
 import yaml
 from typer.testing import CliRunner
 
-from prism.catalog import CatalogError, default_catalog, load_catalog, validate_catalog
+from prism.catalog import (
+    CatalogCiteBlock,
+    CatalogError,
+    default_catalog,
+    load_catalog,
+    validate_catalog,
+)
 from prism.catalog.registry import (
     MapperSpec,
     ParserSpec,
@@ -43,6 +49,48 @@ def test_catalog_validate_cli_ok() -> None:
     result = CliRunner().invoke(app, ["catalog", "validate"])
     assert result.exit_code == 0
     assert "catalog ok" in result.stdout
+
+
+def test_every_catalog_caveat_has_citizen_note() -> None:
+    catalog = default_catalog()
+    assert catalog.caveats
+    for caveat_id, note in catalog.caveats.items():
+        assert note.citizen_note, f"{caveat_id} missing citizen_note"
+
+
+def test_cite_blocks_live_on_slice_yaml() -> None:
+    catalog = default_catalog()
+    c1 = catalog.slice_for_template("c1-prices-people-pay")
+    assert c1.cite_block_by_id()["general-latest"].citation_ids == (
+        "cite-c1-cpi-general-base-2024-2026-08",
+    )
+    bind_src = Path(__file__).resolve().parents[1] / "src" / "prism" / "template_bind.py"
+    assert "CITE_BLOCKS" not in bind_src.read_text(encoding="utf-8")
+
+
+def test_catalog_rejects_unknown_cite_block_citation() -> None:
+    catalog = default_catalog()
+    first = catalog.slices[0]
+    broken = catalog.model_copy(
+        update={
+            "slices": (
+                first.model_copy(
+                    update={
+                        "cite_blocks": first.cite_blocks
+                        + (
+                            CatalogCiteBlock(
+                                block_id="ghost",
+                                citation_ids=("cite-does-not-exist",),
+                            ),
+                        )
+                    }
+                ),
+            )
+            + catalog.slices[1:]
+        }
+    )
+    with pytest.raises(CatalogError, match="missing citation_id"):
+        validate_catalog(broken)
 
 
 def test_catalog_validate_unknown_parser() -> None:
@@ -224,6 +272,7 @@ series:
                 lags="none",
                 disagrees_with="none",
                 do_not="do not treat as official",
+                citizen_note="A fixture count from a fixture table.",
             ).model_dump(mode="json")
         ),
         encoding="utf-8",

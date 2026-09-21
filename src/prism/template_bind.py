@@ -14,6 +14,17 @@ from typing import Any
 import markdown
 import yaml
 
+from prism.catalog import CatalogCiteBlock, default_catalog
+from prism.citizen_projection import (
+    cite_element_id,
+    concept_key,
+    indian_grouped,
+    is_rate_or_index,
+    project_citizen_cite,
+    project_citizen_method,
+    project_display_value,
+    scale_for_concept,
+)
 from prism.cms_site import plain_fact_lede, sleeve_path
 from prism.paths import (
     CAVEAT_FILENAME,
@@ -25,7 +36,11 @@ from prism.paths import (
 from prism.schema import (
     CaveatNote,
     Citation,
+    CitizenCite,
+    CitizenMethod,
     CodeSystem,
+    DisplayScale,
+    DisplayValue,
     GeographyVintage,
     Observation,
     ObservationStatus,
@@ -33,7 +48,11 @@ from prism.schema import (
     SlotSelector,
     contract_json_schema,
 )
-from prism.serving import bind_observation, chart_payload
+from prism.serving import (
+    assert_hole_never_plotted_as_zero,
+    bind_observation,
+    chart_payload,
+)
 from prism.vega_lite_gates import assert_generated_spec
 from prism.vintage_query import (
     connect_vintage,
@@ -49,49 +68,6 @@ C2_TEMPLATE_DIRNAME = "c2-people-of-india"
 C3_TEMPLATE_ID = "c3-union-money"
 C3_TEMPLATE_DIRNAME = "c3-union-money"
 
-
-@dataclass(frozen=True)
-class CiteBlock:
-    citation_ids: tuple[str, ...]
-    observation_slots: tuple[str, ...] = ()
-
-
-CITE_BLOCKS: dict[str, CiteBlock] = {
-    "general-latest": CiteBlock(("cite-c1-cpi-general-base-2024-2026-08",)),
-    "food-latest": CiteBlock(
-        (
-            "cite-c1-cpi-cfpi-base-2024-2026-08",
-            "cite-c1-cpi-division-group-base-2024-2026-08",
-        )
-    ),
-    "state-ut-latest": CiteBlock(("cite-c1-cpi-general-base-2024-2026-08",)),
-    "linked-back-series": CiteBlock(("cite-c1-cpi-back-series-linked-base-2024",)),
-    "divisions-latest": CiteBlock(("cite-c1-cpi-division-group-base-2024-2026-08",)),
-    "general-final": CiteBlock(
-        ("cite-c1-cpi-general-base-2024-2026-08",),
-        observation_slots=("all-india-combined-general-inflation-latest-f",),
-    ),
-    "food-final": CiteBlock(
-        ("cite-c1-cpi-cfpi-base-2024-2026-08",),
-        observation_slots=("all-india-combined-cfpi-inflation-latest-f",),
-    ),
-    "annex1": CiteBlock(("cite-c3-budget-2026-27-annex1-trends-receipts",)),
-    "tax": CiteBlock(("cite-c3-budget-2026-27-tax-revenue",)),
-    "non-tax": CiteBlock(("cite-c3-budget-2026-27-non-tax-revenue",)),
-    "capital": CiteBlock(("cite-c3-budget-2026-27-capital-receipts",)),
-    "expenditure": CiteBlock(("cite-c3-budget-2026-27-expenditure-stat1",)),
-    "deficit": CiteBlock(("cite-c3-budget-2026-27-deficit-statistics",)),
-    "liabilities": CiteBlock(("cite-c3-budget-2026-27-liabilities",)),
-    "frbm-hole": CiteBlock(("cite-c3-budget-2026-27-frbm-statements",)),
-    "afs": CiteBlock(("cite-c3-budget-2026-27-afs",)),
-    "cga-monthly": CiteBlock(("cite-c3-cga-monthly-glance-2026-07",)),
-    "finance-accounts": CiteBlock(("cite-c3-cga-finance-accounts-2024-25-stat1",)),
-    "census-pca": CiteBlock(("cite-c2-census-2011-pca-sd",)),
-    "census-a02": CiteBlock(("cite-c2-census-2011-a02-decadal",)),
-    "srs-bulletin": CiteBlock(("cite-c2-srs-bulletin-2024",)),
-    "srs-stat": CiteBlock(("cite-c2-srs-statistical-report-2024",)),
-    "ncp-table8": CiteBlock(("cite-c2-ncp-projections-2011-2036-table8",)),
-}
 
 LAYOUT_BLOCKS: dict[str, tuple[str, str]] = {
     "hero": ("header", "hero"),
@@ -300,6 +276,15 @@ def bind_page(data_root: Path, vintage_id: str, template_dir: Path) -> BoundPage
     finally:
         connection.close()
 
+    scales = _display_scales(bound_slots, charts)
+    _apply_chart_displays(charts, scales)
+    displays = _slot_displays(bound_slots, scales)
+    cite_blocks = default_catalog().slice_for_template(template_id).cite_block_by_id()
+    miss_copies = {
+        str(slot["slot_id"]): str(slot.get("miss_copy", "not published"))
+        for slot in spec["slots"]
+    }
+
     front_matter, markdown_copy = _parse_front_matter(
         copy_path.read_text(encoding="utf-8")
     )
@@ -314,7 +299,23 @@ def bind_page(data_root: Path, vintage_id: str, template_dir: Path) -> BoundPage
     if citizen_question == "":
         raise RenderError("citizen_question is missing")
     path = sleeve_path(sleeve, slug)
-    expanded = _expand_copy(markdown_copy, vintage_id, spec, bound_slots, cards, charts)
+    expanded = _expand_copy(
+        markdown_copy,
+        vintage_id,
+        spec,
+        bound_slots,
+        cards,
+        charts,
+        displays,
+        cite_blocks,
+        miss_copies,
+        _periods_by_citation(
+            tuple(CITE_BLOCK_RE.findall(markdown_copy)),
+            cite_blocks,
+            bound_slots,
+            cards,
+        ),
+    )
     body_html = wrap_cite_views(
         markdown.markdown(expanded, extensions=["extra", "md_in_html"])
     )
@@ -588,23 +589,19 @@ def _assert_cite_complete(served: ServedObservation) -> None:
         raise RenderError("citation card is missing producer or series")
 
 
+_CITIZEN_CAVEAT_FIELDS = {
+    "population": lambda caveat: caveat.population,
+    "citizen_note": lambda caveat: caveat.citizen_note or "",
+    "unit": lambda caveat: caveat.unit,
+    "reference_period": lambda caveat: caveat.reference_period,
+}
+
+
 def _caveat_field(caveat: CaveatNote, field: str) -> str:
-    values = {
-        "concept": caveat.concept,
-        "unit": caveat.unit,
-        "population": caveat.population,
-        "reference_period": caveat.reference_period,
-        "producer_definition": caveat.producer_definition,
-        "comparable_from": caveat.comparable_from,
-        "breaks": caveat.breaks,
-        "lags": caveat.lags,
-        "disagrees_with": caveat.disagrees_with,
-        "do_not": caveat.do_not,
-    }
     try:
-        return values[field]
+        return _CITIZEN_CAVEAT_FIELDS[field](caveat)
     except KeyError as exc:
-        raise RenderError(f"unknown caveat field {field}") from exc
+        raise RenderError(f"desk caveat field {field} is not a citizen slot") from exc
 
 
 def _selector_from_mapping(selector: dict[str, Any]) -> SlotSelector:
@@ -644,6 +641,116 @@ def _bind_charts(
         assert_generated_spec(bound_spec)
         charts[chart_id] = bound_spec
     return charts
+
+
+def _iter_chart_rows(node: Any) -> list[dict[str, object]]:
+    rows: list[dict[str, object]] = []
+    if isinstance(node, dict):
+        data = node.get("data")
+        if isinstance(data, dict) and isinstance(data.get("values"), list):
+            rows.extend(item for item in data["values"] if isinstance(item, dict))
+        for value in node.values():
+            rows.extend(_iter_chart_rows(value))
+    elif isinstance(node, list):
+        for item in node:
+            rows.extend(_iter_chart_rows(item))
+    return rows
+
+
+def _display_scales(
+    bound_slots: dict[str, ServedObservation | BoundCopy | str],
+    charts: dict[str, dict[str, Any]],
+) -> dict[str, DisplayScale]:
+    buckets: dict[str, list[float]] = {}
+    rate_by_key: dict[str, bool] = {}
+
+    def add(
+        series_id: str, unit: str, raw: float | None, status: ObservationStatus
+    ) -> None:
+        key = concept_key(series_id, unit)
+        rate_by_key[key] = is_rate_or_index(unit)
+        if status is ObservationStatus.value and raw is not None:
+            buckets.setdefault(key, []).append(raw)
+
+    for bound in bound_slots.values():
+        if isinstance(bound, ServedObservation):
+            observation = bound.observation
+            add(
+                observation.series_id,
+                observation.unit,
+                observation.value,
+                observation.status,
+            )
+    for spec in charts.values():
+        for row in _iter_chart_rows(spec):
+            series_id = row.get("series_id")
+            unit = row.get("unit")
+            status_raw = row.get("status")
+            if not isinstance(series_id, str) or not isinstance(unit, str):
+                continue
+            if not isinstance(status_raw, str):
+                continue
+            status = ObservationStatus(status_raw)
+            raw = row.get("value") if status is ObservationStatus.value else None
+            add(
+                series_id,
+                unit,
+                float(raw) if isinstance(raw, (int, float)) else None,
+                status,
+            )
+    return {
+        key: scale_for_concept(tuple(buckets.get(key, ())), rate_or_index=rate)
+        for key, rate in rate_by_key.items()
+    }
+
+
+def _apply_chart_displays(
+    charts: dict[str, dict[str, Any]],
+    scales: dict[str, DisplayScale],
+) -> None:
+    for spec in charts.values():
+        for row in _iter_chart_rows(spec):
+            series_id = row.get("series_id")
+            unit = row.get("unit")
+            status_raw = row.get("status")
+            if not isinstance(series_id, str) or not isinstance(unit, str):
+                continue
+            if not isinstance(status_raw, str):
+                continue
+            status = ObservationStatus(status_raw)
+            scale = scales.get(concept_key(series_id, unit), DisplayScale.none)
+            raw = row.get("value") if status is ObservationStatus.value else None
+            display = project_display_value(
+                raw_value=float(raw) if isinstance(raw, (int, float)) else None,
+                unit=unit,
+                status=status,
+                scale=scale,
+            )
+            row["value"] = display.chart_value
+            row["display_scale"] = scale.value
+            row["display_string"] = display.display_string
+
+
+def _slot_displays(
+    bound_slots: dict[str, ServedObservation | BoundCopy | str],
+    scales: dict[str, DisplayScale],
+) -> dict[str, DisplayValue]:
+    displays: dict[str, DisplayValue] = {}
+    for slot_id, bound in bound_slots.items():
+        if not isinstance(bound, ServedObservation):
+            continue
+        observation = bound.observation
+        scale = scales.get(
+            concept_key(observation.series_id, observation.unit),
+            DisplayScale.none,
+        )
+        displays[slot_id] = project_display_value(
+            raw_value=observation.value,
+            unit=observation.unit,
+            status=observation.status,
+            scale=scale,
+        )
+    return displays
 
 
 def _bind_collection(
@@ -741,6 +848,7 @@ def _row(
     payload = chart_payload(served)
     if extra:
         payload.update(extra)
+    assert_hole_never_plotted_as_zero(payload)
     return payload
 
 
@@ -943,6 +1051,10 @@ def _expand_copy(
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
     cards: dict[str, tuple[Citation, CaveatNote, GeographyVintage]],
     charts: dict[str, dict[str, Any]],
+    displays: dict[str, DisplayValue],
+    cite_blocks: dict[str, CatalogCiteBlock],
+    miss_copies: dict[str, str],
+    periods_by_cite: dict[str, frozenset[str]],
 ) -> str:
     text = markdown_copy.replace("{{data_vintage_id}}", html.escape(vintage_id))
     text = PERIOD_RE.sub(
@@ -950,23 +1062,39 @@ def _expand_copy(
     )
     text = CITE_FIELD_RE.sub(
         lambda match: _in_text_cite_html(
-            _citation_by_id(cards, match.group(1)), match.group(2)
+            _citation_by_id(cards, match.group(1)),
+            match.group(2),
+            periods_by_cite,
         ),
         text,
     )
     text = STAT_RE.sub(
         lambda match: _stat_html(
-            match.group(1), match.group(2), bound_slots, vintage_id
+            match.group(1),
+            match.group(2),
+            bound_slots,
+            vintage_id,
+            displays,
+            miss_copies,
         ),
         text,
     )
     text = SLOT_RE.sub(
-        lambda match: _slot_html(match.group(1), bound_slots, vintage_id), text
+        lambda match: _slot_html(
+            match.group(1), bound_slots, vintage_id, displays, miss_copies
+        ),
+        text,
     )
     emitted_panels: set[str] = set()
     text = CITE_BLOCK_RE.sub(
         lambda match: _cite_block_html(
-            match.group(1), cards, vintage_id, bound_slots, emitted_panels
+            match.group(1),
+            cards,
+            vintage_id,
+            bound_slots,
+            emitted_panels,
+            cite_blocks,
+            periods_by_cite,
         ),
         text,
     )
@@ -996,47 +1124,65 @@ def _cite_field(citation: Citation, field: str) -> str:
     return _format_date_field(value)
 
 
-def _cite_panel_id(citation_id: str) -> str:
-    return f"cite-panel-{citation_id}"
+def _in_text_cite_period(
+    citation: Citation, periods_by_cite: dict[str, frozenset[str]]
+) -> str:
+    periods = periods_by_cite.get(citation.citation_id, frozenset())
+    if citation.reference_period in periods:
+        return citation.reference_period
+    if len(periods) == 1:
+        return next(iter(periods))
+    if not periods:
+        return citation.reference_period
+    raise RenderError(
+        f"in-text cite {citation.citation_id} period {citation.reference_period} "
+        "is not a bound cite period"
+    )
 
 
-def _in_text_cite_html(citation: Citation, field: str) -> str:
+def _in_text_cite_html(
+    citation: Citation,
+    field: str,
+    periods_by_cite: dict[str, frozenset[str]],
+) -> str:
     value = html.escape(_cite_field(citation, field))
-    panel_id = html.escape(_cite_panel_id(citation.citation_id), quote=True)
+    period = _in_text_cite_period(citation, periods_by_cite)
+    periods = periods_by_cite.get(
+        citation.citation_id, frozenset({citation.reference_period})
+    )
+    panel_id = html.escape(
+        cite_element_id(citation.citation_id, period, periods), quote=True
+    )
     return (
         f'<button type="button" class="in-text-cite" popovertarget="{panel_id}">'
         f"{value}</button>"
     )
 
 
-def _producer_anchor(citation: Citation) -> str:
+def _producer_anchor(cite: CitizenCite) -> str:
     return (
-        f'<a href="{html.escape(citation.url, quote=True)}">'
-        f"{html.escape(citation.producer)}</a>"
+        f'<a href="{html.escape(cite.url, quote=True)}">'
+        f"{html.escape(cite.producer)}</a>"
     )
 
 
-def _citizen_citation_dl(
-    citation: Citation, period: str, release: str, caveat: str
-) -> str:
+def _citizen_citation_dl(cite: CitizenCite) -> str:
     return (
         "<dl>"
-        f"<dt>Producer</dt><dd>{_producer_anchor(citation)}</dd>"
-        f"<dt>Series</dt><dd>{html.escape(citation.series)}</dd>"
-        f"<dt>Reference period</dt><dd>{html.escape(period)}</dd>"
-        f"<dt>Release date</dt><dd>{html.escape(release)} (Asia/Kolkata)</dd>"
-        f"<dt>Caveat</dt><dd>{html.escape(caveat)}</dd>"
+        f"<dt>Producer</dt><dd>{_producer_anchor(cite)}</dd>"
+        f"<dt>Series</dt><dd>{html.escape(cite.series)}</dd>"
+        f"<dt>Reference period</dt><dd>{html.escape(cite.reference_period)}</dd>"
+        f"<dt>Release date</dt><dd>{html.escape(cite.released)} (Asia/Kolkata)</dd>"
+        f"<dt>Caveat</dt><dd>{html.escape(cite.caveat)}</dd>"
         "</dl>"
     )
 
 
-def _cite_panel_html(
-    citation: Citation, period: str, release: str, caveat: str
-) -> str:
-    panel_id = html.escape(_cite_panel_id(citation.citation_id), quote=True)
+def _cite_panel_html(element_id: str, cite: CitizenCite) -> str:
+    panel_id = html.escape(element_id, quote=True)
     return (
         f'<div id="{panel_id}" class="cite-panel" popover>'
-        f"{_citizen_citation_dl(citation, period, release, caveat)}"
+        f"{_citizen_citation_dl(cite)}"
         "</div>"
     )
 
@@ -1053,6 +1199,8 @@ def _slot_html(
     slot_id: str,
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
     vintage_id: str,
+    displays: dict[str, DisplayValue],
+    miss_copies: dict[str, str],
 ) -> str:
     try:
         bound = bound_slots[slot_id]
@@ -1067,48 +1215,25 @@ def _slot_html(
         )
     observation = bound.observation
     if observation.status is not ObservationStatus.value:
-        copy = "unknown / not a table"
+        copy = miss_copies.get(slot_id, "not published")
         return (
             f'<span class="observation observation-missing" data-slot-id="{html.escape(slot_id)}" '
             f'data-observation-id="{html.escape(observation.observation_id)}" '
             f'data-vintage-id="{html.escape(vintage_id)}">'
             f"{html.escape(copy)}</span>"
         )
-    if observation.value is None:
-        raise RenderError(f"slot {slot_id} has status value without a number")
+    display = displays[slot_id]
     return (
         f'<span class="observation" data-slot-id="{html.escape(slot_id)}" '
         f'data-observation-id="{html.escape(observation.observation_id)}" '
         f'data-vintage-id="{html.escape(vintage_id)}">'
-        f'<span class="observation-value">{html.escape(format_bound_number(observation.value))}</span>'
+        f'<span class="observation-value">{html.escape(display.display_string)}</span>'
         f"</span>"
     )
 
 
 def format_bound_number(value: float) -> str:
-    text = format(value, ".12g")
-    if "e" in text.lower():
-        text = format(value, ".12f").rstrip("0").rstrip(".")
-    sign = ""
-    if text.startswith("-"):
-        sign = "-"
-        text = text[1:]
-    if "." in text:
-        integer, fraction = text.split(".", 1)
-        return f"{sign}{_indian_group_integer(integer)}.{fraction}"
-    return f"{sign}{_indian_group_integer(text)}"
-
-
-def _indian_group_integer(digits: str) -> str:
-    if len(digits) <= 3:
-        return digits
-    last_three = digits[-3:]
-    rest = digits[:-3]
-    groups: list[str] = []
-    while rest:
-        groups.append(rest[-2:])
-        rest = rest[:-2]
-    return ",".join(reversed(groups)) + "," + last_three
+    return indian_grouped(value)
 
 
 def _tidy_slot_punctuation(html_text: str) -> str:
@@ -1121,8 +1246,10 @@ def _stat_html(
     label: str | None,
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
     vintage_id: str,
+    displays: dict[str, DisplayValue],
+    miss_copies: dict[str, str],
 ) -> str:
-    figure = _slot_html(slot_id, bound_slots, vintage_id)
+    figure = _slot_html(slot_id, bound_slots, vintage_id, displays, miss_copies)
     label_html = ""
     if label:
         label_html = f'<p class="stat-label">{html.escape(label.strip())}</p>'
@@ -1222,12 +1349,27 @@ def _card_fields(card_html: str) -> dict[str, str]:
     return fields
 
 
-def _producer_status_from_id(observation_id: str) -> str:
-    if observation_id.endswith("-F"):
-        return "F"
-    if observation_id.endswith("-P"):
-        return "P"
-    return ""
+def _periods_by_citation(
+    block_ids: tuple[str, ...],
+    cite_blocks: dict[str, CatalogCiteBlock],
+    bound_slots: dict[str, ServedObservation | BoundCopy | str],
+    cards: dict[str, tuple[Citation, CaveatNote, GeographyVintage]],
+) -> dict[str, frozenset[str]]:
+    found: dict[str, set[str]] = {}
+    for block_id in block_ids:
+        try:
+            block = cite_blocks[block_id]
+        except KeyError as exc:
+            raise RenderError(f"unknown cite-block {block_id}") from exc
+        if block.observation_slots:
+            period = _cite_period_from_slots(block, bound_slots)
+            for citation_id in block.citation_ids:
+                found.setdefault(citation_id, set()).add(period)
+            continue
+        for citation_id in block.citation_ids:
+            citation = _citation_by_id(cards, citation_id)
+            found.setdefault(citation_id, set()).add(citation.reference_period)
+    return {key: frozenset(value) for key, value in found.items()}
 
 
 def _cite_block_html(
@@ -1236,35 +1378,35 @@ def _cite_block_html(
     vintage_id: str,
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
     emitted_panels: set[str],
+    cite_blocks: dict[str, CatalogCiteBlock],
+    periods_by_cite: dict[str, frozenset[str]],
 ) -> str:
     try:
-        block = CITE_BLOCKS[block_id]
+        block = cite_blocks[block_id]
     except KeyError as exc:
         raise RenderError(f"unknown cite-block {block_id}") from exc
     reference_period = None
-    caveat_one_line = None
     if block.observation_slots:
-        reference_period, caveat_one_line = _cite_from_slots(block, bound_slots)
+        reference_period = _cite_period_from_slots(block, bound_slots)
     parts = [
         _citation_card_html(
             _citation_by_id(cards, citation_id),
             cards,
             vintage_id,
             emitted_panels,
+            periods_by_cite,
             reference_period=reference_period,
-            caveat_one_line=caveat_one_line,
         )
         for citation_id in block.citation_ids
     ]
-    return "\n\n".join(parts)
+    return "\n\n".join(part for part in parts if part)
 
 
-def _cite_from_slots(
-    block: CiteBlock,
+def _cite_period_from_slots(
+    block: CatalogCiteBlock,
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
-) -> tuple[str, str | None]:
+) -> str:
     periods: set[str] = set()
-    caveat_one_line: str | None = None
     for slot_id in block.observation_slots:
         try:
             bound = bound_slots[slot_id]
@@ -1281,13 +1423,11 @@ def _cite_from_slots(
                 "is not in this block"
             )
         periods.add(observation.reference_period)
-        if _producer_status_from_id(observation.observation_id) == "F":
-            caveat_one_line = bound.caveat.reference_period
     if len(periods) != 1:
         raise RenderError(
             "cite-block observation slots must share one reference period"
         )
-    return next(iter(periods)), caveat_one_line
+    return next(iter(periods))
 
 
 def _citation_card_html(
@@ -1295,9 +1435,9 @@ def _citation_card_html(
     cards: dict[str, tuple[Citation, CaveatNote, GeographyVintage]],
     vintage_id: str,
     emitted_panels: set[str],
+    periods_by_cite: dict[str, frozenset[str]],
     *,
     reference_period: str | None = None,
-    caveat_one_line: str | None = None,
 ) -> str:
     geography_vintage = None
     for series_citation, _caveat, geography in cards.values():
@@ -1307,37 +1447,46 @@ def _citation_card_html(
     if geography_vintage is None:
         raise RenderError(f"no geography vintage for {citation.citation_id}")
     period = citation.reference_period if reference_period is None else reference_period
-    caveat = citation.caveat_one_line if caveat_one_line is None else caveat_one_line
-    release = _format_date_field(citation.release_date)
-    summary = f"{citation.series} · {period} · released {release}"
+    periods = periods_by_cite.get(citation.citation_id, frozenset({period}))
+    element_id = cite_element_id(citation.citation_id, period, periods)
+    if element_id in emitted_panels:
+        return ""
+    emitted_panels.add(element_id)
+    cite = project_citizen_cite(citation, reference_period=period)
+    summary = f"{cite.series} · {cite.reference_period} · released {cite.released}"
     cite_id = html.escape(citation.citation_id, quote=True)
     vintage = html.escape(vintage_id, quote=True)
     card = (
-        f'<details class="citation-card source-byline" id="cite-{cite_id}" '
-        f'data-citation-id="{cite_id}" data-vintage-id="{vintage}">'
+        f'<details class="citation-card source-byline" '
+        f'id="{html.escape(element_id, quote=True)}" '
+        f'data-citation-id="{cite_id}" data-vintage-id="{vintage}" '
+        f'data-reference-period="{html.escape(period, quote=True)}">'
         f"<summary>{html.escape(summary)}</summary>"
-        f"{_citizen_citation_dl(citation, period, release, caveat)}"
+        f"{_citizen_citation_dl(cite)}"
         "</details>"
     )
-    if citation.citation_id in emitted_panels:
-        return card
-    emitted_panels.add(citation.citation_id)
-    return card + _cite_panel_html(citation, period, release, caveat)
+    return card + _cite_panel_html(element_id, cite)
+
+
+def _citizen_method_for(caveat: CaveatNote) -> CitizenMethod:
+    if caveat.citizen_note:
+        return project_citizen_method(caveat)
+    catalog_note = default_catalog().caveats.get(caveat.caveat_id)
+    if catalog_note is None or not catalog_note.citizen_note:
+        raise RenderError(f"{caveat.caveat_id} missing citizen_note")
+    return project_citizen_method(catalog_note)
 
 
 def _caveat_block_html(caveat: CaveatNote, vintage_id: str) -> str:
-    fields = (
-        ("Concept", caveat.concept),
-        ("Unit", caveat.unit),
-        ("Population", caveat.population),
-        ("Reference period", caveat.reference_period),
-        ("Producer definition", caveat.producer_definition),
-        ("Comparable from", caveat.comparable_from),
-        ("Breaks", caveat.breaks),
-        ("Lags", caveat.lags),
-        ("Disagrees with", caveat.disagrees_with),
-        ("Do not", caveat.do_not),
-    )
+    method = _citizen_method_for(caveat)
+    fields = [
+        ("What it counts", method.what_it_counts),
+        ("Coverage", method.coverage),
+    ]
+    if method.break_note is not None:
+        fields.append(("Break", method.break_note))
+    if method.lag_note is not None:
+        fields.append(("Lag", method.lag_note))
     rows = "".join(
         f"<dt>{html.escape(label)}</dt><dd>{html.escape(value)}</dd>"
         for label, value in fields
@@ -1345,7 +1494,7 @@ def _caveat_block_html(caveat: CaveatNote, vintage_id: str) -> str:
     return (
         f'<details class="caveat-note" data-caveat-id="{html.escape(caveat.caveat_id)}" '
         f'data-vintage-id="{html.escape(vintage_id)}">'
-        f"<summary>How to read this series</summary><dl>{rows}</dl></details>"
+        f"<summary>Method</summary><dl>{rows}</dl></details>"
     )
 
 

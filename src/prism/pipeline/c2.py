@@ -93,6 +93,8 @@ def _number(text: str, *, label: str) -> float | None:
     stripped = text.strip().replace(",", "").replace(" ", "")
     if stripped == "":
         return None
+    if stripped.lower() in {".", "..", "...", "…", "n.a.", "na", "n/a"}:
+        return None
     stripped = stripped.removesuffix("%")
     stripped = stripped.removeprefix("+")
     if stripped[:1] in _MINUS_PREFIXES:

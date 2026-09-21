@@ -58,7 +58,7 @@ India Total census counts are printed for census years from 1901 through 2011. T
 
 {{chart:india-census-years-1901-2011}}
 
-<p class="source-line">Office of the Registrar General &amp; Census Commissioner, India · Table A-02 · census years 1901–2011</p>
+<p class="source-line">Office of the Registrar General &amp; Census Commissioner, India · census years 1901–2011</p>
 
 <p>A blank or not-available cell is a hole, not zero. This table is not a 2024 headcount and not a birth rate.</p>
 {{/section}}
@@ -104,13 +104,13 @@ These are Sample Registration System rates for {{period.srs_2024.label}}, not a 
 
 A 2019 technical-group report prints projected population in thousands as on 1 March, 2011 to 2036. That is a projection, not a census. The 2011 column is not the Census 2011 count above.
 
-On {{period.projection_2026.label}}, Table 8 prints {{slot:india-projected-persons-2026}} thousand people for India, Persons.
+On {{period.projection_2026.label}}, the official projection prints {{slot:india-projected-persons-2026}} thousand people for India, Persons.
 
 {{chart:india-projected-2011-2036}}
 
-<p class="source-line">National Commission on Population, Ministry of Health &amp; Family Welfare · Table 8 · projected, thousands, 1 March</p>
+<p class="source-line">National Commission on Population, Ministry of Health &amp; Family Welfare · projected population, thousands, 1 March</p>
 
-<p>A 2026 cell is still that 2019 report. It does not close the missing later census. Table 8 is not joined to the 1901–2011 census line.</p>
+<p>A 2026 cell is still that 2019 report. It does not close the missing later census. The projection is not joined to the 1901–2011 census line.</p>
 {{/section}}
 
 <div class="source-stack">
@@ -130,15 +130,15 @@ On {{period.projection_2026.label}}, Table 8 prints {{slot:india-projected-perso
 
 Census counts, Sample Registration System rates, and the 2011–2036 projection are three records. This page shows each as itself. It does not pick a winner or make one “India today” figure.
 
-{{slot:caveat-pca-lags}}
+Census 2011 is the latest published census total. Census 2021 totals were not published. Census 2027 houselisting is not a count.
 
-{{slot:caveat-pca-population}}
+Census 2011 counts everyone enumerated on the published India and State or Union Territory rows. District rows in the same workbook are not on this page. This is not NPR, electoral rolls, or a count of who lives here now.
 
-The 2011 Census map does not include Telangana or Ladakh as State or UT rows. Daman &amp; Diu and Dadra &amp; Nagar Haveli are separate. Districts are parked.
+The 2011 Census map does not include Telangana or Ladakh as State or UT rows. Daman &amp; Diu and Dadra &amp; Nagar Haveli are separate.
 
 Birth, death, and infant mortality rates on this page are 2024 survey estimates. They are not a headcount. Total fertility lives on the statistical report, whose main tables miss smaller States and Union Territories.
 
-Table 8 is in thousands, as on 1 March, labelled projected. Its 2011 column is a smoothed projected base, not the Census 2011 count. A later year on that table is not an enumeration.
+The official projection is in thousands, as on 1 March. Its 2011 column is a smoothed projected base, not the Census 2011 count. A later year on that table is not an enumeration.
 
 This page does not include NPR or citizenship registers; electoral rolls; caste politics; district maps; ranks; forecasts; or international modelled stocks as the source of record.
 {{/how-this-is-measured}}

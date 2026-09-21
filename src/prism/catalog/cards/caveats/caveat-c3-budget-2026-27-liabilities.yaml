@@ -17,3 +17,6 @@ disagrees_with: FRBM-defined debt on BAG charts. Card 3 net debt receipts (flow,
   stock). Card 6 deficit.
 do_not: Do not hide PDF reconstruction. Do not merge FRBM-defined debt into this stock.
   Do not present Union liabilities as general government including states.
+citizen_note: 'Outstanding liabilities of the Central Government as printed: public debt and
+  other liabilities. External debt follows the producer’s printed valuation. This is Union
+  stock, not state debt.'

@@ -1,13 +1,13 @@
 # Design system
 
-UI/UX Developer. Visual contract for citizen pages (**v3**). Persona: [ui-ux-developer.md](personas/ui-ux-developer.md). How the page **reads** is [editorial-guidelines.md](editorial-guidelines.md) (Content Editor) — this file implements that as type, colour, layout, and chart chrome. UI/UX Developer implements this file and runs the presentation pass against it. Routes, titles, SEO, and preview vs published HTTP: [web-design.md](web-design.md) (Front-end Architect). Integrity stays in [data-contracts.md](data-contracts.md) and [architectural-blueprint.md](architectural-blueprint.md).
+UI/UX Developer. Visual contract for citizen pages (**v3.1**). Persona: [ui-ux-developer.md](personas/ui-ux-developer.md). How the page **reads** is [editorial-guidelines.md](editorial-guidelines.md) (Content Editor) — this file implements that as type, colour, layout, and chart chrome. UI/UX Developer implements this file and runs the presentation pass against it. Routes, titles, SEO, and preview vs published HTTP: [web-design.md](web-design.md) (Front-end Architect). Integrity stays in [data-contracts.md](data-contracts.md) and [architectural-blueprint.md](architectural-blueprint.md).
 
 Product role, answer-page shape, and newsroom forbids live in the editorial guidelines. Stack (Astro SSG, Vega-Lite) lives in [repo-conventions.md](repo-conventions.md). Current work lives under [Next](#next).
 
-v1 (quiet desk): [design-system-v1.md](archive/design-system-v1.md). v2 (welcome ruling, read as austere): [design-system-v2.md](archive/design-system-v2.md). Tone: [design-philosophy.md](design-philosophy.md). Direction on v2: [ui-ux-feedback.md](next/ui-ux-feedback.md).
+v1 (quiet desk): [design-system-v1.md](archive/design-system-v1.md). v2 (welcome ruling, read as austere): [design-system-v2.md](archive/design-system-v2.md). Tone: [design-philosophy.md](design-philosophy.md). Direction on v2: [ui-ux-feedback.md](archive/ui-ux-feedback.md).
 
 ```text
-version:        v3
+version:        v3.1
 tone:           modern, welcoming, civic publisher, generous
 idea:           official record, built for a person — answer first, archive on request
 house:          three grounds (paper / card / well); IBM Plex Serif for the record's
@@ -63,7 +63,7 @@ The house reads on three planes, not one flat card colour:
 |--------|-------|---------|
 | **Paper** | `--paper` | The page. Warm stone — an institution's paper, not a screen's white and not a marketing brand's cream. |
 | **Card** | `--card` | Evidence — stats, charts, fast facts, source cards. White, so a number always sits on the same plane its neighbours do. |
-| **Well** | `--well` | The answer, once per page. A cool, iso-luminant wash — same lightness as `--paper`, different hue — so the shift is felt as a change of place, not a jump in brightness. Never a verdict; never used for a second thing on the page. |
+| **Well** | `--well` | The answer band only (lede, stats, cite), once per page. A cool, iso-luminant wash — same lightness as `--paper`, different hue — so the shift is felt as a change of place, not a jump in brightness. **Ground, not a column.** Never a verdict; never method; never the first chart. |
 
 A citizen who has seen one slice reads the next by ground alone: white box, look for a citation; tinted band, this is what the page is answering.
 
@@ -107,7 +107,7 @@ Contrast is quoted against `--paper` and `--card`; the well is decorative ground
 | `--well` | `#EAF0F5` | Answer ground, once per page — `.fact-lede`, `.stat-row`, `.cite-strip` | n/a (hue shift, see above) | — | decorative |
 | `--ink` | `#1C1A17` | Body, headings, figures, producer | 15.0 | 17.4 | 4.5 |
 | `--muted` | `#5B5548` | Byline, labels, axis, cite rest | 6.4 | 7.4 | 4.5 |
-| `--hole` | `#6E6656` | Not published | 4.9 | 5.7 | 4.5 |
+| `--hole` | `#6E6656` | Gap primitive **not published** | 4.9 | 5.7 | 4.5 |
 | `--mark` | `#1F4E79` | Links, focus, series 1, header rule, well top rule | 7.5 | 8.7 | 4.5 |
 | `--mark-2` | `#9C5233` | Chart series 2 (clay) | 5.0 | 5.7 | 3.0 |
 | `--mark-3` | `#4A6670` | Chart series 3 (slate; not "good") | 5.3 | 6.1 | 3.0 |
@@ -152,6 +152,7 @@ Do not use Aeonik. Do not put Serif on body copy, labels, byline, chart SVG, or 
 | Sleeve | Sans | 0.75rem | 500 | 1.3 | 0.08em; uppercase |
 | H1 (question) | Serif | `clamp(2rem, 4.5vw, 3rem)` | 500 | 1.15 | −0.02em |
 | H2 (section) | Serif | 1.5rem | 500 | 1.3 | 0 |
+| H2 (method) | Serif | 1.0625rem | 500 | 1.3 | 0; ≥1.4× quieter than answer H2 |
 | Bound figure (`.stat-figure`, inline in `.fact-lede`) | Serif | `clamp(1.25rem, 12cqi, 2.75rem)` | 600 | 1.08 | −0.02em; tabular-nums |
 | Fast-fact (home, index) | Sans | 1.375rem | 500 | 1.3 | 0; `--ink` |
 | Body | Sans | 1.125rem | 400 | 1.65 | 0 |
@@ -189,9 +190,17 @@ No gradient. Lift is product elevation, not decoration that argues. `prefers-red
 
 The desk holds ten-digit official counts. Layout that only works for `4.82` is not a layout.
 
-**One width on the composed well.** Lede, stats, cite, and charts in the same view share `--desk`. Content boxes match at 1440px (right edges within 1px). A section that contains a chart is the same well. `--measure` is method only.
+**One column; the well is a ground.** Lede, stats, cite, and the first chart share `--desk` (right edges within 1px at 1440px). That is alignment ([design-philosophy.md](design-philosophy.md) guideline 5). The well token is **not** that column: only `.fact-lede`, `.stat-row`, and `.cite-strip` sit on `--well`. The first chart sits on `--card` below the band, same left and right edge. A later section that holds a chart is `--desk` on `--card`. `--measure` is method prose only.
 
 Hero copy is short; it may run at `--desk`. Method at 68rem was **124 characters per line** in earlier testing — `.how-measured` stays at `--measure`. Do not fail the hero for exceeding 90 characters per line.
+
+**Compact display.** Bound figures arrive as `DisplayValue.display_string` (K / L / Cr or `none`). This file does not choose the scale. It guarantees the string **fits**:
+
+- Axis ticks: ≥ 12px effective, ≤ 9 characters, no truncation, no rotation at `fitWidth` 974.
+- Same `display_scale` on the axis and the matching stat row.
+- Rates and indices stay `none`; the vintage `unit` is never rewritten here.
+
+**Grouping is not decided here.** Scale and grouping are bind (Charter ruling 6). This file guarantees the string **fits**.
 
 **Stat cells fit the widest figure the vintage can bind.**
 
@@ -205,9 +214,7 @@ Hero copy is short; it may run at `--desk`. Method at 68rem was **124 characters
 .stat-figure { font-size: clamp(1.25rem, 12cqi, 2.75rem); }
 ```
 
-`17rem` (up from a Sans-only `16rem`) stops cells packing narrower than a Serif ten-digit string needs; `min(100%, …)` stops overflow at 360px; `cqi` shrinks the figure before the card. Measured on shipped IBM Plex Serif: `1,21,08,54,977` at 1.75rem was 191px in a 184px cell at 360px, so the floor is **1.25rem** and the `cqi` multiplier is **12**. The widest plausible bound string — ten digits plus four separators — must fit at every cell width the grid can produce, including the ungrouped form.
-
-**Grouping is not decided here.** One convention at bind (Front-end ruling R8). This file guarantees the string **fits**.
+`17rem` (up from a Sans-only `16rem`) stops cells packing narrower than a Serif ten-digit string needs; `min(100%, …)` stops overflow at 360px; `cqi` shrinks the figure before the card. Measured on shipped IBM Plex Serif: `1,21,08,54,977` at 1.75rem was 191px in a 184px cell at 360px, so the floor is **1.25rem** and the `cqi` multiplier is **12**. The widest plausible bound string — ten digits plus four separators, or a compact `display_string` — must fit at every cell width the grid can produce.
 
 **Breakpoints.** One: `48rem`. Below it, a single column. Do not add a second breakpoint to solve a fit problem that `clamp`, `min()`, or a container query solves.
 
@@ -222,7 +229,7 @@ Content Editor may name only these blocks (`LAYOUT_BLOCKS` in `src/prism/templat
 | `hero` | `<header class="hero">` | First screen: sleeve, question, byline, the answer well, cite next to the numbers, first chart. One `--desk` column. |
 | `stat-row` | `<div class="stat-row">` | 2–4 bound figures, equal weight — middle segment of the answer well |
 | `section` | `<section class="portrait-section">` | One idea; heading; copy; optional stats; one chart. If it holds a chart, the section is `--desk`. |
-| `how-this-is-measured` | `<section class="how-measured">` | Method after the record. Prose at `--measure`. Quieter than the answer. |
+| `how-this-is-measured` | `<section class="how-measured">` | Method after the record. See [Method quieter](#method-quieter). |
 | compact source byline | `<details class="citation-card source-byline">` | Summary visible; full card on open |
 | caveat note | `<details class="caveat-note">` | Same rule |
 
@@ -242,7 +249,21 @@ Content Editor may name only these blocks (`LAYOUT_BLOCKS` in `src/prism/templat
 └─ --radius-lg bottom corners ──────────────────────────┘
 ```
 
-Achieved with adjacent-sibling selectors that zero the joining margins and interior radii (`.fact-lede + .stat-row`, `.stat-row + .cite-strip`) — no new wrapper element, no change to `LAYOUT_BLOCKS`. The well takes `--lift-answer` and `--radius-lg` on its own outer edge only; `.stat` chips inside it keep their own smaller `--radius` and resting `--lift`, like tiles set on a tray. The first chart is **not** part of the well — it is evidence, on `--card`, directly below.
+Achieved with adjacent-sibling selectors that zero the joining margins and interior radii (`.fact-lede + .stat-row`, `.stat-row + .cite-strip`) — no new wrapper element, no change to `LAYOUT_BLOCKS`. The well takes `--lift-answer` and `--radius-lg` on its own outer edge only; `.stat` chips inside it keep their own smaller `--radius` and resting `--lift`, like tiles set on a tray. The first chart is **not** part of the well ground — it is evidence, on `--card`, edge-aligned to `--desk` directly below.
+
+### Method quieter
+
+Method is later and quieter than the answer. Keep the method heading in Serif (two voices). Do not invent a second type family.
+
+| Box | Measure |
+|-----|---------|
+| Answer H2 vs method H2 | Answer section H2 (1.5rem) is ≥ **1.4×** the method H2. Method H2 is 1.0625rem (17px) Serif 500 — 1.5 / 1.0625 ≈ 1.41. Do not keep method H2 at the answer 1.5rem. |
+| Ground | Method never uses `--well`. `--paper` (or `--card` only if a cite panel sits inside method). |
+| Prose | `.how-measured` at `--measure` (40rem). **≤ 68ch** per line at 1440px (replaces the older 90-character fail). |
+
+### Not published
+
+The gap primitive is one phrase: **not published**. Colour `--hole`, italic, inherits its sentence's size and face. `miss_copy` is the only copy source. Do not invent `"unknown / not a table"`, `"Not published"` as a second casing, or a codebook synonym. Slot stays; the hole is never smaller, lighter, or Sans-inside-Serif.
 
 ### Site chrome
 
@@ -266,15 +287,15 @@ Same tokens. Not a full-bleed marketing bar. Not a USAFacts wordmark. Routes: [w
 
 No search, subscribe, or social row. No engagement SDK.
 
-**Publisher front (home).** H1 is the purpose sentence at H1 scale, Serif. The designed moment is the fact grid — 1.375rem `--ink` Sans one-liners, side by side at `--desk` on `--card` tiles. Then the featured-question rail. Not a mission whisper over grey paragraphs. Not a display-size slogan.
+**Publisher front (home).** H1 is the purpose sentence at H1 scale, Serif. The designed moment is the fact grid — 1.375rem `--ink` Sans one-liners, side by side at `--desk` on `--card` tiles. Home invitation is `.fast-facts` alone. `.hottest-rail` is a **slice** region (hashes, then catalog siblings). Do not emit a home rail — [web-design.md](web-design.md) standing forbid; do not re-specify it here. Not a mission whisper over grey paragraphs. Not a display-size slogan.
 
 **First screen (every slice).** Editorial scan path as one composed well.
 
 1. Sleeve (topic family, not a news kicker).
 2. Citizen question as H1 (geography in the words).
 3. Byline: release date (`Asia/Kolkata`), next named release.
-4. The answer well: `.fact-lede` sentence, `.stat-row` chips, `.cite-strip` — one band, `--desk` width.
-5. First chart, on `--card`, filling the same well.
+4. The answer well: `.fact-lede` sentence, `.stat-row` chips, `.cite-strip` — one band, `--well` ground, `--desk` width.
+5. First chart, on `--card`, same `--desk` left and right edge. Not on `--well`.
 
 Hottest rail closes the hero; never above the cite. Methodology is not on screen 1. Left-aligned. Do not centre the question.
 
@@ -282,7 +303,7 @@ Hottest rail closes the hero; never above the cite. Methodology is not on screen
 
 Vega-Lite in git; SVG at render. `src/cms/src/lib/render-chart.ts` applies the frame. Specs encode breaks and holes.
 
-**House look.** `--card` well, `--radius`, `--lift`, 1px `--rule` hairline. No coloured left bar, no corner logo, no magenta download pill. Title and subtitle in HTML `figcaption` (`.chart-title` = H2 scale, Serif; `.chart-subtitle` = byline scale, Sans). Plot field is `--card`, not cream.
+**House look.** `--card` ground, `--radius`, `--lift`, 1px `--rule` hairline. No coloured left bar, no corner logo, no magenta download pill. Title and subtitle live in HTML `figcaption` only (`.chart-title` = answer H2 scale, Serif; `.chart-subtitle` = byline scale, Sans). They are not Vega `title` / `subtitle`. `theme.ts` must not set `chart.titleSize` or `chart.subtitleSize` (those 14 / 11 values put title type in the SVG). Plot field is `--card`, not cream. SVG text (axis, bar labels) stays ≥ 12px.
 
 **Legibility floor.** Authored at one house `plotWidth`. SVG `width: 100%` scales type. Do not roll the 12px floor back to make a well look filled.
 
@@ -323,7 +344,7 @@ Caveats: same panel language; no warning-orange.
 | Status | Surface |
 |--------|---------|
 | `value` | Tabular Serif figure or mark |
-| `unknown` / not published | Em dash or "Not published", italic `--hole`, inherits its sentence's size and face; slot stays |
+| `unknown` / not published | Em dash or **not published** (`miss_copy` only), italic `--hole`, inherits its sentence's size and face; slot stays |
 | `series_break` | Break encoding + one prose line |
 | `not_comparable` | Not joined on the same line; named |
 | Two official numbers | Two stats or two encodings; no winner colour |
@@ -351,7 +372,7 @@ Not part of this return — named here so the next pass knows what changes.
 
 | Place | What changes |
 |-------|----------------|
-| `src/cms/src/lib/theme.ts` | Tokens (`--paper`, `--well`, `--radius`, `--radius-lg`, `--lift`, `--lift-answer`, `--mark-2` hex, type scale, `fitWidth` 974, `minScale` 1, `barStep` 26, bar corner radius), Vega house config. One source. |
+| `src/cms/src/lib/theme.ts` | Tokens (`--paper`, `--well`, `--radius`, `--radius-lg`, `--lift`, `--lift-answer`, `--mark-2` hex, type scale, `fitWidth` 974, `minScale` 1, `barStep` 26, bar corner radius), Vega house config. One source. Drop `chart.titleSize` / `chart.subtitleSize` (C5). |
 | `src/cms/public/fonts/` | Add IBM Plex Serif 400/500/600 + italic 400 (woff2, self-hosted, matching the existing Sans/Mono pattern). |
 | `src/cms/src/styles/desk.css` | Publisher layout; the answer-well join (adjacent-sibling selectors on `.fact-lede`, `.stat-row`, `.cite-strip`); Serif applied to H1/H2/`.stat-figure`/`.observation-value`. Inherit tokens; no hex. |
 | `src/cms/src/layouts/SiteShell.astro` | Apply the theme. No page-local palette. |
@@ -407,8 +428,11 @@ Measure at 360px and 1440px. Do not eyeball.
 
 - [ ] **Tokens.** One house, three grounds. `--radius` 12px on evidence, `--radius-lg` 20px on the answer well only. No hex in `desk.css`. No magenta / cream / Aeonik / costume.
 - [ ] **Two voices.** Serif on H1, H2, and every bound figure. Sans everywhere else, including all chart SVG text. No page runs one face throughout.
-- [ ] **One well.** Lede, stats, cite, first chart: `--desk`; widths match within 1px at 1440px. Hero children not capped at `--measure`.
-- [ ] **Method measure.** `.how-measured` prose at `--measure`. *Fails on:* a method paragraph over 90 characters per line at 1440px.
+- [ ] **One column.** Lede, stats, cite, first chart: `--desk`; widths match within 1px at 1440px. Hero children not capped at `--measure`. First chart on `--card`, not `--well`.
+- [ ] **Method quieter.** Answer H2 ≥ 1.4× method H2. Method never on `--well`. `.how-measured` prose at `--measure`, ≤ 68ch per line at 1440px.
+- [ ] **Compact units.** Axis ticks ≥ 12px, ≤ 9 characters, no truncation, no rotation at `fitWidth` 974; same `display_scale` on axis and stat row.
+- [ ] **Not published.** Gap copy is **not published** from `miss_copy` only; `--hole`; inherits sentence face.
+- [ ] **Chart titles.** HTML figcaption; no Vega title/subtitle; no `titleSize` / `subtitleSize` in `theme.ts`. SVG text ≥ 12px.
 - [ ] **The answer well.** `.fact-lede` + `.stat-row` + `.cite-strip` read as one band: shared `--well` ground, one `--radius-lg` exterior, `--lift-answer`, 4px `--mark` top rule, hairline joins, no visible gap between the three.
 - [ ] **Stat fit.** No `.stat-figure` wider than its cell at 360, 480, 768, 1024, or 1440px, in the shipped Serif.
 - [ ] **Chart legibility.** No SVG text under 12px effective (intrinsic × scale) at those widths.
@@ -434,6 +458,18 @@ Pipeline schema, citation *content*, chart *meaning*, voice and copy ([editorial
 
 ## Next
 
-Presentation pass **green** on preview `desk-20260916-6328e59eb0d1` (2026-09-21): home, C1 `/prices/retail-prices`, C2 `/people/population`, C3 `/money/union` at 360 and 1440; stat fit also at 480, 768, 1024. `fitWidth` 974, `minScale` 1, display clamp `1.25rem / 12cqi`. Do not move `data/pointers/citizen`.
+```text
+contract:            docs/design-system.md
+version:             v3.1
+tokens:              unchanged (no taste retune)
+primitives:          named: not-published; compact-unit fit; method quieter
+presentation_pass:   not this phase (C7 after C6 copy)
+next_persona:        content-editor
+phase:               D2 done; D3 is editorial cite surface
+```
 
-C1 is on the citizen pointer; C2 and C3 are preview-only. Charter owns publish. Trust next for cites, dates, holes, spin — not taste.
+v3 house is closed. v3.1 is rulings A, B, E, G plus method-quieter and figcaption titles. Do not redo archived Phase E. Do not re-specify 404. Do not move `data/pointers/citizen`.
+
+**Content Editor** (D3): cite surface and gap phrase in [editorial-guidelines.md](editorial-guidelines.md). Do not rewrite template copy (C6).
+
+**Front-end Architect / Charter Editor:** sign this pass. Home-rail forbid stays in [web-design.md](web-design.md).

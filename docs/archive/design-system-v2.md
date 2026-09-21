@@ -6,7 +6,7 @@ UI/UX Developer. Visual contract for citizen pages (**v2**). Persona: [ui-ux-dev
 
 Product role, answer-page shape, and newsroom forbids live in the editorial guidelines. Stack (Astro SSG, Vega-Lite) lives in [repo-conventions.md](../repo-conventions.md). Current work lives under [Next](#next).
 
-v1 (quiet desk): [design-system-v1.md](design-system-v1.md). Tone: [design-philosophy.md](../design-philosophy.md). Direction: [ui-ux-feedback.md](../next/ui-ux-feedback.md).
+v1 (quiet desk): [design-system-v1.md](design-system-v1.md). Tone: [design-philosophy.md](../design-philosophy.md). Direction: [ui-ux-feedback.md](ui-ux-feedback.md).
 
 ```text
 version:        v2
@@ -342,6 +342,6 @@ Pipeline schema, citation *content*, chart *meaning*, voice and copy ([editorial
 
 ## Next
 
-Preview at `localhost:4321` still carries the v1 layout until [ui-ux-change-plan.md](../next/ui-ux-change-plan.md) **Phase E** lands this file. Do not move `data/pointers/citizen`.
+Preview at `localhost:4321` still carries the v1 layout until [ui-ux-change-plan.md](ui-ux-change-plan.md) **Phase E** lands this file. Do not move `data/pointers/citizen`.
 
 C1 `/prices/retail-prices` is on the citizen pointer; C2 `/people/population` and C3 `/money/union` are preview-only. Charter owns publish.

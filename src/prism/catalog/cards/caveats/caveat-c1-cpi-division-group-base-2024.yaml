@@ -40,3 +40,6 @@ do_not: Do not label Division 01 as food. Do not use Item or Subclass sheets to 
   as this series. Do not chart Housing or Transport as petrol pump prices. Same geography,
   rank, forecast, Combined-merge, blank-as-zero, and 2012=100 do-nots as Card 1. Do
   not join these rows to Card 4.
+citizen_note: These are CPI Division and Group indexes on COICOP 2018, Base 2024=100, from
+  the same price collection as headline CPI. Food-only is Group 01.1 (CFPI). Division 01 is
+  Food and beverages.

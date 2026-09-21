@@ -223,3 +223,27 @@ series:
     parser_id: cga-finance-accounts-pdf
     mapper_id: wide-measure-columns/finance-accounts
     named_hole: false
+cite_blocks:
+  - block_id: annex1
+    citation_ids: [cite-c3-budget-2026-27-annex1-trends-receipts]
+  - block_id: tax
+    citation_ids: [cite-c3-budget-2026-27-tax-revenue]
+  - block_id: non-tax
+    citation_ids: [cite-c3-budget-2026-27-non-tax-revenue]
+  - block_id: capital
+    citation_ids: [cite-c3-budget-2026-27-capital-receipts]
+  - block_id: expenditure
+    citation_ids: [cite-c3-budget-2026-27-expenditure-stat1]
+  - block_id: deficit
+    citation_ids: [cite-c3-budget-2026-27-deficit-statistics]
+  - block_id: liabilities
+    citation_ids: [cite-c3-budget-2026-27-liabilities]
+  - block_id: frbm-hole
+    citation_ids: [cite-c3-budget-2026-27-frbm-statements]
+  - block_id: afs
+    citation_ids: [cite-c3-budget-2026-27-afs]
+  - block_id: cga-monthly
+    citation_ids: [cite-c3-cga-monthly-glance-2026-07]
+  - block_id: finance-accounts
+    citation_ids: [cite-c3-cga-finance-accounts-2024-25-stat1]
+

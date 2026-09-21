@@ -267,16 +267,6 @@ slots:
       unit: "thousands ('000); projected; 1st March"
       status: value
 
-  - slot_id: caveat-pca-lags
-    kind: caveat_field
-    caveat_id: caveat-c2-census-2011-pca-sd
-    field: lags
-
-  - slot_id: caveat-pca-population
-    kind: caveat_field
-    caveat_id: caveat-c2-census-2011-pca-sd
-    field: population
-
   - slot_id: chart-state-ut-total-2011
     kind: collection
     chart: state-ut-total-2011

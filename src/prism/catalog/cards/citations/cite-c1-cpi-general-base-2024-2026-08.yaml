@@ -17,6 +17,7 @@ licence: 'Not stated on the workbook or press PDF. MoSPI Copyrights Policy: repr
   accurately, not in a derogatory or misleading context, source acknowledged. GSDD
   2026 Category A (open access) lists Consumer Price Index (CPI). Not stated as CC-BY.'
 next_release: '2026-10-12'
-caveat_one_line: Latest month is Provisional; Combined is a published sector, not
-  a user merge. Chandigarh Rural is withheld (dash) in Annexure-III. Base-year break
-  vs 2012=100. Districts are not in this file.
+caveat_one_line: Latest month is Provisional. Combined is a published Rural, Urban
+  and Combined sector, not a merge of Rural and Urban. Chandigarh Rural is withheld
+  (printed as a dash). This 2024=100 series is not the old 2012=100 index. Districts
+  are not in this file.

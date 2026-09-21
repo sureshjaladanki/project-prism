@@ -63,6 +63,7 @@ def make_caveat(**overrides: object) -> CaveatNote:
         "lags": "August 2026 Provisional released 14 September 2026",
         "disagrees_with": "CPI Base 2012=100; WPI; Labour Bureau CPIs",
         "do_not": "Do not stitch 2012=100; do not chart blank inflation as zero",
+        "citizen_note": "CPI General is the headline retail price index, Base 2024=100.",
     }
     payload.update(overrides)
     return CaveatNote.model_validate(payload)

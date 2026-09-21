@@ -214,6 +214,98 @@ def test_blank_budget_cell_is_unknown_not_zero() -> None:
     assert blank[0].status is ObservationStatus.unknown
 
 
+def test_gst_compensation_cess_blank_is_unknown_not_zero() -> None:
+    observations = map_c3_table(
+        series_id=SERIES_BUDGET_2026_27_TAX_REVENUE,
+        rows=_rows(_csv_for(SERIES_BUDGET_2026_27_TAX_REVENUE)),
+        citation_id=C3_CITATIONS[SERIES_BUDGET_2026_27_TAX_REVENUE].citation_id,
+        caveat_id=C3_CAVEATS[SERIES_BUDGET_2026_27_TAX_REVENUE].caveat_id,
+        geography_code="government-of-india",
+        geography_vintage="2026",
+        code_system=CodeSystem.none,
+        lineage=_lineage(),
+    )
+    cess = [
+        item
+        for item in observations
+        if "gst-compensation-cess" in item.observation_id
+        and item.reference_period == "budget-2026-2027"
+    ]
+    assert len(cess) == 1
+    assert cess[0].value is None
+    assert cess[0].status is ObservationStatus.unknown
+    assert cess[0].unit == "₹ crore; GST Compensation Cess"
+
+
+def test_mapped_c3_observations_carry_unit() -> None:
+    observations = map_c3_table(
+        series_id=SERIES_BUDGET_2026_27_TAX_REVENUE,
+        rows=_rows(_csv_for(SERIES_BUDGET_2026_27_TAX_REVENUE)),
+        citation_id=C3_CITATIONS[SERIES_BUDGET_2026_27_TAX_REVENUE].citation_id,
+        caveat_id=C3_CAVEATS[SERIES_BUDGET_2026_27_TAX_REVENUE].caveat_id,
+        geography_code="government-of-india",
+        geography_vintage="2026",
+        code_system=CodeSystem.none,
+        lineage=_lineage(),
+    )
+    assert observations
+    assert all(item.unit for item in observations)
+    assert all(item.unit.startswith("₹ crore; ") for item in observations)
+
+
+def test_gst_compensation_cess_stored_zero_be_is_unknown_not_zero() -> None:
+    observations = map_c3_table(
+        series_id=SERIES_BUDGET_2026_27_TAX_REVENUE,
+        rows=[
+            {
+                "line_label": "8.03 GST Compensation Cess",
+                "actuals_2024_2025": "150569.84",
+                "budget_2025_2026": "167110.0",
+                "revised_2025_2026": "88000.0",
+                "budget_2026_2027": "0.0",
+            }
+        ],
+        citation_id=C3_CITATIONS[SERIES_BUDGET_2026_27_TAX_REVENUE].citation_id,
+        caveat_id=C3_CAVEATS[SERIES_BUDGET_2026_27_TAX_REVENUE].caveat_id,
+        geography_code="government-of-india",
+        geography_vintage="2026",
+        code_system=CodeSystem.none,
+        lineage=_lineage(),
+    )
+    by_period = {item.reference_period: item for item in observations}
+    hole = by_period["budget-2026-2027"]
+    assert hole.value is None
+    assert hole.status is ObservationStatus.unknown
+    published = by_period["revised-2025-2026"]
+    assert published.value == 88000.0
+    assert published.status is ObservationStatus.value
+
+
+def test_dotted_budget_token_is_unknown_not_zero() -> None:
+    observations = map_c3_table(
+        series_id=SERIES_BUDGET_2026_27_TAX_REVENUE,
+        rows=[
+            {
+                "line_label": "GST Compensation Cess",
+                "actuals_2024_2025": "1",
+                "budget_2025_2026": "2",
+                "revised_2025_2026": "3",
+                "budget_2026_2027": "...",
+            }
+        ],
+        citation_id=C3_CITATIONS[SERIES_BUDGET_2026_27_TAX_REVENUE].citation_id,
+        caveat_id=C3_CAVEATS[SERIES_BUDGET_2026_27_TAX_REVENUE].caveat_id,
+        geography_code="government-of-india",
+        geography_vintage="2026",
+        code_system=CodeSystem.none,
+        lineage=_lineage(),
+    )
+    be = [item for item in observations if item.reference_period == "budget-2026-2027"]
+    assert len(be) == 1
+    assert be[0].value is None
+    assert be[0].status is ObservationStatus.unknown
+
+
 def test_be_re_actuals_are_reference_periods_not_geography() -> None:
     observations = map_c3_table(
         series_id=SERIES_BUDGET_2026_27_TAX_REVENUE,

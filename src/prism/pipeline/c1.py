@@ -116,7 +116,7 @@ def _reference_period(year: str, month: str) -> str:
 
 
 def _number(text: str, *, label: str) -> float | None:
-    if text == "":
+    if text == "" or text.strip().lower() in {".", "..", "...", "…", "-", "n.a.", "na"}:
         return None
     try:
         return float(text)

@@ -12,8 +12,9 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_ROOT = REPO_ROOT / "data"
 CMS_ROOT = REPO_ROOT / "src" / "cms"
 C1_VINTAGE_ID = "dv-20260916-234e263c8588"
-C2_VINTAGE_ID = "dv-20260919-87b702f1fd66"
-C3_VINTAGE_ID = "dv-20260918-846e99d0ca57"
+C1_PREVIEW_VINTAGE_ID = "dv-20260921-6a5d23d42462"
+C2_VINTAGE_ID = "dv-20260921-617d0e9cf03f"
+C3_VINTAGE_ID = "dv-20260921-1fa96ad12e48"
 
 
 def test_preview_desk_binds_c1_c2_c3_each_on_its_vintage() -> None:
@@ -24,7 +25,7 @@ def test_preview_desk_binds_c1_c2_c3_each_on_its_vintage() -> None:
         "c2-people-of-india",
         "c3-union-money",
     }
-    assert by_id["c1-prices-people-pay"].vintage_id == C1_VINTAGE_ID
+    assert by_id["c1-prices-people-pay"].vintage_id == C1_PREVIEW_VINTAGE_ID
     assert by_id["c1-prices-people-pay"].path == "/prices/retail-prices"
     assert by_id["c2-people-of-india"].vintage_id == C2_VINTAGE_ID
     assert by_id["c2-people-of-india"].path == "/people/population"

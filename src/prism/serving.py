@@ -15,6 +15,7 @@ from prism.schema import (
     CaveatNote,
     Citation,
     Observation,
+    ObservationStatus,
     ServedObservation,
     SlotSelector,
 )
@@ -75,12 +76,16 @@ def bind_observation(
     return ServedObservation(observation=observation, citation=citation, caveat=caveat)
 
 
+GST_COMPENSATION_CESS = "GST Compensation Cess"
+
+
 def chart_payload(served: ServedObservation) -> dict[str, object]:
     observation = served.observation
+    published = observation.status is ObservationStatus.value
     return {
         "observation_id": observation.observation_id,
         "series_id": observation.series_id,
-        "value": observation.value,
+        "value": observation.value if published else None,
         "unit": observation.unit,
         "status": observation.status.value,
         "reference_period": observation.reference_period,
@@ -90,6 +95,19 @@ def chart_payload(served: ServedObservation) -> dict[str, object]:
         "caveat_id": served.caveat.caveat_id,
         "data_vintage_bound": True,
     }
+
+
+def assert_hole_never_plotted_as_zero(row: dict[str, object]) -> None:
+    """Fail a GST Compensation Cess (or any non-published) row plotted as 0."""
+
+    label = f"{row.get('head_name', '')} {row.get('unit', '')}"
+    cess = GST_COMPENSATION_CESS in label
+    published = row.get("status") == ObservationStatus.value.value
+    value = row.get("value")
+    if not published and value is not None:
+        raise ServeError("non-published chart value must be null")
+    if cess and value == 0:
+        raise ServeError("GST Compensation Cess hole plotted as zero")
 
 
 SLICE_INDEX_HTML = {

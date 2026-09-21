@@ -16,7 +16,8 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 DATA_ROOT = REPO_ROOT / "data"
 CMS_ROOT = REPO_ROOT / "src" / "cms"
 C1_VINTAGE_ID = "dv-20260916-234e263c8588"
-C3_VINTAGE_ID = "dv-20260918-846e99d0ca57"
+C3_VINTAGE_ID = "dv-20260921-1fa96ad12e48"
+C3_PREVIEW_RENDER_ID = "dv-20260918-846e99d0ca57"
 C3_SLICE_HTML = Path("money") / "union" / "index.html"
 
 
@@ -32,7 +33,10 @@ def test_bind_c3_page_is_one_vintage() -> None:
     assert page.vintage_id == C3_VINTAGE_ID
     ids = set(re.findall(r'data-vintage-id="([^"]+)"', page.body_html))
     assert ids == {C3_VINTAGE_ID}
-    assert "unknown / not a table" in page.body_html
+    assert "not published" in page.body_html
+    assert "unknown / not a table" not in page.body_html
+    assert "How to read this series" not in page.body_html
+    assert "<dt>Do not</dt>" not in page.body_html
     assert page.citizen_question.startswith("What does the Union collect")
 
 
@@ -50,7 +54,8 @@ def test_c3_preview_tree_has_union_slice_and_leaves_citizen() -> None:
         "<title>What does the Union collect, and what does it spend it on?</title>"
         in html
     )
-    assert "unknown / not a table" in html
+    assert "unknown / not a table" not in html
+    assert "not published" in html
     assert ">undefined<" not in html
     assert (
         dest / "money" / "union" / "charts" / "collect-beside-spend.vl.json"
@@ -59,4 +64,4 @@ def test_c3_preview_tree_has_union_slice_and_leaves_citizen() -> None:
     assert citizen is not None
     citizen_desk = load_desk(DATA_ROOT, citizen)
     assert all(item.template_id != "c3-union-money" for item in citizen_desk.slices)
-    assert (renders_dir(DATA_ROOT) / C3_VINTAGE_ID / C3_SLICE_HTML).exists()
+    assert (renders_dir(DATA_ROOT) / C3_PREVIEW_RENDER_ID / C3_SLICE_HTML).exists()

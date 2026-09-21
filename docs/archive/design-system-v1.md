@@ -339,4 +339,4 @@ Pipeline schema, citation *content*, chart *meaning*, voice and copy ([editorial
 
 The preview desk at `localhost:4321` carries the desk home, five hubs, and three bound slices: C1 `/prices/retail-prices`, C2 `/people/population`, C3 `/money/union`. C1 alone is on the citizen pointer; C2 and C3 are preview-only and Charter owns publish.
 
-Preview at `localhost:4321` now implements [ui-ux-change-plan.md](../next/ui-ux-change-plan.md) Phases A–D. Do not move `data/pointers/citizen`.
+Preview at `localhost:4321` now implements [ui-ux-change-plan.md](ui-ux-change-plan.md) Phases A–D. Do not move `data/pointers/citizen`.

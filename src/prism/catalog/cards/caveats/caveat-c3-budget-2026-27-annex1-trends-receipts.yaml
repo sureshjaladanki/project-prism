@@ -18,3 +18,6 @@ disagrees_with: Card 1 (gross tax heads). Card 6 BAG Deficit Statistics. Card 11
   2024-25.
 do_not: Do not hide PDF reconstruction. Do not guess an ambiguous amount into a year
   column. Do not name years the file does not contain. Do not chart RE/BE as Actuals.
+citizen_note: Receipt Budget Annex-1 is a multi-year Union receipts table as printed, including
+  lines the producer prints for deficit. Reconstruction of the PDF is not a later release.
+  Budget Estimates and Revised Estimates are not Actuals.

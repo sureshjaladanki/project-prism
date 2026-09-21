@@ -16,3 +16,5 @@ lags: 2024 rates released May 2026. next_release unknown.
 disagrees_with: Cards 1–2 census stock. Card 4 (TFR; narrower geography). Card 5 projections.
 do_not: Do not add Card 1 population to these rates to invent a 2024 headcount. Do
   not use this card for TFR. Do not drop the Manipur* footnote. Do not rank.
+citizen_note: The SRS 2024 bulletin publishes sample-based birth, death, natural growth, and
+  infant mortality rates. They are rates, not a headcount and not a stock of people.

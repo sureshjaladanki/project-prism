@@ -17,6 +17,6 @@ licence: 'Not stated on the workbook or press PDF. MoSPI Copyrights Policy: repr
   accurately, not in a derogatory or misleading context, source acknowledged. GSDD
   2026 Category A (open access) lists Consumer Price Index (CPI). Not stated as CC-BY.'
 next_release: '2026-10-12'
-caveat_one_line: CFPI is not the same as Division Food and beverages (01), which also
-  includes beverages and food-processing services. Use Group Food 01.1 / the press
-  CFPI table for the named food index. Latest month Provisional.
+caveat_one_line: CFPI is the named food index (Group Food 01.1 / the press CFPI table),
+  not Division 01 Food and beverages, which also includes beverages and food-processing
+  services. Latest month is Provisional.
