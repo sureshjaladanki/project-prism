@@ -387,7 +387,7 @@ Shared HTML includes `<title>`, description, `og:title`, `og:description`, `og:t
 - `lang="en"` until a template ships another language ([design-system.md](design-system.md)).
 - No `og:image` until a named render of a bound chart PNG exists. Do not invent a marketing card.
 - Visited links stay `--mark` (this is a record, not lore).
-- Do not put `vintage_id` in `<title>`, description, or OG. Data vintage stays on the collapsed citation card.
+- Do not put `vintage_id` in `<title>`, description, or OG. Data vintage stays on `data-vintage-id`, not as a citizen label.
 - `article:published_time` is out (not a newsroom). Byline already shows release date (`Asia/Kolkata`) and next named release.
 
 **Robots meta vs headers.** The two prefixes differ at **serve**:

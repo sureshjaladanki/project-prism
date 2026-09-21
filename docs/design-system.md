@@ -311,10 +311,10 @@ Checkability is proximity, not a field dump.
 - Producer within the first **600px** of `main` at 1440×900.
 - `<details class="citation-card source-byline cite-strip">` closes [the answer well](#the-answer-well), after the stat chips and **before** the first chart, same `--desk` width.
 - Summary: producer `--ink`, then `series · reference period · released {date}` `--muted`. All four, every slice. Missing field fails the render.
-- Open: producer, series, reference period, release date (Asia/Kolkata), geography vintage, data vintage, caveat. Same cite as the bottom `.source-stack`, earlier.
+- Open: producer (linked to the citation `url`), series as the producer names it, reference period, release date (Asia/Kolkata), one caveat. Same citizen fields as the bottom `.source-stack`, earlier. `geography_vintage` and `vintage_id` stay on the observation and on `data-vintage-id` — they are not citizen labels.
 - Optional `.analysis-byline` after the producer, never instead.
 
-Collapsed `<details>` is the default. Empty chrome while the number shows fails the render. No fly-out that leaves the view (R7).
+Collapsed `<details>` is the default. Empty chrome while the number shows fails the render. No fly-out that leaves the view (R7). An in-text cite is a `<button class="in-text-cite">` that opens a native `popover` mirroring that on-page card; the card stays on the page. Do not add `/cite` or a per-slice `/sources`.
 
 Caveats: same panel language; no warning-orange.
 
@@ -343,7 +343,7 @@ WCAG 2.2 AA, against the [colour table](#colour).
 
 ## Interaction
 
-Static pages. Allowed: `<details>`, hash links, chart scroll when the well is narrower than `fitWidth`, Vega hover and download from **already-bound** specs. Forbidden: request-time fetch, engagement SDK, A/B, heatmap, live filter that loads another vintage, "get notified." Geography routes or a client filter over **this** vintage are later named work — not their metro picker.
+Static pages. Allowed: `<details>`, hash links, native `popover` (in-text cite mirroring the on-page card), chart scroll when the well is narrower than `fitWidth`, Vega hover and download from **already-bound** specs. Forbidden: request-time fetch, engagement SDK, A/B, heatmap, live filter that loads another vintage, "get notified." Geography routes or a client filter over **this** vintage are later named work — not their metro picker.
 
 ## Implementation
 

@@ -2,7 +2,7 @@
 
 Persona: Geography Steward. Slice: **C2** (How many people live in India, where, and how is that changing?).
 
-Input locked: `docs/next/c2-citation-cards.md`. Charter geography: national (keep the producer’s **India** / **INDIA** label); in: national, states, UTs as published; districts parked even if Census publishes them.
+Input locked: `docs/archive/c2-citation-cards.md`. Charter geography: national (keep the producer’s **India** / **INDIA** label); in: national, states, UTs as published; districts parked even if Census publishes them.
 
 Store a row on **the producer’s code + name as printed on that artifact**. Do not match on spelling alone (ODISHA not Orissa; PUDUCHERRY not Pondicherry; NCT OF DELHI / NCT of Delhi / NCT OF Delhi are three printed strings, not one unit to merge). Do not join a 2011 row to a 2024 row because the English looks similar.
 

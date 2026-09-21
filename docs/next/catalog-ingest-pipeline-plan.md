@@ -2,7 +2,7 @@
 
 Persona: Platform Architect. Product and serving: [architectural-blueprint.md](../architectural-blueprint.md). Schema: [data-contracts.md](../data-contracts.md). Batch stages: [data-pipeline.md](../data-pipeline.md). Layout and tooling: [repo-conventions.md](../repo-conventions.md).
 
-This is an execution plan, not an implementation. Nothing here changes a definition, a route, a slug, or a line of citizen copy. Slice identity stays exactly as locked in [c1-refresh-contract.md](c1-refresh-contract.md), [c2-refresh-contract.md](c2-refresh-contract.md), and [c3-refresh-contract.md](c3-refresh-contract.md).
+This is an execution plan, not an implementation. Nothing here changes a definition, a route, a slug, or a line of citizen copy. Slice identity stays exactly as locked in [c1-refresh-contract.md](../archive/c1-refresh-contract.md), [c2-refresh-contract.md](../archive/c2-refresh-contract.md), and [c3-refresh-contract.md](../archive/c3-refresh-contract.md).
 
 ---
 
@@ -28,7 +28,7 @@ Rejected: nothing in the parent hypothesis. The hypothesis is right about where 
 
 ### CC-1 — the citizen pointer cannot hold more than one slice (blocking)
 
-`data/pointers/citizen` holds one `vintage_id`. `bind_pages_for_desk` keeps a page in citizen mode only when its `bound_vintage_id` equals that pointer. A C3 vintage lists eleven series and no C1 series ([c3-refresh-contract.md](c3-refresh-contract.md): "Do not require C1 or C2 series in a C3 vintage"), so publishing C2 or C3 as citizen unpublishes C1. That is exactly the block [c2-charter-verdict.md](c2-charter-verdict.md) put on Platform.
+`data/pointers/citizen` holds one `vintage_id`. `bind_pages_for_desk` keeps a page in citizen mode only when its `bound_vintage_id` equals that pointer. A C3 vintage lists eleven series and no C1 series ([c3-refresh-contract.md](../archive/c3-refresh-contract.md): "Do not require C1 or C2 series in a C3 vintage"), so publishing C2 or C3 as citizen unpublishes C1. That is exactly the block [c2-charter-verdict.md](../archive/c2-charter-verdict.md) put on Platform.
 
 The code already half-admits it: `render(data_root, vintage_id, cms_root)` binds the **whole desk** but writes the tree to `data/renders/{vintage_id}/`. The tree key is a desk id wearing one slice's vintage id.
 
@@ -65,7 +65,7 @@ A slice runner that forgets the keyword is checked against C1's required series.
 
 ### Follow-up note required
 
-CC-1 and CC-2 change locked text. Do **not** edit the three architecture files ahead of the work. When Track B phase B1 lands, Platform writes `docs/next/published-desk-contract.md` and amends, in one pass, exactly these lines:
+CC-1 and CC-2 change locked text. Do **not** edit the three architecture files ahead of the work. When Track B phase B1 lands, Platform writes `docs/archive/published-desk-contract.md` and amends, in one pass, exactly these lines:
 
 - `architectural-blueprint.md` — Stores table (Render, Pointer rows), "Citizen request" view, Refresh contract block, test 4.
 - `data-contracts.md` — Pointers block (`citizen_pointer` / `preview_pointer` name a desk id), Template block (state that binding is not a template field).
@@ -292,7 +292,7 @@ Every phase, without exception: blueprint tests 1–9 (`tests/test_blueprint_con
 
 - [ ] Build the desk, render it, run the nine tests, flip last.
 - [ ] Citizen home, hubs, and hottest rail list exactly the desk's slices.
-- [ ] Test: a desk that adds C2 does not drop C1 — the block from [c2-charter-verdict.md](c2-charter-verdict.md), encoded.
+- [ ] Test: a desk that adds C2 does not drop C1 — the block from [c2-charter-verdict.md](../archive/c2-charter-verdict.md), encoded.
 
 **Out of scope.** Deciding *whether* C2 or C3 ships. That is Charter Editor after Trust Auditor. Platform only makes it possible.
 

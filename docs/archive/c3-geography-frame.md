@@ -2,7 +2,7 @@
 
 Persona: Geography Steward. Slice: **C3** (What does the Union collect, and what does it spend it on?).
 
-Input locked: `docs/next/c3-citation-cards.md`. Charter geography: **Union-only until C5**. Keep the producer’s printed label (`Government of India` / `Central Government` / `Union Government` / `Union budget heads`). Do not treat a Union total as the country’s public money.
+Input locked: `docs/archive/c3-citation-cards.md`. Charter geography: **Union-only until C5**. Keep the producer’s printed label (`Government of India` / `Central Government` / `Union Government` / `Union budget heads`). Do not treat a Union total as the country’s public money.
 
 Store a row on **the producer’s geography string as printed on that artifact**. Do not merge `Government of India`, `Central Government`, and `Union Government` because the English looks similar. Do not match on spelling alone.
 

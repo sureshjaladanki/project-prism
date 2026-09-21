@@ -2,7 +2,7 @@
 
 Persona: Geography Steward. Slice: **C1** (How fast are retail prices rising in India, including food?). Series of record: MoSPI NSO CPI Base 2024=100.
 
-Input locked: `docs/next/c1-citation-cards.md`. Charter geography: national (keep **All India** as printed); in: national, states, UTs as published; districts parked. Two maps: Cards 1–3 publish All India plus States/UTs; Card 4 publishes All India only.
+Input locked: `docs/archive/c1-citation-cards.md`. Charter geography: national (keep **All India** as printed); in: national, states, UTs as published; districts parked. Two maps: Cards 1–3 publish All India plus States/UTs; Card 4 publishes All India only.
 
 Store a row on **producer `State Code` + `State Name` as printed**. Do not match on spelling alone (Odisha not Orissa; Puducherry not Pondicherry; NCT of Delhi not Delhi; Jammu And Kashmir not undivided Jammu & Kashmir).
 

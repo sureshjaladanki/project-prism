@@ -275,7 +275,7 @@ Fetch host is the producing office (CGA). CAG was searched as a **host** of the 
 
 ## Geography Steward
 
-**Required: no re-run.** The eleven series and printed Union labels are unchanged versus `docs/next/c3-geography-frame.md`. Cards 1, 2, 3, 5, and 6 now fetch producing-office xlsx of the **same** Budget 2026-27 statements; Cards 4, 7, 8, 9 remain the same PDFs; Card 10 remains `DATA2627.htm`; Card 11 remains `Fin20242025Statement1.pdf`. No new printed names. Union-only frame unchanged.
+**Required: no re-run.** The eleven series and printed Union labels are unchanged versus `docs/archive/c3-geography-frame.md`. Cards 1, 2, 3, 5, and 6 now fetch producing-office xlsx of the **same** Budget 2026-27 statements; Cards 4, 7, 8, 9 remain the same PDFs; Card 10 remains `DATA2627.htm`; Card 11 remains `Fin20242025Statement1.pdf`. No new printed names. Union-only frame unchanged.
 
 **Missing / parked (name them):** all States; all Union Territories as own governments (including NCT of Delhi and Puducherry with legislatures, and UTs without legislature as separate finance accounts); all districts and below.
 
@@ -285,7 +285,7 @@ Do not recode labels here. Do not ingest Annex 4 state-wise rows or BAG transfer
 
 ## Handoff
 
-Next persona: **ingest-engineer**. Do not fetch in this librarian pass. `geography_frame` already exists (`docs/next/c3-geography-frame.md`); no Geography Steward re-run. Do not unblock C2. Do not start C4–C20. Do not move `citizen_pointer`.
+Next persona: **ingest-engineer**. Do not fetch in this librarian pass. `geography_frame` already exists (`docs/archive/c3-geography-frame.md`); no Geography Steward re-run. Do not unblock C2. Do not start C4–C20. Do not move `citizen_pointer`.
 
 Ingest fetches the **named card URLs** (xlsx for Cards 1, 2, 3, 5, 6; PDF/HTML for the rest). Current `parse_c3.py` still stops on PDF/HTML; xlsx parse is Ingest’s job. Do not write Budget/CGA files into `data/` in this librarian job. Do not fetch 404 paths (`frbm2.pdf`, `bag*.xls`, `annex1.xlsx`, `annex91.xlsx`, `DATA2627.xlsx`, `Fin20242025Statement1.xlsx`). Do not fetch `allafs.xlsx` for 2026-27. Do not pull state Finance Accounts, district files, Economic Survey prose, or RBI as a stand-in.
 

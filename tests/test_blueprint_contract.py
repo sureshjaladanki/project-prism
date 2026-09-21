@@ -334,9 +334,8 @@ def test_any_cite_view_omitting_cards_fails_closed() -> None:
         assert_cite_views_complete(zero_cards)
 
 
-@pytest.mark.cms_render
 def test_cite_in_same_view_as_the_number() -> None:
-    html = _c1_slice_html()
+    html = bind_c1_page(DATA_ROOT, C1_VINTAGE_ID, CMS_ROOT).body_html
     assert_cite_views_complete(html)
     first = _named_cite_view(html, "first-screen")
     assert re.search(r'class="observation-value">[^<]+<', first)
@@ -344,10 +343,15 @@ def test_cite_in_same_view_as_the_number() -> None:
     assert "Consumer Price Index (CPI) General" in first
     assert "2026-08" in first or "August 2026" in first
     assert "14 September 2026" in first
-    assert "Geography vintage" in first
-    assert "2024" in first
-    assert "Data vintage" in first
-    assert C1_VINTAGE_ID in first
+    assert "<dt>Geography vintage</dt>" not in first
+    assert "<dt>Data vintage</dt>" not in first
+    assert f'data-vintage-id="{C1_VINTAGE_ID}"' in first
+    assert re.search(
+        r'<dt>Producer</dt><dd><a href="https?://[^"]+">[^<]*National Statistics Office',
+        first,
+    )
+    assert 'class="in-text-cite"' in first
+    assert 'class="cite-panel" popover' in first
     assert "Caveat" in first
     assert "tooltip" not in first.lower() or "National Statistics Office" in first
     assert 'data-slot-id="all-india-combined-general-inflation-latest-f"' in first
@@ -415,7 +419,7 @@ def test_division_axis_uses_full_annex_names() -> None:
 
 def _july_final_cards(html: str) -> list[str]:
     cards = re.findall(
-        r'<details class="citation-card[^"]*">(.*?)</details>', html, flags=re.DOTALL
+        r'<details class="citation-card[^"]*"[^>]*>(.*?)</details>', html, flags=re.DOTALL
     )
     return [
         card for card in cards if "<dt>Reference period</dt><dd>2026-07</dd>" in card

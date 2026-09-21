@@ -8,7 +8,7 @@ slots: ./slots.yaml
 ---
 
 {{hero}}
-<!-- cite-view: first-screen. CMS must show producer, series, reference period, release date (Asia/Kolkata), geography vintage, data vintage, and caveat in this same view as the numbers. A tooltip is not enough. Fail the render if any required card is missing. Do not move citizen_pointer. -->
+<!-- cite-view: first-screen. CMS must show producer (linked), series, reference period, release date (Asia/Kolkata), and caveat in this same view as the numbers. A tooltip is not enough. Fail the render if any required card is missing. Do not move citizen_pointer. -->
 
 <p class="sleeve">People</p>
 

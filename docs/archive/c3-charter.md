@@ -1,8 +1,8 @@
 # C3 charter
 
-Charter Editor. Wave 1 slice **C3**. C1 ship is a separate track ([c1-charter-verdict.md](../archive/c1-charter-verdict.md)). C2 product stop remains ingest ([c2-refresh-contract.md](c2-refresh-contract.md)); this note does not unblock C2 and does not ship C3.
+Charter Editor. Wave 1 slice **C3**. C1 ship is a separate track ([c1-charter-verdict.md](c1-charter-verdict.md)). C2 product stop remains ingest ([c2-refresh-contract.md](c2-refresh-contract.md)); this note does not unblock C2 and does not ship C3.
 
-Catalogue: [topic-charters.md](topic-charters.md). Cards: [c3-citation-cards.md](c3-citation-cards.md). Method: [c3-method-notes.md](c3-method-notes.md).
+Catalogue: [topic-charters.md](../next/topic-charters.md). Cards: [c3-citation-cards.md](c3-citation-cards.md). Method: [c3-method-notes.md](c3-method-notes.md).
 
 ```text
 slice:          What does the Union collect, and what does it spend it on?
@@ -19,7 +19,7 @@ block_reason:   none. Do not treat this as a ship of C3. Do not pull district fi
 
 The citizen question is still answerable without reconstructing Card 8 as a grid. Do not shrink the eleven series: Card 8 stays on the catalogue and on the page as unknown / not a table. Do not drop reconstructable cards (xlsx or unambiguous PDF/HTML) to go faster.
 
-House rule (also in [topic-charters.md](topic-charters.md)): if a named card cannot be extracted as spreadsheet cells and cannot be reconstructed from PDF or HTML without guessing, that card does **not** block the story-shaped explainer when the remaining lineage-ok cards still answer the H1. The hole stays visible. Reconstructable cards are not skipped.
+House rule (also in [topic-charters.md](../next/topic-charters.md)): if a named card cannot be extracted as spreadsheet cells and cannot be reconstructed from PDF or HTML without guessing, that card does **not** block the story-shaped explainer when the remaining lineage-ok cards still answer the H1. The hole stays visible. Reconstructable cards are not skipped.
 
 On C3 that means:
 
@@ -40,7 +40,7 @@ This is not a ship. Platform must let a C3 vintage proceed when Card 8 is a name
 
 ## How this page gets its numbers
 
-House rule ([topic-charters.md](topic-charters.md), [vision.md](../vision.md)):
+House rule ([topic-charters.md](../next/topic-charters.md), [vision.md](../vision.md)):
 
 1. **Identify the data requirement** — Union receipts (tax, non-tax, borrowings), expenditure by the budget’s own heads, deficit and debt as the producer defines them, a run of years; Union-only; states/UTs/districts missing.
 2. **Identify the producing office** — Ministry of Finance, Budget Division (Union Budget); Controller General of Accounts (monthly accounts and Union Finance Accounts). Name it even when the file is fetched elsewhere.

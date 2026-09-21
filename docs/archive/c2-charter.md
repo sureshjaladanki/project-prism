@@ -1,8 +1,8 @@
 # C2 charter
 
-Charter Editor. Opens Wave 1 slice **C2** for first crew. C1 in/out/source_class unchanged. C1 ship is a separate track ([c1-charter-verdict.md](../archive/c1-charter-verdict.md)). This note does not unpublish C1 and does not ship C2.
+Charter Editor. Opens Wave 1 slice **C2** for first crew. C1 in/out/source_class unchanged. C1 ship is a separate track ([c1-charter-verdict.md](c1-charter-verdict.md)). This note does not unpublish C1 and does not ship C2.
 
-Catalogue: [topic-charters.md](topic-charters.md). C1 cards (the gate): [c1-citation-cards.md](c1-citation-cards.md).
+Catalogue: [topic-charters.md](../next/topic-charters.md). C1 cards (the gate): [c1-citation-cards.md](c1-citation-cards.md).
 
 ```text
 slice:          How many people live in India, where, and how is that changing?
@@ -25,7 +25,7 @@ Census, SRS, and any official projection are three records. The page shows each 
 
 ## How this page gets its numbers
 
-House rule ([topic-charters.md](topic-charters.md), [vision.md](../vision.md)):
+House rule ([topic-charters.md](../next/topic-charters.md), [vision.md](../vision.md)):
 
 1. **Identify the data requirement** — headcount, change over time, births/deaths/IMR/fertility, official projection; national and state/UT; districts parked.
 2. **Identify the producing office** — ORGI (Census, SRS); NCP / MoHFW (Technical Group projections). Name it even when the file is fetched elsewhere.

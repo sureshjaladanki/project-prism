@@ -166,7 +166,7 @@ Related `data.gov.in` file (not this card): [Projected population characteristic
 
 ## Geography Steward
 
-**Required: no re-run.** The five fetch files and printed State/UT labels are unchanged versus `docs/next/c2-geography-frame.md` (same NADA xlsx / xls / PDFs and the same NHM projection PDF). No new printed names.
+**Required: no re-run.** The five fetch files and printed State/UT labels are unchanged versus `docs/archive/c2-geography-frame.md` (same NADA xlsx / xls / PDFs and the same NHM projection PDF). No new printed names.
 
 Frames already on that note still apply: Card 1 PCA 2011 labels (no Telangana / Ladakh STATE rows; DISTRICT parked); Card 3 Table 1 includes Telangana, Ladakh, and merged DNH&DD; Card 4 bigger States/UTs only; Card 5 Table 8 has Jammu & Kashmir*(UT) and Telangana. Crosswalk between frames: none. Do not recode here.
 
@@ -176,7 +176,7 @@ Frames already on that note still apply: Card 1 PCA 2011 labels (no Telangana / 
 
 ## Handoff
 
-Next persona: **ingest-engineer**. Do not fetch in this librarian pass. `geography_frame` already exists (`docs/next/c2-geography-frame.md`); no Geography Steward re-run.
+Next persona: **ingest-engineer**. Do not fetch in this librarian pass. `geography_frame` already exists (`docs/archive/c2-geography-frame.md`); no Geography Steward re-run.
 
 Ingest fetches the named files on the cards (same five URLs). Keep Card 1 rows at India and STATE only. Card 2 remains OLE `.xls` until a parser exists — do not substitute the companion PDF. Cards 3–5 remain PDF (not cell-mapped). Do not pull A-01, district PCA, NPR, or electoral rolls. Do not write Census/SRS files into the git tree until that ingest job. Cards 1, 3, 4, and 5 remain three families: census stock, SRS rates, projections.
 

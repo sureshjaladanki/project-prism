@@ -134,9 +134,8 @@ REQUIRED_CARD_MARKERS: tuple[tuple[str, str], ...] = (
     ("series", "<dt>Series</dt>"),
     ("reference period", "<dt>Reference period</dt>"),
     ("release date", "<dt>Release date</dt>"),
-    ("geography vintage", "<dt>Geography vintage</dt>"),
-    ("data vintage", "<dt>Data vintage</dt>"),
     ("caveat", "<dt>Caveat</dt>"),
+    ("data vintage", "data-vintage-id="),
 )
 
 
@@ -434,7 +433,7 @@ def iter_cite_views(html_text: str) -> tuple[tuple[str | None, str], ...]:
 
 
 def assert_cite_views_complete(html_text: str) -> None:
-    """Fail closed: a bound number in any cite-view needs producer, series, date, geography vintage, and caveat in that same view."""
+    """Fail closed: a bound number needs producer, series, date, and caveat in that same view."""
 
     for name, section_html in iter_cite_views(html_text):
         if BOUND_NUMBER_RE.search(section_html) is None:
@@ -950,8 +949,8 @@ def _expand_copy(
         lambda match: _period_field(spec, match.group(1), match.group(2)), text
     )
     text = CITE_FIELD_RE.sub(
-        lambda match: html.escape(
-            _cite_field(_citation_by_id(cards, match.group(1)), match.group(2))
+        lambda match: _in_text_cite_html(
+            _citation_by_id(cards, match.group(1)), match.group(2)
         ),
         text,
     )
@@ -964,8 +963,11 @@ def _expand_copy(
     text = SLOT_RE.sub(
         lambda match: _slot_html(match.group(1), bound_slots, vintage_id), text
     )
+    emitted_panels: set[str] = set()
     text = CITE_BLOCK_RE.sub(
-        lambda match: _cite_block_html(match.group(1), cards, vintage_id, bound_slots),
+        lambda match: _cite_block_html(
+            match.group(1), cards, vintage_id, bound_slots, emitted_panels
+        ),
         text,
     )
     text = CAVEAT_BLOCK_RE.sub(
@@ -992,6 +994,51 @@ def _cite_field(citation: Citation, field: str) -> str:
     except AttributeError as exc:
         raise RenderError(f"unknown citation field {field}") from exc
     return _format_date_field(value)
+
+
+def _cite_panel_id(citation_id: str) -> str:
+    return f"cite-panel-{citation_id}"
+
+
+def _in_text_cite_html(citation: Citation, field: str) -> str:
+    value = html.escape(_cite_field(citation, field))
+    panel_id = html.escape(_cite_panel_id(citation.citation_id), quote=True)
+    return (
+        f'<button type="button" class="in-text-cite" popovertarget="{panel_id}">'
+        f"{value}</button>"
+    )
+
+
+def _producer_anchor(citation: Citation) -> str:
+    return (
+        f'<a href="{html.escape(citation.url, quote=True)}">'
+        f"{html.escape(citation.producer)}</a>"
+    )
+
+
+def _citizen_citation_dl(
+    citation: Citation, period: str, release: str, caveat: str
+) -> str:
+    return (
+        "<dl>"
+        f"<dt>Producer</dt><dd>{_producer_anchor(citation)}</dd>"
+        f"<dt>Series</dt><dd>{html.escape(citation.series)}</dd>"
+        f"<dt>Reference period</dt><dd>{html.escape(period)}</dd>"
+        f"<dt>Release date</dt><dd>{html.escape(release)} (Asia/Kolkata)</dd>"
+        f"<dt>Caveat</dt><dd>{html.escape(caveat)}</dd>"
+        "</dl>"
+    )
+
+
+def _cite_panel_html(
+    citation: Citation, period: str, release: str, caveat: str
+) -> str:
+    panel_id = html.escape(_cite_panel_id(citation.citation_id), quote=True)
+    return (
+        f'<div id="{panel_id}" class="cite-panel" popover>'
+        f"{_citizen_citation_dl(citation, period, release, caveat)}"
+        "</div>"
+    )
 
 
 def _format_date_field(value: object) -> str:
@@ -1099,7 +1146,7 @@ def _inject_cite_strip(html_text: str) -> str:
     if "cite-strip" in html_text:
         return html_text
     card = re.search(
-        r'<details class="citation-card source-byline">.*?</details>',
+        r'<details class="citation-card source-byline"[^>]*>.*?</details>',
         html_text,
         flags=re.DOTALL,
     )
@@ -1151,8 +1198,13 @@ def _cite_strip_from_card(card_html: str) -> str:
     dl = re.search(r"<dl>.*?</dl>", card_html, flags=re.DOTALL)
     if dl is None:
         raise RenderError("cite strip missing a citation card")
+    vintage_attr = ""
+    vintage = re.search(r'data-vintage-id="([^"]+)"', card_html)
+    if vintage is not None:
+        vintage_attr = f' data-vintage-id="{html.escape(vintage.group(1), quote=True)}"'
     return (
-        '<details class="citation-card source-byline cite-strip">'
+        '<details class="citation-card source-byline cite-strip"'
+        f"{vintage_attr}>"
         f'<summary><span class="cite-producer">{producer}</span>'
         f'<span class="cite-rest"> · {rest}</span></summary>'
         f"{dl.group(0)}</details>"
@@ -1183,6 +1235,7 @@ def _cite_block_html(
     cards: dict[str, tuple[Citation, CaveatNote, GeographyVintage]],
     vintage_id: str,
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
+    emitted_panels: set[str],
 ) -> str:
     try:
         block = CITE_BLOCKS[block_id]
@@ -1197,6 +1250,7 @@ def _cite_block_html(
             _citation_by_id(cards, citation_id),
             cards,
             vintage_id,
+            emitted_panels,
             reference_period=reference_period,
             caveat_one_line=caveat_one_line,
         )
@@ -1240,6 +1294,7 @@ def _citation_card_html(
     citation: Citation,
     cards: dict[str, tuple[Citation, CaveatNote, GeographyVintage]],
     vintage_id: str,
+    emitted_panels: set[str],
     *,
     reference_period: str | None = None,
     caveat_one_line: str | None = None,
@@ -1255,20 +1310,19 @@ def _citation_card_html(
     caveat = citation.caveat_one_line if caveat_one_line is None else caveat_one_line
     release = _format_date_field(citation.release_date)
     summary = f"{citation.series} · {period} · released {release}"
-    return (
-        '<details class="citation-card source-byline">'
+    cite_id = html.escape(citation.citation_id, quote=True)
+    vintage = html.escape(vintage_id, quote=True)
+    card = (
+        f'<details class="citation-card source-byline" id="cite-{cite_id}" '
+        f'data-citation-id="{cite_id}" data-vintage-id="{vintage}">'
         f"<summary>{html.escape(summary)}</summary>"
-        "<dl>"
-        f"<dt>Producer</dt><dd>{html.escape(citation.producer)}</dd>"
-        f"<dt>Series</dt><dd>{html.escape(citation.series)}</dd>"
-        f"<dt>Reference period</dt><dd>{html.escape(period)}</dd>"
-        f"<dt>Release date</dt><dd>{html.escape(release)} (Asia/Kolkata)</dd>"
-        f"<dt>Geography vintage</dt><dd>{html.escape(geography_vintage)}</dd>"
-        f"<dt>Data vintage</dt><dd>{html.escape(vintage_id)}</dd>"
-        f"<dt>Caveat</dt><dd>{html.escape(caveat)}</dd>"
-        "</dl>"
+        f"{_citizen_citation_dl(citation, period, release, caveat)}"
         "</details>"
     )
+    if citation.citation_id in emitted_panels:
+        return card
+    emitted_panels.add(citation.citation_id)
+    return card + _cite_panel_html(citation, period, release, caveat)
 
 
 def _caveat_block_html(caveat: CaveatNote, vintage_id: str) -> str:

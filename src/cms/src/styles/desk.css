@@ -486,9 +486,29 @@ code {
   color: var(--muted);
 }
 
-.cite-strip[open],
-.cite-strip[open] summary {
+.in-text-cite {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--mark);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cite-panel {
+  background: var(--card);
   color: var(--ink);
+  border: var(--hair) solid var(--rule);
+  border-radius: var(--radius);
+  box-shadow: var(--lift);
+  padding: var(--space-5);
+  max-width: min(40rem, calc(100% - 2 * var(--space-6)));
+}
+
+.cite-panel::backdrop {
+  background: rgb(28 26 23 / 0.24);
 }
 
 .preview-banner {

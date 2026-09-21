@@ -98,7 +98,7 @@ Why: highest kitchen-table search that official statistics can answer; journalis
 slice:          How many people live in India, where, and how is that changing?
 in:             Census population at national and state/UT; Sample Registration System births, deaths, infant mortality, fertility; any official projection the librarian confirms — each shown as itself
 out:            treating 2011 as current without saying so; a single “India has X people” that hides the lag; NPR / citizenship registers; caste politics; district tables (parked even if Census publishes them)
-source_class:   allow — requirement → producing office → official government fetch (producer first, any government office that can source the dependency) → cite on the page ([c2-charter.md](c2-charter.md); [charter-editor.md](../personas/charter-editor.md))
+source_class:   allow — requirement → producing office → official government fetch (producer first, any government office that can source the dependency) → cite on the page ([c2-charter.md](../archive/c2-charter.md); [charter-editor.md](../personas/charter-editor.md))
 next_persona:   source-librarian
 ```
 
@@ -118,7 +118,7 @@ next_persona:   source-librarian
 
 Why: vision “collects and spends”; journalists and public life expect it; this is the USAFacts *role* analogue, not a copy of US missions.
 
-This slice is Union-only until C5. The page must say states, UTs, and districts are missing (districts stay missing for this iteration). Card 8 (FRBM statutory packet) is a named hole, not a block of the collect/spend explainer ([c3-charter.md](c3-charter.md)).
+This slice is Union-only until C5. The page must say states, UTs, and districts are missing (districts stay missing for this iteration). Card 8 (FRBM statutory packet) is a named hole, not a block of the collect/spend explainer ([c3-charter.md](../archive/c3-charter.md)).
 
 ---
 
@@ -229,8 +229,8 @@ Do not start these until Wave 1–2 are shipping:
 
 ## Next
 
-C1 has cards ([c1-citation-cards.md](c1-citation-cards.md)). C1 Trust passed; Charter ships the preview vintage — see [c1-charter-verdict.md](../archive/c1-charter-verdict.md).
+C1 has cards ([c1-citation-cards.md](../archive/c1-citation-cards.md)). C1 Trust passed; Charter ships the preview vintage — see [c1-charter-verdict.md](../archive/c1-charter-verdict.md).
 
-C2 cards exist ([c2-citation-cards.md](c2-citation-cards.md)); C2 product stop is ingest (see [c2-refresh-contract.md](c2-refresh-contract.md)). Do not unblock C2 from this file.
+C2 cards exist ([c2-citation-cards.md](../archive/c2-citation-cards.md)); C2 product stop is ingest (see [c2-refresh-contract.md](../archive/c2-refresh-contract.md)). Do not unblock C2 from this file.
 
-C3 cards exist ([c3-citation-cards.md](c3-citation-cards.md)). Charter: proceed with reconstructable cards; Card 8 stays a named hole ([c3-charter.md](c3-charter.md)). Product stop is Platform completeness + ingest of those tables — not “wait for FRBM as a grid.” Do not unblock C3 citizen-view from this file. Do not start C4–C20 until Wave 1 has cards.
+C3 cards exist ([c3-citation-cards.md](../archive/c3-citation-cards.md)). Charter: proceed with reconstructable cards; Card 8 stays a named hole ([c3-charter.md](../archive/c3-charter.md)). Product stop is Platform completeness + ingest of those tables — not “wait for FRBM as a grid.” Do not unblock C3 citizen-view from this file. Do not start C4–C20 until Wave 1 has cards.

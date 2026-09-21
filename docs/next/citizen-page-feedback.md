@@ -19,7 +19,7 @@ These clashes are decided here so owners do not invent a second vision.
 
 1. **Evidence is an explainer, not a recap and not a news piece.** Sections must further answer the H1: bound change from the previous published period, what was counted, who, when, and how the published series got to this point. They must not retype the `.stat-figure` cells. They must not explain *why the government did it*, forecast, or tell the reader what to think. “What it means to the reader” is what the number *is* (a rate is not a headcount; Budget Estimates are not actuals). It is not a takeaway about a ministry.
 
-2. **One citizen method block.** Merge “How to read this series” into Methodology unless Content Editor Development can name a distinct citizen job that Methodology does not already do. Method sits after the record and is quieter than the answer. Desk `do_not` lines stay in [method notes](c1-method-notes.md), not on the page.
+2. **One citizen method block.** Merge “How to read this series” into Methodology unless Content Editor Development can name a distinct citizen job that Methodology does not already do. Method sits after the record and is quieter than the answer. Desk `do_not` lines stay in [method notes](../archive/c1-method-notes.md), not on the page.
 
 3. **Cite chrome is for the citizen; schema fields stay in the vintage.** The open card shows producer (linked to the citation `url`), series as the producer names it, reference period, release date, and one readable caveat. `geography_vintage` and `vintage_id` stay on the observation and in `data-vintage-id`. They are not citizen labels. A tooltip is still not enough. A closable panel may *mirror* the on-page card; it must not replace it or leave the view (standing [design-system.md](../design-system.md) cite rule).
 
@@ -67,7 +67,7 @@ Standing file: [editorial-guidelines.md](../editorial-guidelines.md). Run Develo
 
 ### Methodologist
 
-Standing files: slice method notes ([c1-method-notes.md](c1-method-notes.md), [c2-method-notes.md](c2-method-notes.md), [c3-method-notes.md](c3-method-notes.md)).
+Standing files: slice method notes ([c1-method-notes.md](../archive/c1-method-notes.md), [c2-method-notes.md](../archive/c2-method-notes.md), [c3-method-notes.md](../archive/c3-method-notes.md)).
 
 | Id | Feedback | Also |
 |----|----------|------|

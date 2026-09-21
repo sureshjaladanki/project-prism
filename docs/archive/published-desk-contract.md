@@ -1,6 +1,6 @@
 # Published desk contract
 
-Persona: Platform Architect. Product: [architectural-blueprint.md](../architectural-blueprint.md). Schema: [data-contracts.md](../data-contracts.md). Layout: [repo-conventions.md](../repo-conventions.md). Execution plan: [catalog-ingest-pipeline-plan.md](catalog-ingest-pipeline-plan.md).
+Persona: Platform Architect. Product: [architectural-blueprint.md](../architectural-blueprint.md). Schema: [data-contracts.md](../data-contracts.md). Layout: [repo-conventions.md](../repo-conventions.md). Execution plan: [catalog-ingest-pipeline-plan.md](../next/catalog-ingest-pipeline-plan.md).
 
 The published unit is a **desk**. Pointers name a `desk_id`. Each page still binds exactly one `vintage_id`. Vintages stay immutable, per-slice, and independently refreshable.
 
