@@ -17,6 +17,8 @@ disagrees_with: Card 1 PCA. Card 2 A-02. Cards 3–4 SRS rates. TABLE-11 in the 
 do_not: Do not present a Table-8 figure as India has X people without naming Table
   8, thousands, 1st March, and that it is a projection. Do not merge Table 8 and Table
   11. Do not paper the missing Census 2021/2027.
-citizen_note: Table 8 of the 2019 Technical Group report is projected population by sex as
-  on 1 March, in thousands. It is a projection, not a census enumeration. A later year on
-  the table is still the 2019 projection.
+citizen_note: The National Commission on Population Table 8 figure for a year such as
+  2026 is projected population as on 1 March from the November 2019 Technical Group
+  report. It is a projection, not a census enumeration. The producer prints thousands;
+  compact display on this page does not make it a census count. The 2011 column on that
+  table is a smoothed projected base, not the Census 2011 Total.

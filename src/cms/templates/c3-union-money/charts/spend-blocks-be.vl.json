@@ -30,12 +30,12 @@
     "x": {
       "field": "plotValue",
       "type": "quantitative",
-      "title": "Crore of rupees",
+      "title": null,
       "scale": { "zero": true }
     },
     "tooltip": [
       { "field": "label", "type": "nominal" },
-      { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+      { "field": "plotValue", "type": "quantitative", "title": null },
       { "field": "unit", "type": "nominal" },
       { "field": "reference_period", "type": "nominal" },
       { "field": "status", "type": "nominal" }

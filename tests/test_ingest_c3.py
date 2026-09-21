@@ -11,7 +11,7 @@ import httpx
 import pytest
 
 from prism.catalog import default_catalog
-from prism.ingest.parse_c3 import (
+from prism.ingest.budget_cga_xlsx_pdf_html import (
     PARSER,
     parse_cga_monthly_html,
     parse_deficit_statistics_xlsx,

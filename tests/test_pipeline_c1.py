@@ -17,7 +17,7 @@ from prism.catalog import (
     slice_citations,
     slice_geographies,
 )
-from prism.ingest.parse import (
+from prism.ingest.xlsx_cpi_period import (
     parse_cpi_back_series,
     parse_cpi_cfpi,
     parse_cpi_division_group,
@@ -33,7 +33,7 @@ from prism.paths import (
     preview_pointer_path,
     series_dir,
 )
-from prism.pipeline.c1 import (
+from prism.pipeline.state_sector_period import (
     MAPPER_VERSION,
     PipelineError,
     map_derived_table,

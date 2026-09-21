@@ -6,7 +6,7 @@ from io import BytesIO
 
 from openpyxl import Workbook
 
-from prism.ingest.parse import (
+from prism.ingest.xlsx_cpi_period import (
     BACK_COLUMNS,
     DIVISION_COLUMNS,
     GENERAL_COLUMNS,

@@ -64,3 +64,26 @@ def test_chart_payload_nulls_non_published_zero() -> None:
     assert payload["status"] == ObservationStatus.unknown.value
     payload["head_name"] = GST_COMPENSATION_CESS
     assert_hole_never_plotted_as_zero(payload)
+
+
+def test_chart_payload_period_label_is_citizen_tick() -> None:
+    observation = make_observation(reference_period="1901 $")
+    payload = chart_payload(
+        ServedObservation(
+            observation=observation,
+            citation=make_citation(),
+            caveat=make_caveat(),
+        )
+    )
+    assert payload["reference_period"] == "1901 $"
+    assert payload["period_label"] == "1901"
+    money = make_observation(reference_period="end-2024-25")
+    money_payload = chart_payload(
+        ServedObservation(
+            observation=money,
+            citation=make_citation(),
+            caveat=make_caveat(),
+        )
+    )
+    assert money_payload["reference_period"] == "end-2024-25"
+    assert money_payload["period_label"] == "2024-25"

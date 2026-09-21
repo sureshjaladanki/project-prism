@@ -246,6 +246,9 @@ article.portrait {
 .how-measured > p,
 .how-measured li {
   max-width: var(--measure);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--muted);
 }
 
 h1,
@@ -321,10 +324,20 @@ p {
 
 .fact-lede .observation-value {
   font-family: var(--font-serif);
-  font-size: clamp(1.25rem, 12cqi, 2.75rem);
+  font-size: inherit;
   font-weight: 600;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  line-height: inherit;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.evidence .observation-value,
+.portrait-section > p .observation-value {
+  font-family: var(--font-serif);
+  font-size: inherit;
+  font-weight: 600;
+  line-height: inherit;
+  letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -341,21 +354,29 @@ p {
   box-shadow: var(--lift-answer);
 }
 
-.hero .stat-row + .cite-strip {
-  background: var(--well);
-  border: 0;
-  border-top: var(--hair) solid var(--rule);
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-  box-shadow: var(--lift-answer);
-  margin: 0 0 var(--space-6);
-  padding: 0 var(--space-6);
-}
-
 .source-line {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  appearance: none;
+  background: transparent;
+  border: 0;
   margin: 0 0 var(--space-5);
+  padding: 0;
+  font: inherit;
   font-size: 0.875rem;
   line-height: 1.45;
+  text-align: left;
   color: var(--muted);
+  cursor: pointer;
+}
+
+button.source-line {
+  cursor: pointer;
+}
+
+p.source-line {
+  cursor: default;
 }
 
 .hottest-rail {
@@ -484,7 +505,30 @@ code {
 }
 
 .cite-strip {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  appearance: none;
+  background: transparent;
+  border: 0;
   margin: 0 0 var(--space-5);
+  padding: var(--space-4) 0;
+  font: inherit;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  text-align: left;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.hero .stat-row + .cite-strip {
+  background: var(--well);
+  border: 0;
+  border-top: var(--hair) solid var(--rule);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  box-shadow: var(--lift-answer);
+  margin: 0 0 var(--space-6);
+  padding: var(--space-4) var(--space-6);
 }
 
 .cite-strip .cite-producer {

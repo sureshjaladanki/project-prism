@@ -208,7 +208,7 @@ class CitizenMethod(ContractModel):
 
 
 class DisplayValue(ContractModel):
-    """Bind-time compact number. Vintage unit is unchanged."""
+    """Bind-time citizen number string. Vintage unit is unchanged."""
 
     raw_value: float | None
     unit: NonEmptyStr

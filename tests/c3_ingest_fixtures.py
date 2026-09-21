@@ -6,7 +6,11 @@ from io import BytesIO
 
 from openpyxl import Workbook
 
-from prism.ingest.parse_c3 import DEFICIT_SHEET, RECEIPT_SHEET, STAT1_SHEET
+from prism.ingest.budget_cga_xlsx_pdf_html import (
+    DEFICIT_SHEET,
+    RECEIPT_SHEET,
+    STAT1_SHEET,
+)
 
 
 def _xlsx(workbook: Workbook) -> bytes:

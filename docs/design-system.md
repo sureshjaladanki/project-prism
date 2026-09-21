@@ -71,7 +71,7 @@ A citizen who has seen one slice reads the next by ground alone: white box, look
 
 | Class | Tokens | Job |
 |-------|--------|-----|
-| `.fact-lede` | Top segment of [the answer well](#the-answer-well); `--well`; `--ink`; serif figures inline | The bound answer as a sentence: number, unit, place, year — then one line of definition. Not a magenta sentence. Not a slogan. |
+| `.fact-lede` | Top segment of [the answer well](#the-answer-well); `--well`; `--ink`; Serif figures at **body size**, weight 600 | The bound answer as a sentence: number, unit, place, year — then one line of definition. Not a magenta sentence. Not a slogan. Not `.stat-figure` size in prose. |
 | `.stat-row` / `.stat` | Middle segment of the well; `.stat` chips are `--card` on `--well`, `--radius`, `--lift` | 2–4 equal-weight bound figures, set apart from the sentence above them like tiles on a tray. No winner colour. |
 | `.cite-strip` | Bottom segment of the well; producer `--ink`; rest `--muted` | Source line **next to the number**, closing the well. Open state is the full card. Not a codebook dump. |
 | `.fast-facts` | `--card`, `--radius`, `--lift`; fact 1.375rem / 500 / `--ink`, sans | Publisher front: slot-bound one-liners. Never byline grey. Not a ticker of unnamed numbers. |
@@ -153,9 +153,11 @@ Do not use Aeonik. Do not put Serif on body copy, labels, byline, chart SVG, or 
 | H1 (question) | Serif | `clamp(2rem, 4.5vw, 3rem)` | 500 | 1.15 | −0.02em |
 | H2 (section) | Serif | 1.5rem | 500 | 1.3 | 0 |
 | H2 (method) | Serif | 1.0625rem | 500 | 1.3 | 0; ≥1.4× quieter than answer H2 |
-| Bound figure (`.stat-figure`, inline in `.fact-lede`) | Serif | `clamp(1.25rem, 12cqi, 2.75rem)` | 600 | 1.08 | −0.02em; tabular-nums |
+| Bound figure (`.stat-figure` only) | Serif | `clamp(1.25rem, 12cqi, 2.75rem)` | 600 | 1.08 | −0.02em; tabular-nums |
+| Bound figure inline (`.fact-lede`, evidence `<p>`) | Serif | inherits body (1.125rem) | 600 | inherits | −0.01em; tabular-nums; not `.stat-figure` size |
 | Fast-fact (home, index) | Sans | 1.375rem | 500 | 1.3 | 0; `--ink` |
 | Body | Sans | 1.125rem | 400 | 1.65 | 0 |
+| Method body (`.how-measured` p/li) | Sans | 0.9375rem | 400 | 1.55 | 0; `--muted`; quieter than answer body |
 | Byline / source | Sans | 0.875rem | 400 | 1.45 | 0 |
 | Label / dt | Sans | 0.75rem | 500 | 1.3 | 0.04em; uppercase; `--muted` |
 | Caption | Sans | 0.875rem | 400 | 1.4 | 0 |
@@ -330,12 +332,12 @@ Vega-Lite in git; SVG at render. `src/cms/src/lib/render-chart.ts` applies the f
 Checkability is proximity, not a field dump.
 
 - Producer within the first **600px** of `main` at 1440×900.
-- `<details class="citation-card source-byline cite-strip">` closes [the answer well](#the-answer-well), after the stat chips and **before** the first chart, same `--desk` width.
-- Summary: producer `--ink`, then `series · reference period · released {date}` `--muted`. All four, every slice. Missing field fails the render.
-- Open: producer (linked to the citation `url`), series as the producer names it, reference period, release date (Asia/Kolkata), one caveat. Same citizen fields as the bottom `.source-stack`, earlier. `geography_vintage` and `vintage_id` stay on the observation and on `data-vintage-id` — they are not citizen labels.
+- `<button type="button" class="source-byline cite-strip">` closes [the answer well](#the-answer-well), after the stat chips and **before** the first chart, same `--desk` width. One line; opens the cite `popover` for that `citation_id`. On-page `.source-stack` cards remain.
+- Summary line: producer `--ink`, then `series · reference period · released {date}` `--muted`. All four, every slice. Missing field fails the render.
+- Open panel: producer (linked to the citation `url`), series as the producer names it, reference period, release date (Asia/Kolkata), one caveat. Same citizen fields as the bottom `.source-stack`. `geography_vintage` and `vintage_id` stay on the observation and on `data-vintage-id` — they are not citizen labels.
 - Optional `.analysis-byline` after the producer, never instead.
 
-Collapsed `<details>` is the default. Empty chrome while the number shows fails the render. No fly-out that leaves the view (R7). An in-text cite is a `<button class="in-text-cite">` that opens a native `popover` mirroring that on-page card; the card stays on the page. Do not add `/cite` or a per-slice `/sources`.
+Empty chrome while the number shows fails the render. No fly-out that leaves the view (R7). An in-text cite is a `<button class="in-text-cite">` that opens a native `popover` mirroring that on-page card; the card stays on the page. Chart `.source-line` controls use the same panel when the line carries a cite. Do not add `/cite` or a per-slice `/sources`.
 
 Caveats: same panel language; no warning-orange.
 
@@ -364,7 +366,7 @@ WCAG 2.2 AA, against the [colour table](#colour).
 
 ## Interaction
 
-Static pages. Allowed: `<details>`, hash links, native `popover` (in-text cite mirroring the on-page card), chart scroll when the well is narrower than `fitWidth`, Vega hover and download from **already-bound** specs. Forbidden: request-time fetch, engagement SDK, A/B, heatmap, live filter that loads another vintage, "get notified." Geography routes or a client filter over **this** vintage are later named work — not their metro picker.
+Static pages. Allowed: `<details>` (on-page source-stack cards), hash links, native `popover` (cite-strip, in-text cite, and chart source-lines mirroring the on-page card), chart scroll when the well is narrower than `fitWidth`, Vega hover and download from **already-bound** specs. Forbidden: request-time fetch, engagement SDK, A/B, heatmap, live filter that loads another vintage, "get notified." Geography routes or a client filter over **this** vintage are later named work — not their metro picker.
 
 ## Implementation
 

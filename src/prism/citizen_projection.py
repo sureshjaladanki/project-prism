@@ -5,6 +5,7 @@ Types live in ``schema``. Bind calls ``project_*``; HTML chrome is C5.
 
 from __future__ import annotations
 
+import re
 from datetime import date
 
 from prism.schema import (
@@ -57,6 +58,11 @@ _RATE_MARKERS = (
     "tfr",
     "per thousand",
     "per 1,000",
+)
+
+# Producer unit words that must never appear after a scale token in display_string.
+_FORBIDDEN_DISPLAY_UNIT_WORDS = frozenset(
+    {"crore", "crores", "thousand", "thousands", "lakh", "lakhs"}
 )
 
 
@@ -142,9 +148,38 @@ def project_citizen_geography(*, label: str, slug: str) -> CitizenGeography:
     return CitizenGeography(geography_label=label, geography_slug=slug)
 
 
+def unit_denomination(unit: str) -> str:
+    """Producer magnitude base. Does not rewrite Observation.unit."""
+    if is_rate_or_index(unit):
+        return "rate"
+    lower = unit.lower()
+    if "crore" in lower:
+        return "crore"
+    if "thousand" in lower or "'000" in lower:
+        return "thousand"
+    if any(
+        token in lower
+        for token in ("person", "male", "female", "household", "tot_p", "tot_m", "tot_f")
+    ):
+        return "persons"
+    return "one"
+
+
+def magnitude_for_display(raw: float, unit: str) -> float:
+    """Convert producer magnitude to the unit scale_for_concept expects."""
+    if unit_denomination(unit) == "thousand":
+        return raw * THOUSAND
+    return raw
+
+
 def concept_key(series_id: str, unit: str) -> str:
     if is_rate_or_index(unit):
-        return f"{series_id}::none"
+        return f"{series_id}::rate"
+    denom = unit_denomination(unit)
+    if denom == "crore":
+        return "money-crore"
+    if denom in {"thousand", "persons"}:
+        return "headcount"
     return f"{series_id}::magnitude"
 
 
@@ -187,12 +222,14 @@ def project_display_value(
         )
     if raw_value is None:
         raise ValueError("status value requires raw_value")
-    chart_value = apply_scale(raw_value, scale)
+    chart_value = apply_scale(magnitude_for_display(raw_value, unit), scale)
+    shown = display_string(chart_value, scale, unit=unit)
+    assert_display_string(shown)
     return DisplayValue(
         raw_value=raw_value,
         unit=unit,
         display_scale=scale,
-        display_string=display_string(chart_value, scale),
+        display_string=shown,
         status=status,
         chart_value=chart_value,
     )
@@ -208,12 +245,34 @@ def apply_scale(value: float, scale: DisplayScale) -> float:
     return value
 
 
-def display_string(chart_value: float, scale: DisplayScale) -> str:
+def tick_scale_label(scale: DisplayScale, unit: str) -> str:
+    """Axis / tick suffix. Same tokens as display_string; never a producer unit word."""
+    denom = unit_denomination(unit)
+    if scale is DisplayScale.none:
+        return "Cr" if denom == "crore" else ""
+    if denom == "crore" and scale is not DisplayScale.Cr:
+        return f"{scale.value} Cr"
+    return scale.value
+
+
+def display_string(chart_value: float, scale: DisplayScale, *, unit: str) -> str:
     shown = chart_value if scale is DisplayScale.none else round(chart_value, 2)
     grouped = indian_grouped(shown)
-    if scale is DisplayScale.none:
+    suffix = tick_scale_label(scale, unit)
+    if suffix == "":
         return grouped
-    return f"{grouped} {scale.value}"
+    return f"{grouped} {suffix}"
+
+
+def assert_display_string(text: str) -> None:
+    if text == NOT_PUBLISHED:
+        return
+    lowered = text.lower()
+    for word in _FORBIDDEN_DISPLAY_UNIT_WORDS:
+        if f" {word}" in f" {lowered} " or lowered.endswith(f" {word}"):
+            raise ValueError(
+                f"display_string must not carry producer unit word {word!r}: {text!r}"
+            )
 
 
 def indian_grouped(value: float) -> str:
@@ -228,6 +287,22 @@ def indian_grouped(value: float) -> str:
         integer, fraction = text.split(".", 1)
         return f"{sign}{_indian_group_integer(integer)}.{fraction}"
     return f"{sign}{_indian_group_integer(text)}"
+
+
+_CENSUS_YEAR_MARKS = re.compile(r"\s*[$@#+\u2020\u2021].*$")
+_PERIOD_KEY_PREFIX = re.compile(
+    r"^(end|actuals?|budget|revised|re|be)-",
+    re.IGNORECASE,
+)
+
+
+def citizen_period_label(reference_period: str) -> str:
+    """Axis / tick label. Year only — no producer footnote marks or machine prefixes."""
+    text = reference_period.strip()
+    text = _CENSUS_YEAR_MARKS.sub("", text).strip()
+    text = text.rstrip("+").strip()
+    text = _PERIOD_KEY_PREFIX.sub("", text).strip()
+    return text if text else reference_period
 
 
 def _indian_group_integer(digits: str) -> str:

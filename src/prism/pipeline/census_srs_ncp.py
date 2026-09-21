@@ -1,4 +1,4 @@
-"""Map C2 derived tables into a data vintage. Does not fetch and does not publish."""
+"""Map Census / SRS / NCP derived tables into a data vintage."""
 
 from __future__ import annotations
 

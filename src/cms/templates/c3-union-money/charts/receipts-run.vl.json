@@ -29,31 +29,31 @@
       },
       "encoding": {
         "x": {
-          "field": "reference_period",
+          "field": "period_label",
           "type": "ordinal",
           "title": "Financial year as labelled",
           "sort": [
-            "actual-2017-18",
-            "actual-2018-19",
-            "actual-2019-20",
-            "actual-2020-21",
-            "actual-2021-22",
-            "actual-2022-23",
-            "actual-2023-24",
-            "actual-2024-25",
-            "re-2025-26",
-            "be-2026-27"
+            "2017-18",
+            "2018-19",
+            "2019-20",
+            "2020-21",
+            "2021-22",
+            "2022-23",
+            "2023-24",
+            "2024-25",
+            "2025-26",
+            "2026-27"
           ]
         },
         "y": {
           "field": "plotValue",
           "type": "quantitative",
-          "title": "Crore of rupees",
+          "title": null,
           "scale": { "zero": true }
         },
         "tooltip": [
-          { "field": "reference_period", "type": "nominal" },
-          { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+          { "field": "period_label", "type": "nominal" },
+          { "field": "plotValue", "type": "quantitative", "title": null },
           { "field": "status", "type": "nominal" }
         ]
       }
@@ -75,19 +75,19 @@
       },
       "encoding": {
         "x": {
-          "field": "reference_period",
+          "field": "period_label",
           "type": "ordinal",
           "sort": [
-            "actual-2017-18",
-            "actual-2018-19",
-            "actual-2019-20",
-            "actual-2020-21",
-            "actual-2021-22",
-            "actual-2022-23",
-            "actual-2023-24",
-            "actual-2024-25",
-            "re-2025-26",
-            "be-2026-27"
+            "2017-18",
+            "2018-19",
+            "2019-20",
+            "2020-21",
+            "2021-22",
+            "2022-23",
+            "2023-24",
+            "2024-25",
+            "2025-26",
+            "2026-27"
           ]
         },
         "y": {
@@ -96,8 +96,8 @@
           "scale": { "zero": true }
         },
         "tooltip": [
-          { "field": "reference_period", "type": "nominal" },
-          { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+          { "field": "period_label", "type": "nominal" },
+          { "field": "plotValue", "type": "quantitative", "title": null },
           { "field": "status", "type": "nominal" }
         ]
       }

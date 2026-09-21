@@ -39,11 +39,14 @@ def test_bind_c2_page_is_one_vintage() -> None:
     assert "Districts are parked" not in page.body_html
     assert page.citizen_question.startswith("How many people live in India")
     assert "121.09 Cr" in page.body_html
-    assert page.fact_lede.startswith("On 1 March 2011, Census 2011 counted 121.09 Cr")
+    assert "142.34 Cr" in page.body_html
+    assert page.fact_lede.startswith("As on 1 March 2026 (projected)")
+    assert "not a census count" in page.fact_lede
+    assert "121.09 Cr" in page.fact_lede
     assert "Updated not printed" not in page.body_html
     assert "Release date not printed" not in page.body_html
-    assert "Census day 1 March 2011" in page.body_html
-    assert "A later census total has not been published." in page.body_html
+    assert "1 March 2011" in page.body_html
+    assert "Census 2011 is the latest published census total" in page.body_html
     assert "6.4 ." not in page.body_html
     assert "6.4</span></span>." in page.body_html
     assert "<!--chart:india-residence-2011-->" not in page.body_html

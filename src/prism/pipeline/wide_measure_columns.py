@@ -1,4 +1,4 @@
-"""Map C3 derived tables into a data vintage. Does not fetch and does not publish."""
+"""Map wide-measure-column and named-hole Union tables into a data vintage."""
 
 from __future__ import annotations
 

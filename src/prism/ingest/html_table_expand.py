@@ -1,30 +1,8 @@
-"""C3 layout: PDF word-to-column assignment (shared) and HTML table expand."""
+"""HTML table expand with rowspan/colspan. Stop if the markup is not a grid."""
 
 from __future__ import annotations
 
 from html.parser import HTMLParser
-
-from prism.ingest.parse_pdf_layout import (
-    AssignedTable,
-    PdfColumn,
-    PdfWord,
-    assign_pdf_table,
-    cluster_rows,
-    is_amount_token,
-    page_words,
-)
-
-__all__ = [
-    "AssignedTable",
-    "PdfColumn",
-    "PdfWord",
-    "assign_pdf_table",
-    "cluster_rows",
-    "expand_html_table",
-    "is_amount_token",
-    "page_words",
-    "parse_html_tables",
-]
 
 
 class _HtmlTableParser(HTMLParser):

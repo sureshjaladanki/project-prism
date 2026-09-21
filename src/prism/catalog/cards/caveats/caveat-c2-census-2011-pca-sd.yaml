@@ -22,6 +22,7 @@ disagrees_with: Card 2 A-02 (different table and printed names). Cards 3–4 SRS
 do_not: Do not present TOT_P as how many people live in India now. Do not hide 1 March
   2011. Do not chart DISTRICT rows. Do not add SRS rates to invent a 2024 headcount.
   Do not splice Card 5 onto this line. Do not rank.
-citizen_note: Census 2011 PCA is the enumerated headcount in persons for India and State/UT
-  rows as published, as of 1 March 2011. It is not thousands and not a rate. There is no later
-  census total.
+citizen_note: Census 2011 PCA is the enumerated headcount in persons for India and
+  State/UT rows as published, as of 1 March 2011. It is the last published census
+  Total on this page. It is not thousands, not a rate, and not how many people live
+  in India today. There is no later census total.

@@ -1,4 +1,4 @@
-"""Tidy C2 producer tables. Stop when the artifact cannot be read as cells."""
+"""Tidy Census / SRS / NCP xlsx, xls, and PDF tables. Stop when cells are ambiguous."""
 
 from __future__ import annotations
 
@@ -12,9 +12,8 @@ import pdfplumber
 from openpyxl import load_workbook  # type: ignore[import-untyped]
 from pdfplumber.utils.exceptions import PdfminerException
 
-from prism.ingest.parse import ParsedTable
-from prism.ingest.parse_c2_layout import XlsSheet, read_xls_sheets
-from prism.ingest.parse_pdf_layout import (
+from prism.ingest.parsed_table import ParsedTable
+from prism.ingest.pdf_word_columns import (
     AssignedTable,
     PdfColumn,
     PdfWord,
@@ -28,6 +27,7 @@ from prism.ingest.parse_pdf_layout import (
     words_through,
 )
 from prism.ingest.retrieve import is_xls_ole
+from prism.ingest.xls_ole_grid import XlsSheet, read_xls_sheets
 from prism.schema import YesNo
 
 PARSER_NAME = "orgi-c2"

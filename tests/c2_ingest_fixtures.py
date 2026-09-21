@@ -7,7 +7,7 @@ from io import BytesIO
 import xlwt  # type: ignore[import-untyped]
 from openpyxl import Workbook
 
-from prism.ingest.parse_c2 import PCA_COLUMNS
+from prism.ingest.census_srs_xlsx_pdf import PCA_COLUMNS
 
 
 def pca_workbook_bytes() -> bytes:

@@ -18,12 +18,12 @@ from prism.catalog.registry import MAPPERS, PARSERS
 from prism.schema import CaveatNote, Citation, GeographyVintage
 
 _REGISTRY_MODULES = (
-    "prism.ingest.parse",
-    "prism.ingest.parse_c2",
-    "prism.ingest.parse_c3",
-    "prism.pipeline.c1",
-    "prism.pipeline.c2",
-    "prism.pipeline.c3",
+    "prism.ingest.xlsx_cpi_period",
+    "prism.ingest.census_srs_xlsx_pdf",
+    "prism.ingest.budget_cga_xlsx_pdf_html",
+    "prism.pipeline.state_sector_period",
+    "prism.pipeline.census_srs_ncp",
+    "prism.pipeline.wide_measure_columns",
 )
 
 

@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 
 from prism.catalog import slice_caveats, slice_citations, slice_geographies
-from prism.ingest.parse_c2 import (
+from prism.ingest.census_srs_xlsx_pdf import (
     PARSER,
     parse_census_2011_a02_xls,
     parse_census_2011_pca_sd,
@@ -29,7 +29,7 @@ from prism.paths import (
     preview_pointer_path,
     series_dir,
 )
-from prism.pipeline.c2 import (
+from prism.pipeline.census_srs_ncp import (
     MAPPER_VERSION,
     PipelineError,
     map_c2_table,

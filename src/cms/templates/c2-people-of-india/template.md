@@ -14,10 +14,10 @@ slots: ./slots.yaml
 
 # How many people live in India, where, and how is that changing?
 
-<p class="byline">Census day {{period.census_2011.label}} (Asia/Kolkata). A later census total has not been published.</p>
+<p class="byline">Official projection as on {{period.projection_2026.label}}. Latest published census Total: {{period.census_2011.label}}.</p>
 
 <div class="fact-lede">
-<p>On {{period.census_2011.label}}, Census 2011 counted {{slot:india-total-persons-2011}} people in India, Total. That is the latest census headcount on this page. A later census total has not been published. Census day is 1 March 2011, not today.</p>
+<p>As on {{period.projection_2026.label}}, the official projection for India, Persons, is {{slot:india-projected-persons-2026}}. That is a National Commission on Population projection from the 2019 Technical Group report, not a census count. Census 2011 enumerated {{slot:india-total-persons-2011}} people in India, Total, as of {{period.census_2011.label}} — the latest published census Total.</p>
 </div>
 
 {{stat-row}}
@@ -26,6 +26,7 @@ slots: ./slots.yaml
 {{stat:india-urban-persons-2011|India, Urban}}
 {{/stat-row}}
 
+<p class="source-line">National Commission on Population · projected population, 1 March · {{period.projection_2026.label}}</p>
 <p class="source-line">Office of the Registrar General &amp; Census Commissioner, India · Census 2011 · {{period.census_2011.label}}</p>
 
 <p>Rural, Urban, and Total are three published lines. Total is not an average made here. India is the national unit as printed, not every district. Telangana and Ladakh are not State or UT labels on this 2011 map.</p>
@@ -104,7 +105,7 @@ These are Sample Registration System rates for {{period.srs_2024.label}}, not a 
 
 A 2019 technical-group report prints projected population in thousands as on 1 March, 2011 to 2036. That is a projection, not a census. The 2011 column is not the Census 2011 count above.
 
-On {{period.projection_2026.label}}, the official projection prints {{slot:india-projected-persons-2026}} thousand people for India, Persons.
+On {{period.projection_2026.label}}, the official projection prints {{slot:india-projected-persons-2026}} people for India, Persons.
 
 {{chart:india-projected-2011-2036}}
 
@@ -138,7 +139,7 @@ The 2011 Census map does not include Telangana or Ladakh as State or UT rows. Da
 
 Birth, death, and infant mortality rates on this page are 2024 survey estimates. They are not a headcount. Total fertility lives on the statistical report, whose main tables miss smaller States and Union Territories.
 
-The official projection is in thousands, as on 1 March. Its 2011 column is a smoothed projected base, not the Census 2011 count. A later year on that table is not an enumeration.
+The official projection is from the 2019 Technical Group report, as on 1 March. The producer prints thousands of persons; compact display on this page uses the same scale as census person counts. That does not make the projection a census. Its 2011 column is a smoothed projected base, not the Census 2011 count. A later year on that table is not an enumeration.
 
 This page does not include NPR or citizenship registers; electoral rolls; caste politics; district maps; ranks; forecasts; or international modelled stocks as the source of record.
 {{/how-this-is-measured}}

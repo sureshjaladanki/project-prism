@@ -27,7 +27,7 @@ from prism.catalog.registry import (
     register_parser,
 )
 from prism.cli import app
-from prism.ingest.parse import ParsedTable
+from prism.ingest.parsed_table import ParsedTable
 from prism.ingest.run import ingest
 from prism.pipeline.run import materialise_vintage
 from prism.schema import (

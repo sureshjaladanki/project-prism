@@ -8,7 +8,7 @@ Earlier batch: [citizen-page-feedback.md](citizen-page-feedback.md). Programme: 
 about:          preview desk C1–C3 vs desk tokens on the citizen method; numbering, cite chrome, method measure, C2 lede
 source:         Trust C8 (four audits, last pass) + C9 accept-on-preview in citizen-system-change-plan.md; principal 2026-09-21 localhost:4333
 forbids:        amending standing contracts from this file; flipping citizen_pointer
-status:         routing only; T-cite-period closed
+status:         F-rows closed (2026-09-21); stop before B3; citizen_pointer untouched
 ```
 
 ## Failure notes (from C8 / C9)
@@ -64,19 +64,19 @@ C9: Track C accepted on preview. Catalog B3 still out. F- rows below remain.
 | T-parked | Method said “Districts are parked.” Catalog talk. Same as P5 desk sentences. | Methodologist (`do_not` stays desk) |
 | T-c8-surface | C8 done-when: no desk field, parser name, Frame label, or `do_not` on the page. Cite cards must not dump ingest flags, Card N, or `do_not`. | Platform Architect (projection) |
 | T-cite-period | `/prices/retail-prices`: source-stack cards `cite-c1-cpi-general-base-2024-2026-08` and `cite-c1-cpi-cfpi-base-2024-2026-08` print 2026-07 while the bound answer is August 2026 (Provisional). Closed: two cards; slot still must not name a month the card does not carry. | Platform Architect (projection) |
-| F-indic-unit | `/money/union` fact-lede printed `35.27 L crore of rupees` (compact L plus leftover “crore”). Template must not append vintage `unit` after `DisplayValue.display_string`. Same fail on “What liabilities are outstanding?” `.stat-row` and the liabilities chart. Indian grouping / one compact scale, ruling 6 and this-batch ruling 1. | Platform Architect (`DisplayValue`); UI/UX Developer (axes and stat chrome); Pipeline Engineer (`unit` on the observation) |
-| F-c2-lakh-thousand | `/people/population` “What does the official projection print?” stats and the following chart y-axis as `14.23 L Thousand`. Same concept as the census counts: display **Cr**, Indian numbering, no “Lakh Thousands”. Do not leave producer “thousand” next to scale L. | Methodologist (producer unit); Platform Architect (scale per concept); UI/UX Developer (axis); Pipeline Engineer |
-| F-c2-lede-year | `/people/population` fact-lede still leads with Census 2011 Total in 2026. This-batch ruling 5: lead with the official projection for the current year, **named as a projection**; keep 2011 on the same first screen as the last enumerated Total. Slots, not a pasted 2026 figure. | Methodologist (projection ≠ count); Charter Editor (ruling 5); Trust Auditor |
-| F-census-axis-marks | Chart “India Total, census years 1901 to 2011” x-axis carries producer footnote marks (`1901 $`, `1951 @`, `1981 #`, `1991 +`, `2001 ++`). Tick text is the year. Spec `sort` must not be those marks. Footnotes belong in method / the cite. | Methodologist; Pipeline Engineer (citizen period label); UI/UX Developer (axis) |
-| F-axis-period-prefix | `/money/union` “Outstanding liabilities, Central Government” x-axis `end-[year1-year2]`; “Revenue receipts in this Budget book” `actual-[year1-year2]`. Citizen ticks are the year labels. Prefixes are period keys. | Pipeline Engineer; Platform Architect (citizen period); UI/UX Developer |
-| F-method-fineprint | Methodology: quieter copy after the record. Do not restyle; do not reopen a second “How to read” block. Type and width are UI/UX (this-batch ruling 4). | UI/UX Developer |
+| F-indic-unit | `/money/union` fact-lede printed `35.27 L crore of rupees` (compact L plus leftover “crore”). Template must not append vintage `unit` after `DisplayValue.display_string`. Same fail on “What liabilities are outstanding?” `.stat-row` and the liabilities chart. Indian grouping / one compact scale, ruling 6 and this-batch ruling 1. | **Closed (Platform, 2026-09-21):** `display_string` is whole citizen unit (`35.27 L Cr`); templates no longer append `crore of rupees`; axis titles cleared of producer unit words; `tick_scale` drives axis labels. UI/UX still owns fit. |
+| F-c2-lakh-thousand | `/people/population` “What does the official projection print?” stats and the following chart y-axis as `14.23 L Thousand`. Same concept as the census counts: display **Cr**, Indian numbering, no “Lakh Thousands”. Do not leave producer “thousand” next to scale L. | **Closed (Platform, 2026-09-21):** thousands → persons before scale; shared `headcount` concept with census → **Cr**; template dropped `thousand people`. Method note for joining units still Methodologist. |
+| F-c2-lede-year | `/people/population` fact-lede still leads with Census 2011 Total in 2026. This-batch ruling 5: lead with the official projection for the current year, **named as a projection**; keep 2011 on the same first screen as the last enumerated Total. Slots, not a pasted 2026 figure. | **Closed (Content Editor, 2026-09-21):** lede leads with NCP 2026 projection named as projection; 2011 Total remains on first screen. |
+| F-census-axis-marks | Chart “India Total, census years 1901 to 2011” x-axis carries producer footnote marks (`1901 $`, `1951 @`, `1981 #`, `1991 +`, `2001 ++`). Tick text is the year. Spec `sort` must not be those marks. Footnotes belong in method / the cite. | **Closed (Pipeline + UI/UX, 2026-09-21):** `period_label` on chart rows; VL `sort` is plain years; marks stay on `reference_period` for bind. |
+| F-axis-period-prefix | `/money/union` “Outstanding liabilities, Central Government” x-axis `end-[year1-year2]`; “Revenue receipts in this Budget book” `actual-[year1-year2]`. Citizen ticks are the year labels. Prefixes are period keys. | **Closed (Pipeline + Platform + UI/UX, 2026-09-21):** `citizen_period_label` / `period_label`; liabilities and receipts charts encode `period_label`. |
+| F-method-fineprint | Methodology: quieter copy after the record. Do not restyle; do not reopen a second “How to read” block. Type and width are UI/UX (this-batch ruling 4). | **Closed (UI/UX, 2026-09-21):** method body 0.9375rem `--muted` at `--measure`; H2 already 1.4× quieter. |
 
 ### Methodologist
 
 | Id | Feedback | Also |
 |----|----------|------|
 | T-this-desk | `citizen_note` on caveat-c2-census-2011-pca-sd said “on this desk.” Citizen note says what the number is, never the desk. | Content Editor |
-| F-c2-lede-year | Sign citizen wording that a 2026 NCP figure is a **projection**, not a census headcount, and that 2011 is the last enumerated Total. Content Editor cannot put the projection in the lede without that note. | Content Editor; Trust Auditor |
+| F-c2-lede-year | Sign citizen wording that a 2026 NCP figure is a **projection**, not a census headcount, and that 2011 is the last enumerated Total. Content Editor cannot put the projection in the lede without that note. | **Signed (2026-09-21).** See [c2-method-notes.md](c2-method-notes.md). Content Editor; Trust Auditor |
 | F-c2-lakh-thousand | Producer unit of the projection series is thousands of persons. Display compact Cr is bind, not a new observation. Do not join census persons and projection thousands without the unit note in method. | Content Editor; Platform Architect; UI/UX Developer |
 | F-census-axis-marks | Census 2011 A-02 footnote marks on selected years stay on the desk / citizen caveat, not as axis text. | Content Editor; Pipeline Engineer |
 
@@ -84,16 +84,16 @@ C9: Track C accepted on preview. Catalog B3 still out. F- rows below remain.
 
 | Id | Feedback | Also |
 |----|----------|------|
-| F-lede-inline-type | Bound numbers inside running `<p>` (fact-lede and evidence) at **body size**, highlighted (weight; underline only if it cannot look like a link). Do not enlarge `.observation-value` in prose to `.stat-figure`. No magenta `span.answer`. Stat chips stay large. | Content Editor (Proof names the break; does not restyle) |
-| F-cite-line-panel | First-screen citation-card should match other source-line chrome: one line, control opens the cite `popover`. On-page `.source-stack` cards remain (this-batch ruling 2, P3). Amend Interaction in [design-system.md](../design-system.md) if the strip’s open state moves from `<details>` to the panel. No fly-out that leaves the view. | Front-end Architect (refuse a new page type); Platform Architect (`citation_id` on the control); Content Editor (which cite the strip names) |
-| F-source-line-panel | Every `.source-line` immediately after a chart is the same panel control for that observation’s card. | Front-end Architect (not a route); Platform Architect |
+| F-lede-inline-type | Bound numbers inside running `<p>` (fact-lede and evidence) at **body size**, highlighted (weight; underline only if it cannot look like a link). Do not enlarge `.observation-value` in prose to `.stat-figure`. No magenta `span.answer`. Stat chips stay large. | **Closed (UI/UX, 2026-09-21):** prose `.observation-value` inherits body size; `.stat-figure` keeps clamp. |
+| F-cite-line-panel | First-screen citation-card should match other source-line chrome: one line, control opens the cite `popover`. On-page `.source-stack` cards remain (this-batch ruling 2, P3). Amend Interaction in [design-system.md](../design-system.md) if the strip’s open state moves from `<details>` to the panel. No fly-out that leaves the view. | **Closed (UI/UX, 2026-09-21):** cite-strip is a button → `popover`; `data-citation-id` on the control; stack cards stay `<details>`. |
+| F-source-line-panel | Every `.source-line` immediately after a chart is the same panel control for that observation’s card. | **Closed (UI/UX, 2026-09-21):** source-lines that carry a cite open the same panel; lines without a cite stay `<p>`. |
 | F-source-stack | On-page `.source-stack` lists every cite the answer-page uses (this-batch ruling 3). Same panel control as the strip and chart source-lines. Do not invent a third cite chrome. | Front-end Architect |
-| F-method-fineprint | Method as fine-print: smaller than answer body; method H2 already 1.4× quieter. Same `--desk` width as other sections (this-batch ruling 4). Amend [design-system.md](../design-system.md) `--measure` on `.how-measured`. | Content Editor (placement) |
+| F-method-fineprint | Method as fine-print: smaller than answer body; method H2 already 1.4× quieter. Same `--desk` width as other sections (this-batch ruling 4). Amend [design-system.md](../design-system.md) `--measure` on `.how-measured`. | **Closed (UI/UX, 2026-09-21):** see Charter Editor table. |
 | F-indic-unit | Lede, `.stat-row`, and chart axes: one Indian `display_string`. Presentation pass fails mixed `L` + “crore” and ungrouped ten-digit rupees. Compact-units box still: ticks ≤ 9 characters, same scale as the stat row. | Platform Architect; Content Editor |
 | F-c2-lakh-thousand | Projection chart y-axis in Cr, same as the page’s population counts. Fail “Lakh Thousands”. | Content Editor; Platform Architect |
-| F-census-axis-marks | Census line chart: x-axis years, no special-symbol ticks. | Content Editor; Pipeline Engineer |
-| F-axis-period-prefix | Drop `end-` / `actual-` from axis ticks. | Pipeline Engineer; Content Editor |
-| F-chart-left-gap | `/money/union` “Tax by major head, Budget Estimates 2026-27” and “What the Union collects and spends, Budget Estimates 2026-27”: unused white field to the **left** of the plot. Plot fills the card (`valueLabelPad` / well filled). Same as P4. | — |
+| F-census-axis-marks | Census line chart: x-axis years, no special-symbol ticks. | **Closed:** see Charter Editor table. |
+| F-axis-period-prefix | Drop `end-` / `actual-` from axis ticks. | **Closed:** see Charter Editor table. |
+| F-chart-left-gap | `/money/union` “Tax by major head, Budget Estimates 2026-27” and “What the Union collects and spends, Budget Estimates 2026-27”: unused white field to the **left** of the plot. Plot fills the card (`valueLabelPad` / well filled). Same as P4. | **Closed (UI/UX, 2026-09-21):** dropped oversized `labelLimit`; categorical axis `maxExtent` capped so the plot fills the card. |
 
 ### Front-end Architect
 
@@ -115,8 +115,8 @@ C9: Track C accepted on preview. Catalog B3 still out. F- rows below remain.
 |----|----------|------|
 | T-lags-slot | `caveat_field` must not project desk fields (`lags`, `do_not`, Frame, parser flags) onto the page. | Content Editor (do not name those slots) |
 | T-cite-period | Closed: one catalog id, two `CitizenCite` periods. Still fail if one HTML id stands for July and August. | Content Editor (which cite id the slot names) |
-| F-indic-unit | `DisplayValue.display_string` is the only citizen number string. Bind must not concatenate scale + vintage `unit`. One `display_scale` per (page, concept). | UI/UX Developer; Content Editor; Pipeline Engineer |
-| F-c2-lakh-thousand | Projection and census headcount are one concept on `/people/population`: one scale, **Cr**. Producer thousands stay on `unit`. | Methodologist; Content Editor; UI/UX Developer |
+| F-indic-unit | `DisplayValue.display_string` is the only citizen number string. Bind must not concatenate scale + vintage `unit`. One `display_scale` per (page, concept). | **Landed (2026-09-21).** See Content Editor row. |
+| F-c2-lakh-thousand | Projection and census headcount are one concept on `/people/population`: one scale, **Cr**. Producer thousands stay on `unit`. | **Landed (2026-09-21).** Shared `headcount` concept; thousands → persons at bind. |
 | F-cite-line-panel | Control carries `citation_id` so the `popover` mirrors `CitizenCite`. No request-time fetch. | UI/UX Developer |
 | F-axis-period-prefix | Citizen period label on chart rows is the year (or BE/RE/Actuals phrase), not the vintage period key. | Pipeline Engineer; UI/UX Developer |
 

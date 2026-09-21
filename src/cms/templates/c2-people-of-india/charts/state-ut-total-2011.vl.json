@@ -36,7 +36,7 @@
     },
     "tooltip": [
       { "field": "geography_name_en", "type": "nominal" },
-      { "field": "plotValue", "type": "quantitative", "title": "persons" },
+      { "field": "plotValue", "type": "quantitative", "title": null },
       { "field": "reference_period", "type": "nominal" },
       { "field": "status", "type": "nominal" }
     ]

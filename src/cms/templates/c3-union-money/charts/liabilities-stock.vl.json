@@ -29,27 +29,27 @@
       },
       "encoding": {
         "x": {
-          "field": "reference_period",
+          "field": "period_label",
           "type": "ordinal",
           "title": "Year-end as labelled",
           "sort": [
-            "end-2021-2022",
-            "end-2022-2023",
-            "end-2023-24",
-            "end-2024-25",
-            "revised-2025-26",
-            "budget-2026-27"
+            "2021-2022",
+            "2022-2023",
+            "2023-24",
+            "2024-25",
+            "2025-26",
+            "2026-27"
           ]
         },
         "y": {
           "field": "plotValue",
           "type": "quantitative",
-          "title": "Crore of rupees",
+          "title": null,
           "scale": { "zero": true }
         },
         "tooltip": [
-          { "field": "reference_period", "type": "nominal" },
-          { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+          { "field": "period_label", "type": "nominal" },
+          { "field": "plotValue", "type": "quantitative", "title": null },
           { "field": "status", "type": "nominal" }
         ]
       }
@@ -71,15 +71,15 @@
       },
       "encoding": {
         "x": {
-          "field": "reference_period",
+          "field": "period_label",
           "type": "ordinal",
           "sort": [
-            "end-2021-2022",
-            "end-2022-2023",
-            "end-2023-24",
-            "end-2024-25",
-            "revised-2025-26",
-            "budget-2026-27"
+            "2021-2022",
+            "2022-2023",
+            "2023-24",
+            "2024-25",
+            "2025-26",
+            "2026-27"
           ]
         },
         "y": {
@@ -88,8 +88,8 @@
           "scale": { "zero": true }
         },
         "tooltip": [
-          { "field": "reference_period", "type": "nominal" },
-          { "field": "plotValue", "type": "quantitative", "title": "crore of rupees" },
+          { "field": "period_label", "type": "nominal" },
+          { "field": "plotValue", "type": "quantitative", "title": null },
           { "field": "status", "type": "nominal" }
         ]
       }

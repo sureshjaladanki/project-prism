@@ -160,7 +160,7 @@ Code (anything that must be interpreted): parser functions, mapper functions, co
 
 Registries keyed by table shape, not by charter:
 
-- Parsers today: `mospi-cpi-xlsx` (`ingest/parse.py`), the Census / SRS / NCP families in `ingest/parse_c2*.py`, the Budget / CGA families in `ingest/parse_c3*.py`.
+- Parsers today: `mospi-cpi-xlsx` (`ingest/xlsx_cpi_period.py`), Census / SRS / NCP (`ingest/census_srs_xlsx_pdf.py`), Budget / CGA (`ingest/budget_cga_xlsx_pdf_html.py`). Layout helpers: `xls_ole_grid.py`, `html_table_expand.py`, `pdf_word_columns.py`.
 - Mappers today: `state-sector-period` (`pipeline/c1.py: map_derived_table`), `wide-measure-columns` (`pipeline/c3.py: map_c3_table`), plus whatever `pipeline/c2.py` already implements. Pipeline Engineer names the C2 families by reading that file. Do not invent a fourth family before then.
 
 A new charter that reuses a family is a catalog file. A new layout — PLFS for C4 — is a new parser module plus, if the table shape is genuinely new, a new mapper family. `pipeline/c3.py` is never copied.
@@ -212,8 +212,8 @@ Every phase, without exception: blueprint tests 1–9 (`tests/test_blueprint_con
 
 **Goal.** Delete three near-identical `materialise_*` loops.
 
+- [x] Reduce `pipeline/c1.py`, `c2.py`, `c3.py` to mapper families + their parameter sets; register them under `mapper_id`. Rename to shape names once the families are named. **Landed as A-r2:** `state_sector_period.py`, `census_srs_ncp.py`, `wide_measure_columns.py`.
 - [ ] Add `src/prism/pipeline/run.py`: `materialise_vintage(data_root, logs_root, *, slice_id, created_at=None)` — load lineage, dispatch `mapper_id`, checksum, write, report. One implementation.
-- [ ] Reduce `pipeline/c1.py`, `c2.py`, `c3.py` to mapper families + their parameter sets; register them under `mapper_id`. Rename to shape names once the families are named.
 - [ ] `cli.py`: `_VINTAGE_RUNNERS` dict goes; `--slice-id` validates against the catalog.
 - [ ] Delete `materialise_c1_vintage` / `_c2_` / `_c3_` and their re-exports in `pipeline/__init__.py`; re-point the slice tests at the one runner.
 - [ ] Move `PipelineError`, `observation_count`, `trigger_for_records`, `_write_report` out of `pipeline/c1.py` (C3 imports them from C1 today) into `pipeline/run.py`.
@@ -226,8 +226,8 @@ Every phase, without exception: blueprint tests 1–9 (`tests/test_blueprint_con
 
 **Goal.** One retrieve loop over artifact groups.
 
+- [x] Register parsers by `parser_id` in the catalog registry; family modules renamed to shape names (`xlsx_cpi_period`, `census_srs_xlsx_pdf`, `budget_cga_xlsx_pdf_html`, layout helpers). A-r1 in [citizen-system-change-plan.md](citizen-system-change-plan.md).
 - [ ] Extend `ingest/run.py` to: resolve the requested series → their artifacts, fetch each artifact once, store raw per series (hard-link the shared bytes as `ingest_c1` does today), carry companions, then run each series' registered parser over those bytes.
-- [ ] Register parsers by `parser_id` in the catalog registry; keep `parse.py`, `parse_c2*.py`, `parse_c3*.py`, `parse_pdf_layout.py` as the family modules and rename to shape names.
 - [ ] Delete `ingest/c1.py`, `ingest/c2.py`, `ingest/c3.py` once their retrieve behaviour is expressed as artifact groups. Nothing about lineage, `source_changed`, or the `lineage_ok: no` rules changes.
 - [ ] Ingest still writes no observations and imports nothing from `prism.pipeline`.
 
@@ -249,9 +249,12 @@ Every phase, without exception: blueprint tests 1–9 (`tests/test_blueprint_con
 
 #### A5 — guards, then stop (Platform)
 
-- [ ] Test: a fixture slice with a fake producer runs ingest → vintage end to end through the generic runners, touching no C1/C2/C3 module. This is the proof that "a new charter is a catalog file".
-- [ ] Test: `prism.pipeline` imports no `httpx` and nothing from `prism.ingest.retrieve`; `prism.ingest` imports no `Observation`. The two stages stay two stages.
-- [ ] Test: a catalog entry with an unknown `parser_id`, a duplicate `series_id`, or a missing `citation_id` fails `prism catalog validate`.
+**Landed (accuracy gate A-r3, 2026-09-21; import/catalog guards already in `tests/test_catalog.py`).**
+
+- [x] Test: a fixture slice with a fake producer runs ingest → vintage end to end through the generic runners, touching no C1/C2/C3 module. This is the proof that "a new charter is a catalog file".
+- [x] Test: `prism.pipeline` imports no `httpx` and nothing from `prism.ingest.retrieve`; `prism.ingest` imports no `Observation`. The two stages stay two stages.
+- [x] Test: a catalog entry with an unknown `parser_id`, a duplicate `series_id`, or a missing `citation_id` fails `prism catalog validate`.
+- [x] Ingest accuracy gate: `tests/fixtures/ingest/` + `tests/test_ingest_accuracy_gate.py` (citizen plan A-r3).
 
 **Done when.** All three pass. C4 is then a separate programme with its own charter, cards, and method notes — not this one.
 

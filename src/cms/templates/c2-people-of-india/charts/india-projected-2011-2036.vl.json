@@ -35,7 +35,7 @@
     "y": {
       "field": "plotValue",
       "type": "quantitative",
-      "title": "Thousands",
+      "title": null,
       "scale": { "zero": true }
     },
     "tooltip": [

@@ -1,4 +1,4 @@
-"""Map C1 derived tables into a data vintage. Does not fetch and does not publish."""
+"""Map state × sector × period derived tables into a data vintage."""
 
 from __future__ import annotations
 

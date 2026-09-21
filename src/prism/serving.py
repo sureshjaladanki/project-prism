@@ -8,6 +8,7 @@ from html import escape as html_escape
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
+from prism.citizen_projection import citizen_period_label
 from prism.desk_store import load_desk
 from prism.paths import render_complete_path, render_dir
 from prism.pointer_store import read_citizen_pointer, read_preview_pointer
@@ -89,6 +90,7 @@ def chart_payload(served: ServedObservation) -> dict[str, object]:
         "unit": observation.unit,
         "status": observation.status.value,
         "reference_period": observation.reference_period,
+        "period_label": citizen_period_label(observation.reference_period),
         "sector": observation.sector,
         "geography": observation.geography.model_dump(mode="json"),
         "citation": served.citation.model_dump(mode="json"),

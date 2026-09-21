@@ -12,7 +12,7 @@ import httpx
 import pytest
 
 from prism.catalog import default_catalog
-from prism.ingest.parse_c2 import (
+from prism.ingest.census_srs_xlsx_pdf import (
     PARSER,
     parse_census_2011_a02_xls,
     parse_census_2011_pca_sd,

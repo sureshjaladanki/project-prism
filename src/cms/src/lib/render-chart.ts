@@ -322,9 +322,41 @@ function mergeHouse(house: Json, specPart: unknown): Json {
   return { ...fromSpec, ...house };
 }
 
-function firstDisplayScale(spec: Json): string {
+function firstTickScale(spec: Json): string {
+  const fromTick = tickScales(spec);
+  if (fromTick[0] !== undefined && fromTick[0] !== "") {
+    return fromTick[0];
+  }
   const found = displayScales(spec);
-  return found[0] ?? "none";
+  const scale = found[0] ?? "none";
+  return scale === "none" ? "" : scale;
+}
+
+function tickScales(node: unknown): string[] {
+  if (Array.isArray(node)) {
+    return node.flatMap((item) => tickScales(item));
+  }
+  const record = asRecord(node);
+  if (record === undefined) {
+    return [];
+  }
+  const data = asRecord(record.data);
+  const values = data?.values;
+  const fromRows: string[] = [];
+  if (Array.isArray(values)) {
+    for (const row of values) {
+      const item = asRecord(row);
+      if (typeof item?.tick_scale === "string") {
+        fromRows.push(item.tick_scale);
+      }
+    }
+  }
+  return [
+    ...fromRows,
+    ...Object.values(record).flatMap((value) =>
+      value === record.data ? [] : tickScales(value),
+    ),
+  ];
 }
 
 function displayScales(node: unknown): string[] {
@@ -357,13 +389,13 @@ function displayScales(node: unknown): string[] {
 function applyHouseConfig(spec: Json): void {
   const config = asRecord(spec.config) ?? {};
   const house = vegaConfig();
-  const scale = firstDisplayScale(spec);
+  const tickScale = firstTickScale(spec);
   const axisQuantitative = {
     ...(asRecord(house.axisQuantitative) ?? {}),
     labelAngle: 0,
-    ...(scale === "none"
+    ...(tickScale === ""
       ? {}
-      : { labelExpr: `indianFormat(datum.value) + ' ${scale}'` }),
+      : { labelExpr: `indianFormat(datum.value) + ' ${tickScale}'` }),
   };
   spec.config = {
     ...config,
@@ -471,6 +503,28 @@ function applyBarPadding(spec: Json): void {
     top: 4,
     bottom: 8,
   };
+  capCategoryAxis(spec);
+}
+
+function capCategoryAxis(spec: Json): void {
+  const maxExtent = Math.floor(chart.fitWidth * 0.34);
+  for (const encoding of encodings(spec)) {
+    const yEnc = asRecord(encoding.y);
+    if (
+      yEnc === undefined ||
+      (yEnc.type !== "nominal" && yEnc.type !== "ordinal")
+    ) {
+      continue;
+    }
+    const axis = asRecord(yEnc.axis) ?? {};
+    const priorLimit =
+      typeof axis.labelLimit === "number" ? axis.labelLimit : maxExtent;
+    yEnc.axis = {
+      ...axis,
+      labelLimit: Math.min(priorLimit, maxExtent),
+      maxExtent,
+    };
+  }
 }
 
 function dropUndefined(value: Json): Json {

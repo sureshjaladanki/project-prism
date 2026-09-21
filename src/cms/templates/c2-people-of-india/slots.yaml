@@ -314,7 +314,7 @@ slots:
       unit: persons
       status: [value, unknown]
     sort:
-      field: reference_period
+      field: period_label
       never: measure
 
   - slot_id: chart-india-srs-rates-2024

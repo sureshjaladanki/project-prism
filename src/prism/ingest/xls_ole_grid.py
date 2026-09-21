@@ -1,4 +1,4 @@
-"""OLE .xls to a rectangular cell grid. Stop if the workbook cannot be read as cells."""
+"""OLE .xls rectangular cell grid. Stop if the workbook cannot be read as cells."""
 
 from __future__ import annotations
 

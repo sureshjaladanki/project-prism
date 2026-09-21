@@ -13,13 +13,13 @@ import pytest
 
 from prism.catalog import default_catalog
 from prism.ingest import PARSER, ingest_c1
-from prism.ingest.parse import (
+from prism.ingest.retrieve import IngestError
+from prism.ingest.xlsx_cpi_period import (
     parse_cpi_back_series,
     parse_cpi_cfpi,
     parse_cpi_division_group,
     parse_cpi_general,
 )
-from prism.ingest.retrieve import IngestError
 from prism.refresh import (
     CITE_C1_CARD_1,
     CITE_C1_CARD_2,

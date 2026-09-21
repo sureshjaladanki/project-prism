@@ -1,0 +1,5 @@
+state_code,district_code,name,census_year,persons,variation_absolute,variation_percentage,males,females
+00,000,INDIA,1901 $,238396327,,,120791301,117358672
+,,,2011,1210854977,182117541,17.7,623270258,587584719
+12,000,Arunachal Pradesh *,1901,,,,,
+25,000,Daman & Diu,1900,32005,,,16046,15959

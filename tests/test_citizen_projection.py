@@ -153,8 +153,28 @@ def test_catalog_citations_project_without_desk_language() -> None:
         assert_citizen_method_note(note.citizen_note)
 
 
-def test_scale_rates_none_and_counts_cr() -> None:
-    from prism.citizen_projection import project_display_value, scale_for_concept
+def test_citizen_period_label_strips_marks_and_prefixes() -> None:
+    from prism.citizen_projection import citizen_period_label
+
+    assert citizen_period_label("1901 $") == "1901"
+    assert citizen_period_label("1951 @") == "1951"
+    assert citizen_period_label("1981 #") == "1981"
+    assert citizen_period_label("1991 +") == "1991"
+    assert citizen_period_label("2001 ++") == "2001"
+    assert citizen_period_label("2011") == "2011"
+    assert citizen_period_label("end-2024-25") == "2024-25"
+    assert citizen_period_label("actual-2017-18") == "2017-18"
+    assert citizen_period_label("actuals-2024-2025") == "2024-2025"
+    assert citizen_period_label("revised-2025-26") == "2025-26"
+    assert citizen_period_label("budget-2026-27") == "2026-27"
+    assert citizen_period_label("re-2025-26") == "2025-26"
+    assert citizen_period_label("be-2026-27") == "2026-27"
+    assert citizen_period_label("2026-08") == "2026-08"
+
+    from prism.citizen_projection import (
+        project_display_value,
+        scale_for_concept,
+    )
 
     assert scale_for_concept((4.82, 5.52), rate_or_index=True) is DisplayScale.none
     assert scale_for_concept((1_210_854_977,), rate_or_index=False) is DisplayScale.Cr
@@ -182,3 +202,45 @@ def test_scale_rates_none_and_counts_cr() -> None:
     )
     assert hole.chart_value is None
     assert hole.display_string == NOT_PUBLISHED
+
+
+def test_display_string_is_whole_citizen_unit() -> None:
+    from prism.citizen_projection import (
+        assert_display_string,
+        concept_key,
+        magnitude_for_display,
+        project_display_value,
+        scale_for_concept,
+    )
+
+    money = project_display_value(
+        raw_value=3_527_000.0,
+        unit="₹ crore; REVENUE RECEIPTS",
+        status=ObservationStatus.value,
+        scale=DisplayScale.L,
+    )
+    assert money.display_string == "35.27 L Cr"
+    assert "crore" not in money.display_string.lower()
+
+    projected_raw = 1_423_000.0
+    persons = magnitude_for_display(
+        projected_raw, "thousands ('000); projected; 1st March"
+    )
+    assert persons == pytest.approx(1_423_000_000.0)
+    assert concept_key("ncp", "thousands ('000); projected; 1st March") == "headcount"
+    assert concept_key("census", "persons") == "headcount"
+    scale = scale_for_concept((1_210_854_977.0, persons), rate_or_index=False)
+    assert scale is DisplayScale.Cr
+    projected = project_display_value(
+        raw_value=projected_raw,
+        unit="thousands ('000); projected; 1st March",
+        status=ObservationStatus.value,
+        scale=scale,
+    )
+    assert projected.display_string == "142.3 Cr"
+    assert "thousand" not in projected.display_string.lower()
+
+    with pytest.raises(ValueError, match="producer unit word"):
+        assert_display_string("35.27 L crore")
+    with pytest.raises(ValueError, match="producer unit word"):
+        assert_display_string("14.23 L Thousand")

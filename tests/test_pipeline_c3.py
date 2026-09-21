@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 
 from prism.catalog import slice_caveats, slice_citations, slice_geographies
-from prism.ingest.parse_c3 import (
+from prism.ingest.budget_cga_xlsx_pdf_html import (
     AFS_COLUMNS,
     ANNEX1_COLUMNS,
     FA_COLUMNS,
@@ -32,7 +32,7 @@ from prism.paths import (
     preview_pointer_path,
     series_dir,
 )
-from prism.pipeline.c3 import (
+from prism.pipeline.wide_measure_columns import (
     MAPPER_VERSION,
     PipelineError,
     map_c3_table,

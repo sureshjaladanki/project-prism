@@ -20,10 +20,12 @@ from prism.citizen_projection import (
     concept_key,
     indian_grouped,
     is_rate_or_index,
+    magnitude_for_display,
     project_citizen_cite,
     project_citizen_method,
     project_display_value,
     scale_for_concept,
+    tick_scale_label,
 )
 from prism.cms_site import plain_fact_lede, sleeve_path
 from prism.paths import (
@@ -324,6 +326,7 @@ def bind_page(data_root: Path, vintage_id: str, template_dir: Path) -> BoundPage
         raise RenderError(f"unbound template token: {leftover.group(0)}")
     body_html = _tidy_slot_punctuation(body_html)
     body_html = _inject_cite_strip(body_html)
+    body_html = _wire_source_lines(body_html)
     assert_cite_views_complete(body_html)
     fact_lede = plain_fact_lede(body_html)
     return BoundPage(
@@ -670,7 +673,7 @@ def _display_scales(
         key = concept_key(series_id, unit)
         rate_by_key[key] = is_rate_or_index(unit)
         if status is ObservationStatus.value and raw is not None:
-            buckets.setdefault(key, []).append(raw)
+            buckets.setdefault(key, []).append(magnitude_for_display(raw, unit))
 
     for bound in bound_slots.values():
         if isinstance(bound, ServedObservation):
@@ -728,6 +731,7 @@ def _apply_chart_displays(
             )
             row["value"] = display.chart_value
             row["display_scale"] = scale.value
+            row["tick_scale"] = tick_scale_label(scale, unit)
             row["display_string"] = display.display_string
 
 
@@ -1150,9 +1154,8 @@ def _in_text_cite_html(
     periods = periods_by_cite.get(
         citation.citation_id, frozenset({citation.reference_period})
     )
-    panel_id = html.escape(
-        cite_element_id(citation.citation_id, period, periods), quote=True
-    )
+    element_id = cite_element_id(citation.citation_id, period, periods)
+    panel_id = html.escape(f"{element_id}-panel", quote=True)
     return (
         f'<button type="button" class="in-text-cite" popovertarget="{panel_id}">'
         f"{value}</button>"
@@ -1179,7 +1182,7 @@ def _citizen_citation_dl(cite: CitizenCite) -> str:
 
 
 def _cite_panel_html(element_id: str, cite: CitizenCite) -> str:
-    panel_id = html.escape(element_id, quote=True)
+    panel_id = html.escape(f"{element_id}-panel", quote=True)
     return (
         f'<div id="{panel_id}" class="cite-panel" popover>'
         f"{_citizen_citation_dl(cite)}"
@@ -1283,6 +1286,33 @@ def _inject_cite_strip(html_text: str) -> str:
     return html_text[:insert_at] + _cite_strip_from_card(card.group(0)) + html_text[insert_at:]
 
 
+def _wire_source_lines(html_text: str) -> str:
+    """Chart source-lines open the same cite panel as in-text cites (F-source-line-panel)."""
+
+    def replace(match: re.Match[str]) -> str:
+        inner = match.group(1)
+        target = re.search(r'popovertarget="([^"]+)"', inner)
+        if target is None:
+            return match.group(0)
+        cleaned = re.sub(
+            r'<button type="button" class="in-text-cite" popovertarget="[^"]+">(.*?)</button>',
+            r"\1",
+            inner,
+            flags=re.DOTALL,
+        )
+        return (
+            f'<button type="button" class="source-line" '
+            f'popovertarget="{target.group(1)}">{cleaned}</button>'
+        )
+
+    return re.sub(
+        r"<p class=\"source-line\">(.*?)</p>",
+        replace,
+        html_text,
+        flags=re.DOTALL,
+    )
+
+
 def _element_end(html_text: str, open_tag: str) -> int:
     start = html_text.find(open_tag)
     if start == -1:
@@ -1322,19 +1352,24 @@ def _cite_strip_from_card(card_html: str) -> str:
     rest = html.escape(
         f"{fields['Series']} · {fields['Reference period']} · released {release}"
     )
-    dl = re.search(r"<dl>.*?</dl>", card_html, flags=re.DOTALL)
-    if dl is None:
-        raise RenderError("cite strip missing a citation card")
+    card_id = re.search(r'\bid="([^"]+)"', card_html)
+    if card_id is None:
+        raise RenderError("cite strip missing citation card id")
+    panel_id = html.escape(f"{card_id.group(1)}-panel", quote=True)
+    cite_attr = ""
+    cite = re.search(r'data-citation-id="([^"]+)"', card_html)
+    if cite is not None:
+        cite_attr = f' data-citation-id="{html.escape(cite.group(1), quote=True)}"'
     vintage_attr = ""
     vintage = re.search(r'data-vintage-id="([^"]+)"', card_html)
     if vintage is not None:
         vintage_attr = f' data-vintage-id="{html.escape(vintage.group(1), quote=True)}"'
     return (
-        '<details class="citation-card source-byline cite-strip"'
-        f"{vintage_attr}>"
-        f'<summary><span class="cite-producer">{producer}</span>'
-        f'<span class="cite-rest"> · {rest}</span></summary>'
-        f"{dl.group(0)}</details>"
+        f'<button type="button" class="source-byline cite-strip"'
+        f"{cite_attr}{vintage_attr} popovertarget=\"{panel_id}\">"
+        f'<span class="cite-producer">{producer}</span>'
+        f'<span class="cite-rest"> · {rest}</span>'
+        f"</button>"
     )
 
 

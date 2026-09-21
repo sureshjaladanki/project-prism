@@ -160,13 +160,19 @@ CitizenMethod        projection of CaveatNote; one block per page
   lag_note           optional
   absent:            do_not and every other desk field
 
-DisplayValue         bind-time, ruling 6
-  raw_value          as published
+DisplayValue         bind-time, ruling 6 + cms ruling 1
+  raw_value          as published (producer magnitude)
   unit               producer-printed, unchanged
   display_scale      none | K | L | Cr — once per (page, concept)
-  display_string     or the one gap phrase "not published"
+  display_string     the only citizen number string — or "not published".
+                     Includes the scale token (and Cr when the producer
+                     unit is crore). Never concatenates scale with a
+                     producer unit word (no "L crore", no "L Thousand").
   status             Observation.status
-  chart_value        null when status is not value; never a plotted zero for a hole
+  chart_value        scaled magnitude for plots; null when not published
+
+  magnitude:         thousands → persons before scale; crore stays crore-units
+  concepts:          money-crore | headcount | per-series rate/magnitude
 
 CitizenGeography     reserved for /{sleeve}/{slice}/{geo}
   geography_label    "India", "Kerala"

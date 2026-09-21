@@ -5,10 +5,10 @@ Charter Editor. Adopted 2026-09-21 from a packed architectural, web-design, and 
 This is the standing programme for those gaps. It coordinates; it does not replace [catalog-ingest-pipeline-plan.md](catalog-ingest-pipeline-plan.md) or [web-app-execution-plan.md](web-app-execution-plan.md). Closed look work stays in [ui-ux-change-plan.md](../archive/ui-ux-change-plan.md).
 
 ```text
-verdict:        Track C accepted on preview bind; keep the machine
+verdict:        Track A signed; F-rows closed (2026-09-21); stop before B3
 tone_source:    docs/design-philosophy.md (never edited in this programme)
 publish:        none — do not flip citizen_pointer
-next_persona:   ingest-engineer  (A-r1; no B3)
+next_persona:   stop
 ```
 
 One persona per parent pass. Trust Auditor and Source Librarian launch as Cursor agents; do not play them in the parent.
@@ -63,12 +63,14 @@ CaveatNote           vintage record, one new field
   citizen_note       NEW — Methodologist, in catalog caveat YAML
   do_not             stays; desk only; no projection carries it
 
-DisplayValue         bind-time, ruling 6
+DisplayValue         bind-time, ruling 6 + cms ruling 1
   raw_value          as published
   unit               producer-printed, unchanged
   display_scale      none | K | L | Cr — once per (page, concept)
-  display_string     or the one gap phrase "not published"
+  display_string     only citizen number string (scale + Cr when unit is crore);
+                     never "L crore" / "L Thousand"; or "not published"
   status             Observation.status; non-published → chart value null
+  chart_value        scaled magnitude; null when not published
 
 CitizenGeography     land now so S3 needs no schema change later
   geography_label    "India", "Kerala"
@@ -354,7 +356,7 @@ in:             C8 pass; one CitizenCite per observation month; C3 cess
                 hole; not-published FRBM; C2 method leak closed
 out:            citizen_pointer flip; catalog B3; geography folders this wave
 source_class:   unchanged
-next_persona:   ingest-engineer
+next_persona:   platform-architect
 ```
 
 - **Done when:** a recorded verdict exists. **`citizen_pointer` does not move.** Publishing a multi-slice desk is catalog B3 with its own named scope after this programme.
@@ -370,7 +372,9 @@ next_persona:   ingest-engineer
 
 - **Owner:** Ingest Engineer
 - **Signs:** Platform Architect
-- **Files:** `src/prism/ingest/parse.py`, `parse_c2.py`, `parse_c3.py`, `parse_c2_layout.py`, `parse_c3_layout.py` → shape-named modules; `ingest/run.py` stays the single runner
+- **Files:** `src/prism/ingest/xlsx_cpi_period.py`, `census_srs_xlsx_pdf.py`, `budget_cga_xlsx_pdf_html.py`, `xls_ole_grid.py`, `html_table_expand.py`, `pdf_word_columns.py`; shared `parsed_table.py`; `ingest/run.py` stays the single runner
+- **Landed (2026-09-21).** Modules renamed off C-numbers to format + table-shape names. `parser_id` registry and lineage `PARSER` strings unchanged. Runner still selects via catalog `parser_id` → `PARSERS`. No parse behaviour change.
+- **Signed (2026-09-21), Platform Architect.** Shape names + one runner; registries still keyed by `parser_id`; no guess-all parser; refresh contract untouched.
 - **Done when:** no parser module name contains a C-number; each name states format + table shape; runner selects by declared shape; no behaviour change in the rename commit.
 - **Depends on:** D4
 - **Out of scope:** guess-all PDF parser; changing parse behaviour
@@ -381,7 +385,9 @@ next_persona:   ingest-engineer
 
 - **Owner:** Pipeline Engineer
 - **Signs:** Platform Architect
-- **Files:** `src/prism/pipeline/c1.py`, `c2.py`, `c3.py`
+- **Files:** `src/prism/pipeline/state_sector_period.py`, `census_srs_ncp.py`, `wide_measure_columns.py`; `materialise_vintage` stays the single entry in `pipeline/run.py`
+- **Landed (2026-09-21).** Modules renamed off C-numbers to shape names matching catalog `mapper_id` families. `MAPPER_VERSION` strings and map behaviour unchanged.
+- **Signed (2026-09-21), Platform Architect.** Shape modules + `materialise_vintage` single entry; `mapper_id` registry unchanged; no mapping behaviour in the rename.
 - **Done when:** no mapper module name contains a C-number; `materialise_vintage` stays the single entry; no mapping behaviour in the rename commit.
 - **Depends on:** A-r1, C3 (status/unit work lands before the same files churn)
 - **Out of scope:** changing mapping behaviour
@@ -392,7 +398,9 @@ next_persona:   ingest-engineer
 
 - **Owner:** Ingest Engineer
 - **Signs:** Charter Editor, Methodologist
-- **Files:** `tests/fixtures/ingest/`, `tests/`
+- **Files:** `tests/fixtures/ingest/{xlsx_cpi_period,xlsx_census_pca,xls_census_a02,pdf_srs_bulletin,xlsx_budget_receipt,html_cga_monthly}/`, `tests/test_ingest_accuracy_gate.py`
+- **Landed (2026-09-21).** Six producer shapes with licence-safe raw + hand-verified `expected.csv`. Gate runs in the normal pytest suite. Corrupt raw fails (`lineage_ok: no` or parser raises). CPI withheld inflation and Budget blank/`...` cells stay empty in derived CSV — never `"0"`. No `ingest-auditor` persona.
+- **Signed (2026-09-21), Charter Editor + Methodologist.** Ruling 8 stands (no twelfth persona). Offline gate covers the six shapes; holes stay empty, not fabricated zeros. Methodologist: first-layout bar for these shapes is met — withheld/`...`/blank cells must not become numeric zeros at ingest. Charter: Track A accepted; source class unchanged; do not flip `citizen_pointer`; B3 stays out.
 - **Done when:** each producer file shape has a small licence-safe sample and a hand-verified derived table; gate runs offline in the normal test run; a corrupted fixture fails it; a hole in the raw file arrives as non-published status, never a zero. No `ingest-auditor` persona (ruling 8).
 - **Depends on:** A-r1
 - **Out of scope:** network in tests; a new persona; render-time assertions (those are C3/C8)
@@ -400,6 +408,19 @@ next_persona:   ingest-engineer
 - **Covers:** P7, P7-signoff, P5.a-ingest
 
 Source Librarian (launch the agent, not the parent): confirm live card `url`s are producer pages a citizen can open — pack as a job before C8. Geography Steward: no build this wave; sign D1.
+
+#### Track A — closed
+
+```text
+slice:          Track A ingest/vintage machine (A-r1..A-r3)
+in:             shape-named parsers/mappers; offline ingest accuracy gate;
+                catalog A5 guards already in tests
+out:            citizen_pointer flip; B3; guess-all parser; ingest-auditor
+source_class:   unchanged
+next_persona:   platform-architect
+```
+
+Open citizen gaps after Track C + Track A: [cms-system-feedback.md](cms-system-feedback.md) F- rows — **closed 2026-09-21** (compact unit, C2 lede, axis ticks, cite chrome, method fine-print, bar left-gap). Not B3. `citizen_pointer` untouched.
 
 ---
 
@@ -473,7 +494,7 @@ Every id in [citizen-page-feedback.md](citizen-page-feedback.md) maps to at leas
 5. Stop at C9 with a verdict. Do not publish.
 
 ```text
-next_persona:   ingest-engineer
-phase:          A-r1 after C9
-plan:           docs/next/citizen-system-change-plan.md
+next_persona:   stop
+phase:          F-rows closed; do not open B3; citizen_pointer stays put
+plan:           docs/next/cms-system-feedback.md
 ```

@@ -17,7 +17,7 @@ slots: ./slots.yaml
 <p class="byline">Updated {{cite:cite-c3-budget-2026-27-annex1-trends-receipts.release_date}} (Asia/Kolkata). Next named release {{cite:cite-c3-budget-2026-27-annex1-trends-receipts.next_release}}.</p>
 
 <div class="fact-lede">
-<p>In {{period.budget_estimates_2026_27.label}}, Government of India revenue receipts were {{slot:annex1-revenue-receipts-be}} crore of rupees. Total expenditure through the Budget was {{slot:stat1-total-expenditure-be}} crore of rupees. Budget Estimates are the printed plan for that year, not Actuals. Revenue receipts on this line are the Budget’s printed receipts total, not a sum of the tax, non-tax, and capital statements below.</p>
+<p>In {{period.budget_estimates_2026_27.label}}, Government of India revenue receipts were {{slot:annex1-revenue-receipts-be}}. Total expenditure through the Budget was {{slot:stat1-total-expenditure-be}}. Budget Estimates are the printed plan for that year, not Actuals. Revenue receipts on this line are the Budget’s printed receipts total, not a sum of the tax, non-tax, and capital statements below.</p>
 </div>
 
 {{stat-row}}
@@ -68,7 +68,7 @@ In {{period.budget_estimates_2026_27.label}}, tax is printed by major head. Thes
 
 The Budget’s own summary splits spending into central expenditure and transfers. Transfers to States and Union Territories here are Union outgo, not those governments’ own accounts.
 
-In {{period.budget_estimates_2026_27.label}}, central expenditure was {{slot:stat1-central-expenditure-be}} crore of rupees. Transfers were {{slot:stat1-transfers-be}} crore of rupees. Both numbers are the printed Total column.
+In {{period.budget_estimates_2026_27.label}}, central expenditure was {{slot:stat1-central-expenditure-be}}. Transfers were {{slot:stat1-transfers-be}}. Both numbers are the printed Total column.
 
 {{chart:spend-blocks-be}}
 
@@ -76,7 +76,7 @@ In {{period.budget_estimates_2026_27.label}}, central expenditure was {{slot:sta
 
 <p>Central expenditure is printed as establishment, central sector schemes, and other central expenditure. Transfers are printed as centrally sponsored schemes, Finance Commission transfers, and other transfers.</p>
 
-<p>A second printed total, total expenditure through the Budget and resources of public enterprises, was {{slot:stat1-total-with-psu-be}} crore of rupees in the same column. That is a different line from total expenditure through the Budget above.</p>
+<p>A second printed total, total expenditure through the Budget and resources of public enterprises, was {{slot:stat1-total-with-psu-be}} in the same column. That is a different line from total expenditure through the Budget above.</p>
 {{/section}}
 
 {{section}}
@@ -98,7 +98,7 @@ In {{period.budget_estimates_2026_27.label}}, the Budget at a Glance prints fisc
 
 Outstanding liabilities are a stock at year-end, not the year’s deficit and not the year’s net debt receipts.
 
-At end of {{period.actuals_2024_25.year_label}}, Central Government public debt was {{slot:liabilities-public-debt-end-2024-25}} crore of rupees. Other liabilities were {{slot:liabilities-other-end-2024-25}} crore of rupees. Total liabilities were {{slot:liabilities-total-end-2024-25}} crore of rupees.
+At end of {{period.actuals_2024_25.year_label}}, Central Government public debt was {{slot:liabilities-public-debt-end-2024-25}}. Other liabilities were {{slot:liabilities-other-end-2024-25}}. Total liabilities were {{slot:liabilities-total-end-2024-25}}.
 
 {{stat-row}}
 {{stat:liabilities-public-debt-end-2024-25|Public debt}}
@@ -140,7 +140,7 @@ The Budget book, the monthly accounts, and the Finance Accounts are three record
 
 <p>Budget-book Actuals {{period.actuals_2024_25.year_label}} are the Budget’s printed Actuals, not the Finance Accounts. Monthly actuals are unaudited figures for April–July 2026 of financial year 2026-27, against Budget Estimates 2026-27 — not a year-end actual. Finance Accounts {{period.finance_accounts_2024_25.label}} are annual Actuals from the Controller General of Accounts.</p>
 
-<p>The Annual Financial Statement laid with this Budget is a fourth constitutional statement of the same Union accounts family, not a replacement for the Receipt Budget or Expenditure Profile. In {{period.budget_estimates_2026_27.label}} it prints corporation tax as {{slot:afs-corporation-tax-be}} crore of rupees. That is the Annual Financial Statement line, not the Receipt Budget tax-head line above.</p>
+<p>The Annual Financial Statement laid with this Budget is a fourth constitutional statement of the same Union accounts family, not a replacement for the Receipt Budget or Expenditure Profile. In {{period.budget_estimates_2026_27.label}} it prints corporation tax as {{slot:afs-corporation-tax-be}}. That is the Annual Financial Statement line, not the Receipt Budget tax-head line above.</p>
 
 <p class="source-line">Ministry of Finance, Budget Division · Controller General of Accounts · each record as labelled</p>
 {{/section}}

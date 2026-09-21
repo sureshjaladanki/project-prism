@@ -10,7 +10,7 @@ import httpx
 
 from prism.catalog import Catalog, CatalogArtifact, CatalogSeries, default_catalog
 from prism.catalog.registry import PARSERS
-from prism.ingest.parse import ParsedTable
+from prism.ingest.parsed_table import ParsedTable
 from prism.ingest.retrieve import (
     IngestError,
     RetrievedArtifact,

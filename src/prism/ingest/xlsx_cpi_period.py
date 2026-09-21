@@ -1,12 +1,12 @@
-"""Tidy producer tables from MoSPI CPI workbooks. No new concepts."""
+"""Tidy MoSPI CPI xlsx period/index sheets. No new concepts."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 from io import BytesIO
 
 import pandas as pd  # type: ignore[import-untyped]
 
+from prism.ingest.parsed_table import ParsedTable
 from prism.ingest.retrieve import IngestError
 from prism.schema import YesNo
 
@@ -97,15 +97,6 @@ _WITHHELD = frozenset(
     }
 )
 _STATE_CODE_COLUMNS = frozenset({"State Code", "State code"})
-
-
-@dataclass(frozen=True)
-class ParsedTable:
-    csv_text: str
-    row_count: int
-    nulls: str
-    flags: str
-    lineage_ok: YesNo
 
 
 def _is_null(value: object) -> bool:

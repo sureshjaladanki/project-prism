@@ -361,11 +361,18 @@ def test_cite_in_same_view_as_the_number() -> None:
     targets = re.findall(r'class="in-text-cite"[^>]*popovertarget="([^"]+)"', html)
     assert targets
     for target in targets:
+        assert target.endswith("-panel")
+        card_id = target[: -len("-panel")]
         opening = re.search(
-            rf'<details class="citation-card[^"]*" id="{re.escape(target)}"[^>]*>',
+            rf'<details class="citation-card[^"]*" id="{re.escape(card_id)}"[^>]*>',
             html,
         )
         assert opening is not None
+        panel = re.search(
+            rf'<div id="{re.escape(target)}" class="cite-panel" popover>',
+            html,
+        )
+        assert panel is not None
         cite_id = re.search(r'data-citation-id="([^"]+)"', opening.group(0))
         period = re.search(r'data-reference-period="([^"]+)"', opening.group(0))
         assert cite_id is not None
@@ -416,13 +423,15 @@ def test_c1_cite_period_is_one_card_per_month() -> None:
     assert by_cite[general] == {"2026-07", "2026-08"}
     assert by_cite[food] == {"2026-07", "2026-08"}
     strip = re.search(
-        r'<details class="citation-card source-byline cite-strip".*?</details>',
+        r'<button type="button" class="source-byline cite-strip"[^>]*>.*?</button>',
         html,
         flags=re.DOTALL,
     )
     assert strip is not None
-    assert "<dt>Reference period</dt><dd>2026-08</dd>" in strip.group(0)
-    assert "<dt>Reference period</dt><dd>2026-07</dd>" not in strip.group(0)
+    assert "2026-08" in strip.group(0) or "August 2026" in strip.group(0)
+    assert "2026-07" not in strip.group(0)
+    assert 'popovertarget="' in strip.group(0)
+    assert 'data-citation-id="' in strip.group(0)
 
 
 def test_july_final_cite_binds_observation_month() -> None:
