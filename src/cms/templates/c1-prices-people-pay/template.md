@@ -43,9 +43,9 @@ slots: ./slots.yaml
 {{section}}
 <h2 id="food">How fast is food rising?</h2>
 
-In {{period.latest_provisional.label}}, All India Combined food was {{slot:all-india-combined-cfpi-inflation-latest-p}} percent on the Consumer Food Price Index. Food and beverages, a wider basket that also includes drinks and food-processing services, was {{slot:all-india-combined-div01-inflation-latest-p}} percent in the same place and month. Both numbers are official.
+Food and beverages — a wider basket that also includes drinks and food-processing services — was {{slot:all-india-combined-div01-inflation-latest-p}} percent All India Combined in {{period.latest_provisional.label}}. That is a different official series from the Consumer Food Price Index on the first screen; both are published in the same release.
 
-Rural food was {{slot:all-india-rural-cfpi-inflation-latest-p}} percent; urban food was {{slot:all-india-urban-cfpi-inflation-latest-p}} percent.
+On the Consumer Food Price Index alone, rural food was {{slot:all-india-rural-cfpi-inflation-latest-p}} percent and urban food was {{slot:all-india-urban-cfpi-inflation-latest-p}} percent in that month.
 
 {{chart:cfpi-beside-division-01}}
 
@@ -90,7 +90,7 @@ In {{period.latest_provisional.label}}, CPI (General) Combined is printed for ea
 
 <p class="source-line">NSO / MoSPI · CPI (General) Combined · {{period.latest_provisional.label}}</p>
 
-All India is the national unit above, not a bar here. Chandigarh Rural this month: {{slot:chandigarh-rural-general-inflation-latest-p}}. Chandigarh Combined is on the chart.
+Chandigarh Rural this month: {{slot:chandigarh-rural-general-inflation-latest-p}}. Chandigarh Combined is on the chart.
 {{/section}}
 
 {{section}}
@@ -102,7 +102,7 @@ A longer All India Combined run of year-on-year inflation goes through December 
 
 <p class="source-line">NSO / MoSPI · CPI General inflation (All India) · 2013 unpublished</p>
 
-Year-on-year inflation on this run is not published for 2013. That hole is not zero. Filled months begin January 2014.
+Year-on-year inflation on this run is not published for 2013 — not zero. Filled months begin January 2014.
 {{/section}}
 
 <div class="source-stack">
@@ -124,9 +124,9 @@ CPI here is a price index from a price-collection system, not a census of every 
 
 {{slot:caveat-general-population}}
 
-The index is on a 2024 base. Index points and year-on-year inflation (%) are separate observations. A blank inflation cell is a hole, not zero.
+The index is on a 2024 base. Index points and year-on-year inflation (%) are separate observations. A blank inflation cell is not published, not zero.
 
-The latest printed month on this page is still Provisional. The same monthly release also prints Final figures for a different month; those are not a revision of the Provisional month.
+The latest printed month on this page is still Provisional. The same monthly release also prints Final figures for a different month; those are not a revision of the Provisional month. Provisional and Final are different statuses for different months — not two readings of the same month.
 
 Rural, Urban, and Combined are three published sectors. Combined is not a Rural–Urban average made on this page. All India Combined is the producer’s national unit, not a roll-up of State/UT Combined, and not every district.
 

@@ -545,7 +545,7 @@ function applyPortraitFrame(spec: Json): void {
 
 async function compileSvg(spec: Json): Promise<string> {
   const framed = dropUndefined(spec);
-  const compiled = vegaLite.compile(framed as vegaLite.TopLevelSpec).spec;
+  const compiled = vegaLite.compile(framed as unknown as vegaLite.TopLevelSpec).spec;
   const runtime = vega.parse(compiled);
   const view = new vega.View(runtime, { renderer: "none" });
   return await view.toSVG();

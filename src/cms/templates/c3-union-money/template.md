@@ -52,7 +52,7 @@ In {{period.budget_estimates_2026_27.label}}, tax is printed by major head. Thes
 
 <p class="source-line">Ministry of Finance, Budget Division · Receipt Budget, tax revenue · {{period.budget_estimates_2026_27.label}}</p>
 
-<p>GST Compensation Cess on this chart is a hole where the statement prints a blank, not zero.</p>
+<p>GST Compensation Cess on this chart is not published where the statement prints a blank — not zero.</p>
 
 {{stat-row}}
 {{stat:ntr-non-tax-be|Non-tax revenue}}
@@ -66,17 +66,15 @@ In {{period.budget_estimates_2026_27.label}}, tax is printed by major head. Thes
 {{section}}
 <h2 id="spend">What does it spend it on?</h2>
 
-The Budget’s own summary splits spending into central expenditure and transfers. Transfers to States and Union Territories here are Union outgo, not those governments’ own accounts.
-
-In {{period.budget_estimates_2026_27.label}}, central expenditure was {{slot:stat1-central-expenditure-be}}. Transfers were {{slot:stat1-transfers-be}}. Both numbers are the printed Total column.
+The Budget’s own summary splits spending into central expenditure and transfers to States and Union Territories. Transfers here are Union outgo, not those governments’ own accounts. Both figures are Budget Estimates in the printed Total column for {{period.budget_estimates_2026_27.label}} — the plan for that year, not Actuals.
 
 {{chart:spend-blocks-be}}
 
 <p class="source-line">Ministry of Finance, Budget Division · Expenditure Profile, Statement 1 · {{period.budget_estimates_2026_27.label}}</p>
 
-<p>Central expenditure is printed as establishment, central sector schemes, and other central expenditure. Transfers are printed as centrally sponsored schemes, Finance Commission transfers, and other transfers.</p>
+<p>Central expenditure is printed as establishment, central sector schemes, and other central expenditure ({{slot:stat1-central-expenditure-be}}). Transfers are printed as centrally sponsored schemes, Finance Commission transfers, and other transfers ({{slot:stat1-transfers-be}}).</p>
 
-<p>A second printed total, total expenditure through the Budget and resources of public enterprises, was {{slot:stat1-total-with-psu-be}} in the same column. That is a different line from total expenditure through the Budget above.</p>
+<p>A second printed total — total expenditure through the Budget and resources of public enterprises — was {{slot:stat1-total-with-psu-be}} in the same column. That is a different line from total expenditure through the Budget on the first screen.</p>
 {{/section}}
 
 {{section}}
@@ -166,7 +164,7 @@ The Budget book, the monthly accounts, and the Finance Accounts are three record
 
 <!-- cite-view: how-this-is-measured. Prose only. Do not bind an observation here — a number in this view would require a second copy of the citation cards. -->
 
-This page is Union accounts only. States as own governments, Union Territories as own governments, and districts are missing.
+This page is Union accounts only. States as own governments, Union Territories as own governments, and districts are not on this page.
 
 Budget Estimates, Revised Estimates, and Actuals in the same Budget table are different columns. They are not one continuous collect or spend.
 
@@ -176,7 +174,7 @@ Tax, non-tax, capital receipts, the expenditure summary, and deficit statistics 
 
 Monthly accounts are unaudited figures for the months in that snapshot. A later month is not this snapshot.
 
-The FRBM statutory packet is not published as a grid. Macro-economic framework, medium-term fiscal policy, the deviation statement, and the Act’s printed 3 percent, 40 percent, and 60 percent labels are missing as a table — not the collect, spend, deficit, or liabilities figures above.
+The FRBM statutory packet is not published as a grid. Macro-economic framework, medium-term fiscal policy, the deviation statement, and the Act’s printed 3 percent, 40 percent, and 60 percent labels are not published as a table — not the collect, spend, deficit, or liabilities figures above.
 
 Release dates are the laying or news dates. They are not the financial year on the row. Next named release is not printed on these artifacts.
 

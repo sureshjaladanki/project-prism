@@ -295,6 +295,7 @@ Trust after any citizen-facing preview. Charter ship/block last. **No pointer fl
 - **Owner:** Content Editor (editorial rule)
 - **Signs:** Charter Editor, Methodologist
 - **Files:** `src/cms/templates/*/template.md` for C1–C3
+- **Landed (2026-09-22), re-run.** C1: `#food` opens on Food and beverages vs CFPI / rural–urban (no Combined-food chip recap); cut All-India-not-a-bar; gap phrase **not published**. C2: cut All-India aside; rate “how not to misread” → Methodology; fertility gaps without desk imperative; projection source-line drops “thousands”. C3: spend leads with BE vs Actuals / central vs transfers; cess and FRBM wording **not published**. Proof form-factor list for C7: inline lede type still shouty; rate chips may lack unit in cell; bar left-gap / axis keys unchanged (bind/UI — not this pass).
 - **Done when:** Development → Line → Copy → Proof on each slice. Evidence further answers the H1 (not a recap of `.stat-figure`, not a ministry verdict). One method block after the record. No parser name, Frame label, “Table 8”, or `vintage_id` in lede, evidence, source-lines, or chart titles. Chart titles name the thing in citizen words. Four passes, one phase — not a restyle.
 - **Depends on:** C5, D3
 - **Out of scope:** CSS, tokens, routes, a fifth pass
@@ -306,8 +307,9 @@ Trust after any citizen-facing preview. Charter ship/block last. **No pointer fl
 - **Owner:** UI/UX Developer
 - **Signs:** Front-end Architect
 - **Files:** template CSS and `theme.ts` only
-- **Done when:** preview passes design-system v3.1 end to end with C6 copy — one well per page, two voices, first chart edge-aligned on `--card`, cropped chart still shows title, unit, geography, source, holes; method quieter; AA at 360 and 1440.
 - **Landed (2026-09-21).** Preview `http://127.0.0.1:4333` desk `desk-20260921-2f93be5c9ccc`. No `desk.css` / `theme.ts` edit. Measured C1–C3 at 1440 and 360 against v3.1: one well (gap 0, `--radius-lg` 20px, 4px `--mark`), first chart `--card` 1024 / SVG 974, method 17px vs answer 24px (1.41×) at `--measure` ≤65ch, numeric ticks ≤9 chars / 12px, contrast ≥4.5:1, stat figures fit at 360. Do not treat port 4321 as this desk. Front-end Architect sign: routes unchanged (`/prices/retail-prices`, `/people/population`, `/money/union`). Compact-unit axis ticks pass; long category names may ellipsize (not a tick-string fail).
+- **Landed (2026-09-22), re-run after C6.** Preview `http://127.0.0.1:4333` desk `desk-20260922-6dd1f6bafd5e`. No `desk.css` / `theme.ts` edit — C6 was copy/chart-subtitle only; house tokens already match v3.1 (inline `.fact-lede` figures inherit body size; method quieter). Routes unchanged. Proof leftovers that are not CSS (rate unit in cell, axis period keys, bar left-gap) stay Platform/Pipeline/later F-rows — not this pass.
+- **Done when:** preview passes design-system v3.1 end to end with C6 copy — one well per page, two voices, first chart edge-aligned on `--card`, cropped chart still shows title, unit, geography, source, holes; method quieter; AA at 360 and 1440.
 - **Depends on:** C6
 - **Out of scope:** copy edits, schema, bind logic
 - **Size:** M
@@ -324,16 +326,16 @@ Trust after any citizen-facing preview. Charter ship/block last. **No pointer fl
 
 - **Landed (2026-09-21), re-audit after C1 cite-period split.** Independent agent [Trust audit](23f4cc09-5642-4597-851c-41e66fb8d70a). **pass.** Not played in the parent.
 
+- **Landed (2026-09-22), re-audit after C6–C7 re-run.** Independent agent [Trust audit](8fe25feb-4f3e-472d-abd5-860d110726de). **pass.** Not played in the parent.
+
 ```text
 verdict:  pass
-slice:    C1–C3 Track C preview bind (desk-20260921-c4bb12ee6821;
-          /prices/retail-prices, /people/population, /money/union)
+slice:    desk-20260922-6dd1f6bafd5e Track C C8 (C1/C2/C3 preview)
 fails:    none
-notes:    Live bind, not stale data/renders. C1 one catalog id is two
-          CitizenCite cards (--2026-08 and --2026-07); in-text and strip
-          are August. Cess unknown/null; FRBM not published. No desk
-          leak. citizen_pointer untouched. Open F- compact-unit / 2011
-          lede / axis ticks are not this C8 bar.
+notes:    Pointer and desk vintages match. C1 dual cite panels
+          --2026-08/--2026-07 with August strip/lede; Cess unknown/null;
+          FRBM not published; no desk leak; no default rank, red–green,
+          or spin. citizen_pointer untouched.
 next:     charter-editor
 ```
 - **Done when:** every cite opens the producer page for that series; dates match the vintage; no hole plotted as zero (including GST Compensation Cess); no desk field, parser name, Frame label, or `do_not` on the page; no default rank, no red–green; no spin. Taste is out.
@@ -349,11 +351,12 @@ next:     charter-editor
 - **Files:** this plan (verdict block)
 - **Prior verdict (2026-09-21).** First Trust block (cess zero; desk cites). Then C2 method leak. Then T-cite-period. Pointer did not move.
 - **Verdict (2026-09-21).** [Trust audit](23f4cc09-5642-4597-851c-41e66fb8d70a) after the C1 cite-period split. No override of Trust. Track C is **accepted on the preview bind**. **`citizen_pointer` does not move.**
+- **Verdict (2026-09-22), C6–C9 re-run.** [Trust audit](8fe25feb-4f3e-472d-abd5-860d110726de) after Content Editor C6 (P1 explainer) + C7 presentation (no CSS). No override of Trust. Track C **preview bind accepted** on `desk-20260922-6dd1f6bafd5e`. **`citizen_pointer` does not move.**
 
 ```text
 slice:          Track C citizen surface (C1–C3 templates + bind projection)
-in:             C8 pass; one CitizenCite per observation month; C3 cess
-                hole; not-published FRBM; C2 method leak closed
+in:             C6 explainer evidence; C8 pass on desk-20260922-6dd1f6bafd5e;
+                C1 dual cites; C3 cess hole; not-published FRBM
 out:            citizen_pointer flip; catalog B3; geography folders this wave
 source_class:   unchanged
 next_persona:   platform-architect

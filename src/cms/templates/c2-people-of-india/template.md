@@ -49,7 +49,7 @@ Census 2011 prints a Total count for each State and Union Territory on that map.
 
 <p class="source-line">Office of the Registrar General &amp; Census Commissioner, India · Census 2011, Total · {{period.census_2011.label}}</p>
 
-<p>India Total is the national unit above, not a bar here. Districts in the same workbook are not on this page. Telangana and Ladakh are not on this 2011 list. Daman &amp; Diu and Dadra &amp; Nagar Haveli are two rows.</p>
+<p>Districts in the same workbook are not on this page. Telangana and Ladakh are not on this 2011 list. Daman &amp; Diu and Dadra &amp; Nagar Haveli are two rows.</p>
 {{/section}}
 
 {{section}}
@@ -61,13 +61,13 @@ India Total census counts are printed for census years from 1901 through 2011. T
 
 <p class="source-line">Office of the Registrar General &amp; Census Commissioner, India · census years 1901–2011</p>
 
-<p>A blank or not-available cell is a hole, not zero. This table is not a 2024 headcount and not a birth rate.</p>
+<p>A blank or not-available cell is not published, not zero. This table is not a 2024 headcount and not a birth rate.</p>
 {{/section}}
 
 {{section}}
 <h2 id="births-deaths">What do 2024 birth and death rates say?</h2>
 
-These are Sample Registration System rates for {{period.srs_2024.label}}, not a census count. They are not multiplied by the 2011 headcount on this page.
+These are Sample Registration System rates for {{period.srs_2024.label}} — survey estimates for that year, not a census count.
 
 <p>In that year, India’s Total birth rate was {{slot:india-birth-rate-2024}}. The death rate was {{slot:india-death-rate-2024}}. The infant mortality rate was {{slot:india-imr-2024}}.</p>
 
@@ -81,7 +81,7 @@ These are Sample Registration System rates for {{period.srs_2024.label}}, not a 
 
 <p class="source-line">Office of the Registrar General of India, Vital Statistics Division · SRS Bulletin · {{period.srs_2024.label}}</p>
 
-<p>Rates are not “how many people live in India.” This bulletin does not print total fertility. Manipur carries a sample footnote on the table of record.</p>
+<p>Manipur carries a sample footnote on the table of record. Total fertility is on the statistical report below, not this bulletin.</p>
 {{/section}}
 
 {{section}}
@@ -97,21 +97,21 @@ These are Sample Registration System rates for {{period.srs_2024.label}}, not a 
 
 <p class="source-line">Office of the Registrar General &amp; Census Commissioner, India · SRS Statistical Report 2024 · {{period.srs_2024.label}}</p>
 
-<p>This report’s main fertility table is India and bigger States and Union Territories as printed. Smaller States, most Union Territories, and districts are missing here. Do not fill those holes from the bulletin above.</p>
+<p>This report’s main fertility table covers India and the bigger States and Union Territories as printed. Smaller States, most Union Territories, and districts are not published on that table.</p>
 {{/section}}
 
 {{section}}
 <h2 id="projection">What does the official projection print?</h2>
 
-A 2019 technical-group report prints projected population in thousands as on 1 March, 2011 to 2036. That is a projection, not a census. The 2011 column is not the Census 2011 count above.
+A 2019 technical-group report projects population as on 1 March for each year from 2011 to 2036. That is a projection, not a census. The 2011 column on that table is not the Census 2011 count above.
 
-On {{period.projection_2026.label}}, the official projection prints {{slot:india-projected-persons-2026}} people for India, Persons.
+On {{period.projection_2026.label}}, the official projection for India, Persons, is {{slot:india-projected-persons-2026}}.
 
 {{chart:india-projected-2011-2036}}
 
-<p class="source-line">National Commission on Population, Ministry of Health &amp; Family Welfare · projected population, thousands, 1 March</p>
+<p class="source-line">National Commission on Population, Ministry of Health &amp; Family Welfare · projected population, 1 March</p>
 
-<p>A 2026 cell is still that 2019 report. It does not close the missing later census. The projection is not joined to the 1901–2011 census line.</p>
+<p>A 2026 cell is still that 2019 report. It does not replace a later census. The projection is not joined to the 1901–2011 census line.</p>
 {{/section}}
 
 <div class="source-stack">
@@ -137,7 +137,7 @@ Census 2011 counts everyone enumerated on the published India and State or Union
 
 The 2011 Census map does not include Telangana or Ladakh as State or UT rows. Daman &amp; Diu and Dadra &amp; Nagar Haveli are separate.
 
-Birth, death, and infant mortality rates on this page are 2024 survey estimates. They are not a headcount. Total fertility lives on the statistical report, whose main tables miss smaller States and Union Territories.
+Birth, death, and infant mortality rates on this page are 2024 survey estimates. They are not a headcount and are not multiplied by the 2011 census Total. They do not answer “how many people live in India.” Total fertility lives on the statistical report, whose main tables do not publish smaller States and most Union Territories. Do not fill those gaps from the bulletin’s rate tables.
 
 The official projection is from the 2019 Technical Group report, as on 1 March. The producer prints thousands of persons; compact display on this page uses the same scale as census person counts. That does not make the projection a census. Its 2011 column is a smoothed projected base, not the Census 2011 count. A later year on that table is not an enumeration.
 

@@ -4,11 +4,11 @@ description: >-
   Routes work to the project-prism agent personas (Charter Editor, Source
   Librarian, Geography Steward, Ingest Engineer, Methodologist, Pipeline
   Engineer, Platform Architect, Front-end Architect, UI/UX Developer, Content
-  Editor, Trust Auditor).
+  Editor, Trust Auditor) and the outside-roster Principal advisor.
   Use when scoping a slice, citing official Indian statistics, ingesting
   government data, running data vintages, writing methodology notes, designing
-  citizen routes, setting the visual contract, building the civic CMS, or
-  auditing for spin.
+  citizen routes, setting the visual contract, building the civic CMS,
+  auditing for spin, or a citizen read of preview.
 ---
 
 # Agent personas
@@ -22,4 +22,4 @@ description: >-
 7. **UI/UX Developer:** also read `docs/design-system.md`. Do not apply that file as site IA or as citizen copy.
 8. If a billed model is needed, pack the same way. Maximise Cursor vs billed quota (`docs/agent-guidelines.md`).
 
-Do not mix two personas in one pass. Do not skip Trust Auditor on citizen-facing work. The visual contract and civic CMS are UI/UX Developer against `docs/design-system.md`. The presentation pass (visual consistency, type/formatting, chart form factor) is UI/UX Developer against that file — not Front-end Architect, not Trust, not a fifth Content Editor writing pass. Site IA, URLs, SEO, and preview HTTP are Front-end Architect against `docs/web-design.md`.
+Do not mix two personas in one pass. Do not skip Trust Auditor on citizen-facing work. Principal (`docs/personas/principal.md`) is outside the roster: independent advisor who reads preview as a citizen and hands notes to Charter Editor — not crew, not a ship gate, not a Trust substitute. The visual contract and civic CMS are UI/UX Developer against `docs/design-system.md`. The presentation pass (visual consistency, type/formatting, chart form factor) is UI/UX Developer against that file — not Front-end Architect, not Trust, not a fifth Content Editor writing pass. Site IA, URLs, SEO, and preview HTTP are Front-end Architect against `docs/web-design.md`.

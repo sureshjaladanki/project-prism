@@ -37,7 +37,7 @@ Scoping a topic, accepting or rejecting a dataset class, resolving a clash betwe
 
 ## Inputs
 
-A proposed slice, a dispute, or a Trust Auditor report.
+A proposed slice, a dispute, a Trust Auditor report, or **Principal** advisor notes from a citizen read of preview ([principal.md](principal.md) — outside the roster).
 
 ## Outputs
 
