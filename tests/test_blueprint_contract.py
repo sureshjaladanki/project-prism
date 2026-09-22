@@ -395,11 +395,12 @@ def test_cite_in_same_view_as_the_number() -> None:
     assert 'class="caveat-note' not in measured
 
 
-def test_c1_chart_rows_carry_display_scale() -> None:
+def test_c1_chart_rows_carry_axis_label() -> None:
     page = bind_c1_page(DATA_ROOT, C1_VINTAGE_ID, CMS_ROOT)
     blob = json.dumps(page.charts)
-    assert '"display_scale": "none"' in blob
+    assert '"axis_label": ""' in blob or '"tick_scale": ""' in blob
     assert "121.09 Cr" not in page.body_html
+    assert "0.35 Cr" not in page.body_html
 
 
 def test_c1_cite_period_is_one_card_per_month() -> None:
@@ -642,11 +643,12 @@ def test_fact_lede_one_line_keeps_decimal_in_first_sentence() -> None:
 
     text = (
         "Year-on-year inflation was 4.82 percent as of August 2026, "
-        "All India Combined. Food was 2.15 percent."
+        "All India Combined. Food was 2.15 percent. "
+        "It is the change in prices households pay."
     )
     assert fact_lede_one_line(text) == (
         "Year-on-year inflation was 4.82 percent as of August 2026, "
-        "All India Combined."
+        "All India Combined. Food was 2.15 percent."
     )
 
 

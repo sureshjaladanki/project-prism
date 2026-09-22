@@ -493,6 +493,52 @@ function valueLabelPad(spec: Json): number {
   return Math.max(24, Math.ceil(longest * glyph) + 12);
 }
 
+function categoryLabels(spec: Json, field: string): string[] {
+  const labels: string[] = [];
+  const walk = (node: unknown): void => {
+    if (Array.isArray(node)) {
+      for (const item of node) {
+        walk(item);
+      }
+      return;
+    }
+    const record = asRecord(node);
+    if (record === undefined) {
+      return;
+    }
+    const data = asRecord(record.data);
+    const values = data?.values;
+    if (Array.isArray(values)) {
+      for (const row of values) {
+        const item = asRecord(row);
+        const raw = item?.[field];
+        if (typeof raw === "string" && raw.trim() !== "") {
+          labels.push(raw.trim());
+        }
+      }
+    }
+    for (const value of Object.values(record)) {
+      if (value !== record.data) {
+        walk(value);
+      }
+    }
+  };
+  walk(spec);
+  return labels;
+}
+
+function categoryAxisExtent(spec: Json, field: string): number {
+  const maxCap = Math.floor(chart.fitWidth * 0.34);
+  const labels = categoryLabels(spec, field);
+  if (labels.length === 0) {
+    return Math.min(120, maxCap);
+  }
+  const longest = labels.reduce((max, label) => Math.max(max, label.length), 0);
+  const glyph = chart.labelSize * 0.55;
+  const needed = Math.ceil(longest * glyph) + 12;
+  return Math.min(Math.max(needed, 48), maxCap);
+}
+
 function applyBarPadding(spec: Json): void {
   if (!hasBarLayer(spec) && !isStepHeight(spec.height)) {
     return;
@@ -507,7 +553,6 @@ function applyBarPadding(spec: Json): void {
 }
 
 function capCategoryAxis(spec: Json): void {
-  const maxExtent = Math.floor(chart.fitWidth * 0.34);
   for (const encoding of encodings(spec)) {
     const yEnc = asRecord(encoding.y);
     if (
@@ -516,13 +561,15 @@ function capCategoryAxis(spec: Json): void {
     ) {
       continue;
     }
+    const field = typeof yEnc.field === "string" ? yEnc.field : "label";
+    const extent = categoryAxisExtent(spec, field);
     const axis = asRecord(yEnc.axis) ?? {};
     const priorLimit =
-      typeof axis.labelLimit === "number" ? axis.labelLimit : maxExtent;
+      typeof axis.labelLimit === "number" ? axis.labelLimit : extent;
     yEnc.axis = {
       ...axis,
-      labelLimit: Math.min(priorLimit, maxExtent),
-      maxExtent,
+      labelLimit: Math.min(priorLimit, extent),
+      maxExtent: extent,
     };
   }
 }

@@ -89,14 +89,19 @@ citation_id:        (required)
 caveat_id:          (required)
 geography:          { code, geography_vintage, code_system }
 reference_period:
-value:              (number, or null)
-unit:
+value:              (number, or null) — as the producer printed it
+unit:               (string the cite card shows — as the producer printed it)
+denomination:       magnitude the producer printed, paired with the measure:
+                    magnitude: ones | thousand | lakh | crore
+                    measure:   rupees | persons | percent | rate | index | count | …
 status:             value | unknown | withheld | delayed | withdrawn
                     | not_comparable | series_break
 lineage:            { raw_path, derived_path, checksum }
 ```
 
-If `citation_id`, `caveat_id`, or `geography.geography_vintage` is missing, the write fails. Do not drop the field so a chart can render.
+If `citation_id`, `caveat_id`, `geography.geography_vintage`, or `denomination` is missing, the write fails. Do not drop the field so a chart can render.
+
+`value` and `unit` stay exactly as the producer printed them. Ingest does not normalise to ones. A ₹ crore column stays `crore` of `rupees`. A thousands-of-persons column stays `thousand` of `persons`. Percent, rates, and indices carry magnitude `ones` and are never converted.
 
 Two official series that disagree are two observations, each with its own citation and caveat. The model does not pick a winner.
 
@@ -141,11 +146,15 @@ Binding (`template_id`, `vintage_id`) is a desk field, not a template field. If 
 
 Built at bind from a vintage. Not stored as a second vintage. Projector: `src/prism/citizen_projection.py`. Bind calls `project_*`. The renderer must not receive a desk field.
 
+At bind, once: a single function converts `value × denomination` to a **canonical** amount in base units (rupees, persons) for money and headcount. Percent, rates, and indices have denomination magnitude `ones` and are never converted and never compacted. At render, one formatter produces the citizen string from the canonical amount on the Indian ladder: thousand / `K`, lakh / `L`, crore / `Cr`, lakh crore / `L Cr`. The token is the entire unit; the producer's `unit` word never sits beside it.
+
+Scale is chosen per **scale group** declared by the template — a chart axis and the chips that quote that chart. Never inferred from a page-wide concept bucket. Liabilities cannot set the scale for revenue receipts.
+
 ```text
 CitizenCite          projection of Citation
   producer           office, linked via url
   url
-  series             as the producer names it
+  series             as the producer names it (no group / table / COICOP codes)
   reference_period   observation period on this card; one catalog citation
                      used for two months is two CitizenCite records
   released           human date (Asia/Kolkata)
@@ -160,19 +169,34 @@ CitizenMethod        projection of CaveatNote; one block per page
   lag_note           optional
   absent:            do_not and every other desk field
 
-DisplayValue         bind-time, ruling 6 + cms ruling 1
-  raw_value          as published (producer magnitude)
-  unit               producer-printed, unchanged
-  display_scale      none | K | L | Cr — once per (page, concept)
-  display_string     the only citizen number string — or "not published".
-                     Includes the scale token (and Cr when the producer
-                     unit is crore). Never concatenates scale with a
-                     producer unit word (no "L crore", no "L Thousand").
+CitizenNumber        bind-time citizen figure (replaces DisplayValue)
+  canonical_value    base units (rupees, persons) or the published rate/index
+  measure            rupees | persons | percent | rate | index | count
+  text               the only citizen number string — or "not published"
+  chart_value        the value plotted, in the chart's declared scale group
+  axis_label         the compact token for that group (K | L | Cr | L Cr | …)
   status             Observation.status
-  chart_value        scaled magnitude for plots; null when not published
+  absent:            display_scale, concept_key, producer unit word
 
-  magnitude:         thousands → persons before scale; crore stays crore-units
-  concepts:          money-crore | headcount | per-series rate/magnitude
+  Record fields stay on the observation and the cite card: raw `value`,
+  `unit`, and `denomination`. CitizenNumber.text is the page.
+
+CitizenChange        bind-time movement between two observations
+  current            CitizenNumber (this period)
+  prior              CitizenNumber (prior published period, same series)
+  prior_period       citizen period label
+  direction          higher | lower | unchanged
+  difference         formatted difference, or "not comparable"
+  citation_id        the prior observation's own cite
+
+  Both sides are observations of the same series in the same vintage.
+  The only arithmetic is subtraction (and, where Methodologist signs it,
+  a published ratio). If a series_break or not_comparable status lies
+  between them, difference is the citizen phrase for a break and the
+  template shows both figures without joining them. If the prior
+  observation is absent, the slot renders "not published" — never a
+  remembered number. Prism may name this as analysis beside the
+  producer cite; the producer stays the producer.
 
 CitizenGeography     reserved for /{sleeve}/{slice}/{geo}
   geography_label    "India", "Kerala"
@@ -180,7 +204,9 @@ CitizenGeography     reserved for /{sleeve}/{slice}/{geo}
   absent:            geography_vintage (desk / vintage GeographyRef only)
 ```
 
-Observation `status` is the only source of a hole.
+Observation `status` is the only source of a hole. A published zero (`status: value`, `value: 0`) and a gap (`unknown` / `withheld`) are verbally and visually distinct; the citizen phrase for a gap is **not published**.
+
+`DisplayScale`, `scale_for_concept`, `concept_key`, and `apply_scale` are removed. Peak-driven, concept-lumped scaling is not part of this contract.
 
 ## Pointers
 

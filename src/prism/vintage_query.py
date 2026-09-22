@@ -11,6 +11,9 @@ from prism.paths import OBSERVATIONS_FILENAME, series_dir, vintage_dir
 from prism.schema import (
     CodeSystem,
     Completeness,
+    Denomination,
+    DenominationMagnitude,
+    DenominationMeasure,
     GeographyRef,
     Observation,
     ObservationLineage,
@@ -172,6 +175,8 @@ def _fetch_observations(
 
 
 def _observation_from_row(row: dict[str, object]) -> Observation:
+    from prism.citizen_projection import denomination_from_unit
+
     citation_id = _text(row, "citation_id")
     caveat_id = _text(row, "caveat_id")
     geography_vintage = _text(row, "geography_vintage")
@@ -184,6 +189,17 @@ def _observation_from_row(row: dict[str, object]) -> Observation:
     value = row["value"]
     if value is not None and not isinstance(value, int | float):
         raise VintageQueryError(f"observation value is not a number: {value!r}")
+    unit = _text(row, "unit")
+    mag = row.get("denomination_magnitude")
+    measure = row.get("denomination_measure")
+    if isinstance(mag, str) and mag != "" and isinstance(measure, str) and measure != "":
+        denomination = Denomination(
+            magnitude=DenominationMagnitude(mag),
+            measure=DenominationMeasure(measure),
+        )
+    else:
+        # Prior vintages without denomination columns: derive at read; new writes carry it.
+        denomination = denomination_from_unit(unit)
     return Observation(
         observation_id=_text(row, "observation_id"),
         series_id=_text(row, "series_id"),
@@ -197,7 +213,8 @@ def _observation_from_row(row: dict[str, object]) -> Observation:
         sector=_text(row, "sector"),
         reference_period=_text(row, "reference_period"),
         value=None if value is None else float(value),
-        unit=_text(row, "unit"),
+        unit=unit,
+        denomination=denomination,
         status=ObservationStatus(_text(row, "status")),
         lineage=ObservationLineage(
             raw_path=_text(row, "lineage_raw_path"),

@@ -16,6 +16,8 @@ export const color = {
   break: "#332E27",
   holeBand: "#E7E0D2",
   ruleStrong: "#8C8370",
+  /** Bound answer clause only — warm/navy family, not magenta, not link colour alone. */
+  thesisMark: "#243F5C",
 } as const;
 
 export const type = {
@@ -83,6 +85,7 @@ export const cssVars: Record<string, string> = {
   focus: color.focus,
   break: color.break,
   "rule-strong": color.ruleStrong,
+  "thesis-mark": color.thesisMark,
   "space-1": space[1],
   "space-2": space[2],
   "space-3": space[3],

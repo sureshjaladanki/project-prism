@@ -1,8 +1,8 @@
 # Principal review guidelines
 
-Principal (advisor; outside roster). How a citizen preview read finds fails, how those fails generalize into semantic patterns, and how to apply the patterns across the CMS desk. Charter Editor routes; this file does not amend [editorial-guidelines.md](../editorial-guidelines.md), [design-system.md](../design-system.md), or [web-design.md](../web-design.md).
+Principal (advisor; outside roster). How a citizen preview read finds fails, how those fails generalize into semantic patterns, and how to apply the patterns across the CMS desk. Charter Editor routes; this file does not amend [editorial-guidelines.md](editorial-guidelines.md), [design-system.md](design-system.md), or [web-design.md](web-design.md).
 
-Seed notes: [citizen-page-feedback.md](citizen-page-feedback.md), [cms-system-feedback.md](cms-system-feedback.md). Programme: [citizen-system-change-plan.md](citizen-system-change-plan.md).
+Seed notes: [citizen-page-feedback.md](archive/citizen-page-feedback.md), [cms-system-feedback.md](archive/cms-system-feedback.md). Programme: [citizen-system-change-plan.md](archive/citizen-system-change-plan.md).
 
 ```text
 role:           principal (advisor; outside roster)
@@ -329,5 +329,5 @@ next:           charter-editor
 
 - Trust pass/block, cite URL audits, cell spot-checks.
 - Contract patches to editorial, design-system, or web-design.
-- Scheduling (see [citizen-system-change-plan.md](citizen-system-change-plan.md)).
+- Scheduling (see [citizen-system-change-plan.md](archive/citizen-system-change-plan.md)).
 - Inventing geography doorways or a twelfth persona.

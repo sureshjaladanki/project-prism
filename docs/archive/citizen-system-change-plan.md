@@ -2,7 +2,7 @@
 
 Charter Editor. Adopted 2026-09-21 from a packed architectural, web-design, and UI/UX review (Claude Opus; judgment only, no code). Gaps: [citizen-page-feedback.md](citizen-page-feedback.md). Tone: [design-philosophy.md](../design-philosophy.md). Machine: [architectural-blueprint.md](../architectural-blueprint.md). IA: [web-design.md](../web-design.md). House: [design-system.md](../design-system.md).
 
-This is the standing programme for those gaps. It coordinates; it does not replace [catalog-ingest-pipeline-plan.md](catalog-ingest-pipeline-plan.md) or [web-app-execution-plan.md](web-app-execution-plan.md). Closed look work stays in [ui-ux-change-plan.md](../archive/ui-ux-change-plan.md).
+This is the standing programme for those gaps. It coordinates; it does not replace [catalog-ingest-pipeline-plan.md](../next/catalog-ingest-pipeline-plan.md) or [web-app-execution-plan.md](../next/web-app-execution-plan.md). Closed look work stays in [ui-ux-change-plan.md](ui-ux-change-plan.md).
 
 ```text
 verdict:        Track A signed; F-rows closed (2026-09-21); stop before B3
@@ -112,7 +112,7 @@ One contract sentence, no folders: `/{sleeve}/{slice}/{geo}` is a full slice (ow
 
 ### Still owed, not this programme
 
-`robots.txt` and sitemap on the citizen prefix wait for a second published slice ([web-app-execution-plan.md](web-app-execution-plan.md) Phase 4). This programme does not flip the pointer.
+`robots.txt` and sitemap on the citizen prefix wait for a second published slice ([web-app-execution-plan.md](../next/web-app-execution-plan.md) Phase 4). This programme does not flip the pointer.
 
 ---
 
@@ -152,7 +152,7 @@ Measurable boxes for compact units: axis ticks ≥ 12px, ≤ 9 characters, no tr
 | E | Gap copy | Ruling 5: one phrase, **not published**. `miss_copy` is the only source. | `template_bind.py` `_slot_html`; design-system names the primitive | hardcoded `"unknown / not a table"` |
 | F | Caveat blob with `do_not` | Ruling 2: one `CitizenMethod` block. Desk notes never reach bind. | `schema.py`, data-contracts, `_caveat_block_html` | field-dump helper; `do_not` stays on the caveat card |
 | G | Compact K/L/Cr unspecified | Ruling 6: bind, per concept per page; vintage `unit` untouched; rates/indices `none`. | data-contracts (`DisplayValue`); design-system (fit/axis) | neither; both gain text |
-| H | Stale catalog checkboxes | Code is the truth. A1, A4, B1, B2 largely landed. Cite-identity is this programme (deferred from B2 out-of-scope). | [catalog-ingest-pipeline-plan.md](catalog-ingest-pipeline-plan.md) | plan file → code |
+| H | Stale catalog checkboxes | Code is the truth. A1, A4, B1, B2 largely landed. Cite-identity is this programme (deferred from B2 out-of-scope). | [catalog-ingest-pipeline-plan.md](../next/catalog-ingest-pipeline-plan.md) | plan file → code |
 
 Charter rulings 1–9 in [citizen-page-feedback.md](citizen-page-feedback.md) stand. This file does not invent a second vision.
 
@@ -499,5 +499,5 @@ Every id in [citizen-page-feedback.md](citizen-page-feedback.md) maps to at leas
 ```text
 next_persona:   stop
 phase:          F-rows closed; do not open B3; citizen_pointer stays put
-plan:           docs/next/cms-system-feedback.md
+plan:           docs/archive/cms-system-feedback.md
 ```

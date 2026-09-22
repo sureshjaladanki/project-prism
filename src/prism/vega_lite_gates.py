@@ -34,6 +34,9 @@ def assert_chart_rows_cited(rows: list[dict[str, object]]) -> None:
 
 
 def assert_state_axis_not_ranked(spec: dict[str, Any]) -> None:
+    """Default: alphabetical. Measure-sort only when the chart declares a rank caption."""
+    if _chart_declares_rank_caption(spec):
+        return
     for encoding in _encodings(spec):
         for channel, axis in encoding.items():
             if channel not in {"x", "y"} or not isinstance(axis, dict):
@@ -43,6 +46,13 @@ def assert_state_axis_not_ranked(spec: dict[str, Any]) -> None:
             sort = axis.get("sort")
             if _sort_is_measure(sort, encoding, channel):
                 raise ChartSpecError("state/UT axis must not be sorted by a measure")
+
+
+def _chart_declares_rank_caption(spec: dict[str, Any]) -> bool:
+    meta = spec.get("usermeta")
+    if not isinstance(meta, dict):
+        return False
+    return meta.get("rank_caption") is True
 
 
 def assert_no_red_green_diverging(spec: dict[str, Any]) -> None:

@@ -88,6 +88,8 @@ def chart_payload(served: ServedObservation) -> dict[str, object]:
         "series_id": observation.series_id,
         "value": observation.value if published else None,
         "unit": observation.unit,
+        "denomination_magnitude": observation.denomination.magnitude.value,
+        "denomination_measure": observation.denomination.measure.value,
         "status": observation.status.value,
         "reference_period": observation.reference_period,
         "period_label": citizen_period_label(observation.reference_period),
@@ -100,7 +102,7 @@ def chart_payload(served: ServedObservation) -> dict[str, object]:
 
 
 def assert_hole_never_plotted_as_zero(row: dict[str, object]) -> None:
-    """Fail a GST Compensation Cess (or any non-published) row plotted as 0."""
+    """Fail a gap (or GST Compensation Cess) row plotted as numeric zero. Blueprint test 11."""
 
     label = f"{row.get('head_name', '')} {row.get('unit', '')}"
     cess = GST_COMPENSATION_CESS in label
@@ -108,6 +110,8 @@ def assert_hole_never_plotted_as_zero(row: dict[str, object]) -> None:
     value = row.get("value")
     if not published and value is not None:
         raise ServeError("non-published chart value must be null")
+    if not published and value == 0:
+        raise ServeError("gap plotted as zero")
     if cess and value == 0:
         raise ServeError("GST Compensation Cess hole plotted as zero")
 

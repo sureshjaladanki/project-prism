@@ -226,7 +226,7 @@ Every phase, without exception: blueprint tests 1–9 (`tests/test_blueprint_con
 
 **Goal.** One retrieve loop over artifact groups.
 
-- [x] Register parsers by `parser_id` in the catalog registry; family modules renamed to shape names (`xlsx_cpi_period`, `census_srs_xlsx_pdf`, `budget_cga_xlsx_pdf_html`, layout helpers). A-r1 in [citizen-system-change-plan.md](citizen-system-change-plan.md).
+- [x] Register parsers by `parser_id` in the catalog registry; family modules renamed to shape names (`xlsx_cpi_period`, `census_srs_xlsx_pdf`, `budget_cga_xlsx_pdf_html`, layout helpers). A-r1 in [citizen-system-change-plan.md](../archive/citizen-system-change-plan.md).
 - [ ] Extend `ingest/run.py` to: resolve the requested series → their artifacts, fetch each artifact once, store raw per series (hard-link the shared bytes as `ingest_c1` does today), carry companions, then run each series' registered parser over those bytes.
 - [ ] Delete `ingest/c1.py`, `ingest/c2.py`, `ingest/c3.py` once their retrieve behaviour is expressed as artifact groups. Nothing about lineage, `source_changed`, or the `lineage_ok: no` rules changes.
 - [ ] Ingest still writes no observations and imports nothing from `prism.pipeline`.

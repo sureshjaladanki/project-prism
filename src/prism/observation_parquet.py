@@ -10,6 +10,9 @@ import pyarrow.parquet as pq  # type: ignore[import-untyped]
 from prism.schema import (
     OBSERVATION_PARQUET_COLUMNS,
     CodeSystem,
+    Denomination,
+    DenominationMagnitude,
+    DenominationMeasure,
     GeographyRef,
     Observation,
     ObservationLineage,
@@ -29,6 +32,8 @@ _PARQUET_SCHEMA = pa.schema(
         ("reference_period", pa.string()),
         ("value", pa.float64()),
         ("unit", pa.string()),
+        ("denomination_magnitude", pa.string()),
+        ("denomination_measure", pa.string()),
         ("status", pa.string()),
         ("lineage_raw_path", pa.string()),
         ("lineage_derived_path", pa.string()),
@@ -67,6 +72,8 @@ def observations_to_parquet(observations: tuple[Observation, ...]) -> bytes:
         columns["reference_period"].append(item.reference_period)
         columns["value"].append(item.value)
         columns["unit"].append(item.unit)
+        columns["denomination_magnitude"].append(item.denomination.magnitude.value)
+        columns["denomination_measure"].append(item.denomination.measure.value)
         columns["status"].append(item.status.value)
         columns["lineage_raw_path"].append(item.lineage.raw_path)
         columns["lineage_derived_path"].append(item.lineage.derived_path)
@@ -106,6 +113,10 @@ def observations_from_parquet(payload: bytes) -> tuple[Observation, ...]:
                 reference_period=row["reference_period"],
                 value=row["value"],
                 unit=row["unit"],
+                denomination=Denomination(
+                    magnitude=DenominationMagnitude(row["denomination_magnitude"]),
+                    measure=DenominationMeasure(row["denomination_measure"]),
+                ),
                 status=ObservationStatus(row["status"]),
                 lineage=ObservationLineage(
                     raw_path=row["lineage_raw_path"],

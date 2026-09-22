@@ -10,21 +10,27 @@ from datetime import date
 
 from prism.schema import (
     NOT_PUBLISHED,
+    AxisToken,
     CaveatNote,
+    ChangeDirection,
     Citation,
+    CitizenChange,
     CitizenCite,
     CitizenGeography,
     CitizenMethod,
+    CitizenNumber,
     ContractModel,
-    DisplayScale,
-    DisplayValue,
+    Denomination,
+    DenominationMagnitude,
+    DenominationMeasure,
     ObservationStatus,
 )
 
 PROJECTION_TYPES: tuple[type[ContractModel], ...] = (
     CitizenCite,
     CitizenMethod,
-    DisplayValue,
+    CitizenNumber,
+    CitizenChange,
     CitizenGeography,
 )
 
@@ -32,7 +38,6 @@ FORBIDDEN_PROJECTION_FIELD_NAMES = frozenset(
     {
         "do_not",
         "id",
-        "citation_id",
         "caveat_id",
         "geography_vintage",
         "vintage_id",
@@ -43,12 +48,38 @@ FORBIDDEN_PROJECTION_FIELD_NAMES = frozenset(
         "table_label",
         "geography_as_published",
         "next_release",
+        "display_scale",
+        "concept_key",
     }
 )
 
 THOUSAND = 1_000.0
 LAKH = 100_000.0
 CRORE = 10_000_000.0
+LAKH_CRORE = 1_000_000_000_000.0
+
+_MAGNITUDE_TO_ONES: dict[DenominationMagnitude, float] = {
+    DenominationMagnitude.ones: 1.0,
+    DenominationMagnitude.thousand: THOUSAND,
+    DenominationMagnitude.lakh: LAKH,
+    DenominationMagnitude.crore: CRORE,
+}
+
+_AXIS_DIVISOR: dict[AxisToken, float] = {
+    AxisToken.none: 1.0,
+    AxisToken.K: THOUSAND,
+    AxisToken.L: LAKH,
+    AxisToken.Cr: CRORE,
+    AxisToken.L_Cr: LAKH_CRORE,
+}
+
+_AXIS_PROSE: dict[AxisToken, str] = {
+    AxisToken.none: "",
+    AxisToken.K: "thousand",
+    AxisToken.L: "lakh",
+    AxisToken.Cr: "crore",
+    AxisToken.L_Cr: "lakh crore",
+}
 
 _RATE_MARKERS = (
     "%",
@@ -60,11 +91,11 @@ _RATE_MARKERS = (
     "per 1,000",
 )
 
-# Producer unit words that must never appear after a scale token in display_string.
-_FORBIDDEN_DISPLAY_UNIT_WORDS = frozenset(
-    {"crore", "crores", "thousand", "thousands", "lakh", "lakhs"}
+# Producer unit words wrongly glued after a compact token (ruling 1).
+_FORBIDDEN_COMPACT_UNIT = re.compile(
+    r"\b(?:[KL]|Cr|L Cr)\s+(?:crore|crores|thousand|thousands|lakh|lakhs)\b",
+    re.IGNORECASE,
 )
-
 
 DESK_CITE_MARKERS = (
     "pdf reconstruction",
@@ -86,6 +117,21 @@ DESK_METHOD_MARKERS = (
     "pdfplumber",
 )
 
+NOT_COMPARABLE = "not comparable"
+
+
+def citizen_series_label(series: str) -> str:
+    """Citizen series name: drop base-year and group-code decoder text (F-c1-group-code)."""
+    text = re.sub(r"\s*\(Base\s+\d{4}\s*=\s*100\)", "", series, flags=re.IGNORECASE)
+    text = re.sub(
+        r";?\s*same values as CPI Group name Food,\s*Group code\s*[0-9.]+",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
+    text = re.sub(r",\s*COICOP\s+2018\s*\([^)]*\)", "", text, flags=re.IGNORECASE)
+    return re.sub(r"\s{2,}", " ", text).strip(" —;,")
+
 
 def project_citizen_cite(
     citation: Citation,
@@ -97,7 +143,7 @@ def project_citizen_cite(
     return CitizenCite(
         producer=citation.producer,
         url=citation.url,
-        series=citation.series,
+        series=citizen_series_label(citation.series),
         reference_period=reference_period or citation.reference_period,
         released=_released(citation.release_date),
         caveat=text,
@@ -148,39 +194,45 @@ def project_citizen_geography(*, label: str, slug: str) -> CitizenGeography:
     return CitizenGeography(geography_label=label, geography_slug=slug)
 
 
-def unit_denomination(unit: str) -> str:
-    """Producer magnitude base. Does not rewrite Observation.unit."""
+def denomination_from_unit(unit: str) -> Denomination:
+    """Infer denomination from the producer unit string. Pipeline should set it explicitly."""
     if is_rate_or_index(unit):
-        return "rate"
+        lower = unit.lower()
+        if "%" in lower or "inflation" in lower or "percent" in lower:
+            measure = DenominationMeasure.percent
+        elif "index" in lower:
+            measure = DenominationMeasure.index
+        else:
+            measure = DenominationMeasure.rate
+        return Denomination(magnitude=DenominationMagnitude.ones, measure=measure)
     lower = unit.lower()
     if "crore" in lower:
-        return "crore"
+        return Denomination(
+            magnitude=DenominationMagnitude.crore, measure=DenominationMeasure.rupees
+        )
+    if "lakh" in lower:
+        return Denomination(
+            magnitude=DenominationMagnitude.lakh, measure=DenominationMeasure.rupees
+        )
     if "thousand" in lower or "'000" in lower:
-        return "thousand"
+        return Denomination(
+            magnitude=DenominationMagnitude.thousand,
+            measure=DenominationMeasure.persons,
+        )
     if any(
         token in lower
         for token in ("person", "male", "female", "household", "tot_p", "tot_m", "tot_f")
     ):
-        return "persons"
-    return "one"
-
-
-def magnitude_for_display(raw: float, unit: str) -> float:
-    """Convert producer magnitude to the unit scale_for_concept expects."""
-    if unit_denomination(unit) == "thousand":
-        return raw * THOUSAND
-    return raw
-
-
-def concept_key(series_id: str, unit: str) -> str:
-    if is_rate_or_index(unit):
-        return f"{series_id}::rate"
-    denom = unit_denomination(unit)
-    if denom == "crore":
-        return "money-crore"
-    if denom in {"thousand", "persons"}:
-        return "headcount"
-    return f"{series_id}::magnitude"
+        return Denomination(
+            magnitude=DenominationMagnitude.ones, measure=DenominationMeasure.persons
+        )
+    if "₹" in unit or "rs" in lower or "rupee" in lower:
+        return Denomination(
+            magnitude=DenominationMagnitude.ones, measure=DenominationMeasure.rupees
+        )
+    return Denomination(
+        magnitude=DenominationMagnitude.ones, measure=DenominationMeasure.count
+    )
 
 
 def is_rate_or_index(unit: str) -> bool:
@@ -188,91 +240,196 @@ def is_rate_or_index(unit: str) -> bool:
     return any(marker in lower for marker in _RATE_MARKERS)
 
 
-def scale_for_concept(values: tuple[float, ...], *, rate_or_index: bool) -> DisplayScale:
-    if rate_or_index or not values:
-        return DisplayScale.none
-    peak = max(abs(item) for item in values)
+def never_compacts(denomination: Denomination) -> bool:
+    return denomination.measure in {
+        DenominationMeasure.percent,
+        DenominationMeasure.rate,
+        DenominationMeasure.index,
+    }
+
+
+def to_canonical(value: float, denomination: Denomination) -> float:
+    """Convert producer value × denomination to base units (rupees, persons, or as published)."""
+    if never_compacts(denomination):
+        return value
+    return value * _MAGNITUDE_TO_ONES[denomination.magnitude]
+
+
+def scale_for_group(
+    canonical_values: tuple[float, ...], *, compact: bool
+) -> AxisToken:
+    """Pick one axis token for a template-declared scale group from canonical peaks."""
+    if not compact or not canonical_values:
+        return AxisToken.none
+    peak = max(abs(item) for item in canonical_values)
+    if peak >= LAKH_CRORE:
+        return AxisToken.L_Cr
     if peak >= CRORE:
-        return DisplayScale.Cr
+        return AxisToken.Cr
     if peak >= LAKH:
-        return DisplayScale.L
+        return AxisToken.L
     if peak >= THOUSAND:
-        return DisplayScale.K
-    return DisplayScale.none
+        return AxisToken.K
+    return AxisToken.none
 
 
-def project_display_value(
+def project_citizen_number(
     *,
-    raw_value: float | None,
-    unit: str,
+    value: float | None,
+    denomination: Denomination,
     status: ObservationStatus | str,
-    scale: DisplayScale,
-) -> DisplayValue:
+    axis: AxisToken,
+) -> CitizenNumber:
     if not isinstance(status, ObservationStatus):
         status = ObservationStatus(status)
     published = status is ObservationStatus.value
     if not published:
-        return DisplayValue(
-            raw_value=raw_value,
-            unit=unit,
-            display_scale=scale,
-            display_string=NOT_PUBLISHED,
-            status=status,
+        return CitizenNumber(
+            canonical_value=None if value is None else to_canonical(value, denomination),
+            measure=denomination.measure,
+            text=NOT_PUBLISHED,
             chart_value=None,
+            axis_label=axis.value,
+            status=status,
         )
-    if raw_value is None:
-        raise ValueError("status value requires raw_value")
-    chart_value = apply_scale(magnitude_for_display(raw_value, unit), scale)
-    shown = display_string(chart_value, scale, unit=unit)
-    assert_display_string(shown)
-    return DisplayValue(
-        raw_value=raw_value,
-        unit=unit,
-        display_scale=scale,
-        display_string=shown,
-        status=status,
+    if value is None:
+        raise ValueError("status value requires value")
+    canonical = to_canonical(value, denomination)
+    if never_compacts(denomination):
+        axis = AxisToken.none
+    chart_value = canonical / _AXIS_DIVISOR[axis]
+    shown = chart_value if axis is AxisToken.none else round(chart_value, 2)
+    text = format_citizen_text(shown, axis, measure=denomination.measure)
+    assert_citizen_number_text(text)
+    assert_magnitude_integrity(
+        producer_value=value,
+        denomination=denomination,
+        canonical=canonical,
+        text=text,
+    )
+    return CitizenNumber(
+        canonical_value=canonical,
+        measure=denomination.measure,
+        text=text,
         chart_value=chart_value,
+        axis_label=axis.value,
+        status=status,
     )
 
 
-def apply_scale(value: float, scale: DisplayScale) -> float:
-    if scale is DisplayScale.Cr:
-        return value / CRORE
-    if scale is DisplayScale.L:
-        return value / LAKH
-    if scale is DisplayScale.K:
-        return value / THOUSAND
-    return value
-
-
-def tick_scale_label(scale: DisplayScale, unit: str) -> str:
-    """Axis / tick suffix. Same tokens as display_string; never a producer unit word."""
-    denom = unit_denomination(unit)
-    if scale is DisplayScale.none:
-        return "Cr" if denom == "crore" else ""
-    if denom == "crore" and scale is not DisplayScale.Cr:
-        return f"{scale.value} Cr"
-    return scale.value
-
-
-def display_string(chart_value: float, scale: DisplayScale, *, unit: str) -> str:
-    shown = chart_value if scale is DisplayScale.none else round(chart_value, 2)
+def format_citizen_text(
+    shown: float, axis: AxisToken, *, measure: DenominationMeasure
+) -> str:
     grouped = indian_grouped(shown)
-    suffix = tick_scale_label(scale, unit)
-    if suffix == "":
-        return grouped
-    return f"{grouped} {suffix}"
+    prose = _AXIS_PROSE[axis]
+    if measure is DenominationMeasure.rupees:
+        if prose == "":
+            return f"₹{grouped}"
+        return f"₹{grouped} {prose}"
+    if measure is DenominationMeasure.persons:
+        if prose == "":
+            return f"{grouped} people"
+        return f"{grouped} {prose} people"
+    return grouped
 
 
-def assert_display_string(text: str) -> None:
+def assert_citizen_number_text(text: str) -> None:
     if text == NOT_PUBLISHED:
         return
-    lowered = text.lower()
-    for word in _FORBIDDEN_DISPLAY_UNIT_WORDS:
-        if f" {word}" in f" {lowered} " or lowered.endswith(f" {word}"):
-            raise ValueError(
-                f"display_string must not carry producer unit word {word!r}: {text!r}"
-            )
+    if _FORBIDDEN_COMPACT_UNIT.search(text):
+        raise ValueError(
+            f"citizen text must not glue a compact token to a producer unit word: {text!r}"
+        )
+
+
+def assert_magnitude_integrity(
+    *,
+    producer_value: float,
+    denomination: Denomination,
+    canonical: float,
+    text: str,
+) -> None:
+    """Blueprint test 10: citizen magnitude must match the producer's published magnitude."""
+    expected = to_canonical(producer_value, denomination)
+    if abs(canonical - expected) > max(1e-9, abs(expected) * 1e-12):
+        raise ValueError(
+            f"canonical magnitude {canonical} differs from producer "
+            f"{producer_value} × {denomination.magnitude.value}"
+        )
+    if never_compacts(denomination):
+        return
+    # Fail the known wrong-order pattern: crore column shown as a fraction of a crore.
+    if (
+        denomination.magnitude is DenominationMagnitude.crore
+        and denomination.measure is DenominationMeasure.rupees
+        and producer_value >= 1_000_000
+        and text.startswith("₹0.")
+    ):
+        raise ValueError(f"citizen text loses crore order of magnitude: {text!r}")
+
+
+def project_citizen_change(
+    *,
+    current_value: float | None,
+    prior_value: float | None,
+    denomination: Denomination,
+    current_status: ObservationStatus | str,
+    prior_status: ObservationStatus | str,
+    prior_period: str,
+    prior_citation_id: str,
+    axis: AxisToken,
+    comparable: bool = True,
+) -> CitizenChange:
+    current = project_citizen_number(
+        value=current_value,
+        denomination=denomination,
+        status=current_status,
+        axis=axis,
+    )
+    prior = project_citizen_number(
+        value=prior_value,
+        denomination=denomination,
+        status=prior_status,
+        axis=axis,
+    )
+    if (
+        not comparable
+        or current.status is not ObservationStatus.value
+        or prior.status is not ObservationStatus.value
+        or current.canonical_value is None
+        or prior.canonical_value is None
+    ):
+        if prior.status is not ObservationStatus.value:
+            difference = NOT_PUBLISHED
+            direction = ChangeDirection.unchanged
+        else:
+            difference = NOT_COMPARABLE
+            direction = ChangeDirection.unchanged
+    else:
+        delta = current.canonical_value - prior.canonical_value
+        if abs(delta) < 1e-12:
+            direction = ChangeDirection.unchanged
+        elif delta > 0:
+            direction = ChangeDirection.higher
+        else:
+            direction = ChangeDirection.lower
+        diff_number = project_citizen_number(
+            value=abs(delta) / _MAGNITUDE_TO_ONES[denomination.magnitude]
+            if not never_compacts(denomination)
+            else abs(delta),
+            denomination=denomination,
+            status=ObservationStatus.value,
+            axis=axis,
+        )
+        difference = diff_number.text
+    return CitizenChange(
+        current=current,
+        prior=prior,
+        prior_period=prior_period,
+        direction=direction,
+        difference=difference,
+        citation_id=prior_citation_id,
+    )
 
 
 def indian_grouped(value: float) -> str:

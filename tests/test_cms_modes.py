@@ -65,6 +65,14 @@ def test_home_template_does_not_repeat_shell_nav() -> None:
     assert "data-vintage-id={slice.vintage_id}" in source
 
 
+def test_quiet_empty_sleeve_carries_invitation() -> None:
+    source = (CMS_ROOT / "src" / "pages" / "[sleeve]" / "index.astro").read_text(
+        encoding="utf-8"
+    )
+    assert "sleeve-empty-invite" in source
+    assert "No {sleeve.hub_label} questions are published here yet." in source
+
+
 def test_notfound_template_lists_sleeves_and_stays_noindex() -> None:
     source = (CMS_ROOT / "src" / "pages" / "404.astro").read_text(encoding="utf-8")
     assert 'page="notfound"' in source

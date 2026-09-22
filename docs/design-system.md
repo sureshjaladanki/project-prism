@@ -1,18 +1,19 @@
 # Design system
 
-UI/UX Developer. Visual contract for citizen pages (**v3.1**). Persona: [ui-ux-developer.md](personas/ui-ux-developer.md). How the page **reads** is [editorial-guidelines.md](editorial-guidelines.md) (Content Editor) — this file implements that as type, colour, layout, and chart chrome. UI/UX Developer implements this file and runs the presentation pass against it. Routes, titles, SEO, and preview vs published HTTP: [web-design.md](web-design.md) (Front-end Architect). Integrity stays in [data-contracts.md](data-contracts.md) and [architectural-blueprint.md](architectural-blueprint.md).
+UI/UX Developer. Visual contract for citizen pages (**v4**). Persona: [ui-ux-developer.md](personas/ui-ux-developer.md). How the page **reads** is [editorial-guidelines.md](editorial-guidelines.md) (Content Editor) — this file implements that as type, colour, layout, and chart chrome. Tone and H1–H7: [design-philosophy.md](design-philosophy.md). UI/UX Developer implements this file and runs the presentation pass against it. Routes, titles, SEO, and preview vs published HTTP: [web-design.md](web-design.md) (Front-end Architect). Integrity stays in [data-contracts.md](data-contracts.md) and [architectural-blueprint.md](architectural-blueprint.md).
 
-Product role, answer-page shape, and newsroom forbids live in the editorial guidelines. Stack (Astro SSG, Vega-Lite) lives in [repo-conventions.md](repo-conventions.md). Current work lives under [Next](#next).
+Product role, answer-page shape, and resonance gate live in the editorial guidelines. Stack (Astro SSG, Vega-Lite) lives in [repo-conventions.md](repo-conventions.md). Current work lives under [Next](#next).
 
-v1 (quiet desk): [design-system-v1.md](archive/design-system-v1.md). v2 (welcome ruling, read as austere): [design-system-v2.md](archive/design-system-v2.md). Tone: [design-philosophy.md](design-philosophy.md). Direction on v2: [ui-ux-feedback.md](archive/ui-ux-feedback.md).
+v1 (quiet desk): [design-system-v1.md](archive/design-system-v1.md). v2 (welcome ruling, read as austere): [design-system-v2.md](archive/design-system-v2.md). v3 / v3.1 house floors carry forward untouched below. Tone: [design-philosophy.md](design-philosophy.md).
 
 ```text
-version:        v3.1
+version:        v4
 tone:           modern, welcoming, civic publisher, generous
-idea:           official record, built for a person — answer first, archive on request
+idea:           an answer a person can say out loud, with the government's name on it
 house:          three grounds (paper / card / well); IBM Plex Serif for the record's
                 voice (headings, every bound figure), IBM Plex Sans for the desk's
-                voice (everything else); navy + clay + slate + graphite as series colour
+                voice (everything else); navy + clay + slate + graphite as series colour;
+                thesis accent on the bound answer clause only
 tokens:         CSS custom properties on :root — not in the vintage
 fit:            every rule below must hold at 360px and at 1440px
 ```
@@ -36,24 +37,21 @@ Do not retune the pipeline for layout. Content Editor names blocks; UI/UX specif
 
 ### Non-negotiable, regardless of house
 
-Restated here because this pass had "high control" over everything else. These did not move:
-
 1. Tone: modern, welcoming, civic publisher, generous.
-2. Official record, built for a person — answer first, archive on request.
-3. Not USAFacts costume: no magenta/cream/Aeonik/wordmark, no search/chat/newsletter/"get notified", no performance colour, no wordmark-swap.
+2. Idea: an answer a person can say out loud, with the government's name on it.
+3. House rules H1–H7 in [design-philosophy.md](design-philosophy.md) — own publication; answer loudest; no performance colour; gaps named **not published**; producer in view; no collecting chrome; no unearned decoration.
 4. Do not hide a hole or a cite.
 5. One well on the first screen; method is quieter and later.
-6. Floors: 12px chart type, stats that fit ten-digit counts, `--hole` ≥ 4.5:1, producer on the first screen, WCAG AA.
-7. Tokens live in CSS custom properties, not the vintage.
+6. Floors: 12px chart type, stats that fit ten-digit counts, `--hole` ≥ 4.5:1, producer on the first screen, WCAG AA. Every fit, contrast, and legibility floor from v3.1 carries forward untouched.
+7. Tokens live in CSS custom properties, not the vintage. `LAYOUT_BLOCKS` unchanged.
 
-## Costume we do not copy
+## House identity (not a costume veto)
 
-- Magenta bar, Aeonik, pink/magenta sentence highlight (`span.answer`)
-- Purple illustrated heroes; a news-style hottest-topics carousel (scoops, engagement)
-- Newsletter, social kits, "get notified", video desk, search box, chat widget
-- Cream plot, brand-colour edge rule, magenta download pill, chart-corner logo
+Resemblance in shape, voice, or scan path to another civic publisher is not a failure. What stays out because it is *theirs*: Aeonik, USAFacts magenta, their wordmark. What stays out because of H3–H7: performance colour, collecting chrome, unearned decoration, hidden gaps.
 
-A page that would pass for USAFacts with the wordmark swapped has failed this system.
+**Thesis accent.** `--thesis-mark` (from the existing warm/navy family — not magenta, not a link colour) marks only the bound answer clause inside `.fact-lede`, never a definition or a section title.
+
+**Gap vs zero.** `.observation-missing` / gap copy uses **not published**, italic, same size and face as its sentence. A published zero uses the same figure chrome as any other value — never the gap style.
 
 ## Three grounds
 
@@ -71,8 +69,8 @@ A citizen who has seen one slice reads the next by ground alone: white box, look
 
 | Class | Tokens | Job |
 |-------|--------|-----|
-| `.fact-lede` | Top segment of [the answer well](#the-answer-well); `--well`; `--ink`; Serif figures at **body size**, weight 600 | The bound answer as a sentence: number, unit, place, year — then one line of definition. Not a magenta sentence. Not a slogan. Not `.stat-figure` size in prose. |
-| `.stat-row` / `.stat` | Middle segment of the well; `.stat` chips are `--card` on `--well`, `--radius`, `--lift` | 2–4 equal-weight bound figures, set apart from the sentence above them like tiles on a tray. No winner colour. |
+| `.fact-lede` | Top segment of [the answer well](#the-answer-well); `--well`; `--ink`; Serif figures at **body size**, weight 600 | Three sentences: **thesis** (spoken answer; house `--thesis-mark` on the bound answer clause only), **movement** (prior period and what changed), **what it is** (exactly one definition for a person). Not a slogan. Not `.stat-figure` size in prose. |
+| `.stat-row` / `.stat` | Middle segment of the well; `.stat` chips are `--card` on `--well`, `--radius`, `--lift` | 2–4 equal-weight bound figures; **unit in the cell** (e.g. `%`, or the ladder token already inside `CitizenNumber.text`). No winner colour. |
 | `.cite-strip` | Bottom segment of the well; producer `--ink`; rest `--muted` | Source line **next to the number**, closing the well. Open state is the full card. Not a codebook dump. |
 | `.fast-facts` | `--card`, `--radius`, `--lift`; fact 1.375rem / 500 / `--ink`, sans | Publisher front: slot-bound one-liners. Never byline grey. Not a ticker of unnamed numbers. |
 | `.hottest-rail` | `--paper` background, `--card` chips, `--radius`, `--mark` links | Featured citizen questions / slices. Not scoops, not "hottest topics," no "get notified." |
@@ -196,7 +194,7 @@ The desk holds ten-digit official counts. Layout that only works for `4.82` is n
 
 Hero copy is short; it may run at `--desk`. Method at 68rem was **124 characters per line** in earlier testing — `.how-measured` stays at `--measure`. Do not fail the hero for exceeding 90 characters per line.
 
-**Compact display.** Bound figures arrive as `DisplayValue.display_string` (K / L / Cr or `none`). This file does not choose the scale. It guarantees the string **fits**:
+**Compact display.** Bound figures arrive as `CitizenNumber.text` (prose ladder / rates as published). Axis ticks use `CitizenNumber.axis_label` (`K` / `L` / `Cr` / `L Cr` or empty). This file does not choose the scale group — the template declares it; bind formats. It guarantees the string **fits**:
 
 - Axis ticks: ≥ 12px effective, ≤ 9 characters, no truncation, no rotation at `fitWidth` 974.
 - Same `display_scale` on the axis and the matching stat row.
@@ -325,7 +323,7 @@ Vega-Lite in git; SVG at render. `src/cms/src/lib/render-chart.ts` applies the f
 
 **One idea.** Two encodings → two charts. A chart that only repeats the stat row is not evidence.
 
-**Screenshot test.** Crop still shows title, unit, geography, source, holes, at readable size. It does not look like a USAFacts chart (cream, magenta rail, wordmark). Attribution is the citation card, not a corner logo.
+**Screenshot test.** Crop still shows title, unit, geography, source, holes, at readable size. It reads as Prism (well, clay-and-navy series colour, Serif figure) without needing the header. Attribution is the citation card, not a corner logo.
 
 ## Citation chrome
 
@@ -424,7 +422,7 @@ Against the live `src/cms/src/lib/theme.ts` (v2's shipped values, several alread
 
 Run on **preview** before Trust, on **every template that reached Content Editor Proof**. Skip only when the same template renders the same page at the same vintage.
 
-Appeal means **modern, welcoming, civic publisher, generous** — same house. Generous is space, scale, elevation, and the answer well. It is not their kit. Not a scorecard. Not USAFacts magenta. Not unfinished.
+Appeal means **modern, welcoming, civic publisher, generous** — same house. Generous is space, scale, elevation, and the answer well. It is not another publisher's kit. Not a scorecard. Not unfinished.
 
 Measure at 360px and 1440px. Do not eyeball.
 
@@ -446,7 +444,10 @@ Measure at 360px and 1440px. Do not eyeball.
 - [ ] **Cite.** Producer within 600px of `main` at 1440×900, `--ink`, before the first chart; summary has all four fields.
 - [ ] **Holes.** Not smaller, lower-contrast, or demoted to Sans inside a Serif context.
 - [ ] **Contrast.** Text ≥ 4.5:1; meaningful graphics ≥ 3:1 on the actual ground (paper, card, **or well**).
-- [ ] **Screenshot test.** Crop shows title, unit, geography, source, holes at readable size; does not look like a USAFacts chart; reads as Prism without the header rule visible (the well, the clay-and-navy series colour, and the Serif figure are the tell).
+- [ ] **Screenshot test.** Crop shows title, unit, geography, source, holes at readable size; reads as Prism without the header rule visible (the well, the clay-and-navy series colour, and the Serif figure are the tell).
+- [ ] **Thesis accent.** Bound answer clause in `.fact-lede` carries `--thesis-mark`; definition and section titles do not.
+- [ ] **Units in cells.** Every `.stat-figure` carries its unit in the cell (or inside `CitizenNumber.text`).
+- [ ] **Gap vs zero.** Gaps render **not published** italic; published zeros use normal figure chrome.
 
 Fail the pass if any box is open. Content Editor Proof names form-factor breaks; it does not restyle. Trust gets cites, dates, holes, spin — not taste.
 
@@ -456,22 +457,25 @@ Checklist also on the persona: [ui-ux-developer.md](personas/ui-ux-developer.md)
 
 ## Out of scope
 
-Pipeline schema, citation *content*, chart *meaning*, voice and copy ([editorial-guidelines.md](editorial-guidelines.md)), routes and slugs ([web-design.md](web-design.md)), Trust ship/block, a public wordmark beyond a text lockup, dark mode, a mobile app, number-grouping (R8). USAFacts costume. Pointer flips.
+Pipeline schema, citation *content*, chart *meaning*, voice and copy ([editorial-guidelines.md](editorial-guidelines.md)), routes and slugs ([web-design.md](web-design.md)), Trust ship/block, a public wordmark beyond a text lockup, dark mode, a mobile app, number-grouping (R8). Another publisher's brand kit. Pointer flips.
 
 ## Next
 
 ```text
 contract:            docs/design-system.md
-version:             v3.1
-tokens:              unchanged (no taste retune)
-primitives:          named: not-published; compact-unit fit; method quieter
-presentation_pass:   not this phase (C7 after C6 copy)
-next_persona:        content-editor
-phase:               D2 done; D3 is editorial cite surface
+version:             v4
+tone:                modern, welcoming, civic publisher, generous
+idea:                an answer a person can say out loud, with the government's name on it
+house:               H1–H7; thesis accent; units in cells; gap ≠ zero; CitizenNumber fit
+floors from v3.1:    intact
+LAYOUT_BLOCKS:       unchanged
+v4 adds:             thesis accent token; movement line in the well; CitizenNumber compact fit
+next:                phase 13 presentation pass complete on desk-20260922-1c821625d891; hand to Trust
+citizen_pointer:     untouched this programme
 ```
 
-v3 house is closed. v3.1 is rulings A, B, E, G plus method-quieter and figcaption titles. Do not redo archived Phase E. Do not re-specify 404. Do not move `data/pointers/citizen`.
+v3 / v3.1 floors stay. Do not redo archived Phase E. Do not re-specify 404. Do not move `data/pointers/citizen`.
 
-**Content Editor** (D3): cite surface and gap phrase in [editorial-guidelines.md](editorial-guidelines.md). Do not rewrite template copy (C6).
+**UI/UX Developer** (phase 13): presentation pass green on preview — cite ≤600px of `main`, method ≤68ch, header hairline, answer-well pad tightened. Next: Trust Auditor.
 
-**Front-end Architect / Charter Editor:** sign this pass. Home-rail forbid stays in [web-design.md](web-design.md).
+**Front-end Architect:** header nav and quiet-empty hub invitation signed in [web-design.md](web-design.md). Home-rail forbid stays.

@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from prism.catalog.registry import MapperSpec, register_mapper
+from prism.citizen_projection import denomination_from_unit
 from prism.pipeline.errors import PipelineError
 from prism.refresh import (
     SERIES_CENSUS_2011_A02_DECADAL,
@@ -163,6 +164,7 @@ def _obs(
         reference_period=period,
         value=value,
         unit=unit,
+        denomination=denomination_from_unit(unit),
         status=_observation_status(value),
         lineage=lineage,
     )

@@ -35,7 +35,7 @@ The product is [architectural-blueprint.md](architectural-blueprint.md).
 |---------|------|------|
 | Principal | [personas/principal.md](personas/principal.md) | Independent third-party senior editor: reads **preview** as a citizen; hands notes to Charter Editor. Not crew; not a ship gate; does not amend standing contracts. |
 
-Principal is not in Content or Engineering above, not in the pipeline diagram, and not a required Cursor agent. Charter Editor routes Principal notes (see [citizen-page-feedback.md](next/citizen-page-feedback.md), [cms-system-feedback.md](next/cms-system-feedback.md)). Trust Auditor remains the independent pass/block on the record.
+Principal is not in Content or Engineering above, not in the pipeline diagram, and not a required Cursor agent. Charter Editor routes Principal notes (see [citizen-page-feedback.md](archive/citizen-page-feedback.md), [cms-system-feedback.md](archive/cms-system-feedback.md)). Trust Auditor remains the independent pass/block on the record.
 
 ## How work moves
 
@@ -67,10 +67,16 @@ Front-end Architect holds site IA when routes, nav, SEO, or preview HTTP would o
 UI/UX Developer holds the visual contract, renders the template at the vintage (preview), and runs the presentation pass if chrome or charts changed
         │
         ▼
-Trust Auditor reviews  ──►  Charter Editor ships or blocks
+Trust Auditor reviews
+        │
+        ▼
+Principal (advisor) — optional citizen resonance read (R1–R6) on preview when voice or answer-band copy changed; notes to Charter only; not a ship gate
+        │
+        ▼
+Charter Editor ships or blocks
 ```
 
-One persona per parent pass. The visual contract and civic CMS are UI/UX Developer against [design-system.md](design-system.md) — not Content Editor restyling. The presentation pass is UI/UX Developer against that file — not Front-end Architect, not a fifth Content Editor writing pass, not Trust. Site IA is Front-end Architect against [web-design.md](web-design.md) — not UI/UX inventing a slug. Trust is unchanged: cites, dates, holes, spin. A form-factor fail is not a missing cite.
+One persona per parent pass. The visual contract and civic CMS are UI/UX Developer against [design-system.md](design-system.md) — not Content Editor restyling. The presentation pass is UI/UX Developer against that file — not Front-end Architect, not a fifth Content Editor writing pass, not Trust. Site IA is Front-end Architect against [web-design.md](web-design.md) — not UI/UX inventing a slug. Trust is unchanged: cites, dates, holes, spin. A form-factor fail is not a missing cite. Principal stays outside the roster: after the presentation pass and before Charter’s verdict on any template that changed voice, Charter may commission a Principal read against the resonance gate in [editorial-guidelines.md](editorial-guidelines.md); Principal is still not a ship gate and not a Trust substitute.
 
 Do not skip Trust Auditor on anything a citizen will see. Do not let Content Editor invent a number, Ingest Engineer invent a definition, UI/UX Developer paste a figure into a slot or invent a slug, or Front-end Architect write a second citizen question. Do not send taste or chart chrome to Trust.
 

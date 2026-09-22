@@ -17,15 +17,14 @@ import yaml
 from prism.catalog import CatalogCiteBlock, default_catalog
 from prism.citizen_projection import (
     cite_element_id,
-    concept_key,
+    denomination_from_unit,
     indian_grouped,
-    is_rate_or_index,
-    magnitude_for_display,
+    never_compacts,
     project_citizen_cite,
     project_citizen_method,
-    project_display_value,
-    scale_for_concept,
-    tick_scale_label,
+    project_citizen_number,
+    scale_for_group,
+    to_canonical,
 )
 from prism.cms_site import plain_fact_lede, sleeve_path
 from prism.paths import (
@@ -36,13 +35,14 @@ from prism.paths import (
     vintage_dir,
 )
 from prism.schema import (
+    AxisToken,
     CaveatNote,
     Citation,
     CitizenCite,
     CitizenMethod,
+    CitizenNumber,
     CodeSystem,
-    DisplayScale,
-    DisplayValue,
+    Denomination,
     GeographyVintage,
     Observation,
     ObservationStatus,
@@ -278,9 +278,9 @@ def bind_page(data_root: Path, vintage_id: str, template_dir: Path) -> BoundPage
     finally:
         connection.close()
 
-    scales = _display_scales(bound_slots, charts)
+    scales = _scale_groups(bound_slots, charts, spec)
     _apply_chart_displays(charts, scales)
-    displays = _slot_displays(bound_slots, scales)
+    displays = _slot_displays(bound_slots, scales, spec)
     cite_blocks = default_catalog().slice_for_template(template_id).cite_block_by_id()
     miss_copies = {
         str(slot["slot_id"]): str(slot.get("miss_copy", "not published"))
@@ -660,99 +660,168 @@ def _iter_chart_rows(node: Any) -> list[dict[str, object]]:
     return rows
 
 
-def _display_scales(
+def _row_denomination(row: dict[str, Any]) -> Denomination:
+    mag = row.get("denomination_magnitude")
+    measure = row.get("denomination_measure")
+    if isinstance(mag, str) and isinstance(measure, str):
+        return Denomination.model_validate(
+            {"magnitude": mag, "measure": measure}
+        )
+    unit = row.get("unit")
+    if isinstance(unit, str):
+        return denomination_from_unit(unit)
+    raise RenderError("chart row missing denomination and unit")
+
+
+def _observation_denomination(observation: Observation) -> Denomination:
+    return observation.denomination
+
+
+def _scale_groups(
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
     charts: dict[str, dict[str, Any]],
-) -> dict[str, DisplayScale]:
+    spec: dict[str, Any],
+) -> dict[str, AxisToken]:
+    """One axis token per template-declared scale group (chart id by default)."""
     buckets: dict[str, list[float]] = {}
-    rate_by_key: dict[str, bool] = {}
+    compact_by_group: dict[str, bool] = {}
+    chart_groups = _chart_scale_group_ids(spec)
 
-    def add(
-        series_id: str, unit: str, raw: float | None, status: ObservationStatus
-    ) -> None:
-        key = concept_key(series_id, unit)
-        rate_by_key[key] = is_rate_or_index(unit)
+    def add(group: str, denomination: Denomination, raw: float | None, status: ObservationStatus) -> None:
+        compact_by_group[group] = not never_compacts(denomination)
         if status is ObservationStatus.value and raw is not None:
-            buckets.setdefault(key, []).append(magnitude_for_display(raw, unit))
+            buckets.setdefault(group, []).append(to_canonical(raw, denomination))
 
-    for bound in bound_slots.values():
-        if isinstance(bound, ServedObservation):
-            observation = bound.observation
-            add(
-                observation.series_id,
-                observation.unit,
-                observation.value,
-                observation.status,
-            )
-    for spec in charts.values():
-        for row in _iter_chart_rows(spec):
-            series_id = row.get("series_id")
-            unit = row.get("unit")
+    for chart_id, group in chart_groups.items():
+        spec_chart = charts.get(chart_id)
+        if spec_chart is None:
+            continue
+        for row in _iter_chart_rows(spec_chart):
             status_raw = row.get("status")
-            if not isinstance(series_id, str) or not isinstance(unit, str):
-                continue
             if not isinstance(status_raw, str):
                 continue
             status = ObservationStatus(status_raw)
+            denom = _row_denomination(row)
             raw = row.get("value") if status is ObservationStatus.value else None
+            # Chart rows may already hold producer value under "value" before display apply.
+            producer = row.get("producer_value", raw)
             add(
-                series_id,
-                unit,
-                float(raw) if isinstance(raw, (int, float)) else None,
+                group,
+                denom,
+                float(producer) if isinstance(producer, (int, float)) else None,
                 status,
             )
+
+    slot_groups = _slot_scale_group_ids(spec, chart_groups)
+    for slot_id, bound in bound_slots.items():
+        if not isinstance(bound, ServedObservation):
+            continue
+        group = slot_groups.get(slot_id, f"slot:{slot_id}")
+        observation = bound.observation
+        add(
+            group,
+            _observation_denomination(observation),
+            observation.value,
+            observation.status,
+        )
+
     return {
-        key: scale_for_concept(tuple(buckets.get(key, ())), rate_or_index=rate)
-        for key, rate in rate_by_key.items()
+        group: scale_for_group(
+            tuple(buckets.get(group, ())),
+            compact=compact_by_group.get(group, True),
+        )
+        for group in {*buckets, *compact_by_group, *slot_groups.values(), *chart_groups.values()}
     }
+
+
+def _chart_scale_group_ids(spec: dict[str, Any]) -> dict[str, str]:
+    """chart_id → scale_group. Default group is the chart id."""
+    charts = spec.get("charts") or {}
+    groups: dict[str, str] = {}
+    if not isinstance(charts, dict):
+        return groups
+    for chart_id, entry in charts.items():
+        if isinstance(entry, dict) and isinstance(entry.get("scale_group"), str):
+            groups[str(chart_id)] = str(entry["scale_group"])
+        else:
+            groups[str(chart_id)] = str(chart_id)
+    return groups
+
+
+def _slot_scale_group_ids(
+    spec: dict[str, Any], chart_groups: dict[str, str]
+) -> dict[str, str]:
+    """slot_id → scale_group from explicit scale_group or the slot's chart."""
+    mapping: dict[str, str] = {}
+    for slot in spec.get("slots") or []:
+        if not isinstance(slot, dict):
+            continue
+        slot_id = slot.get("slot_id")
+        if not isinstance(slot_id, str):
+            continue
+        if isinstance(slot.get("scale_group"), str):
+            mapping[slot_id] = str(slot["scale_group"])
+            continue
+        chart = slot.get("chart")
+        if isinstance(chart, str) and chart in chart_groups:
+            mapping[slot_id] = chart_groups[chart]
+    return mapping
 
 
 def _apply_chart_displays(
     charts: dict[str, dict[str, Any]],
-    scales: dict[str, DisplayScale],
+    scales: dict[str, AxisToken],
 ) -> None:
-    for spec in charts.values():
+    for chart_id, spec in charts.items():
+        group = chart_id
+        axis = scales.get(group, AxisToken.none)
         for row in _iter_chart_rows(spec):
-            series_id = row.get("series_id")
-            unit = row.get("unit")
             status_raw = row.get("status")
-            if not isinstance(series_id, str) or not isinstance(unit, str):
-                continue
             if not isinstance(status_raw, str):
                 continue
             status = ObservationStatus(status_raw)
-            scale = scales.get(concept_key(series_id, unit), DisplayScale.none)
+            denom = _row_denomination(row)
             raw = row.get("value") if status is ObservationStatus.value else None
-            display = project_display_value(
-                raw_value=float(raw) if isinstance(raw, (int, float)) else None,
-                unit=unit,
+            if "producer_value" not in row and isinstance(raw, (int, float)):
+                row["producer_value"] = float(raw)
+            producer = row.get("producer_value", raw)
+            number = project_citizen_number(
+                value=float(producer) if isinstance(producer, (int, float)) else None,
+                denomination=denom,
                 status=status,
-                scale=scale,
+                axis=axis,
             )
-            row["value"] = display.chart_value
-            row["display_scale"] = scale.value
-            row["tick_scale"] = tick_scale_label(scale, unit)
-            row["display_string"] = display.display_string
+            row["value"] = number.chart_value
+            row["display_string"] = number.text
+            row["axis_label"] = number.axis_label
+            row["tick_scale"] = number.axis_label
+            row["denomination_magnitude"] = denom.magnitude.value
+            row["denomination_measure"] = denom.measure.value
+            if status is ObservationStatus.value and number.chart_value is None:
+                raise RenderError("published observation missing chart_value")
+            if status is not ObservationStatus.value and row.get("value") == 0:
+                raise RenderError("gap must not be plotted as zero")
 
 
 def _slot_displays(
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
-    scales: dict[str, DisplayScale],
-) -> dict[str, DisplayValue]:
-    displays: dict[str, DisplayValue] = {}
+    scales: dict[str, AxisToken],
+    spec: dict[str, Any],
+) -> dict[str, CitizenNumber]:
+    chart_groups = _chart_scale_group_ids(spec)
+    slot_groups = _slot_scale_group_ids(spec, chart_groups)
+    displays: dict[str, CitizenNumber] = {}
     for slot_id, bound in bound_slots.items():
         if not isinstance(bound, ServedObservation):
             continue
         observation = bound.observation
-        scale = scales.get(
-            concept_key(observation.series_id, observation.unit),
-            DisplayScale.none,
-        )
-        displays[slot_id] = project_display_value(
-            raw_value=observation.value,
-            unit=observation.unit,
+        group = slot_groups.get(slot_id, f"slot:{slot_id}")
+        axis = scales.get(group, AxisToken.none)
+        displays[slot_id] = project_citizen_number(
+            value=observation.value,
+            denomination=_observation_denomination(observation),
             status=observation.status,
-            scale=scale,
+            axis=axis,
         )
     return displays
 
@@ -1055,7 +1124,7 @@ def _expand_copy(
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
     cards: dict[str, tuple[Citation, CaveatNote, GeographyVintage]],
     charts: dict[str, dict[str, Any]],
-    displays: dict[str, DisplayValue],
+    displays: dict[str, CitizenNumber],
     cite_blocks: dict[str, CatalogCiteBlock],
     miss_copies: dict[str, str],
     periods_by_cite: dict[str, frozenset[str]],
@@ -1202,7 +1271,7 @@ def _slot_html(
     slot_id: str,
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
     vintage_id: str,
-    displays: dict[str, DisplayValue],
+    displays: dict[str, CitizenNumber],
     miss_copies: dict[str, str],
 ) -> str:
     try:
@@ -1230,7 +1299,7 @@ def _slot_html(
         f'<span class="observation" data-slot-id="{html.escape(slot_id)}" '
         f'data-observation-id="{html.escape(observation.observation_id)}" '
         f'data-vintage-id="{html.escape(vintage_id)}">'
-        f'<span class="observation-value">{html.escape(display.display_string)}</span>'
+        f'<span class="observation-value">{html.escape(display.text)}</span>'
         f"</span>"
     )
 
@@ -1249,7 +1318,7 @@ def _stat_html(
     label: str | None,
     bound_slots: dict[str, ServedObservation | BoundCopy | str],
     vintage_id: str,
-    displays: dict[str, DisplayValue],
+    displays: dict[str, CitizenNumber],
     miss_copies: dict[str, str],
 ) -> str:
     figure = _slot_html(slot_id, bound_slots, vintage_id, displays, miss_copies)
@@ -1349,8 +1418,9 @@ def _cite_strip_from_card(card_html: str) -> str:
         )
     release = re.sub(r"\s*\(Asia/Kolkata\)\s*$", "", fields["Release date"]).strip()
     producer = html.escape(fields["Producer"])
+    series = fields["Series"]
     rest = html.escape(
-        f"{fields['Series']} · {fields['Reference period']} · released {release}"
+        f"{series} · {fields['Reference period']} · released {release}"
     )
     card_id = re.search(r'\bid="([^"]+)"', card_html)
     if card_id is None:

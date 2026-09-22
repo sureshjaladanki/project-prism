@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "All India Combined linked CPI General year-on-year inflation (%). Status unknown (2013, and any blank cell) is a hole — not zero. Do not attach compiled 2026 inflation to this line.",
+  "description": "All India Combined linked CPI General year-on-year inflation (%). Status unknown (2013, and any blank cell) is not published — not zero. Do not attach compiled 2026 inflation to this line.",
   "title": {
     "text": "Year-on-year inflation, All India Combined",
     "subtitle": "Through December 2024. 2013 is not published — not zero."

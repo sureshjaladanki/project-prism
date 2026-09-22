@@ -46,7 +46,7 @@ const jsonLd = {
   jsonLd={jsonLd}
 >
   <h1>{sleeve.hub_label}</h1>
-  {slices.length > 0 && (
+  {slices.length > 0 ? (
         <ul class="sleeve-index">
           {slices.map((slice) => (
             <li data-vintage-id={slice.vintage_id}>
@@ -55,5 +55,11 @@ const jsonLd = {
             </li>
           ))}
         </ul>
+  ) : (
+    <p class="sleeve-empty-invite">
+      No {sleeve.hub_label} questions are published here yet. Open People, Money,
+      or Prices for answers already on Prism — or start from the{" "}
+      <a href="/">home page</a>.
+    </p>
   )}
 </SiteShell>

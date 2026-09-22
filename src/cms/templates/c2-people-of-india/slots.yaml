@@ -117,6 +117,21 @@ charts:
 
 slots:
 
+  - slot_id: india-total-persons-2001
+    kind: observation
+    required: true
+    citation_id: cite-c2-census-2011-a02-decadal
+    caveat_id: caveat-c2-census-2011-a02-decadal
+    selector:
+      series_id: census-2011-a02-decadal
+      geography_code: "00"
+      geography_vintage: "2011"
+      code_system: census
+      sector: Total
+      reference_period: "2001 ++"
+      unit: persons
+      status: value
+
   - slot_id: india-total-persons-2011
     kind: observation
     required: true

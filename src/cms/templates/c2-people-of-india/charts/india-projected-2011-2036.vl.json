@@ -1,8 +1,8 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Projected India Persons, thousands, 1 March 2011–2036. A projection, not a census. Do not stitch to the census-year line.",
+  "description": "Projected India Persons, 1 March 2011–2036. A projection, not a census. Do not stitch to the census-year line.",
   "title": {
-    "text": "Projected India population, 1 March, thousands",
+    "text": "Projected India population, 1 March",
     "subtitle": "Official projection, 2011 to 2036. Not a census count."
   },
   "usermeta": {

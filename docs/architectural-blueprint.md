@@ -11,7 +11,9 @@ A civic **CMS** for the portrait in [vision.md](vision.md). Not a folder of hand
 - **Render** — `template + vintage → page`. Same inputs, same page.
 - **Refresh** — when an official source updates, or an editor asks, Ingest lands the new artifact, Pipeline writes a **new** vintage, CMS re-renders, Platform publishes. Periodic or on-demand. Citizen-view moves only to a complete published desk.
 
-Do not hand-author a citizen page of numbers. Do not fetch a producer website at request time to fill a chart. Citizen-view is a pointer at a complete **published** desk. Preview is the same CMS in a second mode: the full desk, including slices that have not been published.
+The spine — ingest → immutable vintage → bind/render → atomic pointer — is a **choice**, not deference. Resonance is a voice, binding, and typography problem; nothing in it needs a server. The movement clause is a second observation from the same vintage; the thesis is a template sentence with slots. What the immutable vintage buys is checkable “no invented figures”: every figure on a page is traceable to one snapshot, and a page cannot silently change under a reader. Adding ISR or a request-time producer fetch would buy freshness we do not need and lose the property the trust argument rests on.
+
+Do not hand-author a citizen page of numbers. Do not fetch a producer website at request time to fill a chart. Citizen-view is a pointer at a complete **published** desk. Preview is the same CMS in a second mode: the full desk, including slices that have not been published. No Next.js, no ISR, no request-time producer fetch, no API on the citizen path.
 
 ## System context
 
@@ -89,7 +91,7 @@ Pipeline    writes a **new** data vintage               (pipeline Stage 2)
 CMS         render(template, vintage) → render store
         │
         ▼
-Tests       nine tests in this file
+Tests       eleven tests in this file
         │
         ▼
 Platform    flip citizen_pointer (last) or keep the previous
@@ -161,13 +163,13 @@ retain_prior:       yes   (prior desks and prior vintages stay addressable)
 
 Refresh writes a new vintage, reuses unchanged series and pages (hard-link / CAS), re-renders only what changed, then moves the pointer.
 
-The pointer write itself is atomic: local disk uses write-to-temp then rename; object storage uses a conditional PUT (`If-Match` / ETag) on a single current key and a publish lock so two publishers cannot interleave. Order: complete render for that `desk_id` → nine tests pass → flip `citizen_pointer` last. A bare overwrite of a JSON file is not atomic publish.
+The pointer write itself is atomic: local disk uses write-to-temp then rename; object storage uses a conditional PUT (`If-Match` / ETag) on a single current key and a publish lock so two publishers cannot interleave. Order: complete render for that `desk_id` → eleven tests pass → flip `citizen_pointer` last. A bare overwrite of a JSON file is not atomic publish.
 
 ## Serving rules
 
 - Always the published pointer for citizen-view.
 - Citizen HTTP injects `rel=canonical`, `og:url`, and absolute JSON-LD `url` / `item` from `data-prism-path` using `CITIZEN_ORIGIN`. Shared render HTML omits those tags. Preview does not inject them.
-- Default order of states and UTs is alphabetical by official English name, or a documented geographic order. Ranking is not the default. Measure-sort is allowed only when the slice’s citizen question is a rank question and the vintage binds the published measure.
+- Default order of states and UTs is alphabetical by official English name, or a documented geographic order. Ranking is not the default. A chart may measure-sort when **that chart’s own caption is a rank question** and the template declares it on the chart spec. Red–green, diverging performance scales, and podium palettes stay forbidden.
 - Definition, unit, geography vintage, and data vintage appear in the same view as the number. A tooltip is not the only place they live.
 - Charts and any observation API take citation cards with the number. Nothing serves a bare float.
 - `unknown`, `not_comparable`, and `series_break` stay visible. Do not smooth them into a continuous line.
@@ -185,7 +187,7 @@ Each box is a write boundary, not a repo folder beyond `src/`.
 
 ## Tests that must fail
 
-These are the acceptance tests the first citizen publish must encode. Tests 4–8 need a real render of C1, not a Python-only stub.
+These are the acceptance tests the first citizen publish must encode. Tests 4–8 and 10–11 need a real render of C1–C3, not a Python-only stub.
 
 1. An observation without `citation_id` cannot be written or rendered.
 2. An observation without `caveat_id` cannot be written or rendered.
@@ -194,7 +196,9 @@ These are the acceptance tests the first citizen publish must encode. Tests 4–
 5. A citizen route cannot read a non-published vintage. Preview is not world-readable.
 6. One citizen page cannot bind slots from two `vintage_id`s.
 7. An API or chart payload cannot include a number without its citation card.
-8. Default ordering of states is not a rank or a red/green performance map. Gate this on the chart spec (no measure-sort on the state/UT axis unless the slice question is a rank question; never a red–green diverging colour scale), not only a screenshot.
+8. Default ordering of states is not a rank or a red/green performance map. Gate this on the **chart** spec: no measure-sort on the state/UT axis unless **that chart’s own caption** is a rank question and the template declares it; never a red–green diverging colour scale. Trust checks that the declared caption really is a question about order — not that the page H1 was one.
 9. A new vintage (and its render tree) must not duplicate bytes of a series or page whose payload checksum is unchanged. Reuse is a hard-link or the same content-addressed key; a second copy fails the test.
+10. **Denomination integrity.** A rendered citizen figure whose canonical magnitude differs from the producer’s published magnitude fails the build. Worked fail: `0.35 Cr` for a `3526840` ₹ crore figure. The citizen string is produced from `value × denomination` via one formatter; peak-driven concept scaling is gone.
+11. **Published zero is not a gap.** A published zero (`status: value`, `value: 0`) and a gap (`unknown` / `withheld`) are verbally and visually distinct. A gap is never plotted as numeric zero; the citizen phrase for a gap is **not published**.
 
 Do not add a framework that serves a producer fetch at request time, or that regenerates live citizen routes in place.

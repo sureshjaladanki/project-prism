@@ -1,9 +1,9 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "Union tax revenue by major head, Budget Estimates 2026-27, Government of India. Producer printed order. Gross heads, not tax after States’ share. GST Compensation Cess blank is a hole, not zero. Single fill. Do not rank.",
+  "description": "Union tax revenue by major head, Budget Estimates 2026-27, Government of India. Producer printed order. Gross heads, not tax after States’ share. GST Compensation Cess blank is not published, not zero. Single fill. Do not rank.",
   "title": {
     "text": "Tax by major head, Budget Estimates 2026-27",
-    "subtitle": "Government of India. Gross heads, as printed. A blank is not zero."
+    "subtitle": "Government of India. Gross heads, as printed. A blank is not published — not a printed zero."
   },
   "usermeta": {
     "slot_id": "chart-tax-heads-be",

@@ -1,15 +1,16 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "State/UT Combined CPI General year-on-year inflation (%). Axis order is alphabetical by official English name. Never sort by the inflation measure. Single fill — not red–green. All India is not on this axis. Unknown is a hole, not zero.",
+  "description": "State/UT Combined CPI General year-on-year inflation (%). Rank order by the published rate — this chart's caption asks where prices are rising fastest. Single fill — not red–green. All India is not on this axis. Unknown is not published, not zero.",
   "title": {
-    "text": "CPI (General) Combined year-on-year inflation (%), States and Union Territories",
-    "subtitle": "Alphabetical by official English name."
+    "text": "Where are prices rising fastest?",
+    "subtitle": "CPI (General) Combined year-on-year inflation (%), States and Union Territories"
   },
   "usermeta": {
     "slot_id": "chart-state-ut-combined-inflation-latest-p",
     "cite_in_same_view": true,
-    "axis_order": "alphabetical_official_english_name",
-    "forbidden": ["sort_by_measure", "red_green_diverging", "rank", "all_india_on_this_axis", "blank_as_zero"]
+    "rank_caption": true,
+    "axis_order": "measure_descending",
+    "forbidden": ["red_green_diverging", "all_india_on_this_axis", "blank_as_zero"]
   },
   "height": { "step": 22 },
   "data": { "name": "slot:chart-state-ut-combined-inflation-latest-p" },
@@ -25,7 +26,7 @@
       "field": "geography_name_en",
       "type": "nominal",
       "title": "State / Union Territory",
-      "sort": { "field": "geography_name_en", "order": "ascending" },
+      "sort": { "field": "plotValue", "order": "descending" },
       "axis": { "labelLimit": 280 }
     },
     "x": {

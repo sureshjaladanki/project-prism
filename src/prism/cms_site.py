@@ -106,10 +106,20 @@ def plain_fact_lede(body_html: str) -> str:
 
 
 def fact_lede_one_line(text: str) -> str:
-    match = re.match(r"(.+?\.)(?:\s+|$)", text)
-    line = (match.group(1) if match is not None else text).strip()
+    """Thesis plus movement for home/sleeve teasers (F-home-teaser); drop what-it-is."""
+    # Split on ". " before a capital — keep decimals like 4.82 inside one sentence.
+    sentences = [
+        part.strip()
+        for part in re.split(r"(?<=\.)\s+(?=[A-Z])", text.strip())
+        if part.strip()
+    ]
+    if not sentences:
+        _fail("derived fact-lede one-liner is empty while the card shows")
+    line = " ".join(sentences[:2]).strip()
     if line == "":
         _fail("derived fact-lede one-liner is empty while the card shows")
+    if not line.endswith("."):
+        line = f"{line}."
     return line
 
 

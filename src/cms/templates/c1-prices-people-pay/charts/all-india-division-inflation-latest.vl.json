@@ -1,6 +1,6 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "description": "All India Combined CPI year-on-year inflation (%) by published group of the basket, latest Provisional. Producer annex order (codes 01–11, then 13). Not ranked. Food and beverages is not the Consumer Food Price Index. Single fill. No Division 12. Unknown is a hole, not zero.",
+  "description": "All India Combined CPI year-on-year inflation (%) by published group of the basket, latest Provisional. Producer annex order (codes 01–11, then 13). Not ranked. Food and beverages is not the Consumer Food Price Index. Single fill. No Division 12. Unknown is not published, not zero.",
   "title": {
     "text": "Retail basket groups, All India Combined",
     "subtitle": "Same month. Order as printed."

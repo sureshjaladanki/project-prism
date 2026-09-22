@@ -1,4 +1,4 @@
-"""C1: citizen projection types cannot carry desk fields."""
+"""Citizen projection types cannot carry desk fields; denomination integrity holds."""
 
 from __future__ import annotations
 
@@ -7,15 +7,27 @@ from pydantic import ValidationError
 
 from prism.citizen_projection import (
     FORBIDDEN_PROJECTION_FIELD_NAMES,
+    NOT_COMPARABLE,
     PROJECTION_TYPES,
+    assert_citizen_number_text,
+    denomination_from_unit,
+    project_citizen_change,
+    project_citizen_number,
+    scale_for_group,
+    to_canonical,
 )
 from prism.schema import (
     NOT_PUBLISHED,
+    AxisToken,
+    ChangeDirection,
+    CitizenChange,
     CitizenCite,
     CitizenGeography,
     CitizenMethod,
-    DisplayScale,
-    DisplayValue,
+    CitizenNumber,
+    Denomination,
+    DenominationMagnitude,
+    DenominationMeasure,
     ObservationStatus,
 )
 
@@ -41,13 +53,35 @@ def test_projection_types_forbid_extra_desk_keys() -> None:
             "what_it_counts": "Retail prices of selected goods and services.",
             "coverage": "States and UTs in the CPI collection.",
         },
-        DisplayValue: {
-            "raw_value": 4.82,
-            "unit": "percent",
-            "display_scale": DisplayScale.none,
-            "display_string": "4.82",
-            "status": ObservationStatus.value,
+        CitizenNumber: {
+            "canonical_value": 4.82,
+            "measure": DenominationMeasure.percent,
+            "text": "4.82",
             "chart_value": 4.82,
+            "axis_label": "",
+            "status": ObservationStatus.value,
+        },
+        CitizenChange: {
+            "current": {
+                "canonical_value": 4.82,
+                "measure": DenominationMeasure.percent,
+                "text": "4.82",
+                "chart_value": 4.82,
+                "axis_label": "",
+                "status": ObservationStatus.value,
+            },
+            "prior": {
+                "canonical_value": 4.45,
+                "measure": DenominationMeasure.percent,
+                "text": "4.45",
+                "chart_value": 4.45,
+                "axis_label": "",
+                "status": ObservationStatus.value,
+            },
+            "prior_period": "July 2026",
+            "direction": ChangeDirection.higher,
+            "difference": "0.37",
+            "citation_id": "cite-prior",
         },
         CitizenGeography: {
             "geography_label": "Kerala",
@@ -60,37 +94,38 @@ def test_projection_types_forbid_extra_desk_keys() -> None:
                 model.model_validate({**base, name: "desk"})
 
 
-def test_display_value_hole_is_null_not_zero() -> None:
+def test_citizen_number_hole_is_null_not_zero() -> None:
     with pytest.raises(ValidationError, match="chart_value null"):
-        DisplayValue(
-            raw_value=0,
-            unit="₹ crore",
-            display_scale=DisplayScale.none,
-            display_string=NOT_PUBLISHED,
-            status=ObservationStatus.unknown,
+        CitizenNumber(
+            canonical_value=None,
+            measure=DenominationMeasure.rupees,
+            text=NOT_PUBLISHED,
             chart_value=0,
+            axis_label="",
+            status=ObservationStatus.unknown,
         )
-    hole = DisplayValue(
-        raw_value=None,
-        unit="₹ crore",
-        display_scale=DisplayScale.none,
-        display_string=NOT_PUBLISHED,
+    hole = project_citizen_number(
+        value=None,
+        denomination=Denomination(
+            magnitude=DenominationMagnitude.crore,
+            measure=DenominationMeasure.rupees,
+        ),
         status=ObservationStatus.unknown,
-        chart_value=None,
+        axis=AxisToken.L_Cr,
     )
     assert hole.chart_value is None
-    assert hole.display_string == NOT_PUBLISHED
+    assert hole.text == NOT_PUBLISHED
 
 
-def test_display_value_published_requires_chart_value() -> None:
+def test_citizen_number_published_requires_chart_value() -> None:
     with pytest.raises(ValidationError, match="requires chart_value"):
-        DisplayValue(
-            raw_value=12.0,
-            unit="percent",
-            display_scale=DisplayScale.none,
-            display_string="12",
-            status=ObservationStatus.value,
+        CitizenNumber(
+            canonical_value=12.0,
+            measure=DenominationMeasure.percent,
+            text="12",
             chart_value=None,
+            axis_label="",
+            status=ObservationStatus.value,
         )
 
 
@@ -120,6 +155,23 @@ def test_project_citizen_cite_and_method() -> None:
     method = project_citizen_method(make_caveat())
     assert "do_not" not in method.model_dump()
     assert "CPI General" in method.what_it_counts
+
+
+def test_citizen_series_label_drops_group_code_and_base() -> None:
+    from prism.citizen_projection import citizen_series_label, project_citizen_cite
+    from tests.factories import make_citation
+
+    raw = (
+        "Consumer Food Price Index (CFPI) — Rural, Urban and Combined; "
+        "same values as CPI Group name Food, Group code 01.1 (Base 2024=100)"
+    )
+    assert citizen_series_label(raw) == (
+        "Consumer Food Price Index (CFPI) — Rural, Urban and Combined"
+    )
+    cite = project_citizen_cite(make_citation(series=raw))
+    assert "Group code" not in cite.series
+    assert "Base 2024" not in cite.series
+    assert cite.series.startswith("Consumer Food Price Index (CFPI)")
 
 
 def test_project_citizen_cite_rejects_desk_ingest_flags() -> None:
@@ -171,76 +223,140 @@ def test_citizen_period_label_strips_marks_and_prefixes() -> None:
     assert citizen_period_label("be-2026-27") == "2026-27"
     assert citizen_period_label("2026-08") == "2026-08"
 
-    from prism.citizen_projection import (
-        project_display_value,
-        scale_for_concept,
-    )
 
-    assert scale_for_concept((4.82, 5.52), rate_or_index=True) is DisplayScale.none
-    assert scale_for_concept((1_210_854_977,), rate_or_index=False) is DisplayScale.Cr
-    display = project_display_value(
-        raw_value=1_210_854_977,
-        unit="persons",
-        status=ObservationStatus.value,
-        scale=DisplayScale.Cr,
+def test_blueprint_10_revenue_receipts_keep_crore_order() -> None:
+    """3526840 ₹ crore → ₹35.27 lakh crore, never 0.35 Cr."""
+    denom = Denomination(
+        magnitude=DenominationMagnitude.crore, measure=DenominationMeasure.rupees
     )
-    assert display.display_string == "121.09 Cr"
-    assert display.chart_value == pytest.approx(121.0854977)
-    rate = project_display_value(
-        raw_value=4.45,
-        unit="inflation (%)",
+    canonical = to_canonical(3_526_840.0, denom)
+    assert canonical == pytest.approx(3.52684e13)  # 3526840 * 1e7
+    axis = scale_for_group((canonical,), compact=True)
+    assert axis is AxisToken.L_Cr
+    number = project_citizen_number(
+        value=3_526_840.0,
+        denomination=denom,
         status=ObservationStatus.value,
-        scale=DisplayScale.none,
+        axis=axis,
     )
-    assert rate.display_string == "4.45"
+    assert number.text == "₹35.27 lakh crore"
+    assert number.chart_value == pytest.approx(35.2684)
+    assert not number.text.startswith("₹0.")
+
+
+def test_blueprint_10_seeded_wrong_magnitude_fails() -> None:
+    """A crore column whose canonical forgets ×10^7 fails magnitude integrity."""
+    denom = Denomination(
+        magnitude=DenominationMagnitude.crore, measure=DenominationMeasure.rupees
+    )
+    with pytest.raises(ValueError, match="canonical magnitude"):
+        from prism.citizen_projection import assert_magnitude_integrity
+
+        assert_magnitude_integrity(
+            producer_value=3_526_840.0,
+            denomination=denom,
+            canonical=3_526_840.0,  # wrong: forgot × 1e7
+            text="₹0.35",
+        )
+    with pytest.raises(ValueError, match="order of magnitude"):
+        from prism.citizen_projection import assert_magnitude_integrity
+
+        assert_magnitude_integrity(
+            producer_value=3_526_840.0,
+            denomination=denom,
+            canonical=to_canonical(3_526_840.0, denom),
+            text="₹0.35",
+        )
+
+
+def test_blueprint_11_gap_never_plotted_as_zero() -> None:
+    from prism.serving import ServeError, assert_hole_never_plotted_as_zero
+
+    with pytest.raises(ServeError, match="must be null|plotted as zero"):
+        assert_hole_never_plotted_as_zero(
+            {
+                "unit": "₹ crore; 8.03 GST Compensation Cess",
+                "value": 0,
+                "status": ObservationStatus.unknown.value,
+            }
+        )
+
+
+def test_headcount_and_projection_use_persons_ladder() -> None:
+    persons = denomination_from_unit("persons")
+    assert persons.measure is DenominationMeasure.persons
+    census = project_citizen_number(
+        value=1_210_854_977,
+        denomination=persons,
+        status=ObservationStatus.value,
+        axis=AxisToken.Cr,
+    )
+    assert census.text == "121.09 crore people"
+    projected_unit = "thousands ('000); projected; 1st March"
+    projected_denom = denomination_from_unit(projected_unit)
+    assert projected_denom.magnitude is DenominationMagnitude.thousand
+    axis = scale_for_group(
+        (to_canonical(1_423_000.0, projected_denom),),
+        compact=True,
+    )
+    assert axis is AxisToken.Cr
+    projected = project_citizen_number(
+        value=1_423_000.0,
+        denomination=projected_denom,
+        status=ObservationStatus.value,
+        axis=axis,
+    )
+    assert projected.text == "142.3 crore people"
+    assert "thousand" not in projected.text.lower()
+
+
+def test_rates_never_compact() -> None:
+    rate = project_citizen_number(
+        value=4.45,
+        denomination=denomination_from_unit("inflation (%)"),
+        status=ObservationStatus.value,
+        axis=AxisToken.Cr,
+    )
+    assert rate.text == "4.45"
     assert rate.chart_value == 4.45
-    hole = project_display_value(
-        raw_value=None,
-        unit="₹ crore",
-        status=ObservationStatus.unknown,
-        scale=DisplayScale.L,
-    )
-    assert hole.chart_value is None
-    assert hole.display_string == NOT_PUBLISHED
+    assert rate.axis_label == ""
 
 
-def test_display_string_is_whole_citizen_unit() -> None:
-    from prism.citizen_projection import (
-        assert_display_string,
-        concept_key,
-        magnitude_for_display,
-        project_display_value,
-        scale_for_concept,
+def test_citizen_change_comparable() -> None:
+    denom = denomination_from_unit("inflation (%)")
+    change = project_citizen_change(
+        current_value=4.82,
+        prior_value=4.45,
+        denomination=denom,
+        current_status=ObservationStatus.value,
+        prior_status=ObservationStatus.value,
+        prior_period="July 2026",
+        prior_citation_id="cite-prior",
+        axis=AxisToken.none,
     )
+    assert change.direction is ChangeDirection.higher
+    assert change.difference == "0.37"
+    assert change.prior_period == "July 2026"
 
-    money = project_display_value(
-        raw_value=3_527_000.0,
-        unit="₹ crore; REVENUE RECEIPTS",
-        status=ObservationStatus.value,
-        scale=DisplayScale.L,
-    )
-    assert money.display_string == "35.27 L Cr"
-    assert "crore" not in money.display_string.lower()
 
-    projected_raw = 1_423_000.0
-    persons = magnitude_for_display(
-        projected_raw, "thousands ('000); projected; 1st March"
+def test_citizen_change_break_is_not_comparable() -> None:
+    denom = denomination_from_unit("inflation (%)")
+    change = project_citizen_change(
+        current_value=4.82,
+        prior_value=4.45,
+        denomination=denom,
+        current_status=ObservationStatus.value,
+        prior_status=ObservationStatus.value,
+        prior_period="July 2026",
+        prior_citation_id="cite-prior",
+        axis=AxisToken.none,
+        comparable=False,
     )
-    assert persons == pytest.approx(1_423_000_000.0)
-    assert concept_key("ncp", "thousands ('000); projected; 1st March") == "headcount"
-    assert concept_key("census", "persons") == "headcount"
-    scale = scale_for_concept((1_210_854_977.0, persons), rate_or_index=False)
-    assert scale is DisplayScale.Cr
-    projected = project_display_value(
-        raw_value=projected_raw,
-        unit="thousands ('000); projected; 1st March",
-        status=ObservationStatus.value,
-        scale=scale,
-    )
-    assert projected.display_string == "142.3 Cr"
-    assert "thousand" not in projected.display_string.lower()
+    assert change.difference == NOT_COMPARABLE
 
-    with pytest.raises(ValueError, match="producer unit word"):
-        assert_display_string("35.27 L crore")
-    with pytest.raises(ValueError, match="producer unit word"):
-        assert_display_string("14.23 L Thousand")
+
+def test_forbidden_compact_unit_glue() -> None:
+    with pytest.raises(ValueError, match="producer unit word|compact token"):
+        assert_citizen_number_text("35.27 L crore")
+    with pytest.raises(ValueError, match="producer unit word|compact token"):
+        assert_citizen_number_text("14.23 L Thousand")

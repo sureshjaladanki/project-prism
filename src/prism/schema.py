@@ -116,11 +116,43 @@ class GeographyVintage(ContractModel):
 NOT_PUBLISHED = "not published"
 
 
-class DisplayScale(StrEnum):
-    none = "none"
+class DenominationMagnitude(StrEnum):
+    ones = "ones"
+    thousand = "thousand"
+    lakh = "lakh"
+    crore = "crore"
+
+
+class DenominationMeasure(StrEnum):
+    rupees = "rupees"
+    persons = "persons"
+    percent = "percent"
+    rate = "rate"
+    index = "index"
+    count = "count"
+
+
+class Denomination(ContractModel):
+    """Producer magnitude paired with what is measured. Ingest does not normalise to ones."""
+
+    magnitude: DenominationMagnitude
+    measure: DenominationMeasure
+
+
+class AxisToken(StrEnum):
+    """Compact axis / chart token for a declared scale group. Empty string is none."""
+
+    none = ""
     K = "K"
     L = "L"
     Cr = "Cr"
+    L_Cr = "L Cr"
+
+
+class ChangeDirection(StrEnum):
+    higher = "higher"
+    lower = "lower"
+    unchanged = "unchanged"
 
 
 class CaveatNote(ContractModel):
@@ -154,6 +186,7 @@ class Observation(ContractModel):
     reference_period: NonEmptyStr
     value: float | None
     unit: NonEmptyStr
+    denomination: Denomination
     status: ObservationStatus
     lineage: ObservationLineage
 
@@ -207,30 +240,41 @@ class CitizenMethod(ContractModel):
     lag_note: NonEmptyStr | None = None
 
 
-class DisplayValue(ContractModel):
-    """Bind-time citizen number string. Vintage unit is unchanged."""
+class CitizenNumber(ContractModel):
+    """Bind-time citizen figure. Record value/unit/denomination stay on the observation."""
 
-    raw_value: float | None
-    unit: NonEmptyStr
-    display_scale: DisplayScale
-    display_string: NonEmptyStr
-    status: ObservationStatus
+    canonical_value: float | None
+    measure: DenominationMeasure
+    text: NonEmptyStr
     chart_value: float | None
+    axis_label: str
+    status: ObservationStatus
 
     @model_validator(mode="after")
     def status_owns_the_hole(self) -> Self:
         published = self.status is ObservationStatus.value
         if published:
-            if self.raw_value is None:
-                raise ValueError("status value requires raw_value")
+            if self.canonical_value is None:
+                raise ValueError("status value requires canonical_value")
             if self.chart_value is None:
                 raise ValueError("status value requires chart_value")
             return self
         if self.chart_value is not None:
             raise ValueError("non-published status requires chart_value null")
-        if self.display_string != NOT_PUBLISHED:
-            raise ValueError('gap display_string must be "not published"')
+        if self.text != NOT_PUBLISHED:
+            raise ValueError('gap text must be "not published"')
         return self
+
+
+class CitizenChange(ContractModel):
+    """Bind-time movement between two observations of the same series in one vintage."""
+
+    current: CitizenNumber
+    prior: CitizenNumber
+    prior_period: NonEmptyStr
+    direction: ChangeDirection
+    difference: NonEmptyStr
+    citation_id: NonEmptyStr
 
 
 class CitizenGeography(ContractModel):
@@ -315,6 +359,8 @@ OBSERVATION_PARQUET_COLUMNS: tuple[str, ...] = (
     "reference_period",
     "value",
     "unit",
+    "denomination_magnitude",
+    "denomination_measure",
     "status",
     "lineage_raw_path",
     "lineage_derived_path",
@@ -346,8 +392,10 @@ def contract_json_schema() -> dict[str, object]:
         "ServedObservation": ServedObservation.model_json_schema(),
         "CitizenCite": CitizenCite.model_json_schema(),
         "CitizenMethod": CitizenMethod.model_json_schema(),
-        "DisplayValue": DisplayValue.model_json_schema(),
+        "CitizenNumber": CitizenNumber.model_json_schema(),
+        "CitizenChange": CitizenChange.model_json_schema(),
         "CitizenGeography": CitizenGeography.model_json_schema(),
+        "Denomination": Denomination.model_json_schema(),
         "LineageRecord": LineageRecord.model_json_schema(),
         "VintageManifest": VintageManifest.model_json_schema(),
         "InputManifest": InputManifest.model_json_schema(),

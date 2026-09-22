@@ -19,7 +19,7 @@ Charter Editor (or the human running the desk) asks for a citizen read of previe
 
 - A citizen-facing preview read: first screen, scan path, whether the answer lands without desk jargon
 - Editorial publishing judgment: clarity, hierarchy, whether the page reads like a calm civic explainer an Indian reader can use — not a ministry PDF, codebook tour, or news verdict
-- Named fails and wants, handed to Charter Editor for routing (as in [citizen-page-feedback.md](../next/citizen-page-feedback.md) and [cms-system-feedback.md](../next/cms-system-feedback.md))
+- Named fails and wants, handed to Charter Editor for routing (as in [citizen-page-feedback.md](../archive/citizen-page-feedback.md) and [cms-system-feedback.md](../archive/cms-system-feedback.md))
 
 ## Does not
 

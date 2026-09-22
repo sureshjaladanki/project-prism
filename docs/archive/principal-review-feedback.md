@@ -1,6 +1,6 @@
 # Principal review feedback
 
-Principal (advisor; outside roster). Citizen preview read of the CMS desk. Method: [principal-review-guidelines.md](principal-review-guidelines.md). Charter Editor routes. This file does not amend standing contracts.
+Principal (advisor; outside roster). Citizen preview read of the CMS desk. Method: [principal-review-guidelines.md](../principal-review-guidelines.md). Charter Editor routes. This file does not amend standing contracts.
 
 ```text
 role:           principal (advisor; outside roster)
@@ -119,4 +119,4 @@ out_of_scope:   Trust record audit; desk rebind; contract edits
 next:           charter-editor
 ```
 
-Method reference: [principal-review-guidelines.md](principal-review-guidelines.md). Earlier routed batches: [citizen-page-feedback.md](citizen-page-feedback.md), [cms-system-feedback.md](cms-system-feedback.md).
+Method reference: [principal-review-guidelines.md](../principal-review-guidelines.md). Earlier routed batches: [citizen-page-feedback.md](citizen-page-feedback.md), [cms-system-feedback.md](cms-system-feedback.md).

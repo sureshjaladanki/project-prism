@@ -2,7 +2,7 @@
 
 Charter Editor. Principal notes recorded 2026-09-20 against preview (`localhost:4321`) on `/money/union`, `/people/population`, and `/prices/retail-prices`. This file routes the notes to personas. It does not amend [editorial-guidelines.md](../editorial-guidelines.md), [design-system.md](../design-system.md), or [web-design.md](../web-design.md) until the named owner acts.
 
-Related: first-screen look and column width stay in [ui-ux-feedback.md](../archive/ui-ux-feedback.md). Catalog-scale ingest/vintage already has an execution plan: [catalog-ingest-pipeline-plan.md](catalog-ingest-pipeline-plan.md). Standing programme for the gaps in this file: [citizen-system-change-plan.md](citizen-system-change-plan.md). This file is copy, cite chrome, chart encoding, method, pipeline jargon, geography pages, ingest accuracy, and generic parsers. It does not schedule the work.
+Related: first-screen look and column width stay in [ui-ux-feedback.md](ui-ux-feedback.md). Catalog-scale ingest/vintage already has an execution plan: [catalog-ingest-pipeline-plan.md](../next/catalog-ingest-pipeline-plan.md). Standing programme for the gaps in this file: [citizen-system-change-plan.md](citizen-system-change-plan.md). This file is copy, cite chrome, chart encoding, method, pipeline jargon, geography pages, ingest accuracy, and generic parsers. It does not schedule the work.
 
 ```text
 about:          preview answer pages vs a citizen who should not need the codebook
@@ -19,7 +19,7 @@ These clashes are decided here so owners do not invent a second vision.
 
 1. **Evidence is an explainer, not a recap and not a news piece.** Sections must further answer the H1: bound change from the previous published period, what was counted, who, when, and how the published series got to this point. They must not retype the `.stat-figure` cells. They must not explain *why the government did it*, forecast, or tell the reader what to think. “What it means to the reader” is what the number *is* (a rate is not a headcount; Budget Estimates are not actuals). It is not a takeaway about a ministry.
 
-2. **One citizen method block.** Merge “How to read this series” into Methodology unless Content Editor Development can name a distinct citizen job that Methodology does not already do. Method sits after the record and is quieter than the answer. Desk `do_not` lines stay in [method notes](../archive/c1-method-notes.md), not on the page.
+2. **One citizen method block.** Merge “How to read this series” into Methodology unless Content Editor Development can name a distinct citizen job that Methodology does not already do. Method sits after the record and is quieter than the answer. Desk `do_not` lines stay in [method notes](c1-method-notes.md), not on the page.
 
 3. **Cite chrome is for the citizen; schema fields stay in the vintage.** The open card shows producer (linked to the citation `url`), series as the producer names it, reference period, release date, and one readable caveat. `geography_vintage` and `vintage_id` stay on the observation and in `data-vintage-id`. They are not citizen labels. A tooltip is still not enough. A closable panel may *mirror* the on-page card; it must not replace it or leave the view (standing [design-system.md](../design-system.md) cite rule).
 
@@ -33,7 +33,7 @@ These clashes are decided here so owners do not invent a second vision.
 
 8. **No `ingest-auditor` persona.** Accuracy of raw → derived is a required **ingest accuracy gate**, not a twelfth roster member. Ingest Engineer owns golden/fixture tests (derived cells still map to the artifact). Methodologist signs the first parse of a new table shape (`derived_path` is the producer’s table). Trust Auditor may spot-check cells on ship and still requires the raw file; it does not become a second ingest engineer. Do not add `.cursor/agents/ingest-auditor.md`.
 
-9. **One ingest runner and one vintage runner; parsers by format and table shape, not by C-number.** Per-charter Python types (`pipeline/c1.py`, `parse_c2.py`, `parse_c3.py` as the *unit of work*) are out. Catalog YAML wires identity (slice, artifact, `parser_id`, `mapper_id`). Shape families — `xlsx-table`, `html-table`, `pdf-table` — are shared code. A new charter that reuses a shape is a catalog file. A new layout is one new parser/mapper family. YAML does not encode header offsets, merged-cell rules, or “if this charter then”. Stop if the PDF/HTML is ambiguous; do not ship one guess-all parser. Standing plan: [catalog-ingest-pipeline-plan.md](catalog-ingest-pipeline-plan.md).
+9. **One ingest runner and one vintage runner; parsers by format and table shape, not by C-number.** Per-charter Python types (`pipeline/c1.py`, `parse_c2.py`, `parse_c3.py` as the *unit of work*) are out. Catalog YAML wires identity (slice, artifact, `parser_id`, `mapper_id`). Shape families — `xlsx-table`, `html-table`, `pdf-table` — are shared code. A new charter that reuses a shape is a catalog file. A new layout is one new parser/mapper family. YAML does not encode header offsets, merged-cell rules, or “if this charter then”. Stop if the PDF/HTML is ambiguous; do not ship one guess-all parser. Standing plan: [catalog-ingest-pipeline-plan.md](../next/catalog-ingest-pipeline-plan.md).
 
 ---
 
@@ -67,7 +67,7 @@ Standing file: [editorial-guidelines.md](../editorial-guidelines.md). Run Develo
 
 ### Methodologist
 
-Standing files: slice method notes ([c1-method-notes.md](../archive/c1-method-notes.md), [c2-method-notes.md](../archive/c2-method-notes.md), [c3-method-notes.md](../archive/c3-method-notes.md)).
+Standing files: slice method notes ([c1-method-notes.md](c1-method-notes.md), [c2-method-notes.md](c2-method-notes.md), [c3-method-notes.md](c3-method-notes.md)).
 
 | Id | Feedback | Also |
 |----|----------|------|
@@ -82,14 +82,14 @@ Standing files: slice method notes ([c1-method-notes.md](../archive/c1-method-no
 
 ### UI/UX Developer
 
-Standing file: [design-system.md](../design-system.md). Presentation pass on every template that reached Proof. First-screen width and welcome tone: [ui-ux-feedback.md](../archive/ui-ux-feedback.md) — do not duplicate that work here.
+Standing file: [design-system.md](../design-system.md). Presentation pass on every template that reached Proof. First-screen width and welcome tone: [ui-ux-feedback.md](ui-ux-feedback.md) — do not duplicate that work here.
 
 | Id | Feedback | Also |
 |----|----------|------|
 | P2-chrome | `.citation-card` is a field dump: summary repeats the `<dl>`; Geography vintage and Data vintage shown as citizen rows. Open state: producer (link), series, period, released, caveat. No duplicate fields. No vintage ids as labels. | Platform Architect (which citation fields bind to chrome); Content Editor (caveat prose) |
 | P3 | In-text cites open that observation’s card in a closable panel, same bound fields. The on-page card / `.source-stack` stays. No request-time fetch. Amend Interaction in the design system if a panel is added; do not replace `<details>` with a fly-out that leaves the view. | Front-end Architect only if this becomes a new page type (it must not) |
 | P4 | Chart wells waste width: vertical tick labels, uncompacted large numbers, leftover field. Axis ticks horizontal where they fit; compact K / L / Cr per ruling 6; plot fills the card. Standing boxes: well filled, 12px floor, one `plotWidth`, number agreement. | Content Editor (format convention at bind) |
-| S1 | `.fact-lede` and body `<p>` do not share an edge with graphs and `.stat-row`. Same item as [ui-ux-feedback.md](../archive/ui-ux-feedback.md) “one width on the first screen.” Fix there. | — |
+| S1 | `.fact-lede` and body `<p>` do not share an edge with graphs and `.stat-row`. Same item as [ui-ux-feedback.md](ui-ux-feedback.md) “one width on the first screen.” Fix there. | — |
 | S2-type | Methodology type is quieter than answer H2 / fact-lede. Not a second house. | Content Editor (scan path) |
 | E-cess-zero | `/money/union` — GST Compensation Cess is a gap, plotted as zero. **Never plot `unknown` as zero** (already in the design system). Fail the presentation pass. | Pipeline Engineer (observation `status`); Trust Auditor |
 | E-compact | Population and Budget figures: compact display in lede, stat, and axes. Stat cells must still fit. | Content Editor (convention); Platform Architect if bind format is unspecified |
@@ -115,7 +115,7 @@ Standing files: [data-contracts.md](../data-contracts.md), [architectural-bluepr
 | P2-schema | Citation chrome is dumping internal fields because the bind treats every card field as citizen. Name a **citizen citation surface** (producer, series, url, reference period, release date, caveat prose) vs machine fields (`citation_id`, `geography_vintage`, `vintage_id`). Do not drop required fields from the vintage. | UI/UX Developer; Source Librarian (url already on the card) |
 | P5.a-contract | Ingest output stays producer-shaped. Vintage citizen fields do not carry parser names. If caveat currently has one blob, split citizen vs `do_not` so Pipeline cannot attach desk notes to the page. | Methodologist; Pipeline Engineer |
 | S3-catalog | Geography routes are a catalog of bound units from **this** vintage, completeness still atomic, no thin pages. Refresh contract before anyone builds folders. | Front-end Architect; Pipeline Engineer |
-| P6 | Avoid per-charter Python types (C1, C2, C3). One ingest module, one vintage module. Generic YAML / html-to-table / pdf-to-table / xls-table parsers for every charter. **In:** one runner each; catalog YAML as identity; parsers registered by format + table shape and reused across slices. **Out:** `C1Page` types; copying `pipeline/c3.py` for C4; YAML that needs an `if` to mean anything; one PDF parser that guesses every ministry layout. Execute [catalog-ingest-pipeline-plan.md](catalog-ingest-pipeline-plan.md); do not open a second plan. | Ingest Engineer (shape parsers); Pipeline Engineer (shape mappers); Charter Editor (ruling 9) |
+| P6 | Avoid per-charter Python types (C1, C2, C3). One ingest module, one vintage module. Generic YAML / html-to-table / pdf-to-table / xls-table parsers for every charter. **In:** one runner each; catalog YAML as identity; parsers registered by format + table shape and reused across slices. **Out:** `C1Page` types; copying `pipeline/c3.py` for C4; YAML that needs an `if` to mean anything; one PDF parser that guesses every ministry layout. Execute [catalog-ingest-pipeline-plan.md](../next/catalog-ingest-pipeline-plan.md); do not open a second plan. | Ingest Engineer (shape parsers); Pipeline Engineer (shape mappers); Charter Editor (ruling 9) |
 
 **Does not:** author copy or chart chrome. Does not write a second catalog plan.
 
@@ -186,7 +186,7 @@ A form-factor fail (whitespace, alignment, method type size) is **not** Trust. A
 | Gap language = “not published”; never plot as zero | Methodologist | Content Editor, Platform Architect, UI/UX Developer, Pipeline Engineer, Trust Auditor |
 | Same concept, same display unit (C2 population charts) | Content Editor | Methodologist, UI/UX Developer |
 | Method quieter than the answer | Content Editor (placement) | UI/UX Developer (type) |
-| Lede/prose vs chart/stat alignment | UI/UX Developer | see [ui-ux-feedback.md](../archive/ui-ux-feedback.md) |
+| Lede/prose vs chart/stat alignment | UI/UX Developer | see [ui-ux-feedback.md](ui-ux-feedback.md) |
 | Union + state pages | Front-end Architect | Charter Editor, Geography Steward, Platform Architect, Content Editor, UI/UX Developer, Pipeline Engineer |
 | Ingest accuracy (raw → derived) without a new persona | Ingest Engineer | Methodologist (first-layout sign-off), Trust Auditor (spot-check on ship), Charter Editor (ruling 8) |
 | One ingest + one vintage runner; shape parsers (YAML / HTML / PDF / XLS) | Platform Architect | Ingest Engineer, Pipeline Engineer, Charter Editor (ruling 9) |
@@ -207,13 +207,13 @@ A form-factor fail (whitespace, alignment, method type size) is **not** Trust. A
 | 5.a | Hide source jargon from later pipeline stages | **Ingest Engineer** (do not rename the producer table) + **Pipeline Engineer** (do not copy parser names into the vintage citizen fields) + **Platform Architect** |
 | 5.b | Content Editor hides desk jargon and runs Development + Line + Copy + Proof + Visual | **Content Editor** (four writing passes) + **UI/UX Developer** (presentation / visual pass — not a fifth writing pass) |
 | 6 | Ingest-auditor persona to verify raw → derived | **Ingest Engineer** (accuracy gate) + **Methodologist** + **Trust Auditor** (spot-check). Charter ruling 8: **no new persona** |
-| 7 | Avoid per-charter Python types; one ingest and one vintage module; generic YAML / html-to-table / pdf-to-table / xls-table parsers | **Platform Architect** ([catalog-ingest-pipeline-plan.md](catalog-ingest-pipeline-plan.md)) + **Ingest Engineer** + **Pipeline Engineer**. Charter ruling 9 |
+| 7 | Avoid per-charter Python types; one ingest and one vintage module; generic YAML / html-to-table / pdf-to-table / xls-table parsers | **Platform Architect** ([catalog-ingest-pipeline-plan.md](../next/catalog-ingest-pipeline-plan.md)) + **Ingest Engineer** + **Pipeline Engineer**. Charter ruling 9 |
 
 ### Secondary
 
 | # | Ask | Route |
 |---|----------------|--------|
-| 1 | Fact-lede and `<p>` alignment vs graphs and `.stat-row` | **UI/UX Developer** ([ui-ux-feedback.md](../archive/ui-ux-feedback.md)) |
+| 1 | Fact-lede and `<p>` alignment vs graphs and `.stat-row` | **UI/UX Developer** ([ui-ux-feedback.md](ui-ux-feedback.md)) |
 | 2 | Methodology less prominent than answer paragraphs | **Content Editor** + **UI/UX Developer** |
 | 3 | Union pages plus state-specific pages | **Front-end Architect** + **Charter Editor** + **Geography Steward** + **Platform Architect** + **Content Editor** + **UI/UX Developer** |
 
@@ -254,4 +254,4 @@ One persona per parent pass. First phase: **Front-end Architect D1**.
 - One guess-all PDF/HTML parser; YAML as parser instruction.
 - Shipping thin state URLs.
 - Flipping `citizen_pointer`.
-- Rewriting [design-system.md](../design-system.md) for welcome/alignment — done 2026-09-20; implementation is [ui-ux-change-plan.md](../archive/ui-ux-change-plan.md) Phase E.
+- Rewriting [design-system.md](../design-system.md) for welcome/alignment — done 2026-09-20; implementation is [ui-ux-change-plan.md](ui-ux-change-plan.md) Phase E.

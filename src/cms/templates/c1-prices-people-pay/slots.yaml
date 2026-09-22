@@ -367,9 +367,10 @@ slots:
     exclude_geography_codes: ["00"]
     on_unknown: hole_not_zero
     sort:
-      field: geography_name_en
-      order: ascending
-      never: measure
+      field: value
+      order: descending
+      # Rank question is this chart's caption ("Where are prices rising fastest?").
+      # Default elsewhere remains alphabetical.
     join:
       geography_name_en: official English State Name as published
 

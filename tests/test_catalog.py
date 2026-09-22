@@ -27,6 +27,7 @@ from prism.catalog.registry import (
     register_parser,
 )
 from prism.cli import app
+from prism.citizen_projection import denomination_from_unit
 from prism.ingest.parsed_table import ParsedTable
 from prism.ingest.run import ingest
 from prism.pipeline.run import materialise_vintage
@@ -194,6 +195,7 @@ def test_fixture_slice_generic_runners(tmp_path: Path) -> None:
                 reference_period="2024",
                 value=float(rows[0]["value"]),
                 unit="count",
+                denomination=denomination_from_unit("count"),
                 status=ObservationStatus.value,
                 lineage=lineage,
             ),

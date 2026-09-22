@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from prism.catalog.registry import MapperFn, MapperSpec, register_mapper
+from prism.citizen_projection import denomination_from_unit
 from prism.pipeline.errors import PipelineError
 from prism.schema import (
     CodeSystem,
@@ -189,6 +190,7 @@ def map_c3_table(
             if obs_id in seen:
                 obs_id = f"{obs_id}-{index}"
             seen.add(obs_id)
+            unit = f"{measure.unit}; {label}"
             observations.append(
                 Observation(
                     observation_id=obs_id,
@@ -199,7 +201,8 @@ def map_c3_table(
                     sector=SECTOR_UNION,
                     reference_period=measure.reference_period,
                     value=value,
-                    unit=f"{measure.unit}; {label}",
+                    unit=unit,
+                    denomination=denomination_from_unit(unit),
                     status=ObservationStatus.unknown
                     if value is None
                     else ObservationStatus.value,
@@ -224,6 +227,7 @@ def map_named_hole_union(
 
     source_vintage = default_catalog().series(series_id).source_vintage
     unit = geography.units_included[0]
+    hole_unit = "not a table"
     return (
         Observation(
             observation_id=(
@@ -240,7 +244,8 @@ def map_named_hole_union(
             sector=SECTOR_UNION,
             reference_period=source_vintage,
             value=None,
-            unit="not a table",
+            unit=hole_unit,
+            denomination=denomination_from_unit(hole_unit),
             status=ObservationStatus.unknown,
             lineage=lineage,
         ),

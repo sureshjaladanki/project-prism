@@ -101,6 +101,8 @@ def make_geography_ref(**overrides: object) -> GeographyRef:
 
 
 def make_observation(**overrides: object) -> Observation:
+    from prism.citizen_projection import denomination_from_unit
+
     payload: dict[str, object] = {
         "observation_id": "obs-c1-general-00-combined-2026-08-index",
         "series_id": SERIES_CPI_GENERAL_BASE_2024,
@@ -119,6 +121,9 @@ def make_observation(**overrides: object) -> Observation:
         ),
     }
     payload.update(overrides)
+    if "denomination" not in payload:
+        unit = str(payload["unit"])
+        payload["denomination"] = denomination_from_unit(unit)
     return Observation.model_validate(payload)
 
 

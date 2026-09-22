@@ -105,6 +105,8 @@ body {
   justify-content: space-between;
   gap: var(--space-5);
   margin: 0 0 var(--space-6);
+  padding-bottom: var(--space-5);
+  border-bottom: var(--hair) solid var(--rule);
 }
 
 .site-lockup {
@@ -238,6 +240,14 @@ body {
   color: var(--ink);
 }
 
+.sleeve-empty-invite {
+  max-width: var(--measure);
+  margin: 0 0 var(--space-6);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: var(--ink);
+}
+
 article.portrait {
   max-width: var(--desk);
   margin: 0 auto;
@@ -245,7 +255,7 @@ article.portrait {
 
 .how-measured > p,
 .how-measured li {
-  max-width: var(--measure);
+  max-width: 68ch;
   font-size: 0.9375rem;
   line-height: 1.55;
   color: var(--muted);
@@ -260,10 +270,10 @@ h3 {
 }
 
 h1 {
-  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-size: clamp(1.875rem, 4vw, 2.75rem);
   line-height: 1.15;
   letter-spacing: -0.02em;
-  margin: var(--space-2) 0 var(--space-4);
+  margin: var(--space-2) 0 var(--space-3);
 }
 
 h2 {
@@ -300,7 +310,7 @@ p {
 }
 
 .byline {
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-3);
   font-size: 0.875rem;
   line-height: 1.45;
   color: var(--muted);
@@ -313,13 +323,27 @@ p {
   border-top: var(--header-rule) solid var(--mark);
   border-radius: var(--radius-lg);
   box-shadow: var(--lift-answer);
-  padding: var(--space-6);
+  padding: var(--space-4) var(--space-5);
   margin: 0 0 var(--space-5);
   color: var(--ink);
 }
 
 .fact-lede p {
   margin: 0;
+}
+
+.fact-lede p + p {
+  margin-top: var(--space-2);
+}
+
+.fact-lede .thesis-mark {
+  color: var(--thesis-mark);
+  font-weight: 600;
+  background: color-mix(in srgb, var(--thesis-mark) 10%, transparent);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding: 0.05em 0.12em;
+  border-radius: 2px;
 }
 
 .fact-lede .observation-value {
@@ -349,7 +373,7 @@ p {
 .hero .fact-lede + .stat-row {
   background: var(--well);
   margin: 0;
-  padding: var(--space-5) var(--space-6);
+  padding: var(--space-3) var(--space-5);
   border-top: var(--hair) solid var(--rule);
   box-shadow: var(--lift-answer);
 }
@@ -454,7 +478,7 @@ code {
   border: var(--hair) solid var(--rule);
   border-radius: var(--radius);
   box-shadow: var(--lift);
-  padding: var(--space-5);
+  padding: var(--space-3) var(--space-4);
 }
 
 .stat-label {
@@ -528,7 +552,7 @@ code {
   border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   box-shadow: var(--lift-answer);
   margin: 0 0 var(--space-6);
-  padding: var(--space-4) var(--space-6);
+  padding: var(--space-3) var(--space-5);
 }
 
 .cite-strip .cite-producer {

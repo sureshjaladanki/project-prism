@@ -1,6 +1,6 @@
 # Vision
 
-Give anyone in India a clear, non-partisan picture of the country from official government statistics — and nothing else.
+Give anyone in India a clear, non-partisan picture of the country from official government statistics.
 
 The numbers already exist. They are split across Union ministries, states and Union Territories, PDFs, dashboards, and delayed releases. This platform gathers that official record into one portrait: what the state collects, spends, and delivers, and how people live. High or low, good or bad — the reader decides.
 
@@ -12,7 +12,7 @@ A shared, checkable picture of India that does not belong to a party, a ministry
 
 A civic data platform. It uses only public official statistics — surveys, censuses, administrative series, and budget figures produced by government statistical systems — and presents them so a citizen can see the country without a decoder ring.
 
-It is inspired by the *role* of [USAFacts](https://usafacts.org/): make government data usable, do not tell people what to think. It is not a copy of that site, its topics, or its American frame. Live observation of that site (not a contract): [usafacts-profile.md](usafacts-profile.md).
+It is inspired by the *role* of [USAFacts](https://usafacts.org/): make government data usable, do not tell people what to think. Prism adapts freely from how USAFacts answers a question — voice, thesis-first lede, fast facts, evidence payoff, scan path, look — into our house for India; the record is India's official statistics and the producing office keeps its name on every number. Live observation of that site (not a contract): [usafacts-profile.md](usafacts-profile.md).
 
 Citizen pages are story-shaped explainers of the official record — question, bound fact, evidence, method. Prism may name derived work on official series (ranks, comparable periods, standardized frames, derived tables already in the vintage). It does not become the statistical office.
 
@@ -33,4 +33,4 @@ Citizen pages are story-shaped explainers of the official record — question, b
 
 ## Who it is for
 
-Citizens first. Then journalists, students, researchers, and anyone in public life who needs the same numbers, from the same sources, without a partisan filter.
+Citizens first — a person without the codebook must be able to relate to and resonate with the answer page. Then journalists, students, researchers, and anyone in public life who needs the same numbers, from the same sources, without a partisan filter.

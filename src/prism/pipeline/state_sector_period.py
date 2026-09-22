@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from prism.catalog.registry import MapperSpec, register_mapper
+from prism.citizen_projection import denomination_from_unit
 from prism.pipeline.errors import PipelineError
 from prism.refresh import (
     SERIES_CPI_BACK_SERIES_LINKED_BASE_2024,
@@ -265,6 +266,7 @@ def map_derived_table(
             ),
         )
         for measure, measure_unit, value in measures:
+            unit = classifier.unit_for(measure_unit)
             observations.append(
                 Observation(
                     observation_id=_observation_id(
@@ -283,7 +285,8 @@ def map_derived_table(
                     sector=sector,
                     reference_period=period,
                     value=value,
-                    unit=classifier.unit_for(measure_unit),
+                    unit=unit,
+                    denomination=denomination_from_unit(unit),
                     status=_observation_status(value),
                     lineage=lineage,
                 )
