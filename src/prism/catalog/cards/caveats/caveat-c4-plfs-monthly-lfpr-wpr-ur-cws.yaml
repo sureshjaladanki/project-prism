@@ -1,0 +1,21 @@
+caveat_id: caveat-c4-plfs-monthly-lfpr-wpr-ur-cws
+concept: Labour Force Participation Rate (LFPR), Worker Population Ratio (WPR), and Unemployment
+  Rate (UR) in Current Weekly Status (CWS) for all-India, by sector / gender / broad age as
+  published.
+unit: Rates as labelled (percent).
+population: Persons in the PLFS monthly sample under CWS (7-day reference). Not usual status.
+  Not State/UT rows.
+reference_period: Calendar month of the bulletin (August 2026 on this card). Not 15 September
+  2026 release.
+producer_definition: PLFS Monthly Bulletin (NSO/MoSPI product 69). Post-January-2025 monthly
+  series (seventeenth bulletin from April 2025).
+comparable_from: Within post-January-2025 monthly CWS bulletins. Break vs any pre-2025 monthly
+  product.
+breaks: CWS only — usual status not on this card. No State/UT. PDF statements only on this
+  release. Design revamp January 2025.
+lags: next_release 15 October 2026 (Sep 2026 bulletin) per ARC 2026-27.
+disagrees_with: Annual usual status (different concept). Quarterly selected States. CMIE (rejected).
+do_not: Do not invent State/UT rows. Do not merge with usual status. Do not mix MGNREGA. Do
+  not use CMIE. Do not pull districts.
+citizen_note: All-India LFPR, WPR, and UR for the month in Current Weekly Status (CWS), by
+  rural/urban sector and sex as MoSPI publishes them.

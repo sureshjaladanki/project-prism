@@ -1,0 +1,15 @@
+caveat_id: caveat-c8-fci-central-pool-stocks
+concept: Total stocks of foodgrains in the Central Pool (FCI + State agencies) — rice
+  and wheat by region/State.
+unit: LMT as labelled.
+population: Central-pool inventory. Rice excludes unmilled paddy per footnotes.
+reference_period: As on 01.09.2026 (opening) on the standalone PDF.
+producer_definition: FCI Coordination Division statement; fetch host DFPD. Quote both.
+comparable_from: Within stock statements.
+breaks: Stock ≠ offtake ≠ procurement ≠ production. Multiple Zonal Total rows disambiguated
+  by zone order.
+lags: next_release unknown.
+disagrees_with: Card B1 offtake. Cards A1–A5.
+do_not: Do not present stock as delivery to households. Do not omit FCI as producer
+  because DFPD hosts the file.
+citizen_note: Central-pool rice/wheat stocks as on the statement date.

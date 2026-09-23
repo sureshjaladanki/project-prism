@@ -1,0 +1,33 @@
+caveat_id: caveat-c6-udise-plus-2025-26-schools-enrolment-teachers
+concept: >-
+  Stocks of schools, enrolments, and teachers at India and State/UT as published
+  in UDISE+ Report 2025-26 NEP Structure (Tables 1, 2.1, 2.2) and matching open-services
+  yearId "12" summarised-stats. Not GER/NER/dropout rates.
+unit: Counts as labelled (schools; students enrolled; teachers).
+population: >-
+  Schools/enrolments/teachers in the UDISE+ administrative record for academic
+  year 2025-26. Not private learning assessments. Not board-exam candidates.
+reference_period: Academic year 2025-26. Not 7 July 2026 PDF CreationDate.
+producer_definition: >-
+  DoSEL UDISE+ Report 2025-26 NEP Structure; companion open-services
+  summarised-stats for yearId "12". Same vintage, two fetch forms.
+comparable_from: >-
+  Within UDISE+ NEP Structure for this year. Prior-year booklets are history with
+  possible category-frame breaks.
+breaks: >-
+  NEP vs Existing Structure category frames (same year — do not merge). Do not
+  recode Frame A onto Frame B (Census 2011). District rows parked.
+lags: >-
+  Annual; next_release unknown (no 2026-27 booklet on dashboard Downloads list).
+disagrees_with: >-
+  Card 3 Census 2011 literacy (different concept and decade). Existing Structure
+  booklet (same year, different school-category frame). Pratham ASER (rejected as
+  record).
+do_not: >-
+  Do not stitch NEP + Existing into one table. Do not rank states. Do not treat
+  Table 6.6 “ASER” as Pratham ASER. Do not lead with Aadhaar-linked enrolment. Do
+  not present as learning outcomes. Do not pull district UDISE.
+citizen_note: >-
+  UDISE+ stocks of schools, enrolments, and teachers for academic year 2025-26 as
+  published. They are administrative counts, not learning outcomes, not Pratham
+  ASER, and not Census literacy.

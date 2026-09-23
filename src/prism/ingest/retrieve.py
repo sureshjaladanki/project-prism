@@ -9,6 +9,7 @@ import ssl
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from urllib.parse import urlparse
 
 import httpx
 
@@ -20,6 +21,9 @@ PDF_MAGIC = b"%PDF"
 XLS_OLE_MAGIC = b"\xd0\xcf\x11\xe0"
 DEFAULT_TIMEOUT = httpx.Timeout(120.0)
 USER_AGENT = "prism-ingest/1.0.0"
+# desagri.gov.in serves with an expired certificate (verified 2026-09-22).
+# Approved path: retry once with verify=False for these hosts only; record in headers.
+INSECURE_TLS_RETRY_HOSTS = frozenset({"desagri.gov.in"})
 
 
 class IngestError(ValueError):
@@ -35,6 +39,7 @@ class RetrievedArtifact:
     filename: str
     checksum: str
     retrieved_at: str
+    tls_mode: str = "verify"
 
 
 def retrieved_at_stamp(moment: datetime | None = None) -> str:
@@ -85,6 +90,11 @@ def new_client() -> httpx.Client:
     )
 
 
+def _ssl_verify_failed(exc: BaseException) -> bool:
+    text = str(exc).lower()
+    return "certificate" in text or "ssl" in text or "tls" in text
+
+
 def retrieve_artifact(
     url: str,
     *,
@@ -92,9 +102,24 @@ def retrieve_artifact(
     retrieved_at: str,
     filename: str | None = None,
 ) -> RetrievedArtifact:
-    response = client.get(url)
-    content_type = response.headers.get("content-type", "")
     name = filename if filename is not None else filename_from_url(url)
+    tls_mode = "verify"
+    try:
+        response = client.get(url)
+    except httpx.ConnectError as exc:
+        host = (urlparse(url).hostname or "").lower()
+        if host not in INSECURE_TLS_RETRY_HOSTS or not _ssl_verify_failed(exc):
+            raise
+        # Approved insecure retry for hosts with broken TLS (desagri.gov.in expired cert).
+        with httpx.Client(
+            follow_redirects=True,
+            timeout=DEFAULT_TIMEOUT,
+            headers={"User-Agent": USER_AGENT},
+            verify=False,
+        ) as insecure:
+            response = insecure.get(url)
+        tls_mode = "insecure_retry"
+    content_type = response.headers.get("content-type", "")
     return RetrievedArtifact(
         url=url,
         http_status=response.status_code,
@@ -103,6 +128,7 @@ def retrieve_artifact(
         filename=name,
         checksum=sha256_hex(response.content),
         retrieved_at=retrieved_at,
+        tls_mode=tls_mode,
     )
 
 
@@ -118,6 +144,17 @@ def is_xls_ole(payload: bytes) -> bool:
     return payload.startswith(XLS_OLE_MAGIC)
 
 
+def is_json(payload: bytes) -> bool:
+    head = payload.lstrip()[:1]
+    if head not in {b"{", b"["}:
+        return False
+    try:
+        json.loads(payload)
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return False
+    return True
+
+
 def assert_payload_kind(payload: bytes, kind: str, url: str) -> None:
     if kind == "xlsx" and not is_xlsx(payload):
         raise IngestError(f"not an xlsx (magic missing) at {url}")
@@ -131,7 +168,9 @@ def assert_payload_kind(payload: bytes, kind: str, url: str) -> None:
         head = payload.lstrip()[:2048].lower()
         if b"<html" not in head and b"<!doctype" not in head:
             raise IngestError(f"not html (no html/doctype in head) at {url}")
-    if kind not in {"xlsx", "pdf", "xls", "html"}:
+    if kind == "json" and not is_json(payload):
+        raise IngestError(f"not json (object/array) at {url}")
+    if kind not in {"xlsx", "pdf", "xls", "html", "json"}:
         raise IngestError(f"unknown artifact kind {kind} at {url}")
 
 
@@ -149,6 +188,7 @@ def write_headers(
         "retrieved_at": artifact.retrieved_at,
         "filename": artifact.filename,
         "checksum": artifact.checksum,
+        "tls_mode": artifact.tls_mode,
     }
     path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     return path

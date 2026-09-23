@@ -1,0 +1,25 @@
+caveat_id: caveat-c7-nfhs-6-factsheets-2023-24
+concept: 101 key indicators on population, health, family planning, maternal and child
+  health, nutrition, and related topics as printed on India and State/UT fact sheets.
+unit: Percents, rates, and counts as labelled on each indicator row.
+population: NFHS-6 surveyed households / eligible respondents for fieldwork May 2023–December
+  2024. Not SRS sample. Not facility stock.
+reference_period: Survey fieldwork May 2023–December 2024; fact-sheet release May 2026
+  is not the fieldwork window.
+producer_definition: NFHS-6 Fact Sheets PDF (IIPS 2026; MoHFW stewardship). series_id
+  nfhs-6-factsheets-2023-24.
+comparable_from: Within NFHS-6 fact sheets. NFHS-5 comparison columns on the sheets
+  are the producer’s prior round — cite as printed, do not invent a blended NFHS–SRS
+  series.
+breaks: Manipur absent from this set. Fact sheets do not print NMR/IMR/U5MR as SRS does
+  — that is a content hole, not a licence to import DHS FR375. District fact sheets
+  parked.
+lags: Fact sheets May 2026; full national report (mortality chapters) not open-fetchable
+  on nfhsiips.in this citation run — named hole. next_release unknown.
+disagrees_with: SRS vital rates (different design and indicators). RHS facility counts.
+do_not: Do not merge with SRS into one child-survival number. Do not invent IMR/U5MR
+  from nutrition cells. Do not fill Manipur from SRS. Do not use NITI Health Index or
+  DHS Program NFHS-5 PDF as the record. Do not pull district fact sheets.
+citizen_note: NFHS-6 fact sheets publish survey indicators for India and States/UTs,
+  including child nutrition and related measures. Manipur is not in this fact-sheet
+  set. These are not SRS birth, death, or infant mortality rates.

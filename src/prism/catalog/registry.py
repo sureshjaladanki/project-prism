@@ -6,12 +6,17 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any
 
+import httpx
+
 from prism.schema import GeographyVintage, Observation, ObservationLineage
 
 MapperFn = Callable[
     [list[dict[str, str]], str, str, str, GeographyVintage, ObservationLineage],
     tuple[Observation, ...],
 ]
+
+# RetrievedArtifact is defined in ingest.retrieve; keep the type loose here.
+RetrieverFn = Callable[[httpx.Client, str, str], Any]
 
 
 @dataclass(frozen=True)
@@ -27,8 +32,15 @@ class MapperSpec:
     version: str
 
 
+@dataclass(frozen=True)
+class RetrieverSpec:
+    retrieve: RetrieverFn
+    filename: str
+
+
 PARSERS: dict[str, ParserSpec] = {}
 MAPPERS: dict[str, MapperSpec] = {}
+RETRIEVERS: dict[str, RetrieverSpec] = {}
 
 
 def register_parser(parser_id: str, spec: ParserSpec) -> None:
@@ -37,3 +49,7 @@ def register_parser(parser_id: str, spec: ParserSpec) -> None:
 
 def register_mapper(mapper_id: str, spec: MapperSpec) -> None:
     MAPPERS[mapper_id] = spec
+
+
+def register_retriever(retrieve_id: str, spec: RetrieverSpec) -> None:
+    RETRIEVERS[retrieve_id] = spec

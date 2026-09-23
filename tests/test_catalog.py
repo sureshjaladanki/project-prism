@@ -129,7 +129,7 @@ def test_catalog_validate_duplicate_series() -> None:
             + catalog.slices[1:]
         }
     )
-    with pytest.raises(CatalogError, match="duplicate series_id"):
+    with pytest.raises(CatalogError, match="duplicate series_id on slice"):
         validate_catalog(broken)
 
 

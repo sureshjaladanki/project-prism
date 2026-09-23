@@ -1,0 +1,107 @@
+frame_id: c5-frame-b
+geography_vintage: 2020-21
+code_system: producer-specific
+frame: Union | state | UT
+units_included:
+- code: arunachal-pradesh
+  name_en: Arunachal Pradesh
+  geography_vintage: 2020-21
+- code: mizoram
+  name_en: Mizoram
+  geography_vintage: 2020-21
+- code: nagaland
+  name_en: Nagaland
+  geography_vintage: 2020-21
+- code: manipur
+  name_en: Manipur
+  geography_vintage: 2020-21
+- code: ut-jammu-kashmir
+  name_en: UT Jammu & Kashmir
+  geography_vintage: 2020-21
+- code: sikkim
+  name_en: Sikkim
+  geography_vintage: 2020-21
+- code: tripura
+  name_en: Tripura
+  geography_vintage: 2020-21
+- code: meghalaya
+  name_en: Meghalaya
+  geography_vintage: 2020-21
+- code: bihar
+  name_en: Bihar
+  geography_vintage: 2020-21
+- code: himachal-pradesh
+  name_en: Himachal Pradesh
+  geography_vintage: 2020-21
+- code: assam
+  name_en: Assam
+  geography_vintage: 2020-21
+- code: jharkhand
+  name_en: Jharkhand
+  geography_vintage: 2020-21
+- code: uttarakhand
+  name_en: Uttarakhand
+  geography_vintage: 2020-21
+- code: odisha
+  name_en: Odisha
+  geography_vintage: 2020-21
+- code: ut-puducherry
+  name_en: UT Puducherry
+  geography_vintage: 2020-21
+- code: chhattisgarh
+  name_en: Chhattisgarh
+  geography_vintage: 2020-21
+- code: madhya-pradesh
+  name_en: Madhya Pradesh
+  geography_vintage: 2020-21
+- code: goa
+  name_en: Goa
+  geography_vintage: 2020-21
+- code: uttar-pradesh
+  name_en: Uttar Pradesh
+  geography_vintage: 2020-21
+- code: west-bengal
+  name_en: West Bengal
+  geography_vintage: 2020-21
+- code: punjab
+  name_en: Punjab
+  geography_vintage: 2020-21
+- code: rajasthan
+  name_en: Rajasthan
+  geography_vintage: 2020-21
+- code: kerala
+  name_en: Kerala
+  geography_vintage: 2020-21
+- code: andhra-pradesh
+  name_en: Andhra Pradesh
+  geography_vintage: 2020-21
+- code: gujarat
+  name_en: Gujarat
+  geography_vintage: 2020-21
+- code: maharashtra
+  name_en: Maharashtra
+  geography_vintage: 2020-21
+- code: tamil-nadu
+  name_en: Tamil Nadu
+  geography_vintage: 2020-21
+- code: karnataka
+  name_en: Karnataka
+  geography_vintage: 2020-21
+- code: haryana
+  name_en: Haryana
+  geography_vintage: 2020-21
+- code: telangana
+  name_en: Telangana
+  geography_vintage: 2020-21
+- code: nct-delhi
+  name_en: NCT Delhi
+  geography_vintage: 2020-21
+units_missing:
+- CFRA years after 2020-21 (named hole on the citation card)
+- UTs without legislature if absent from the opened glance tables
+- districts and below (parked)
+- local bodies (charter-out)
+breaks: 2020-21 audited map from CAG glance State/UT revenue-receipt table labels
+  as opened. Several years behind Frame A. Do not stitch onto RBI 2025-26. Do not
+  present CFRA Union lines as C5 state money or as C3 Budget BE.
+crosswalk: none

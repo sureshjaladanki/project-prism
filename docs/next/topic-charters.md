@@ -124,7 +124,9 @@ This slice is Union-only until C5. The page must say states, UTs, and districts 
 
 ## Wave 2 — kitchen table and the states
 
-Run after Wave 1 has citation cards and method notes. Several of these are not national. Stop at state/UT; do not ingest district files.
+Run after Wave 1 has citation cards and method notes. **First crew in parallel:** C4–C8 may each run Charter → Source Librarian → Methodologist (and Geography Steward when the number is not national) at the same time. There is no “run first” inside this wave. Keep slice boundaries: do not fold C5 into C3, do not mix PLFS with MGNREGA (C9), do not merge SRS and NFHS into one figure, and do not wait on C2/C3 *citizen* ship to start these cards. Product stops (catalog ingest machine, Platform refresh, preview) stay per-slice and may still serialise on shared engineering — that is not a charter serial order.
+
+Several of these are not national. Stop at state/UT; do not ingest district files.
 
 ### C4. Work and pay
 
@@ -132,8 +134,8 @@ Run after Wave 1 has citation cards and method notes. Several of these are not n
 slice:          How many people are working, seeking work, and what do they earn?
 in:             Periodic Labour Force Survey employment, labour force, unemployment as defined; usual vs current status if both are published; wages/earnings as published; national and states/UTs
 out:            CMIE; “jobless growth” verdicts; mixing PLFS with MGNREGA as if they were one unemployment rate; districts
-source_class:   needs librarian
-next_persona:   source-librarian
+source_class:   allow — PLFS Monthly (CWS all-India), Quarterly (CWS selected States), Annual 2025 (usual + CWS State/UT), earnings Tables 38–40. Jan 2025 design break. Thirteen series per [c4-series-expansion.md](c4-series-expansion.md). ([c4-citation-cards.md](c4-citation-cards.md); [c4-geography-frame.md](c4-geography-frame.md); [c4-method-notes.md](c4-method-notes.md); [c4-refresh-contract.md](c4-refresh-contract.md)). Vintage `dv-20260922-985274aa0a45` complete (13/13 lineage_ok).
+next_persona:   content-editor
 ```
 
 ### C5. State money
@@ -142,8 +144,8 @@ next_persona:   source-librarian
 slice:          What do states and UTs collect and spend?
 in:             State/UT receipts, expenditure, deficit/debt as in the official state-finance compilation the librarian names
 out:            ranking states by “fiscal virtue”; treating Union grants as if they were own tax; local-body accounts; districts
-source_class:   needs librarian
-next_persona:   source-librarian
+source_class:   allow — RBI State Finances Study of Budgets 2025-26 (Cards 1–6); CAG CFRA glance 2020-21 (Card 7, lagged). Own tax ≠ Centre transfers. ([c5-citation-cards.md](c5-citation-cards.md); [c5-geography-frame.md](c5-geography-frame.md); [c5-method-notes.md](c5-method-notes.md); [c5-refresh-contract.md](c5-refresh-contract.md)). Catalog + parsers landed; **all 7 lineage_ok=no** (rbidocs WAF HTML; CAG glance headers not uniquely mappable). No C5 vintage until an approved fetch yields real XLSX/PDF cells.
+next_persona:   ingest-engineer
 ```
 
 ### C6. School
@@ -152,8 +154,8 @@ next_persona:   source-librarian
 slice:          Who is in school, and what does the official record say about schools?
 in:             UDISE (or successor) enrolment, teachers, school facilities at national and state/UT; Census/NSS literacy if cited separately
 out:            ASER as source of record; board-exam result portals; “learning crisis” verdicts; ranking states; district UDISE (parked)
-source_class:   needs librarian
-next_persona:   source-librarian
+source_class:   allow — UDISE+ Report 2025-26 NEP (Cards 1–2); Census 2011 PCA literacy counts separate (Card 3). Still named UDISE+; no successor rename. ([c6-citation-cards.md](c6-citation-cards.md); [c6-geography-frame.md](c6-geography-frame.md); [c6-method-notes.md](c6-method-notes.md); [c6-refresh-contract.md](c6-refresh-contract.md)). Vintage `dv-20260922-37718de3c4fc` complete.
+next_persona:   content-editor
 ```
 
 ### C7. Health and survival
@@ -162,8 +164,8 @@ next_persona:   source-librarian
 slice:          How do births, deaths, child survival, and nutrition stand in the official record?
 in:             SRS vital rates; NFHS health and nutrition indicators at national and state/UT as published; facility counts from the health statistical system the librarian names, same geography bar
 out:            mixing SRS and NFHS into one number; hospital star-ratings; private insurance products; NITI health index as the record; districts
-source_class:   needs librarian
-next_persona:   source-librarian
+source_class:   allow — SRS Bulletin + Statistical Report 2024 (Cards 1–2, same artifacts as C2); NFHS-6 fact sheets (Card 3, Manipur absent); RHS 2021-22 facilities (Card 4). Three records. ([c7-citation-cards.md](c7-citation-cards.md); [c7-geography-frame.md](c7-geography-frame.md); [c7-method-notes.md](c7-method-notes.md); [c7-refresh-contract.md](c7-refresh-contract.md)). Vintage `dv-20260922-06858699984f` complete (4/4 lineage_ok).
+next_persona:   content-editor
 ```
 
 ### C8. Food and farm
@@ -172,8 +174,8 @@ next_persona:   source-librarian
 slice:          What does the official record say about foodgrain, and what does the public food system deliver?
 in:             Agricultural production/procurement at national and state/UT as published; PDS / NFSA administrative series the librarian can cite at the same geography; keep farm output and ration delivery on separate charts
 out:            a hunger index; FAO/UN as source of record; MSP as a farmer-income verdict; districts
-source_class:   needs librarian
-next_persona:   source-librarian
+source_class:   allow — Family A: DES AE/FE/APY + DFPD procurement + FCI stocks (Cards A1–A6); Family B: DFPD offtake/coverage + NFSA dashboard (Cards B1–B4). Separate charts. ([c8-citation-cards.md](c8-citation-cards.md); [c8-geography-frame.md](c8-geography-frame.md); [c8-method-notes.md](c8-method-notes.md); [c8-refresh-contract.md](c8-refresh-contract.md)). Vintage `dv-20260922-f095e54660d9` complete (A1–A3, A5–A6, B1–B2 lineage_ok; A4/B3/B4 named holes).
+next_persona:   content-editor
 ```
 
 ---
@@ -233,4 +235,9 @@ C1 has cards ([c1-citation-cards.md](../archive/c1-citation-cards.md)). C1 Trust
 
 C2 cards exist ([c2-citation-cards.md](../archive/c2-citation-cards.md)); C2 product stop is ingest (see [c2-refresh-contract.md](../archive/c2-refresh-contract.md)). Do not unblock C2 from this file.
 
-C3 cards exist ([c3-citation-cards.md](../archive/c3-citation-cards.md)). Charter: proceed with reconstructable cards; Card 8 stays a named hole ([c3-charter.md](../archive/c3-charter.md)). Product stop is Platform completeness + ingest of those tables — not “wait for FRBM as a grid.” Do not unblock C3 citizen-view from this file. Do not start C4–C20 until Wave 1 has cards.
+C3 cards exist ([c3-citation-cards.md](../archive/c3-citation-cards.md)). Charter: proceed with reconstructable cards; Card 8 stays a named hole ([c3-charter.md](../archive/c3-charter.md)). Product stop is Platform completeness + ingest of those tables — not “wait for FRBM as a grid.” Do not unblock C3 citizen-view from this file.
+
+Wave 2 machine path (catalog → ingest → vintage): **C4, C6, C7, C8 complete**; **C5 catalog+parsers landed but no vintage** (rbidocs WAF; CAG glance headers). Vintages: C4 `dv-20260922-985274aa0a45`, C6 `dv-20260922-37718de3c4fc`, C7 `dv-20260922-06858699984f`, C8 `dv-20260922-f095e54660d9`. Next per complete slice: Content Editor templates — **stop before** UI/UX citizen chrome, Trust, and `citizen_pointer`. Do not start Wave 3 until Charter opens that gate.
+
+
+

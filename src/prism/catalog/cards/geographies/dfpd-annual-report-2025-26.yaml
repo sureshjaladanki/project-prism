@@ -1,0 +1,12 @@
+frame_id: c8-frame-companion
+geography_vintage: 2025-26
+code_system: none
+frame: Union
+units_included:
+- code: india
+  name_en: India
+  geography_vintage: 2025-26
+units_missing:
+- State annex stubs until a specific table is cited
+breaks: Companion national report. Named hole this iteration.
+crosswalk: none

@@ -1,0 +1,34 @@
+caveat_id: caveat-c6-census-2011-pca-literacy
+concept: >-
+  Literate and illiterate population counts as published on PCA SD (P_LIT,
+  M_LIT, F_LIT, and illiterate companions), with population denominators TOT_P /
+  TOT_M / TOT_F on the same India/STATE rows. Not school enrolment.
+unit: >-
+  Person counts on the workbook. Rate only if computed from published columns with
+  the Census definition stated.
+population: >-
+  Census 2011 household population on India/STATE rows (TRU as published).
+  Not school enrolment. Not 2025-26.
+reference_period: >-
+  Census of India 2011 (00:00 hours, 1 March 2011). Not academic year 2025-26.
+producer_definition: >-
+  Census 2011 PCA SD NADA catalog 6191; literacy columns on Level = India or STATE
+  only. Same file as C2 Card 1 population — literacy fields only for this card.
+comparable_from: >-
+  2011 PCA only for this stock. No later census literacy totals published.
+breaks: >-
+  2011 map lacks Telangana STATE and Ladakh UT rows; Daman & Diu and Dadra & Nagar
+  Haveli are separate. Do not recode onto Frame A (UDISE+ 2025-26).
+lags: >-
+  About fifteen years behind 2026 and behind UDISE+ 2025-26 — the lag is the public
+  caveat. next_release unknown (delayed).
+disagrees_with: >-
+  Cards 1–2 UDISE+ (different concept: schools/enrolment vs literacy).
+  Do not “update” literacy with enrolment.
+do_not: >-
+  Do not merge into UDISE. Do not present 2011 literacy as current. Do not ingest
+  DISTRICT rows. Do not patch with NSS or international modelled literacy.
+citizen_note: >-
+  Literate and illiterate person counts from Census 2011 for India and State/UT
+  rows as published. This is about fifteen years behind 2026 and is not current
+  school enrolment.

@@ -1,0 +1,21 @@
+caveat_id: caveat-c7-srs-bulletin-2024
+concept: Estimated Birth Rate, Death Rate, Natural Growth Rate, and Infant Mortality
+  Rate for India and States/UTs (Table 1 and related Bulletin tables).
+unit: Rates as labelled (per 1,000 population or per 1,000 live births as printed).
+population: SRS sample population for calendar year 2024. Not a census. Not NFHS.
+reference_period: Calendar year 2024. Not May 2026 release.
+producer_definition: SRS Bulletin Volume 59 No. 1 (ORGI Vital Statistics Division).
+  series_id srs-bulletin-2024.
+comparable_from: Within this Bulletin’s 2024 tables. Prior SRS bulletins are history
+  with possible sample/geography breaks.
+breaks: Survey estimates. Do not blend with NFHS. Residence Total/Rural/Urban is not
+  a geography recode. Manipur* sample footnote stays on the stub.
+lags: Published May 2026 for 2024; next_release unknown.
+disagrees_with: NFHS-6 fact sheets (different survey; fact sheets lack matching IMR
+  cells here). SRS Statistical Report (same family, more detail / narrower geography
+  for some indicators).
+do_not: Do not mix with NFHS nutrition or MCH indicators into one number. Do not present
+  as census vital registration. Do not pull districts.
+citizen_note: The SRS 2024 bulletin publishes sample-based birth, death, natural growth,
+  and infant mortality rates for 2024. They are rates, not a headcount and not NFHS
+  survey indicators.

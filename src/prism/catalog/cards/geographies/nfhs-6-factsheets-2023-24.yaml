@@ -1,0 +1,120 @@
+frame_id: c7-frame-c
+geography_vintage: '2023-24'
+code_system: none
+frame: Union | state | UT
+units_included:
+- code: india
+  name_en: India
+  geography_vintage: '2023-24'
+- code: andhra-pradesh
+  name_en: Andhra Pradesh
+  geography_vintage: '2023-24'
+- code: arunachal-pradesh
+  name_en: Arunachal Pradesh
+  geography_vintage: '2023-24'
+- code: assam
+  name_en: Assam
+  geography_vintage: '2023-24'
+- code: bihar
+  name_en: Bihar
+  geography_vintage: '2023-24'
+- code: chhattisgarh
+  name_en: Chhattisgarh
+  geography_vintage: '2023-24'
+- code: goa
+  name_en: Goa
+  geography_vintage: '2023-24'
+- code: gujarat
+  name_en: Gujarat
+  geography_vintage: '2023-24'
+- code: haryana
+  name_en: Haryana
+  geography_vintage: '2023-24'
+- code: himachal-pradesh
+  name_en: Himachal Pradesh
+  geography_vintage: '2023-24'
+- code: jharkhand
+  name_en: Jharkhand
+  geography_vintage: '2023-24'
+- code: karnataka
+  name_en: Karnataka
+  geography_vintage: '2023-24'
+- code: kerala
+  name_en: Kerala
+  geography_vintage: '2023-24'
+- code: madhya-pradesh
+  name_en: Madhya Pradesh
+  geography_vintage: '2023-24'
+- code: maharashtra
+  name_en: Maharashtra
+  geography_vintage: '2023-24'
+- code: meghalaya
+  name_en: Meghalaya
+  geography_vintage: '2023-24'
+- code: mizoram
+  name_en: Mizoram
+  geography_vintage: '2023-24'
+- code: nagaland
+  name_en: Nagaland
+  geography_vintage: '2023-24'
+- code: odisha
+  name_en: Odisha
+  geography_vintage: '2023-24'
+- code: punjab
+  name_en: Punjab
+  geography_vintage: '2023-24'
+- code: rajasthan
+  name_en: Rajasthan
+  geography_vintage: '2023-24'
+- code: sikkim
+  name_en: Sikkim
+  geography_vintage: '2023-24'
+- code: tamil-nadu
+  name_en: Tamil Nadu
+  geography_vintage: '2023-24'
+- code: telangana
+  name_en: Telangana
+  geography_vintage: '2023-24'
+- code: tripura
+  name_en: Tripura
+  geography_vintage: '2023-24'
+- code: uttar-pradesh
+  name_en: Uttar Pradesh
+  geography_vintage: '2023-24'
+- code: uttarakhand
+  name_en: Uttarakhand
+  geography_vintage: '2023-24'
+- code: west-bengal
+  name_en: West Bengal
+  geography_vintage: '2023-24'
+- code: andaman-and-nicobar-islands
+  name_en: Andaman and Nicobar Islands
+  geography_vintage: '2023-24'
+- code: chandigarh
+  name_en: Chandigarh
+  geography_vintage: '2023-24'
+- code: dadra-nagar-haveli-and-daman-diu
+  name_en: "Dadra & Nagar Haveli and Daman & Diu"
+  geography_vintage: '2023-24'
+- code: jammu-and-kashmir
+  name_en: Jammu and Kashmir
+  geography_vintage: '2023-24'
+- code: ladakh
+  name_en: Ladakh
+  geography_vintage: '2023-24'
+- code: lakshadweep
+  name_en: Lakshadweep
+  geography_vintage: '2023-24'
+- code: nct-of-delhi
+  name_en: NCT of Delhi
+  geography_vintage: '2023-24'
+- code: puducherry
+  name_en: Puducherry
+  geography_vintage: '2023-24'
+units_missing:
+- "Manipur (producer release note: except Manipur — not in this fact-sheet set)"
+- "districts and below (district fact-sheet compendiums parked; login wall)"
+breaks: >-
+  NFHS-6 fact-sheet map. Manipur absence is a coverage hole. Do not fill Manipur
+  from SRS or RHS.
+crosswalk: none

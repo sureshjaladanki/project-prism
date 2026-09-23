@@ -1,0 +1,88 @@
+frame_id: c8-frame-d
+geography_vintage: 2026-08
+code_system: producer-specific
+frame: Union | state | UT
+units_included:
+- code: andhra-pradesh
+  name_en: Andhra Pradesh
+  geography_vintage: 2026-08
+- code: telangna
+  name_en: Telangna
+  geography_vintage: 2026-08
+- code: assam
+  name_en: Assam
+  geography_vintage: 2026-08
+- code: bihar
+  name_en: Bihar
+  geography_vintage: 2026-08
+- code: chandigarh
+  name_en: Chandigarh
+  geography_vintage: 2026-08
+- code: chhatisgarh
+  name_en: Chhatisgarh
+  geography_vintage: 2026-08
+- code: delhi
+  name_en: Delhi
+  geography_vintage: 2026-08
+- code: gujarat
+  name_en: Gujarat
+  geography_vintage: 2026-08
+- code: haryana
+  name_en: Haryana
+  geography_vintage: 2026-08
+- code: h-p
+  name_en: H.P.
+  geography_vintage: 2026-08
+- code: jharkhand
+  name_en: Jharkhand
+  geography_vintage: 2026-08
+- code: j-k
+  name_en: J&K
+  geography_vintage: 2026-08
+- code: karnataka
+  name_en: Karnataka
+  geography_vintage: 2026-08
+- code: kerala
+  name_en: Kerala
+  geography_vintage: 2026-08
+- code: madhya-pradesh
+  name_en: Madhya Pradesh
+  geography_vintage: 2026-08
+- code: maharashtra
+  name_en: Maharashtra
+  geography_vintage: 2026-08
+- code: odisha
+  name_en: Odisha
+  geography_vintage: 2026-08
+- code: pudducherry
+  name_en: Pudducherry
+  geography_vintage: 2026-08
+- code: punjab
+  name_en: Punjab
+  geography_vintage: 2026-08
+- code: nef
+  name_en: NEF
+  geography_vintage: 2026-08
+- code: tamilnadu
+  name_en: Tamilnadu
+  geography_vintage: 2026-08
+- code: uttarpradesh
+  name_en: UttarPradesh
+  geography_vintage: 2026-08
+- code: uttrakhand
+  name_en: Uttrakhand
+  geography_vintage: 2026-08
+- code: west-bengal
+  name_en: West Bengal
+  geography_vintage: 2026-08
+- code: rajasthan
+  name_en: Rajasthan
+  geography_vintage: 2026-08
+- code: total
+  name_en: Total
+  geography_vintage: 2026-08
+units_missing:
+- districts and below (parked)
+breaks: Spelling variants (Telangna, Chhatisgarh, Tamilnadu) are separate printed
+  strings. Do not recode onto Frame B.
+crosswalk: none

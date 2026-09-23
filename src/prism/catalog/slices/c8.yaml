@@ -1,0 +1,225 @@
+slice_id: c8
+charter: C8
+template_id: c8-delivery-food
+artifacts:
+- artifact_id: des-3rd-ae-pdf
+  url: https://desagri.gov.in/wp-content/uploads/2026/06/Time-Series-3rd-AE-2025-26-English.pdf
+  kind: pdf
+  share_note: ''
+  companions: []
+- artifact_id: des-fe-pdf
+  url: https://desagri.gov.in/wp-content/uploads/2026/01/Time-Series-FE-2024-25-English.pdf
+  kind: pdf
+  share_note: ''
+  companions: []
+- artifact_id: des-apy-xlsx
+  url: https://desagri.gov.in/wp-content/uploads/2026/06/Five-Years-2021-22-to-2025-263rd-AE.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: des-asag-pdf
+  url: https://desagri.gov.in/wp-content/uploads/2024/11/Agricultural-Statisitcs-at-a-Glance-2024-25_%E0%A4%95%E0%A5%83%E0%A4%B7%E0%A4%BF-%E0%A4%B8%E0%A4%BE%E0%A4%82%E0%A4%96%E0%A5%8D%E0%A4%AF%E0%A4%BF%E0%A4%95%E0%A5%80-%E0%A4%8F%E0%A4%95-%E0%A4%9D%E0%A4%B2%E0%A4%95-2024%E2%80%9325-1.pdf
+  kind: pdf
+  share_note: ''
+  companions: []
+- artifact_id: dfpd-bulletin-pdf
+  url: https://dfpd.gov.in/WriteReadData/FoodBulletinUploadDocuments/98bc51cb-3af5-4a3f-b909-15cb8ca89970_Foodgrains%20Bulletin%20For%20August%2C%202026.pdf
+  kind: pdf
+  share_note: shared by A5/B1/B2
+  companions: []
+- artifact_id: fci-stocks-pdf
+  url: https://dfpd.gov.in/WriteReadData/Other/749e9295-e1ff-4c6e-b54b-fab7afacb139.pdf
+  kind: pdf
+  share_note: ''
+  companions: []
+- artifact_id: nfsa-rc-html
+  url: https://nfsa.gov.in/public/nfsadashboard/PublicRCDashboard.aspx
+  kind: html
+  share_note: ''
+  companions: []
+- artifact_id: dfpd-ar-pdf
+  url: https://dfpd.gov.in/WriteReadData/AnnualRecordUploadDocuments/43bf089b-73cc-4329-aeb6-c883d2f2ea55_Food%20AR%202025-26%20English.pdf
+  kind: pdf
+  share_note: ''
+  companions: []
+series:
+- series_id: des-foodgrain-3rd-ae-2025-26
+  card: 1
+  name: Third Advance Estimate of Production of Food Grains for the year 2025-26 (All
+    India time series)
+  producer: Economics, Statistics and Evaluation Division / Directorate of Economics
+    & Statistics, Department of Agriculture & Farmers Welfare (DA&FW), Ministry of
+    Agriculture & Farmers Welfare
+  producer_slug: desagri
+  source_vintage: 2025-26-3rd-ae
+  next_release: unknown
+  geography_frame_id: c8-frame-a
+  geography_vintage: 2025-26
+  citation_id: cite-c8-des-foodgrain-3rd-ae-2025-26
+  caveat_id: caveat-c8-des-foodgrain-3rd-ae-2025-26
+  artifact_id: des-3rd-ae-pdf
+  parser_id: des-3rd-ae-pdf
+  mapper_id: food-farm/ae-fe-all-india
+  named_hole: false
+- series_id: des-foodgrain-fe-2024-25
+  card: 2
+  name: Final Estimate of Production of Food Grains for 2024-25 (All India time series)
+  producer: Economics, Statistics and Evaluation Division / DES, DA&FW, MoA&FW
+  producer_slug: desagri
+  source_vintage: 2024-25-fe
+  next_release: unknown
+  geography_frame_id: c8-frame-a
+  geography_vintage: 2024-25
+  citation_id: cite-c8-des-foodgrain-fe-2024-25
+  caveat_id: caveat-c8-des-foodgrain-fe-2024-25
+  artifact_id: des-fe-pdf
+  parser_id: des-fe-pdf
+  mapper_id: food-farm/ae-fe-all-india
+  named_hole: false
+- series_id: des-foodgrain-apy-state-3rd-ae
+  card: 3
+  name: Final Estimate of Area, Production & Yield — Total Foodgrains State/UT (five-year
+    run through 2025-26 3rd AE)
+  producer: Economics, Statistics and Evaluation Division / DES, DA&FW, MoA&FW
+  producer_slug: desagri
+  source_vintage: 2021-22-2025-26-3rd-ae
+  next_release: unknown
+  geography_frame_id: c8-frame-b
+  geography_vintage: 2025-26
+  citation_id: cite-c8-des-foodgrain-apy-state-3rd-ae
+  caveat_id: caveat-c8-des-foodgrain-apy-state-3rd-ae
+  artifact_id: des-apy-xlsx
+  parser_id: des-apy-xlsx
+  mapper_id: food-farm/apy-state
+  named_hole: false
+- series_id: des-asag-2024-25-foodgrain
+  card: 4
+  name: Agricultural Statistics at a Glance 2024-25 — Production chapter foodgrain
+    tables
+  producer: Economics, Statistics and Evaluation Division, DA&FW, MoA&FW
+  producer_slug: desagri
+  source_vintage: asag-2024-25
+  next_release: unknown
+  geography_frame_id: c8-frame-c
+  geography_vintage: 2024-25
+  citation_id: cite-c8-des-asag-2024-25-foodgrain
+  caveat_id: caveat-c8-des-asag-2024-25-foodgrain
+  artifact_id: des-asag-pdf
+  parser_id: des-asag-pdf
+  mapper_id: food-farm/named-hole
+  named_hole: true
+- series_id: dfpd-bulletin-procurement
+  card: 5
+  name: Foodgrains Bulletin — Statewise Procurement of Rice, Wheat and Coarsegrains
+    (August 2026)
+  producer: Department of Food & Public Distribution (DFPD), Ministry of Consumer
+    Affairs, Food & Public Distribution
+  producer_slug: dfpd
+  source_vintage: 2026-08
+  next_release: unknown
+  geography_frame_id: c8-frame-d
+  geography_vintage: 2026-08
+  citation_id: cite-c8-dfpd-bulletin-procurement
+  caveat_id: caveat-c8-dfpd-bulletin-procurement
+  artifact_id: dfpd-bulletin-pdf
+  parser_id: dfpd-bulletin-procurement-pdf
+  mapper_id: food-farm/bulletin-procurement
+  named_hole: false
+- series_id: fci-central-pool-stocks
+  card: 6
+  name: Total Stocks of Foodgrains in Central Pool as on 01.09.2026 (Opening Balance)
+  producer: 'Food Corporation of India (FCI), Headquarters, New Delhi, Coordination
+    Division (fetch host: DFPD)'
+  producer_slug: fci
+  source_vintage: '2026-09-01'
+  next_release: unknown
+  geography_frame_id: c8-frame-e
+  geography_vintage: '2026-09-01'
+  citation_id: cite-c8-fci-central-pool-stocks
+  caveat_id: caveat-c8-fci-central-pool-stocks
+  artifact_id: fci-stocks-pdf
+  parser_id: fci-stocks-pdf
+  mapper_id: food-farm/central-pool-stocks
+  named_hole: false
+- series_id: dfpd-bulletin-allocation-offtake
+  card: 7
+  name: Foodgrains Bulletin — State-wise Allocation & Offtake of Foodgrains under
+    NFSA/PMGKAY (August 2026)
+  producer: Department of Food & Public Distribution (DFPD)
+  producer_slug: dfpd
+  source_vintage: 2026-08
+  next_release: unknown
+  geography_frame_id: c8-frame-d
+  geography_vintage: 2026-08
+  citation_id: cite-c8-dfpd-bulletin-allocation-offtake
+  caveat_id: caveat-c8-dfpd-bulletin-allocation-offtake
+  artifact_id: dfpd-bulletin-pdf
+  parser_id: dfpd-bulletin-allocation-offtake-pdf
+  mapper_id: food-farm/bulletin-allocation-offtake
+  named_hole: false
+- series_id: dfpd-bulletin-nfsa-coverage-fps
+  card: 8
+  name: Foodgrains Bulletin — NFSA persons/families covered and Fair Price Shops under
+    TPDS (August 2026)
+  producer: Department of Food & Public Distribution (DFPD)
+  producer_slug: dfpd
+  source_vintage: 2026-08
+  next_release: unknown
+  geography_frame_id: c8-frame-d
+  geography_vintage: 2026-08
+  citation_id: cite-c8-dfpd-bulletin-nfsa-coverage-fps
+  caveat_id: caveat-c8-dfpd-bulletin-nfsa-coverage-fps
+  artifact_id: dfpd-bulletin-pdf
+  parser_id: dfpd-bulletin-nfsa-coverage-fps-pdf
+  mapper_id: food-farm/bulletin-nfsa-coverage-fps
+  named_hole: false
+- series_id: nfsa-ration-card-dashboard
+  card: 9
+  name: National Food Security Portal — Public Ration Card Dashboard
+  producer: Department of Food & Public Distribution (content); National Informatics
+    Centre hosts nfsa.gov.in
+  producer_slug: nfsa
+  source_vintage: live
+  next_release: unknown
+  geography_frame_id: c8-frame-f
+  geography_vintage: live
+  citation_id: cite-c8-nfsa-ration-card-dashboard
+  caveat_id: caveat-c8-nfsa-ration-card-dashboard
+  artifact_id: nfsa-rc-html
+  parser_id: nfsa-rc-dashboard-html
+  mapper_id: food-farm/named-hole
+  named_hole: true
+- series_id: dfpd-annual-report-2025-26
+  card: 10
+  name: DFPD Annual Report 2025-26 (companion narrative / tables)
+  producer: Department of Food & Public Distribution (DFPD)
+  producer_slug: dfpd
+  source_vintage: 2025-26-ar
+  next_release: unknown
+  geography_frame_id: c8-frame-companion
+  geography_vintage: 2025-26
+  citation_id: cite-c8-dfpd-annual-report-2025-26
+  caveat_id: caveat-c8-dfpd-annual-report-2025-26
+  artifact_id: dfpd-ar-pdf
+  parser_id: dfpd-annual-report-pdf
+  mapper_id: food-farm/named-hole
+  named_hole: true
+cite_blocks:
+- block_id: family-a-production
+  citation_ids:
+  - cite-c8-des-foodgrain-3rd-ae-2025-26
+  - cite-c8-des-foodgrain-fe-2024-25
+  - cite-c8-des-foodgrain-apy-state-3rd-ae
+- block_id: family-a-procurement-stocks
+  citation_ids:
+  - cite-c8-dfpd-bulletin-procurement
+  - cite-c8-fci-central-pool-stocks
+- block_id: family-b-delivery
+  citation_ids:
+  - cite-c8-dfpd-bulletin-allocation-offtake
+  - cite-c8-dfpd-bulletin-nfsa-coverage-fps
+- block_id: companions-holes
+  citation_ids:
+  - cite-c8-des-asag-2024-25-foodgrain
+  - cite-c8-nfsa-ration-card-dashboard
+  - cite-c8-dfpd-annual-report-2025-26

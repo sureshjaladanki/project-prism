@@ -1,0 +1,20 @@
+caveat_id: caveat-c7-srs-statistical-report-2024
+concept: Fertility and mortality indicators as published (CBR, TFR, IMR, neonatal rates,
+  Under-five Mortality Rate, and related Detailed Tables / Chapters 3–4).
+unit: Rates and ratios as labelled in the report.
+population: India and bigger States/UTs (population ≥10 million) for the main tables.
+  Not smaller States/UTs on those tables.
+reference_period: Calendar year 2024. Not 20 May 2026 PDF CreationDate.
+producer_definition: SRS Statistical Report 2024 (ORGI). series_id srs-statistical-report-2024.
+comparable_from: Within this report’s 2024 tables for bigger States/UTs. Do not extend
+  to the Bulletin’s full State/UT list.
+breaks: Narrower geography than the Bulletin. NSS Natural Division tables parked. Do
+  not average with NFHS nutrition.
+lags: Same May 2026 vintage as the Bulletin; next_release unknown.
+disagrees_with: SRS Bulletin (same family; Bulletin has fuller State/UT list for the
+  four headline rates). NFHS-6 fact sheets.
+do_not: Do not fill missing smaller States/UTs from the Bulletin and call it this report.
+  Do not blend under-five rates with stunting. Do not pull Natural Division rows.
+citizen_note: The SRS Statistical Report 2024 publishes fertility indicators, including
+  total fertility rate, for India and the bigger States/UTs printed on Table 3. They
+  are rates, not Census persons, and they do not cover every smaller State or UT.

@@ -1,0 +1,122 @@
+frame_id: c4-frame-c
+geography_vintage: '2025'
+code_system: producer-specific
+frame: Union | state | UT
+units_included:
+- code: all-india
+  name_en: all India
+  geography_vintage: '2025'
+- code: andhra-pradesh
+  name_en: Andhra Pradesh
+  geography_vintage: '2025'
+- code: arunachal-pradesh
+  name_en: Arunachal Pradesh
+  geography_vintage: '2025'
+- code: assam
+  name_en: Assam
+  geography_vintage: '2025'
+- code: bihar
+  name_en: Bihar
+  geography_vintage: '2025'
+- code: chhattisgarh
+  name_en: Chhattisgarh
+  geography_vintage: '2025'
+- code: delhi
+  name_en: Delhi
+  geography_vintage: '2025'
+- code: goa
+  name_en: Goa
+  geography_vintage: '2025'
+- code: gujarat
+  name_en: Gujarat
+  geography_vintage: '2025'
+- code: haryana
+  name_en: Haryana
+  geography_vintage: '2025'
+- code: himachal-pradesh
+  name_en: Himachal Pradesh
+  geography_vintage: '2025'
+- code: jharkhand
+  name_en: Jharkhand
+  geography_vintage: '2025'
+- code: karnataka
+  name_en: Karnataka
+  geography_vintage: '2025'
+- code: kerala
+  name_en: Kerala
+  geography_vintage: '2025'
+- code: madhya-pradesh
+  name_en: Madhya Pradesh
+  geography_vintage: '2025'
+- code: maharashtra
+  name_en: Maharashtra
+  geography_vintage: '2025'
+- code: manipur
+  name_en: Manipur
+  geography_vintage: '2025'
+- code: meghalaya
+  name_en: Meghalaya
+  geography_vintage: '2025'
+- code: mizoram
+  name_en: Mizoram
+  geography_vintage: '2025'
+- code: nagaland
+  name_en: Nagaland
+  geography_vintage: '2025'
+- code: odisha
+  name_en: Odisha
+  geography_vintage: '2025'
+- code: punjab
+  name_en: Punjab
+  geography_vintage: '2025'
+- code: rajasthan
+  name_en: Rajasthan
+  geography_vintage: '2025'
+- code: sikkim
+  name_en: Sikkim
+  geography_vintage: '2025'
+- code: tamil-nadu
+  name_en: Tamil Nadu
+  geography_vintage: '2025'
+- code: telangana
+  name_en: Telangana
+  geography_vintage: '2025'
+- code: tripura
+  name_en: Tripura
+  geography_vintage: '2025'
+- code: uttarakhand
+  name_en: Uttarakhand
+  geography_vintage: '2025'
+- code: uttar-pradesh
+  name_en: Uttar Pradesh
+  geography_vintage: '2025'
+- code: west-bengal
+  name_en: West Bengal
+  geography_vintage: '2025'
+- code: andaman-n-island
+  name_en: Andaman & N. Island
+  geography_vintage: '2025'
+- code: chandigarh
+  name_en: Chandigarh
+  geography_vintage: '2025'
+- code: dadra-nagar-haveli-daman-diu
+  name_en: Dadra & Nagar Haveli & Daman & Diu
+  geography_vintage: '2025'
+- code: jammu-kashmir
+  name_en: Jammu & Kashmir
+  geography_vintage: '2025'
+- code: ladakh
+  name_en: Ladakh
+  geography_vintage: '2025'
+- code: lakshadweep
+  name_en: Lakshadweep
+  geography_vintage: '2025'
+- code: puducherry
+  name_en: Puducherry
+  geography_vintage: '2025'
+units_missing:
+- districts and below (parked; do not ingest Selected Districts snapshot for C4)
+breaks: Printed stubs use Delhi (not NCT of Delhi); Andaman & N. Island; Dadra & Nagar Haveli
+  & Daman & Diu as one merged UT string. Calendar-year 2025 annual vs earlier July–June annuals
+  is a design / reference-period break. Do not fill Frame B holes from this list.
+crosswalk: none

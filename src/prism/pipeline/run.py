@@ -78,10 +78,11 @@ def map_catalog_series(
         raise PipelineError("citation_id does not match the locked card")
     if caveat.caveat_id != entry.caveat_id:
         raise PipelineError("caveat_id does not match the locked note")
-    if lineage.citation_id != entry.citation_id:
+    allowed_citations = catalog.citation_ids_for_series(entry.series_id)
+    if lineage.citation_id not in allowed_citations:
         raise PipelineError(
             f"{entry.series_id} lineage citation_id {lineage.citation_id} "
-            f"does not match {entry.citation_id}"
+            f"is not among {sorted(allowed_citations)}"
         )
     spec = MAPPERS.get(entry.mapper_id)
     if spec is None:

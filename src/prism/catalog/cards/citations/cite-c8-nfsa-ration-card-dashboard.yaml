@@ -1,0 +1,16 @@
+citation_id: cite-c8-nfsa-ration-card-dashboard
+producer: Department of Food & Public Distribution (content); National Informatics
+  Centre hosts nfsa.gov.in
+series: National Food Security Portal — Public Ration Card Dashboard
+id: PublicRCDashboard.aspx; live administrative dashboard; no stable cell-mapped workbook
+  verified
+reference_period: live; capture Data Availability Date at fetch time
+release_date: unknown
+url: "https://nfsa.gov.in/public/nfsadashboard/PublicRCDashboard.aspx"
+geography_as_published: Central + State/UT as selected in dashboard filters. Districts
+  parked.
+frequency: continuous / as reported by States
+licence: Site policies linked from footer; not stated as CC-BY.
+next_release: unknown
+caveat_one_line: Prefer Card B1/B2 bulletin tables for a citable file. Interactive
+  HTML, not a named monthly PDF.

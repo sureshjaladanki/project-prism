@@ -1,0 +1,13 @@
+caveat_id: caveat-c8-nfsa-ration-card-dashboard
+concept: Administrative ration-card and beneficiary activity counts on the NFSA public
+  dashboard.
+unit: Counts as shown in UI.
+population: Ration-card administrative system. Not offtake tonnes.
+reference_period: Data Availability Date in the UI at fetch time.
+producer_definition: nfsa.gov.in PublicRCDashboard.aspx.
+comparable_from: Weak for time series without a captured dated export. Prefer B1/B2.
+breaks: Live HTML, no verified cell-mapped workbook. Named hole this iteration.
+lags: Continuous; no ARC date.
+disagrees_with: Cards B1–B2 (bulletin file series).
+do_not: Do not treat as offtake. Do not lead the page with an undated screenshot.
+citizen_note: Live ration-card administrative counts.

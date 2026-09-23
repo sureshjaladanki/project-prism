@@ -1,0 +1,122 @@
+frame_id: c8-frame-e
+geography_vintage: '2026-09-01'
+code_system: producer-specific
+frame: Union | state | region
+units_included:
+- code: bihar
+  name_en: Bihar
+  geography_vintage: '2026-09-01'
+- code: jharkhand
+  name_en: Jharkhand
+  geography_vintage: '2026-09-01'
+- code: odisha
+  name_en: Odisha
+  geography_vintage: '2026-09-01'
+- code: west-bengal
+  name_en: West Bengal
+  geography_vintage: '2026-09-01'
+- code: east-zonal-total
+  name_en: East Zonal Total
+  geography_vintage: '2026-09-01'
+- code: assam
+  name_en: Assam
+  geography_vintage: '2026-09-01'
+- code: arunachal-pr
+  name_en: Arunachal Pr.
+  geography_vintage: '2026-09-01'
+- code: tripura
+  name_en: Tripura
+  geography_vintage: '2026-09-01'
+- code: mizoram
+  name_en: Mizoram
+  geography_vintage: '2026-09-01'
+- code: meghalaya
+  name_en: Meghalaya
+  geography_vintage: '2026-09-01'
+- code: manipur
+  name_en: Manipur
+  geography_vintage: '2026-09-01'
+- code: nagaland
+  name_en: Nagaland
+  geography_vintage: '2026-09-01'
+- code: north-east-zonal-total
+  name_en: North-East Zonal Total
+  geography_vintage: '2026-09-01'
+- code: delhi
+  name_en: Delhi
+  geography_vintage: '2026-09-01'
+- code: haryana
+  name_en: Haryana
+  geography_vintage: '2026-09-01'
+- code: himachal-pr
+  name_en: Himachal Pr.
+  geography_vintage: '2026-09-01'
+- code: j-k
+  name_en: J&K
+  geography_vintage: '2026-09-01'
+- code: punjab
+  name_en: Punjab
+  geography_vintage: '2026-09-01'
+- code: rajasthan
+  name_en: Rajasthan
+  geography_vintage: '2026-09-01'
+- code: uttar-pr
+  name_en: Uttar Pr.
+  geography_vintage: '2026-09-01'
+- code: uttrakhand
+  name_en: Uttrakhand
+  geography_vintage: '2026-09-01'
+- code: north-zonal-total
+  name_en: North Zonal Total
+  geography_vintage: '2026-09-01'
+- code: andhra-pr
+  name_en: Andhra Pr.
+  geography_vintage: '2026-09-01'
+- code: karnataka
+  name_en: Karnataka
+  geography_vintage: '2026-09-01'
+- code: kerala
+  name_en: Kerala
+  geography_vintage: '2026-09-01'
+- code: tamil-nadu
+  name_en: Tamil Nadu
+  geography_vintage: '2026-09-01'
+- code: telangana
+  name_en: Telangana
+  geography_vintage: '2026-09-01'
+- code: south-zonal-total
+  name_en: South Zonal Total
+  geography_vintage: '2026-09-01'
+- code: gujarat
+  name_en: Gujarat
+  geography_vintage: '2026-09-01'
+- code: maharashtra
+  name_en: Maharashtra
+  geography_vintage: '2026-09-01'
+- code: madhya-pr
+  name_en: Madhya Pr.
+  geography_vintage: '2026-09-01'
+- code: chhattisgarh
+  name_en: Chhattisgarh
+  geography_vintage: '2026-09-01'
+- code: west-zonal-total
+  name_en: West Zonal Total
+  geography_vintage: '2026-09-01'
+- code: total
+  name_en: Total
+  geography_vintage: '2026-09-01'
+- code: wheat-lying-in-mandies
+  name_en: Wheat lying in mandies
+  geography_vintage: '2026-09-01'
+- code: stock-in-transit
+  name_en: Stock in Transit
+  geography_vintage: '2026-09-01'
+- code: total-all-india
+  name_en: Total (All India)
+  geography_vintage: '2026-09-01'
+units_missing:
+- States/UTs not printed on the stock sheet
+- districts (parked)
+breaks: Zonal Total rows disambiguated by document zone order. Do not recode onto
+  Frame D.
+crosswalk: none

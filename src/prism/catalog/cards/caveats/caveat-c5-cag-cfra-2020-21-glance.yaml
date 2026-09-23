@@ -1,0 +1,25 @@
+caveat_id: caveat-c5-cag-cfra-2020-21-glance
+concept: 'Audited Combined Finance and Revenue Accounts overview and volumes for 2020-21:
+  own tax vs share of Union taxes vs grants-in-aid, expenditure, deficit/fiscal parameters,
+  and public debt/liabilities as CAG prints them for states/UTs (and Union lines in
+  the same product).'
+unit: Rupees as labelled in the glance / volumes.
+population: Frame B — Union and states/UTs with legislature as the glance states.
+  For C5, use state/UT tables; Union CFRA lines are not a substitute for C3.
+reference_period: Financial year 2020-21 (Accounts). Not the 6 September 2024 preface
+  date.
+producer_definition: Union and State Finances at a Glance 2020-21; CFRA Volumes I–III
+  2020-21 (CAG combined-accounts archive).
+comparable_from: Within 2020-21 CFRA. Not a continuation of RBI Study 2025-26 columns.
+breaks: Several years behind Frame A. CFRA after 2020-21 is a named hole on the live
+  archive. Own tax vs grants stay separate. Glance tables have fragmented multi-row
+  headers — ingest stops rather than guess a column map.
+lags: Audited compilation lagged; next CFRA year unknown on the live page.
+disagrees_with: Cards 1–6 RBI Study (different producer, later budget vintages). C3
+  Budget/CGA Union series.
+do_not: Do not stitch onto RBI 2025-26 as one line. Do not fold grants into own tax.
+  Do not use Union CFRA lines as C3 Budget BE or as C5 state money. Do not pretend
+  later CFRA years exist on the archive.
+citizen_note: Audited 2020-21 Union-and-state compilation from CAG; several years
+  behind the RBI 2025-26 Study. Own tax, share of Union taxes, and grants-in-aid stay
+  separate.

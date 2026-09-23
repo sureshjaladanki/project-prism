@@ -1,0 +1,14 @@
+caveat_id: caveat-c8-des-foodgrain-fe-2024-25
+concept: All-India production of foodgrains under Final Estimates for crop year 2024-25.
+unit: Lakh tonnes as labelled.
+population: Same DES all-India production family as A1, sealed Final for 2024-25.
+reference_period: Crop year 2024-25 (Final); as-on 20 November 2025.
+producer_definition: Time-Series-FE-2024-25-English.pdf (DES / DA&FW).
+comparable_from: Within Final Estimates runs. Name the round when comparing to A1’s
+  2025-26 AE.
+breaks: FE vs AE. No 2025-26 Final on these cards yet.
+lags: Final for 2025-26 not on these cards; next_release unknown.
+disagrees_with: Card A1 (live AE for a later year). Card A4.
+do_not: Do not stitch AE and FE as one undifferentiated series. Do not merge with
+  Family B.
+citizen_note: All-India foodgrain production, sealed 2024-25.

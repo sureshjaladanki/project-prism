@@ -1,0 +1,16 @@
+caveat_id: caveat-c8-des-foodgrain-apy-state-3rd-ae
+concept: Crop-wise and Total Foodgrains area, production, and yield by State/UT for
+  2021-22 through 2025-26 (2025-26 = 3rd AE).
+unit: Area thousand ha; production thousand tonnes; yield kg/ha as labelled.
+population: DES State/UT crop statistics. Season = Kharif / Rabi / Summer as published.
+reference_period: Column year on the sheet; 2025-26 column is Advance, not Final.
+producer_definition: Five-Years-2021-22-to-2025-263rd-AE.xlsx (DES / DA&FW).
+comparable_from: Within this workbook’s labelled years. Blank 2025-26 cells are holes,
+  not zeros.
+breaks: Short-form geography keys. Others is residual. Do not recode onto bulletin/FCI
+  maps.
+lags: Aligned to 3rd AE package; next workbook with next AE/FE package.
+disagrees_with: Cards A1–A2 (all-India only PDFs). Frame D/E spellings.
+do_not: Do not expand short forms by eye. Do not invent Lakshadweep. Do not merge
+  with procurement or offtake.
+citizen_note: State/UT area, production, yield as in the workbook.

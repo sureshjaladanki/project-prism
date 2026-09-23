@@ -1,0 +1,16 @@
+citation_id: cite-c8-fci-central-pool-stocks
+producer: 'Food Corporation of India (FCI), Headquarters, New Delhi, Coordination
+  Division (fetch host: DFPD)'
+series: Total Stocks of Foodgrains in Central Pool as on 01.09.2026 (Opening Balance)
+id: DFPD-hosted FCI statement 749e9295-….pdf; TOTAL STOCKS … AS ON 01.09.2026; Prepared
+  on 09.09.2026; Figs. in LMT
+reference_period: stocks as on 01.09.2026 (opening)
+release_date: '2026-09-09'
+url: "https://dfpd.gov.in/WriteReadData/Other/749e9295-e1ff-4c6e-b54b-fab7afacb139.pdf"
+geography_as_published: Regions/States as labelled plus zonal and All India totals.
+  Not districts.
+frequency: updated statements linked from DFPD
+licence: DFPD host; FCI producing office named on the sheet.
+next_release: unknown
+caveat_one_line: Central-pool inventory, not offtake and not farm production. Fetch
+  host ≠ producer — quote both.

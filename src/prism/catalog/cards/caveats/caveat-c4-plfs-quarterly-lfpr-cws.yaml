@@ -1,0 +1,17 @@
+caveat_id: caveat-c4-plfs-quarterly-lfpr-cws
+concept: LFPR in Current Weekly Status (CWS) for all-India and selected States, rural and
+  urban.
+unit: Rates as labelled (percent).
+population: PLFS quarterly CWS sample; publisher selected States only on Appendix A.
+reference_period: Quarter as labelled (April–June 2026). Not 10 August 2026 bulletin date.
+producer_definition: PLFS Quarterly Bulletin Appendix A Table 2 (LFPR, CWS).
+comparable_from: Within post-January-2025 rural+urban quarterly bulletins for the published
+  State list.
+breaks: Selected States only. Pre-2025 urban-only quarterlies are a different series. Do not
+  fill holes from the annual report.
+lags: next_release 10 November 2026 (July–Sep 2026) per ARC.
+disagrees_with: Monthly all-India only. Annual all State/UT (includes usual status).
+do_not: Do not fill missing States from the annual report. Do not merge with usual status.
+  Do not mix MGNREGA/CMIE. Do not pull districts.
+citizen_note: Quarterly CWS labour-force participation rates for all-India and the selected
+  States MoSPI publishes in this bulletin.

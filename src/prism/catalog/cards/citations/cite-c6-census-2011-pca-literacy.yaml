@@ -1,0 +1,20 @@
+citation_id: cite-c6-census-2011-pca-literacy
+producer: Office of the Registrar General & Census Commissioner, India (ORGI), Ministry
+  of Home Affairs
+series: 'Census of India 2011 — Primary Census Abstract (PCA SD): literate and illiterate
+  population counts as published'
+id: 'NADA catalog 6191; Reference ID PC11_PCA-SD; file DDW_PCA0000_2011_Indiastatedist.xlsx
+  sheet Sheet1. Literacy columns of record: P_LIT, M_LIT, F_LIT (and P_ILL, M_ILL,
+  F_ILL). Population denominators on the same rows: TOT_P, TOT_M, TOT_F. Level = India
+  or STATE only (not DISTRICT).'
+reference_period: '2011-03-01'
+release_date: unknown
+url: "https://censusindia.gov.in/nada/index.php/catalog/6191/download/9268/DDW_PCA0000_2011_Indiastatedist.xlsx"
+geography_as_published: India and States/UTs as labelled in Name where Level = India
+  or STATE; TRU = Total / Rural / Urban. DISTRICT rows parked.
+frequency: decennial census
+licence: 'Not stated on the workbook. ORGI / NADA: all rights reserved. Not stated
+  as CC-BY.'
+next_release: unknown
+caveat_one_line: Census 2011 literacy counts, about fifteen years behind 2026 and behind
+  UDISE+ 2025-26 — not current school enrolment.

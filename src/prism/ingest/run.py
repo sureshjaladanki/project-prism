@@ -9,7 +9,7 @@ from urllib.parse import unquote
 import httpx
 
 from prism.catalog import Catalog, CatalogArtifact, CatalogSeries, default_catalog
-from prism.catalog.registry import PARSERS
+from prism.catalog.registry import PARSERS, RETRIEVERS
 from prism.ingest.parsed_table import ParsedTable
 from prism.ingest.retrieve import (
     IngestError,
@@ -193,6 +193,8 @@ def _ingest_series(
         share_note = f"{catalog_artifact.share_note}:{how}"
         companion = companion_note if companion_note else "companion_annex_absent"
         flags = _combine_flags(parsed.flags, share_note, companion, annex_store_flag)
+    if artifact.tls_mode != "verify":
+        flags = _combine_flags(flags, f"tls_mode={artifact.tls_mode}")
     record = LineageRecord(
         raw_path=_record_path(data_root, artifact_path),
         derived_path=_record_path(data_root, derived_path),
@@ -246,12 +248,28 @@ def ingest(
             remaining = [
                 entry for entry in remaining if entry.artifact_id != first.artifact_id
             ]
-            fetched = retrieve_artifact(
-                artifact.url,
-                client=http,
-                retrieved_at=stamp,
-                filename=unquote(artifact.url.rstrip("/").rsplit("/", 1)[-1]),
-            )
+            if artifact.retrieve_id:
+                retriever = RETRIEVERS.get(artifact.retrieve_id)
+                if retriever is None:
+                    raise IngestError(
+                        f"unknown retrieve_id: {artifact.retrieve_id}"
+                    )
+                fetched = retriever.retrieve(
+                    http, stamp, artifact.url
+                )
+            else:
+                raw_name = artifact.filename or unquote(
+                    artifact.url.rstrip("/").rsplit("/", 1)[-1]
+                )
+                raw_name = raw_name.split("?", 1)[0].split("#", 1)[0]
+                if not raw_name or "." not in raw_name:
+                    raw_name = f"{artifact.artifact_id}.{artifact.kind}"
+                fetched = retrieve_artifact(
+                    artifact.url,
+                    client=http,
+                    retrieved_at=stamp,
+                    filename=raw_name,
+                )
             companion_fetched: list[RetrievedArtifact] = []
             companion_note = ""
             annex_ok: list[RetrievedArtifact] = []

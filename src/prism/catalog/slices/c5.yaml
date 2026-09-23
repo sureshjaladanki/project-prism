@@ -1,0 +1,167 @@
+slice_id: c5
+charter: C5
+template_id: c5-money-states
+artifacts:
+  - artifact_id: rbi-sf-01-app-deficit-xlsx
+    url: https://rbidocs.rbi.org.in/rdocs/Publications/DOCs/01_APP230120266318663B94AF422D8941472ECF135352.XLSX
+    kind: xlsx
+    share_note: "rbidocs may return WAF html to automated GET"
+    companions: []
+  - artifact_id: rbi-sf-33-st-revenue-xlsx
+    url: https://rbidocs.rbi.org.in/rdocs/Publications/DOCs/33_ST23012026BCEB3D627A5F437FB20248AF4A6A7AD7.XLSX
+    kind: xlsx
+    share_note: "rbidocs may return WAF html to automated GET"
+    companions: []
+  - artifact_id: rbi-sf-34-st-expenditure-xlsx
+    url: https://rbidocs.rbi.org.in/rdocs/Publications/DOCs/34_ST23012026C857071F901744E5844154DF5079FCB4.XLSX
+    kind: xlsx
+    share_note: "rbidocs may return WAF html to automated GET"
+    companions: []
+  - artifact_id: rbi-sf-3appendix-capital-xlsx
+    url: https://rbidocs.rbi.org.in/rdocs/Publications/DOCs/3APPENDIX23012026_4EF3E411D370147538EF55357920EB7F8.XLSX
+    kind: xlsx
+    share_note: "Appendix III chunk including All States and UTs; rbidocs WAF risk"
+    companions: []
+  - artifact_id: rbi-sf-08-app-gfd-xlsx
+    url: https://rbidocs.rbi.org.in/rdocs/Publications/DOCs/08_APP2301202687DF1E4D2ADA42E7BDE7DB15FF688CFA.XLSX
+    kind: xlsx
+    share_note: "rbidocs may return WAF html to automated GET"
+    companions: []
+  - artifact_id: rbi-sf-11-app-liabilities-xlsx
+    url: https://rbidocs.rbi.org.in/rdocs/Publications/DOCs/11_APP230120264ABF938C6F214A6F80A5379B6DC5CC4A.XLSX
+    kind: xlsx
+    share_note: "rbidocs may return WAF html to automated GET"
+    companions: []
+  - artifact_id: cag-cfra-glance-2020-21-pdf
+    url: https://cag.gov.in/uploads/combined_accounts/Union-and-State-finances-at-a-Glance-2020-21-final-0671a1ecc965a37-34532341.pdf
+    kind: pdf
+    share_note: ""
+    companions: []
+series:
+  - series_id: rbi-sf-2025-26-deficit-indicators
+    card: 1
+    name: "State Finances: A Study of Budgets of 2025-26 \u2014 Major Deficit Indicators / Major\
+  \ Fiscal Indicators (as published)"
+    producer: Reserve Bank of India (RBI)
+    producer_slug: rbi
+    source_vintage: 2025-26-study
+    next_release: unknown
+    geography_frame_id: c5-frame-a
+    geography_vintage: "2025-26"
+    citation_id: cite-c5-rbi-sf-2025-26-deficit-indicators
+    caveat_id: caveat-c5-rbi-sf-2025-26-deficit-indicators
+    artifact_id: rbi-sf-01-app-deficit-xlsx
+    parser_id: rbi-sf-xlsx
+    mapper_id: state-finance/geo-wide
+    named_hole: false
+  - series_id: rbi-sf-2025-26-revenue-receipts
+    card: 2
+    name: "State Finances: A Study of Budgets of 2025-26 \u2014 Revenue Receipts; Tax Revenue;\
+  \ Non-Tax Revenue; Devolution and Transfer of Resources from the Centre (as published)"
+    producer: Reserve Bank of India (RBI)
+    producer_slug: rbi
+    source_vintage: 2025-26-study
+    next_release: unknown
+    geography_frame_id: c5-frame-a
+    geography_vintage: "2025-26"
+    citation_id: cite-c5-rbi-sf-2025-26-revenue-receipts
+    caveat_id: caveat-c5-rbi-sf-2025-26-revenue-receipts
+    artifact_id: rbi-sf-33-st-revenue-xlsx
+    parser_id: rbi-sf-xlsx
+    mapper_id: state-finance/geo-wide
+    named_hole: false
+  - series_id: rbi-sf-2025-26-expenditure
+    card: 3
+    name: "State Finances: A Study of Budgets of 2025-26 \u2014 Revenue Expenditure; Capital\
+  \ Expenditure; Development and Non-Development Expenditure (as published)"
+    producer: Reserve Bank of India (RBI)
+    producer_slug: rbi
+    source_vintage: 2025-26-study
+    next_release: unknown
+    geography_frame_id: c5-frame-a
+    geography_vintage: "2025-26"
+    citation_id: cite-c5-rbi-sf-2025-26-expenditure
+    caveat_id: caveat-c5-rbi-sf-2025-26-expenditure
+    artifact_id: rbi-sf-34-st-expenditure-xlsx
+    parser_id: rbi-sf-xlsx
+    mapper_id: state-finance/geo-wide
+    named_hole: false
+  - series_id: rbi-sf-2025-26-capital-receipts
+    card: 4
+    name: "State Finances: A Study of Budgets of 2025-26 \u2014 Capital Receipts of States and\
+  \ Union Territories with Legislature"
+    producer: Reserve Bank of India (RBI)
+    producer_slug: rbi
+    source_vintage: 2025-26-study
+    next_release: unknown
+    geography_frame_id: c5-frame-a
+    geography_vintage: "2025-26"
+    citation_id: cite-c5-rbi-sf-2025-26-capital-receipts
+    caveat_id: caveat-c5-rbi-sf-2025-26-capital-receipts
+    artifact_id: rbi-sf-3appendix-capital-xlsx
+    parser_id: rbi-sf-xlsx
+    mapper_id: state-finance/geo-wide
+    named_hole: false
+  - series_id: rbi-sf-2025-26-gfd-financing
+    card: 5
+    name: "State Finances: A Study of Budgets of 2025-26 \u2014 Decomposition and Financing\
+  \ of Gross Fiscal Deficit"
+    producer: Reserve Bank of India (RBI)
+    producer_slug: rbi
+    source_vintage: 2025-26-study
+    next_release: unknown
+    geography_frame_id: c5-frame-a
+    geography_vintage: "2025-26"
+    citation_id: cite-c5-rbi-sf-2025-26-gfd-financing
+    caveat_id: caveat-c5-rbi-sf-2025-26-gfd-financing
+    artifact_id: rbi-sf-08-app-gfd-xlsx
+    parser_id: rbi-sf-xlsx
+    mapper_id: state-finance/geo-wide
+    named_hole: false
+  - series_id: rbi-sf-2025-26-liabilities
+    card: 6
+    name: "State Finances: A Study of Budgets of 2025-26 \u2014 Outstanding Liabilities; Market\
+  \ Borrowings (as published)"
+    producer: Reserve Bank of India (RBI)
+    producer_slug: rbi
+    source_vintage: 2025-26-study
+    next_release: unknown
+    geography_frame_id: c5-frame-a
+    geography_vintage: "2025-26"
+    citation_id: cite-c5-rbi-sf-2025-26-liabilities
+    caveat_id: caveat-c5-rbi-sf-2025-26-liabilities
+    artifact_id: rbi-sf-11-app-liabilities-xlsx
+    parser_id: rbi-sf-xlsx
+    mapper_id: state-finance/geo-wide
+    named_hole: false
+  - series_id: cag-cfra-2020-21-glance
+    card: 7
+    name: "Combined Finance and Revenue Accounts \u2014 Union and State Finances at a Glance\
+  \ 2020-21"
+    producer: Comptroller and Auditor General of India (CAG)
+    producer_slug: cag
+    source_vintage: "2020-21"
+    next_release: unknown
+    geography_frame_id: c5-frame-b
+    geography_vintage: "2020-21"
+    citation_id: cite-c5-cag-cfra-2020-21-glance
+    caveat_id: caveat-c5-cag-cfra-2020-21-glance
+    artifact_id: cag-cfra-glance-2020-21-pdf
+    parser_id: cag-cfra-glance-pdf
+    mapper_id: state-finance/geo-wide
+    named_hole: false
+cite_blocks:
+  - block_id: deficit
+    citation_ids: [cite-c5-rbi-sf-2025-26-deficit-indicators]
+  - block_id: revenue
+    citation_ids: [cite-c5-rbi-sf-2025-26-revenue-receipts]
+  - block_id: expenditure
+    citation_ids: [cite-c5-rbi-sf-2025-26-expenditure]
+  - block_id: capital
+    citation_ids: [cite-c5-rbi-sf-2025-26-capital-receipts]
+  - block_id: gfd-financing
+    citation_ids: [cite-c5-rbi-sf-2025-26-gfd-financing]
+  - block_id: liabilities
+    citation_ids: [cite-c5-rbi-sf-2025-26-liabilities]
+  - block_id: cag-glance
+    citation_ids: [cite-c5-cag-cfra-2020-21-glance]

@@ -1,0 +1,15 @@
+caveat_id: caveat-c8-dfpd-bulletin-nfsa-coverage-fps
+concept: State-wise persons/families covered under NFSA; State-wise Fair Price Shops
+  under TPDS.
+unit: Persons / families / shop counts as labelled.
+population: Administrative NFSA / TPDS coverage — not undernourishment and not offtake
+  tonnes.
+reference_period: August 2026 bulletin tables.
+producer_definition: Same Foodgrains Bulletin statements named on Card B2.
+comparable_from: Within these bulletin coverage/FPS tables.
+breaks: Coverage ≠ offtake. Coverage and FPS stubs may differ by spelling.
+lags: Same monthly bulletin as B1.
+disagrees_with: Card B1 (tonnes). FAO/UN hunger indices (rejected).
+do_not: Do not present as a hunger index. Do not convert coverage into offtake tonnes.
+  Do not pull districts.
+citizen_note: NFSA persons/families and fair-price shops.

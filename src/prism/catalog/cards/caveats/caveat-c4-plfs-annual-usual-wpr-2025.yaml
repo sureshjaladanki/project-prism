@@ -1,0 +1,17 @@
+caveat_id: caveat-c4-plfs-annual-usual-wpr-2025
+concept: WPR in usual status (ps+ss) for calendar year 2025, each State/UT as published.
+unit: Rates as labelled (percent).
+population: PLFS annual sample; each State/UT as in Appendix A. Not districts.
+reference_period: January–December 2025. Not 27 March 2026 press note.
+producer_definition: Annual Report PLFS 2025 Appendix A Table 17.0 (WPR, usual status (ps+ss)).
+comparable_from: Within calendar-year 2025 annual under revamped design. Break vs earlier
+  July–June PLFS annuals.
+breaks: Usual status ≠ CWS — publish both, never average into one. First calendar-year annual
+  under new design.
+lags: Next annual on ARC for calendar year 2026 (unit level is Category B, not this path).
+disagrees_with: Monthly/quarterly CWS (frequency/geography). The other status concept on this
+  annual. CMIE (rejected).
+do_not: Do not merge usual and CWS. Do not stitch to pre-2025 July–June annuals without a
+  break. Do not use to fill quarterly missing States. Do not pull microdata or districts.
+citizen_note: Calendar-year 2025 WPR in usual status (ps+ss) for All India and each State/UT
+  as MoSPI prints them.

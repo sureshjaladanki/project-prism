@@ -1,0 +1,13 @@
+caveat_id: caveat-c8-des-asag-2024-25-foodgrain
+concept: Foodgrain production tables in Agricultural Statistics at a Glance 2024-25.
+unit: As labelled in each table.
+population: DES glance book; Major States panels are not a full UT set.
+reference_period: Years printed inside each table — not the November 2024 upload alone.
+producer_definition: ASAG 2024-25 bilingual PDF (DES / DA&FW).
+comparable_from: Within ASAG tables. Prefer A1–A3 for latest AE/FE vintage.
+breaks: 'Chapter 3 procurement/stock reprints are not DES production. Named hole:
+  PDF not cell-mapped this iteration.'
+lags: ASAG 2025-26 not on category page as of citation fetch.
+disagrees_with: Cards A1–A3 (newer production rounds).
+do_not: Do not prefer ASAG over A1–A3 for the live production question.
+citizen_note: Older glance book tables as printed.

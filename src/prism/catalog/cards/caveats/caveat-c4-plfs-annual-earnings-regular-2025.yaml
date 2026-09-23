@@ -1,0 +1,18 @@
+caveat_id: caveat-c4-plfs-annual-earnings-regular-2025
+concept: Average wage/salary earnings during the preceding calendar month from regular wage/salaried
+  employment among regular wage/salaried employees in CWS.
+unit: Rupees as labelled on the table.
+population: Earners in this status as defined; State/UT and sector as in the table. Public
+  works / MGNREGA wages are not this series.
+reference_period: Calendar year 2025 survey; earnings window follows the table definition.
+producer_definition: Annual Report PLFS 2025 Appendix A Table 38; Section Four (Earnings from
+  employment).
+comparable_from: Within this earnings table separately. Not across statuses as one wage.
+breaks: Three concepts, three reference windows. Public works / MGNREGA wages are C9, not
+  this series.
+lags: Same annual cycle as LFPR/WPR/UR annual tables.
+disagrees_with: CMIE wage series (rejected). MGNREGA wage notifications (C9).
+do_not: Do not invent a single average wage across statuses. Do not chart MGNREGA as PLFS
+  earnings. Do not use CMIE. Do not treat 0 as a real zero wage without the producer note.
+citizen_note: Regular wage/salary earnings (cws) as MoSPI defines them in the PLFS Annual
+  Report 2025 — not a single average wage across employment statuses.

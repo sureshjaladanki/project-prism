@@ -1,0 +1,14 @@
+frame_id: c8-frame-f
+geography_vintage: live
+code_system: producer-specific
+frame: Union | state | UT
+units_included:
+- code: central
+  name_en: Central
+  geography_vintage: live
+units_missing:
+- State/UT filter list confirm on open
+- districts (parked)
+- Annavitran distribution dashboard (named hole)
+breaks: Named hole this iteration; prefer Frame D bulletin tables.
+crosswalk: none

@@ -1,0 +1,81 @@
+frame_id: c4-frame-b
+geography_vintage: '2025'
+code_system: producer-specific
+frame: Union | state | UT
+units_included:
+- code: all-india
+  name_en: all-India
+  geography_vintage: '2025'
+- code: andhra-pradesh
+  name_en: Andhra Pradesh
+  geography_vintage: '2025'
+- code: assam
+  name_en: Assam
+  geography_vintage: '2025'
+- code: bihar
+  name_en: Bihar
+  geography_vintage: '2025'
+- code: chhattisgarh
+  name_en: Chhattisgarh
+  geography_vintage: '2025'
+- code: delhi
+  name_en: Delhi
+  geography_vintage: '2025'
+- code: gujarat
+  name_en: Gujarat
+  geography_vintage: '2025'
+- code: haryana
+  name_en: Haryana
+  geography_vintage: '2025'
+- code: himachal-pradesh
+  name_en: Himachal Pradesh
+  geography_vintage: '2025'
+- code: jharkhand
+  name_en: Jharkhand
+  geography_vintage: '2025'
+- code: karnataka
+  name_en: Karnataka
+  geography_vintage: '2025'
+- code: kerala
+  name_en: Kerala
+  geography_vintage: '2025'
+- code: madhya-pradesh
+  name_en: Madhya Pradesh
+  geography_vintage: '2025'
+- code: maharashtra
+  name_en: Maharashtra
+  geography_vintage: '2025'
+- code: odisha
+  name_en: Odisha
+  geography_vintage: '2025'
+- code: punjab
+  name_en: Punjab
+  geography_vintage: '2025'
+- code: rajasthan
+  name_en: Rajasthan
+  geography_vintage: '2025'
+- code: tamil-nadu
+  name_en: Tamil Nadu
+  geography_vintage: '2025'
+- code: telangana
+  name_en: Telangana
+  geography_vintage: '2025'
+- code: uttarakhand
+  name_en: Uttarakhand
+  geography_vintage: '2025'
+- code: uttar-pradesh
+  name_en: Uttar Pradesh
+  geography_vintage: '2025'
+- code: west-bengal
+  name_en: West Bengal
+  geography_vintage: '2025'
+- code: jammu-kashmir
+  name_en: Jammu & Kashmir
+  geography_vintage: '2025'
+units_missing:
+- all other States/UTs not on Appendix A (publisher omission, not a Prism withhold; do not
+  fill from Frame C)
+- districts and below (parked)
+breaks: Selected-States map only. Pre-2025 urban-only quarterly series is a different design
+  — do not silent-stitch. Do not recode onto Frame C.
+crosswalk: none

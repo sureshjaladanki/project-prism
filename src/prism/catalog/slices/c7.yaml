@@ -1,0 +1,95 @@
+slice_id: c7
+charter: C7
+template_id: c7-people-health
+artifacts:
+  - artifact_id: srs-bulletin-2024
+    url: https://censusindia.gov.in/nada/index.php/catalog/47150/download/51394/SRS_Bulletin_2024_Vol_59_No_1.pdf
+    kind: pdf
+    share_note: shared-with-c2
+    companions: []
+  - artifact_id: srs-stat-2024
+    url: https://censusindia.gov.in/nada/index.php/catalog/47152/download/51396/SRS_STAT_2024.pdf
+    kind: pdf
+    share_note: shared-with-c2
+    companions: []
+  - artifact_id: nfhs-6-factsheets
+    url: https://www.nfhsiips.in/nfhsuser/assets/National%20Family%20Health%20Survey%20(NFHS-6)%202023-2024%20Fact%20Sheets.pdf
+    kind: pdf
+    share_note: ""
+    companions: []
+  - artifact_id: rhs-2021-22
+    url: https://hmis.mohfw.gov.in/downloadfile?fileid=34
+    kind: pdf
+    share_note: ""
+    filename: RHS-2021-22.pdf
+    companions: []
+series:
+  - series_id: srs-bulletin-2024
+    card: 1
+    name: Sample Registration System (SRS) Bulletin — estimated Birth Rate, Death Rate, Natural Growth Rate and Infant Mortality Rate
+    producer: Office of the Registrar General of India, Vital Statistics Division (ORGI)
+    producer_slug: orgi
+    source_vintage: "2024"
+    next_release: unknown
+    geography_frame_id: c7-frame-a
+    geography_vintage: "2024"
+    citation_id: cite-c7-srs-bulletin-2024
+    caveat_id: caveat-c7-srs-bulletin-2024
+    artifact_id: srs-bulletin-2024
+    parser_id: srs-bulletin-pdf
+    mapper_id: srs-bulletin-rates
+    named_hole: false
+  - series_id: srs-statistical-report-2024
+    card: 2
+    name: Sample Registration System (SRS) Statistical Report 2024 — fertility and mortality indicators as published (including Crude Birth Rate and Total Fertility Rate)
+    producer: Office of the Registrar General & Census Commissioner, India (ORGI), Ministry of Home Affairs
+    producer_slug: orgi
+    source_vintage: "2024"
+    next_release: unknown
+    geography_frame_id: c7-frame-b
+    geography_vintage: "2024"
+    citation_id: cite-c7-srs-statistical-report-2024
+    caveat_id: caveat-c7-srs-statistical-report-2024
+    artifact_id: srs-stat-2024
+    parser_id: srs-statistical-report-pdf
+    mapper_id: srs-table3-indicators
+    named_hole: false
+  - series_id: nfhs-6-factsheets-2023-24
+    card: 3
+    name: National Family Health Survey (NFHS-6), 2023-24 — India and State/UT Fact Sheets (101 key indicators as printed)
+    producer: International Institute for Population Sciences (IIPS), Mumbai — nodal agency; survey under the stewardship of the Ministry of Health and Family Welfare (MoHFW)
+    producer_slug: iips-mohfw
+    source_vintage: 2023-24-factsheets
+    next_release: unknown
+    geography_frame_id: c7-frame-c
+    geography_vintage: "2023-24"
+    citation_id: cite-c7-nfhs-6-factsheets-2023-24
+    caveat_id: caveat-c7-nfhs-6-factsheets-2023-24
+    artifact_id: nfhs-6-factsheets
+    parser_id: nfhs-6-factsheets-pdf
+    mapper_id: nfhs-factsheet-indicators
+    named_hole: false
+  - series_id: rhs-2021-22
+    card: 4
+    name: Rural Health Statistics 2021-22 — public health facility counts (SCs, PHCs, CHCs and related tables as published)
+    producer: Ministry of Health and Family Welfare (MoHFW), Statistics Division
+    producer_slug: mohfw-hmis
+    source_vintage: "2021-22"
+    next_release: unknown
+    geography_frame_id: c7-frame-d
+    geography_vintage: "2021-22"
+    citation_id: cite-c7-rhs-2021-22
+    caveat_id: caveat-c7-rhs-2021-22
+    artifact_id: rhs-2021-22
+    parser_id: rhs-2021-22-pdf
+    mapper_id: rhs-facility-counts
+    named_hole: false
+cite_blocks:
+  - block_id: srs-bulletin
+    citation_ids: [cite-c7-srs-bulletin-2024]
+  - block_id: srs-stat
+    citation_ids: [cite-c7-srs-statistical-report-2024]
+  - block_id: nfhs-factsheets
+    citation_ids: [cite-c7-nfhs-6-factsheets-2023-24]
+  - block_id: rhs
+    citation_ids: [cite-c7-rhs-2021-22]

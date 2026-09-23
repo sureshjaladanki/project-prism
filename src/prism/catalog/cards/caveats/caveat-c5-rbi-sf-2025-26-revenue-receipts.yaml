@@ -1,0 +1,22 @@
+caveat_id: caveat-c5-rbi-sf-2025-26-revenue-receipts
+concept: 'Revenue receipts of states/UTs: tax revenue; non-tax revenue; devolution
+  and transfer of resources from the Centre — as distinct RBI statements/appendices.'
+unit: Rupees as labelled.
+population: States and UTs with Legislature (Appendix I title) / State Governments
+  and UTs as on Statements 14/15/17/33.
+reference_period: As labelled in the 2025-26 Study (Accounts / RE / BE). Not 23 January
+  2026.
+producer_definition: Statements 14 Tax Revenue, 15 Non-Tax Revenue, 17 Devolution
+  and Transfer of Resources from the Centre, 33 Revenue Receipts; Appendix I; Appendix
+  Table 2. Statement 16 Loans from the Centre is loans, not tax.
+comparable_from: Within this Study. Own-tax lines are not comparable to Union tax
+  (C3) as one India tax series.
+breaks: Own tax / own non-tax / Centre transfers stay separate. BE vs RE vs Accounts.
+lags: Same Study lag as Card 1.
+disagrees_with: Card 7 glance (SOTR vs share of Union taxes vs grants-in-aid for 2020-21).
+  C3 Union tax/non-tax.
+do_not: Do not treat Union grants or tax devolution as own tax. Do not treat Statement
+  16 loans as tax. Do not merge with C3. Same missing-units and rank do-nots as Card
+  1.
+citizen_note: Own tax, own non-tax, and Centre transfers kept separate as RBI prints
+  them. Grants and tax devolution are not own tax.

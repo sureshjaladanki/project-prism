@@ -1,0 +1,14 @@
+frame_id: c4-frame-a
+geography_vintage: '2025'
+code_system: none
+frame: Union
+units_included:
+- code: all-india
+  name_en: All India
+  geography_vintage: '2025'
+units_missing:
+- all States and UTs as own rows (not in the Monthly Bulletin)
+- districts and below (parked)
+breaks: Post-January-2025 monthly design. Do not invent State rows from Frame B or C and call
+  them Monthly Bulletin geography.
+crosswalk: none

@@ -1,0 +1,16 @@
+caveat_id: caveat-c8-dfpd-bulletin-procurement
+concept: State-wise procurement of rice, wheat, and coarsegrains into the public system
+  (KMS / RMS marketing seasons).
+unit: LMT as labelled.
+population: Procurement by FCI and State agencies — not farm harvest and not PDS offtake.
+reference_period: Bulletin month August 2026; salient features cite procurement up
+  to 31.08.2026.
+producer_definition: DFPD Foodgrains Bulletin August 2026, procurement section (printed
+  page 9).
+comparable_from: Within bulletin procurement tables / marketing seasons.
+breaks: Procurement ≠ production ≠ offtake. Spelling variants stay as printed.
+lags: Monthly; next bulletin unknown.
+disagrees_with: Cards A1–A3 (output). Card B1 (lifting). Card A6 (stocks).
+do_not: Do not chart as farm output or as household delivery. Do not use bulletin
+  page 8 production as DES of record.
+citizen_note: State-wise procurement into the public system.

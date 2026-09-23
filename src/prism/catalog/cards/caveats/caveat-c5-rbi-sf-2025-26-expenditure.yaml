@@ -1,0 +1,17 @@
+caveat_id: caveat-c5-rbi-sf-2025-26-expenditure
+concept: 'State/UT expenditure as published: revenue and capital appendices; development
+  / non-development and social-sector appendix tables; Statement 34 revenue expenditure.'
+unit: Rupees as labelled.
+population: Frame A units. Not Union expenditure profile (C3). Not local bodies.
+reference_period: As labelled in the 2025-26 Study.
+producer_definition: Statement 34; Statements 11–12; Appendices II and IV; Appendix
+  Tables 3–7.
+comparable_from: Within this Study’s labelled vintages.
+breaks: Development / non-development are RBI heads, not a welfare verdict. BE vs
+  RE vs Accounts.
+lags: Same Study lag as Card 1.
+disagrees_with: Card 7 CFRA expenditure for 2020-21. C3 Expenditure Profile.
+do_not: Do not issue waste/welfare verdicts. Do not merge with Union spend. Do not
+  rank best spender. Do not hide missing UTs-without-legislature.
+citizen_note: State/UT expenditure heads as RBI prints them. Development and non-development
+  are the producer’s labels, not a welfare verdict.

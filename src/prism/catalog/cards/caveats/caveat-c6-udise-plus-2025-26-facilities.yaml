@@ -1,0 +1,30 @@
+caveat_id: caveat-c6-udise-plus-2025-26-facilities
+concept: >-
+  School infrastructure and facilities at India and State/UT — counts of schools
+  having toilets, drinking water, electricity, library, hand wash, medical check-up,
+  and ramp as published on open-services schools-summarised-stats for yearId "12"
+  (NEP Structure companion to Table 2.5 / Section 7).
+unit: Counts of schools having a facility as labelled. Not a composite facilities index.
+population: Same UDISE+ school universe as Card 1 for 2025-26.
+reference_period: Academic year 2025-26. Not 7 July 2026.
+producer_definition: >-
+  Same NEP booklet as Card 1; facility fields on schools-summarised-stats for
+  yearId "12" (having counts).
+comparable_from: >-
+  Within this year’s NEP facility tables. “Having” and “functional” columns are
+  different concepts.
+breaks: >-
+  Having ≠ functional. NEP vs Existing Structure if both used. Do not invent a
+  composite facilities index.
+lags: Same as Card 1.
+disagrees_with: >-
+  None required among official series on this card; Card 1 is stocks of
+  schools/enrolment/teachers, not facilities.
+do_not: >-
+  Do not invent a facilities scorecard or rank states. Do not treat “having toilet”
+  as “functional toilet” when both columns exist. Do not pull district facility
+  extracts.
+citizen_note: >-
+  Counts of schools that report having selected facilities in UDISE+ for 2025-26.
+  Having a facility is not the same as a functional facility, and this is not a
+  state ranking.

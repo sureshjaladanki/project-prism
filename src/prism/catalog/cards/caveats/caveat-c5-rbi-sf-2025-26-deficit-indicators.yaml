@@ -1,0 +1,24 @@
+caveat_id: caveat-c5-rbi-sf-2025-26-deficit-indicators
+concept: Major deficit and fiscal indicators of state governments / UTs as RBI prints
+  them (revenue deficit/surplus, gross fiscal deficit/surplus, and related indicator
+  lines on Statements 1–3 / Appendix Table 1).
+unit: Rupees as labelled (and ratios if the producer prints them). Blank is not zero.
+population: State Governments and UTs on Frame A. Not Union deficit (C3). Not districts.
+  Not local bodies.
+reference_period: 'Column / statement label: Accounts, RE, or BE as printed in the
+  2025-26 Study. Not 23 January 2026.'
+producer_definition: 'RBI State Finances: A Study of Budgets of 2025-26 — Major Deficit
+  Indicators / Major Fiscal Indicators (Appendix Table 1; Statements 1–3).'
+comparable_from: Within this Study’s labelled Accounts / RE / BE columns. Do not stitch
+  to Card 7’s 2020-21 audited figures as one line.
+breaks: BE vs RE vs Accounts are different vintages. Do not recode Frame A labels
+  onto Frame B.
+lags: Study listed 23 January 2026; next edition unknown. Accounts lag BE.
+disagrees_with: Card 7 CAG CFRA fiscal parameters for 2020-21 (audited, older). C3
+  Union BAG deficit statistics (different government).
+do_not: Do not collapse BE/RE/Accounts. Do not rank states by fiscal virtue. Do not
+  present as Union deficit. Do not hide missing UTs-without-legislature or parked
+  districts.
+citizen_note: State/UT deficit lines as RBI prints them in the 2025-26 Study of Budgets.
+  Budget Estimates, Revised Estimates, and Accounts are different columns — not one
+  continuous series.

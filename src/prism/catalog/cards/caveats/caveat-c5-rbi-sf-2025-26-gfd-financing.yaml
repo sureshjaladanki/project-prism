@@ -1,0 +1,19 @@
+caveat_id: caveat-c5-rbi-sf-2025-26-gfd-financing
+concept: Decomposition and financing of gross fiscal deficit by state, as RBI prints
+  for Accounts / RE / BE statement titles.
+unit: Rupees as labelled; per-cent-of-total companions as printed.
+population: State Governments as labelled on Appendix Tables 8–10 / Statements 4–10.
+reference_period: 2023-24 (Accounts), 2024-25 (RE), 2025-26 (BE) as in Statement 5–10
+  titles — three vintages, not one year.
+producer_definition: Appendix Tables 8–10; Statements 4–10 in the 2025-26 Study.
+comparable_from: Within each year-status table. Do not stitch the three financing
+  statements into one continuous series.
+breaks: Accounts / RE / BE financing tables are separate. Do not recode onto Frame
+  B.
+lags: Same Study lag as Card 1.
+disagrees_with: Card 1 deficit levels (related but different table family). C3 Union
+  GFD financing.
+do_not: Do not rank financing mixes as virtue. Do not collapse the three year-status
+  statements. Do not present as Union financing.
+citizen_note: How gross fiscal deficit is decomposed and financed, by year-status
+  as RBI prints. Accounts, RE, and BE stay separate.

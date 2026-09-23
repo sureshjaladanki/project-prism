@@ -1,0 +1,280 @@
+slice_id: c4
+charter: C4
+template_id: c4-work-labour
+artifacts:
+- artifact_id: plfs-monthly-bulletin-aug-2026-pdf
+  url: https://www.mospi.gov.in/uploads/publications_reports/publications_reports1789465291404_ba9c7140-0b83-481b-a5fd-a7ac121c476f_Monthly_Bulletin_Aug_2026.pdf
+  kind: pdf
+  share_note: ''
+  companions: []
+- artifact_id: plfs-qb-2026-q2-table-2
+  url: https://www.mospi.gov.in/uploads/documents/documents/1786355698953-Table_2.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: plfs-qb-2026-q2-table-3
+  url: https://www.mospi.gov.in/uploads/documents/documents/1786355710853-Table_3.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: plfs-qb-2026-q2-table-5
+  url: https://www.mospi.gov.in/uploads/documents/documents/1786355731577-Table_5.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: plfs-ar-2025-table-16.0
+  url: https://www.mospi.gov.in/uploads/documents/publicationsReports/APPENDIX-A/Table__16.0.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: plfs-ar-2025-table-17.0
+  url: https://www.mospi.gov.in/uploads/documents/publicationsReports/APPENDIX-A/Table__17.0.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: plfs-ar-2025-table-18.0
+  url: https://www.mospi.gov.in/uploads/documents/publicationsReports/APPENDIX-A/Table__18.0.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: plfs-ar-2025-table-30
+  url: https://www.mospi.gov.in/uploads/documents/publicationsReports/APPENDIX-A/Table__30.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: plfs-ar-2025-table-31
+  url: https://www.mospi.gov.in/uploads/documents/publicationsReports/APPENDIX-A/Table__31.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: plfs-ar-2025-table-32
+  url: https://www.mospi.gov.in/uploads/documents/publicationsReports/APPENDIX-A/Table__32.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: plfs-ar-2025-table-38
+  url: https://www.mospi.gov.in/uploads/documents/publicationsReports/APPENDIX-A/Table__38.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: plfs-ar-2025-table-39
+  url: https://www.mospi.gov.in/uploads/documents/publicationsReports/APPENDIX-A/Table__39.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+- artifact_id: plfs-ar-2025-table-40
+  url: https://www.mospi.gov.in/uploads/documents/publicationsReports/APPENDIX-A/Table__40.xlsx
+  kind: xlsx
+  share_note: ''
+  companions: []
+series:
+- series_id: plfs-monthly-lfpr-wpr-ur-cws
+  card: 1
+  name: PLFS Monthly Bulletin — LFPR, WPR, UR in Current Weekly Status (CWS), all-India
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: 2026-08
+  next_release: '2026-10-15'
+  geography_frame_id: c4-frame-a
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-monthly-lfpr-wpr-ur-cws-2026-08
+  caveat_id: caveat-c4-plfs-monthly-lfpr-wpr-ur-cws
+  artifact_id: plfs-monthly-bulletin-aug-2026-pdf
+  parser_id: plfs-monthly-bulletin-pdf
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-quarterly-lfpr-cws
+  card: 2
+  name: PLFS Quarterly Bulletin — LFPR in CWS for selected States (Appendix Table 2)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: 2026-Q2
+  next_release: '2026-11-10'
+  geography_frame_id: c4-frame-b
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-quarterly-lfpr-cws-2026-q2
+  caveat_id: caveat-c4-plfs-quarterly-lfpr-cws
+  artifact_id: plfs-qb-2026-q2-table-2
+  parser_id: plfs-rate-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-quarterly-wpr-cws
+  card: 2
+  name: PLFS Quarterly Bulletin — WPR in CWS for selected States (Appendix Table 3)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: 2026-Q2
+  next_release: '2026-11-10'
+  geography_frame_id: c4-frame-b
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-quarterly-wpr-cws-2026-q2
+  caveat_id: caveat-c4-plfs-quarterly-wpr-cws
+  artifact_id: plfs-qb-2026-q2-table-3
+  parser_id: plfs-rate-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-quarterly-ur-cws
+  card: 2
+  name: PLFS Quarterly Bulletin — UR in CWS for selected States (Appendix Table 5)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: 2026-Q2
+  next_release: '2026-11-10'
+  geography_frame_id: c4-frame-b
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-quarterly-ur-cws-2026-q2
+  caveat_id: caveat-c4-plfs-quarterly-ur-cws
+  artifact_id: plfs-qb-2026-q2-table-5
+  parser_id: plfs-rate-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-annual-usual-lfpr-2025
+  card: 3
+  name: PLFS Annual Report 2025 — LFPR in usual status (ps+ss) (Appendix Table 16.0)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: '2025'
+  next_release: unknown
+  geography_frame_id: c4-frame-c
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-annual-usual-lfpr-2025
+  caveat_id: caveat-c4-plfs-annual-usual-lfpr-2025
+  artifact_id: plfs-ar-2025-table-16.0
+  parser_id: plfs-rate-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-annual-usual-wpr-2025
+  card: 3
+  name: PLFS Annual Report 2025 — WPR in usual status (ps+ss) (Appendix Table 17.0)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: '2025'
+  next_release: unknown
+  geography_frame_id: c4-frame-c
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-annual-usual-wpr-2025
+  caveat_id: caveat-c4-plfs-annual-usual-wpr-2025
+  artifact_id: plfs-ar-2025-table-17.0
+  parser_id: plfs-rate-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-annual-usual-ur-2025
+  card: 3
+  name: PLFS Annual Report 2025 — UR in usual status (ps+ss) (Appendix Table 18.0)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: '2025'
+  next_release: unknown
+  geography_frame_id: c4-frame-c
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-annual-usual-ur-2025
+  caveat_id: caveat-c4-plfs-annual-usual-ur-2025
+  artifact_id: plfs-ar-2025-table-18.0
+  parser_id: plfs-rate-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-annual-cws-lfpr-2025
+  card: 3
+  name: PLFS Annual Report 2025 — LFPR in Current Weekly Status (CWS) (Appendix Table 30)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: '2025'
+  next_release: unknown
+  geography_frame_id: c4-frame-c
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-annual-cws-lfpr-2025
+  caveat_id: caveat-c4-plfs-annual-cws-lfpr-2025
+  artifact_id: plfs-ar-2025-table-30
+  parser_id: plfs-rate-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-annual-cws-wpr-2025
+  card: 3
+  name: PLFS Annual Report 2025 — WPR in Current Weekly Status (CWS) (Appendix Table 31)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: '2025'
+  next_release: unknown
+  geography_frame_id: c4-frame-c
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-annual-cws-wpr-2025
+  caveat_id: caveat-c4-plfs-annual-cws-wpr-2025
+  artifact_id: plfs-ar-2025-table-31
+  parser_id: plfs-rate-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-annual-cws-ur-2025
+  card: 3
+  name: PLFS Annual Report 2025 — UR in Current Weekly Status (CWS) (Appendix Table 32)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: '2025'
+  next_release: unknown
+  geography_frame_id: c4-frame-c
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-annual-cws-ur-2025
+  caveat_id: caveat-c4-plfs-annual-cws-ur-2025
+  artifact_id: plfs-ar-2025-table-32
+  parser_id: plfs-rate-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-annual-earnings-regular-2025
+  card: 4
+  name: PLFS Annual Report 2025 — regular wage/salary earnings (CWS) (Appendix Table 38)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: '2025'
+  next_release: unknown
+  geography_frame_id: c4-frame-c
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-annual-earnings-regular-2025
+  caveat_id: caveat-c4-plfs-annual-earnings-regular-2025
+  artifact_id: plfs-ar-2025-table-38
+  parser_id: plfs-earnings-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-annual-earnings-casual-2025
+  card: 4
+  name: PLFS Annual Report 2025 — casual labour earnings per day (other than public works)
+    (Appendix Table 39)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: '2025'
+  next_release: unknown
+  geography_frame_id: c4-frame-c
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-annual-earnings-casual-2025
+  caveat_id: caveat-c4-plfs-annual-earnings-casual-2025
+  artifact_id: plfs-ar-2025-table-39
+  parser_id: plfs-earnings-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+- series_id: plfs-annual-earnings-self-2025
+  card: 4
+  name: PLFS Annual Report 2025 — gross earnings from self-employment (Appendix Table 40)
+  producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+    (MoSPI)
+  producer_slug: mospi
+  source_vintage: '2025'
+  next_release: unknown
+  geography_frame_id: c4-frame-c
+  geography_vintage: '2025'
+  citation_id: cite-c4-plfs-annual-earnings-self-2025
+  caveat_id: caveat-c4-plfs-annual-earnings-self-2025
+  artifact_id: plfs-ar-2025-table-40
+  parser_id: plfs-earnings-xlsx
+  mapper_id: plfs-state-sector-sex
+  named_hole: false
+cite_blocks: []

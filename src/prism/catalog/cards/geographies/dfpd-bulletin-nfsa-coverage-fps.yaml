@@ -1,0 +1,127 @@
+frame_id: c8-frame-d
+geography_vintage: 2026-08
+code_system: producer-specific
+frame: Union | state | UT
+units_included:
+- code: andhra-pradesh
+  name_en: Andhra Pradesh
+  geography_vintage: 2026-08
+- code: arunachal-pradesh
+  name_en: Arunachal Pradesh
+  geography_vintage: 2026-08
+- code: assam
+  name_en: Assam
+  geography_vintage: 2026-08
+- code: bihar
+  name_en: Bihar
+  geography_vintage: 2026-08
+- code: chhattisgarh
+  name_en: Chhattisgarh
+  geography_vintage: 2026-08
+- code: delhi
+  name_en: Delhi
+  geography_vintage: 2026-08
+- code: goa
+  name_en: Goa
+  geography_vintage: 2026-08
+- code: gujarat
+  name_en: Gujarat
+  geography_vintage: 2026-08
+- code: haryana
+  name_en: Haryana
+  geography_vintage: 2026-08
+- code: himachal-pradesh
+  name_en: Himachal Pradesh
+  geography_vintage: 2026-08
+- code: jharkhand
+  name_en: Jharkhand
+  geography_vintage: 2026-08
+- code: karnataka
+  name_en: Karnataka
+  geography_vintage: 2026-08
+- code: kerala
+  name_en: Kerala
+  geography_vintage: 2026-08
+- code: madhya-pradesh
+  name_en: Madhya Pradesh
+  geography_vintage: 2026-08
+- code: maharashtra
+  name_en: Maharashtra
+  geography_vintage: 2026-08
+- code: manipur
+  name_en: Manipur
+  geography_vintage: 2026-08
+- code: meghalaya
+  name_en: Meghalaya
+  geography_vintage: 2026-08
+- code: mizoram
+  name_en: Mizoram
+  geography_vintage: 2026-08
+- code: nagaland
+  name_en: Nagaland
+  geography_vintage: 2026-08
+- code: odisha
+  name_en: Odisha
+  geography_vintage: 2026-08
+- code: punjab
+  name_en: Punjab
+  geography_vintage: 2026-08
+- code: rajasthan
+  name_en: Rajasthan
+  geography_vintage: 2026-08
+- code: sikkim
+  name_en: Sikkim
+  geography_vintage: 2026-08
+- code: tamil-nadu
+  name_en: Tamil Nadu
+  geography_vintage: 2026-08
+- code: telangana
+  name_en: Telangana
+  geography_vintage: 2026-08
+- code: tripura
+  name_en: Tripura
+  geography_vintage: 2026-08
+- code: uttar-pradesh
+  name_en: Uttar Pradesh
+  geography_vintage: 2026-08
+- code: uttarakhand
+  name_en: Uttarakhand
+  geography_vintage: 2026-08
+- code: west-bengal
+  name_en: West Bengal
+  geography_vintage: 2026-08
+- code: a-n
+  name_en: A&N
+  geography_vintage: 2026-08
+- code: a-n-island
+  name_en: A&N Island
+  geography_vintage: 2026-08
+- code: d-n-haveli-and-daman-diu
+  name_en: D&N Haveli and Daman & Diu
+  geography_vintage: 2026-08
+- code: dadra-nagar-haveli-and-daman-diu
+  name_en: Dadra & Nagar Haveli and Daman & Diu
+  geography_vintage: 2026-08
+- code: lakshadweep
+  name_en: Lakshadweep
+  geography_vintage: 2026-08
+- code: chandigarh-dbt
+  name_en: Chandigarh (DBT)
+  geography_vintage: 2026-08
+- code: pudducherry-dbt
+  name_en: Pudducherry (DBT)
+  geography_vintage: 2026-08
+- code: jammu-kashmir
+  name_en: Jammu & Kashmir
+  geography_vintage: 2026-08
+- code: ladakh
+  name_en: Ladakh
+  geography_vintage: 2026-08
+- code: uttrakhand
+  name_en: Uttrakhand
+  geography_vintage: 2026-08
+units_missing:
+- districts and below (parked)
+breaks: Coverage and FPS tables may print different stub spellings for the same State/UT
+  — store each as printed.
+crosswalk: none

@@ -1,0 +1,68 @@
+slice_id: c6
+charter: C6
+template_id: c6-people-school
+artifacts:
+  - artifact_id: udise-open-services-2025-26
+    url: https://api.udiseplus.gov.in/open-services/v1.1/schools-summarised-stats/public
+    kind: json
+    share_note: shared_udise_year12_bundle
+    retrieve_id: udise-open-services-year12
+    companions: []
+  - artifact_id: census-2011-pca-sd-literacy
+    url: https://censusindia.gov.in/nada/index.php/catalog/6191/download/9268/DDW_PCA0000_2011_Indiastatedist.xlsx
+    kind: xlsx
+    share_note: ""
+    companions: []
+series:
+  - series_id: udise-plus-2025-26-schools-enrolment-teachers
+    card: 1
+    name: "UDISE+ Report 2025-26 — NEP Structure: schools, enrolments and teachers (India and State/UT)"
+    producer: Department of School Education & Literacy (DoSEL), Ministry of Education — UDISE+
+    producer_slug: dosel-udise
+    source_vintage: 2025-26-nep
+    next_release: unknown
+    geography_frame_id: c6-frame-a
+    geography_vintage: "2025-26"
+    citation_id: cite-c6-udise-plus-2025-26-schools-enrolment-teachers
+    caveat_id: caveat-c6-udise-plus-2025-26-schools-enrolment-teachers
+    artifact_id: udise-open-services-2025-26
+    parser_id: udise-open-services-schools-enrol-teachers
+    mapper_id: udise-schools-enrol-teachers
+    named_hole: false
+  - series_id: udise-plus-2025-26-facilities
+    card: 2
+    name: "UDISE+ Report 2025-26 — NEP Structure: school infrastructure and facilities (India and State/UT)"
+    producer: Department of School Education & Literacy (DoSEL), Ministry of Education — UDISE+
+    producer_slug: dosel-udise
+    source_vintage: 2025-26-nep
+    next_release: unknown
+    geography_frame_id: c6-frame-a
+    geography_vintage: "2025-26"
+    citation_id: cite-c6-udise-plus-2025-26-facilities
+    caveat_id: caveat-c6-udise-plus-2025-26-facilities
+    artifact_id: udise-open-services-2025-26
+    parser_id: udise-open-services-facilities
+    mapper_id: udise-facilities
+    named_hole: false
+  - series_id: census-2011-pca-literacy
+    card: 3
+    name: "Census of India 2011 — Primary Census Abstract (PCA SD): literate and illiterate population counts as published"
+    producer: Office of the Registrar General & Census Commissioner, India (ORGI), Ministry of Home Affairs
+    producer_slug: orgi
+    source_vintage: "2011"
+    next_release: unknown
+    geography_frame_id: c6-frame-b
+    geography_vintage: "2011"
+    citation_id: cite-c6-census-2011-pca-literacy
+    caveat_id: caveat-c6-census-2011-pca-literacy
+    artifact_id: census-2011-pca-sd-literacy
+    parser_id: census-2011-pca-literacy-xlsx
+    mapper_id: census-pca-literacy-tru
+    named_hole: false
+cite_blocks:
+  - block_id: udise-schools-enrol-teachers
+    citation_ids: [cite-c6-udise-plus-2025-26-schools-enrolment-teachers]
+  - block_id: udise-facilities
+    citation_ids: [cite-c6-udise-plus-2025-26-facilities]
+  - block_id: census-literacy
+    citation_ids: [cite-c6-census-2011-pca-literacy]

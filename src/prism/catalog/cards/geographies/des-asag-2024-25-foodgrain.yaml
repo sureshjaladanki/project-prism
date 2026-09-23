@@ -1,0 +1,13 @@
+frame_id: c8-frame-c
+geography_vintage: 2024-25
+code_system: producer-specific
+frame: Union | state
+units_included:
+- code: all-india
+  name_en: All India
+  geography_vintage: 2024-25
+units_missing:
+- States/UTs omitted from a given Major States table (confirm on open)
+- districts (parked)
+breaks: Named hole this iteration. Prefer Frames A–B for latest AE/FE.
+crosswalk: none

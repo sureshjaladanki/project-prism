@@ -1,0 +1,23 @@
+caveat_id: caveat-c7-rhs-2021-22
+concept: Public health facility counts and related infrastructure / manpower statements
+  (SCs, PHCs, CHCs and related tables) as published in RHS.
+unit: Counts of facilities (and manpower figures where printed) as labelled.
+population: Public facilities in the MoHFW RHS administrative yearbook. Not private
+  hospitals. Not survey respondents.
+reference_period: As on 31 March 2022. Not January 2023 PDF dates.
+producer_definition: Rural Health Statistics 2021-22, MoHFW Statistics Division (HMIS
+  fileid 34). series_id rhs-2021-22.
+comparable_from: Within this yearbook’s state-wise statements. Older RHS years on the
+  same menu are history.
+breaks: Stock date is years behind SRS 2024 and NFHS-6 fieldwork. District Section II
+  parked. Do not use CBHI National Health Profile as a silent substitute.
+lags: Latest on HMIS Publications menu this citation run; RHS after 2021-22 not linked
+  — next_release unknown (delayed).
+disagrees_with: SRS and NFHS (rates and survey indicators vs facility counts). NITI
+  Health Index (rejected as record).
+do_not: Do not present as current 2026 facility stock without stating the 31 March 2022
+  date. Do not pull district Section II. Do not use hospital star-ratings or private
+  insurance tables. Do not use NITI Health Index.
+citizen_note: Rural Health Statistics 2021-22 counts public Sub Centres, PHCs, and CHCs
+  as on 31 March 2022. These are facility counts, not survey health rates, and they
+  are not a 2026 stock figure.

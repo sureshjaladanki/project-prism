@@ -1,0 +1,13 @@
+frame_id: c8-frame-a
+geography_vintage: 2024-25
+code_system: none
+frame: Union
+units_included:
+- code: all-india
+  name_en: All India
+  geography_vintage: 2024-25
+units_missing:
+- all States and UTs as own rows (not in these artifacts)
+- districts and below (parked)
+breaks: Final Estimates for 2024-25. Not the 2025-26 Advance column.
+crosswalk: none

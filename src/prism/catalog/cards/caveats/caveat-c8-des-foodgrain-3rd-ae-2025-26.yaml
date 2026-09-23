@@ -1,0 +1,17 @@
+caveat_id: caveat-c8-des-foodgrain-3rd-ae-2025-26
+concept: All-India production of foodgrains under Third Advance Estimates for crop
+  year 2025-26.
+unit: Lakh tonnes as labelled.
+population: All-India crop production estimates (DES). Not State rows. Not PDS offtake.
+reference_period: Crop year 2025-26 (3rd AE column); as-on date 27 May 2026 is not
+  the crop year.
+producer_definition: Time-Series-3rd-AE-2025-26-English.pdf (DES / DA&FW).
+comparable_from: Within this AE round’s time-series columns. Not interchangeable with
+  Final without a break.
+breaks: Advance ≠ Final. Do not use DFPD bulletin page 8 as this series.
+lags: next_release unknown; watch advance-estimates locator.
+disagrees_with: Card A2 (different round/year). Card A4 ASAG. Bulletin reprint of
+  DES production.
+do_not: Do not present as Final. Do not invent State rows. Do not merge with Family
+  B. Do not use as a hunger index.
+citizen_note: All-India foodgrain production, 2025-26 advance.

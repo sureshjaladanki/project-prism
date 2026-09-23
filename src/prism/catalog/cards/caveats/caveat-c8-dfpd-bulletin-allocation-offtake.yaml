@@ -1,0 +1,17 @@
+caveat_id: caveat-c8-dfpd-bulletin-allocation-offtake
+concept: Allocation and offtake of foodgrains under NFSA/PMGKAY as printed in the
+  Foodgrains Bulletin.
+unit: LMT as labelled.
+population: Central-pool allocation to States/schemes and lifting (offtake). Not household
+  consumption from a survey.
+reference_period: Bulletin August 2026; footnotes for offtake upto August 2026 as
+  printed.
+producer_definition: Same August 2026 Foodgrains Bulletin, allocation & offtake section.
+comparable_from: Within allocation vs offtake columns for the same scheme/period.
+  Do not equate them.
+breaks: Allocation ≠ offtake. Keep separate from Family A charts.
+lags: Monthly bulletin cadence; next_release unknown.
+disagrees_with: Card A5 procurement. Card A6 stocks. Card B2 coverage counts.
+do_not: Do not treat allocation as lifting. Do not treat offtake as household consumption.
+  Do not merge with production. Do not use as a hunger index.
+citizen_note: NFSA/PMGKAY allocation and offtake as printed.

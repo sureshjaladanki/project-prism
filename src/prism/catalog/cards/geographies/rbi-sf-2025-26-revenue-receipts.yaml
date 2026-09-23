@@ -1,0 +1,112 @@
+frame_id: c5-frame-a
+geography_vintage: 2025-26
+code_system: producer-specific
+frame: state | UT
+units_included:
+- code: andhra-pradesh
+  name_en: Andhra Pradesh
+  geography_vintage: 2025-26
+- code: arunachal-pradesh
+  name_en: Arunachal Pradesh
+  geography_vintage: 2025-26
+- code: assam
+  name_en: Assam
+  geography_vintage: 2025-26
+- code: bihar
+  name_en: Bihar
+  geography_vintage: 2025-26
+- code: chhattisgarh
+  name_en: Chhattisgarh
+  geography_vintage: 2025-26
+- code: goa
+  name_en: Goa
+  geography_vintage: 2025-26
+- code: gujarat
+  name_en: Gujarat
+  geography_vintage: 2025-26
+- code: haryana
+  name_en: Haryana
+  geography_vintage: 2025-26
+- code: himachal-pradesh
+  name_en: Himachal Pradesh
+  geography_vintage: 2025-26
+- code: jammu-and-kashmir
+  name_en: Jammu and Kashmir
+  geography_vintage: 2025-26
+- code: jharkhand
+  name_en: Jharkhand
+  geography_vintage: 2025-26
+- code: karnataka
+  name_en: Karnataka
+  geography_vintage: 2025-26
+- code: kerala
+  name_en: Kerala
+  geography_vintage: 2025-26
+- code: madhya-pradesh
+  name_en: Madhya Pradesh
+  geography_vintage: 2025-26
+- code: maharashtra
+  name_en: Maharashtra
+  geography_vintage: 2025-26
+- code: manipur
+  name_en: Manipur
+  geography_vintage: 2025-26
+- code: meghalaya
+  name_en: Meghalaya
+  geography_vintage: 2025-26
+- code: mizoram
+  name_en: Mizoram
+  geography_vintage: 2025-26
+- code: nagaland
+  name_en: Nagaland
+  geography_vintage: 2025-26
+- code: odisha
+  name_en: Odisha
+  geography_vintage: 2025-26
+- code: punjab
+  name_en: Punjab
+  geography_vintage: 2025-26
+- code: rajasthan
+  name_en: Rajasthan
+  geography_vintage: 2025-26
+- code: sikkim
+  name_en: Sikkim
+  geography_vintage: 2025-26
+- code: tamil-nadu
+  name_en: Tamil Nadu
+  geography_vintage: 2025-26
+- code: telangana
+  name_en: Telangana
+  geography_vintage: 2025-26
+- code: tripura
+  name_en: Tripura
+  geography_vintage: 2025-26
+- code: uttar-pradesh
+  name_en: Uttar Pradesh
+  geography_vintage: 2025-26
+- code: uttarakhand
+  name_en: Uttarakhand
+  geography_vintage: 2025-26
+- code: west-bengal
+  name_en: West Bengal
+  geography_vintage: 2025-26
+- code: delhi
+  name_en: Delhi
+  geography_vintage: 2025-26
+- code: puducherry
+  name_en: Puducherry
+  geography_vintage: 2025-26
+- code: all-states-and-uts
+  name_en: All States and UTs
+  geography_vintage: 2025-26
+units_missing:
+- 'Union Territories without legislature: Andaman and Nicobar Islands; Chandigarh;
+  Dadra and Nagar Haveli and Daman and Diu; Ladakh; Lakshadweep'
+- districts and below (parked)
+- local bodies (charter-out)
+- Union Government as a C5 unit (that is C3)
+breaks: Study map as of the 2025-26 edition. Telangana is titled. Jammu and Kashmir
+  is stored as printed (UT with legislature after 2019 — not a pre-2019 state row
+  or Ladakh twin). Delhi and Puducherry are UT-with-legislature titles. Do not recode
+  onto Frame B or C3.
+crosswalk: none

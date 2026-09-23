@@ -1,0 +1,17 @@
+caveat_id: caveat-c5-rbi-sf-2025-26-capital-receipts
+concept: Capital receipts of States and Union Territories with Legislature as RBI
+  publishes them (Appendix III), including borrowings / Centre loans where that statement
+  is used.
+unit: Rupees as labelled.
+population: Frame A (Appendix III title).
+reference_period: As labelled in the 2025-26 Study.
+producer_definition: Appendix III Capital Receipts; related Statement 16 Loans from
+  the Centre.
+comparable_from: Within this Study. Distinct from Card 2 revenue receipts.
+breaks: Debt receipts are not revenue and not own tax. BE vs RE vs Accounts.
+lags: Same Study lag as Card 1.
+disagrees_with: Card 6 outstanding liabilities (stock vs flow). C3 Union capital receipts.
+do_not: Do not treat debt receipts as own tax or as revenue. Do not merge with Card
+  2. Do not present as Union capital receipts.
+citizen_note: Capital receipts including borrowings as RBI prints them. Debt receipts
+  are not own tax and not revenue.

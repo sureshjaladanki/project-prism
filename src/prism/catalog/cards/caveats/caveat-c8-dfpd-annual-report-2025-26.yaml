@@ -1,0 +1,13 @@
+caveat_id: caveat-c8-dfpd-annual-report-2025-26
+concept: Department annual report narrative and annex tables for 2025-26.
+unit: As labelled in each annex table used.
+population: DFPD programme reporting — companion, not the monthly series of record.
+reference_period: Annual Report 2025-26 (upload 26 February 2026).
+producer_definition: Food AR 2025-26 English.pdf (DFPD).
+comparable_from: Prefer Cards A5 and B1 for procurement/offtake time series.
+breaks: Not a substitute monthly bulletin. Named hole this iteration for annex cell
+  maps.
+lags: Annual Report 2026-27 not listed.
+disagrees_with: Monthly bulletin cards where figures differ by vintage.
+do_not: Do not prefer over A5/B1 for the citizen offtake/procurement question.
+citizen_note: Companion department narrative.

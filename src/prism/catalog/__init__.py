@@ -21,9 +21,19 @@ _REGISTRY_MODULES = (
     "prism.ingest.xlsx_cpi_period",
     "prism.ingest.census_srs_xlsx_pdf",
     "prism.ingest.budget_cga_xlsx_pdf_html",
+    "prism.ingest.udise_census_literacy",
+    "prism.ingest.rbi_cag_state_finance",
+    "prism.ingest.plfs_xlsx_pdf",
+    "prism.ingest.des_dfpd_food",
+    "prism.ingest.nfhs_rhs_pdf",
     "prism.pipeline.state_sector_period",
     "prism.pipeline.census_srs_ncp",
     "prism.pipeline.wide_measure_columns",
+    "prism.pipeline.udise_literacy",
+    "prism.pipeline.state_finance",
+    "prism.pipeline.plfs_rates",
+    "prism.pipeline.food_farm",
+    "prism.pipeline.health_survey_admin",
 )
 
 
@@ -43,8 +53,10 @@ class CatalogArtifact(BaseModel):
 
     artifact_id: str
     url: str
-    kind: Literal["xlsx", "xls", "pdf", "html"]
+    kind: Literal["xlsx", "xls", "pdf", "html", "json"]
     share_note: str = ""
+    retrieve_id: str = ""
+    filename: str = ""
     companions: tuple[CatalogCompanion, ...] = ()
 
 
@@ -136,6 +148,20 @@ class Catalog(BaseModel):
                 return found
         raise CatalogError(f"unknown series_id: {series_id}")
 
+    def series_entries(self, series_id: str) -> tuple[CatalogSeries, ...]:
+        found = tuple(
+            entry
+            for item in self.slices
+            for entry in item.series
+            if entry.series_id == series_id
+        )
+        if not found:
+            raise CatalogError(f"unknown series_id: {series_id}")
+        return found
+
+    def citation_ids_for_series(self, series_id: str) -> frozenset[str]:
+        return frozenset(entry.citation_id for entry in self.series_entries(series_id))
+
     def slice_for_series(self, series_id: str) -> CatalogSlice:
         for item in self.slices:
             if series_id in item.series_by_id():
@@ -156,7 +182,12 @@ class Catalog(BaseModel):
         raise CatalogError(f"unknown artifact_id: {artifact_id}")
 
     def series_ids(self) -> tuple[str, ...]:
-        return tuple(entry.series_id for item in self.slices for entry in item.series)
+        seen: list[str] = []
+        for item in self.slices:
+            for entry in item.series:
+                if entry.series_id not in seen:
+                    seen.append(entry.series_id)
+        return tuple(seen)
 
     def named_hole_series_ids(self) -> frozenset[str]:
         return frozenset(
@@ -294,11 +325,39 @@ def load_catalog(
     return catalog
 
 
+def _shared_series_identity(left: CatalogSeries, right: CatalogSeries) -> bool:
+    return (
+        left.producer_slug == right.producer_slug
+        and left.source_vintage == right.source_vintage
+        and left.artifact_id == right.artifact_id
+        and left.parser_id == right.parser_id
+        and left.mapper_id == right.mapper_id
+        and left.named_hole == right.named_hole
+    )
+
+
 def validate_catalog(catalog: Catalog, *, require_registries: bool = True) -> None:
-    series_ids = [entry.series_id for item in catalog.slices for entry in item.series]
-    dupes = [key for key, count in Counter(series_ids).items() if count > 1]
-    if dupes:
-        raise CatalogError("duplicate series_id: " + ", ".join(sorted(dupes)))
+    by_series: dict[str, list[tuple[str, CatalogSeries]]] = {}
+    for item in catalog.slices:
+        for entry in item.series:
+            by_series.setdefault(entry.series_id, []).append((item.slice_id, entry))
+    for series_id, placements in by_series.items():
+        slice_hits = [slice_id for slice_id, _entry in placements]
+        within = [key for key, count in Counter(slice_hits).items() if count > 1]
+        if within:
+            raise CatalogError(
+                f"duplicate series_id on slice {within[0]}: {series_id}"
+            )
+        if len(placements) < 2:
+            continue
+        first = placements[0][1]
+        for slice_id, entry in placements[1:]:
+            if not _shared_series_identity(first, entry):
+                raise CatalogError(
+                    f"duplicate series_id {series_id} on {slice_id} does not share "
+                    "producer_slug/source_vintage/artifact_id/parser_id/mapper_id/"
+                    "named_hole with the first placement"
+                )
     slice_ids = [item.slice_id for item in catalog.slices]
     slice_dupes = [key for key, count in Counter(slice_ids).items() if count > 1]
     if slice_dupes:

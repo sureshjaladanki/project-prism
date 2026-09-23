@@ -1,0 +1,19 @@
+caveat_id: caveat-c5-rbi-sf-2025-26-liabilities
+concept: Outstanding liabilities composition and totals (including % of GSDP where
+  published); state government market borrowings / loans as RBI prints them. Guarantees
+  (Statement 28) are optional detail — not the same as debt stock.
+unit: Rupees as labelled; per cent of GSDP / of total where printed.
+population: State Governments and UTs as in Appendix Tables 11–12 titles.
+reference_period: As labelled in the 2025-26 Study.
+producer_definition: Appendix Tables 11–13; Statements 18–22 (and 23–25, 28 only if
+  cited).
+comparable_from: Within this Study. Not Union Statement of Liabilities (C3).
+breaks: Liabilities stock ≠ market borrowings flow ≠ guarantees. BE vs RE vs Accounts
+  where columns exist.
+lags: Same Study lag as Card 1.
+disagrees_with: Card 4 capital receipts (flow). Card 7 CFRA public debt for 2020-21.
+  C3 Central outstanding liabilities.
+do_not: Do not merge with Union liabilities. Do not treat guarantees as outstanding
+  debt stock. Do not rank most indebted as a verdict chart.
+citizen_note: Outstanding liabilities and market borrowings as RBI prints them. Guarantees
+  are not the same as outstanding debt stock.

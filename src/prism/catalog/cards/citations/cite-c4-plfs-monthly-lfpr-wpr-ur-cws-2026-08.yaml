@@ -1,0 +1,21 @@
+citation_id: cite-c4-plfs-monthly-lfpr-wpr-ur-cws-2026-08
+producer: National Statistics Office (NSO), Ministry of Statistics and Programme Implementation
+  (MoSPI)
+series: Periodic Labour Force Survey (PLFS) Monthly Bulletin — Labour Force Participation
+  Rate (LFPR), Worker Population Ratio (WPR), Unemployment Rate (UR) in Current Weekly Status
+  (CWS)
+id: MoSPI product_id 69; publications-reports id 2863 Periodic Labour Force Survey (PLFS)
+  Monthly Bulletin August 2026; file Monthly_Bulletin_Aug_2026.pdf
+reference_period: 2026-08
+release_date: '2026-09-15'
+url: https://www.mospi.gov.in/uploads/publications_reports/publications_reports1789465291404_ba9c7140-0b83-481b-a5fd-a7ac121c476f_Monthly_Bulletin_Aug_2026.pdf
+geography_as_published: All India only, by sector rural / urban / rural+urban and by gender
+  and broad age groups as published. Not States/UTs. Not districts.
+frequency: monthly
+licence: 'Not stated on the artifact. MoSPI Copyrights Policy: reproduce accurately, not in
+  a derogatory or misleading context, source acknowledged. GSDD 2026 Category A (open access)
+  includes Reports/factsheets of National Sample Surveys (NSS). Not stated as CC-BY. Unit-level
+  PLFS is Category B — not this series.'
+next_release: '2026-10-15'
+caveat_one_line: CWS only (7-day reference). No State/UT rows. No companion XLSX on this release.
+  Post-January-2025 monthly design — do not stitch pre-2025 without a break.
